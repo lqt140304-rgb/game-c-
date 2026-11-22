@@ -28,6 +28,8 @@
     "restore_fee_rate": 0.25,
     "certificate_bonus": 0.25,
     "fake_price_factor": 0.2,
+    "price_round": "floor",
+    "unappraised_display_price": "as_genuine",
     "quality": [
       {
         "id": "nguyen",

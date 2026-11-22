@@ -86,6 +86,8 @@ def make_candidate(run, box):
 
 
 def free_clues(run):
+    if SKILL.get("free_n"):
+        return SKILL["free_n"]
     n = 1
     if run.has("TC1", "TC2"):
         n += 1                                   # CB2 thêm 1 manh mối miễn phí
@@ -392,5 +394,17 @@ def sweep_isolate():
                       ("lam 0,75, thêm 2 manh mối 30 xu", dict(read=True, lam=.75, tau=1.0, extra=2, clue_price=30)),
                       ("lam 0,75, thêm 2 manh mối 15 xu", dict(read=True, lam=.75, tau=1.0, extra=2, clue_price=15)),
                       ("lam 0, thêm 2 manh mối 15 xu", dict(read=True, lam=0.0, tau=1.0, extra=2, clue_price=15))):
+        r = measure_turns(c, 2000, **kw)
+        print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
+
+
+def sweep_oracle():
+    """Cận trên giá trị manh mối thêm: nhìn đủ 3 manh mối miễn phí."""
+    c = setup(True)
+    ks = list(TURN_NAMES)
+    for label, kw in (("lam 0,75, 1 manh mối miễn phí", dict(lam=.75, tau=1.0)),
+                      ("lam 0,75, 3 manh mối miễn phí", dict(lam=.75, tau=1.0, free_n=3)),
+                      ("lam 0, 1 manh mối miễn phí", dict(lam=0.0, tau=1.0)),
+                      ("lam 0, 3 manh mối miễn phí", dict(lam=0.0, tau=1.0, free_n=3))):
         r = measure_turns(c, 2000, **kw)
         print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
