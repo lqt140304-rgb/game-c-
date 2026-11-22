@@ -131,6 +131,8 @@ namespace ChoDoLa.Town.Layout
                     continue;
                 }
                 if (p.ClearanceHeight >= TownSpec.MinClearance) continue;
+                float bottomY = p.Center.Y - p.Size.Y * 0.5f;
+                if (bottomY >= TownSpec.MinClearance) continue;
 
                 foreach (var w in groundWalkways)
                 {
