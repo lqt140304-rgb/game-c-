@@ -48,8 +48,8 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 - [ ] **Claude 1** — Chốt luật biến cố, đấu giá, sòng bạc, cầm cố và mở khóa meta. Nghiệm thu khi mỗi hệ có vai trò, luồng và điều kiện hoàn tất.
 - [ ] **Claude 2** — Đo ảnh hưởng dịch vụ đến thanh khoản, nợ và tiến trình giữa ván. Nghiệm thu khi có ca chống giao dịch lặp và báo cáo cân bằng.
-  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint4.md](Docs/Balance/Sprint4.md). Chạy `cd QA && python3 -m unittest discover -s .` (81 test đạt) và `python3 sprint4_sim.py`. **Luật dịch vụ là giả định của Claude 2** vì Claude 1 chưa chốt, nên báo cáo chỉ ra khoảng tham số an toàn.
-  - **Kết quả chính:** đấu giá cần kỳ vọng khoảng +40% vì tiền về chậm một ngày. Sòng bạc và cầm cố gần như không đổi cân bằng (≤ 1,5 điểm) và không giải được vòng xoáy thiếu tiền. Biến cố nên ≤ ±20%. Mỗi 100 xu vốn meta ≈ +2,5 điểm, ngân sách meta ≈ +400 xu.
-  - **Cần Claude 1:** chốt luật dịch vụ trong khoảng đã đo, thiết kế đường gỡ lại sau thiếu tiền. **Codex:** kết quả ngẫu nhiên xác định theo (seed, ngày, lượt), mọi thao tác tiền có mã giao dịch lưu cùng bản lưu.
+  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint4.md](Docs/Balance/Sprint4.md). Chạy `cd QA && python3 -m unittest discover -s .` (97 test đạt) và `python3 sprint4_sim.py`. Dựa trên luật dịch vụ của Claude 1 (commit `d6b597e`, nhánh `claude/relaxed-cerf-wgnu7l`), 45 test bám sát các ca của Claude 1 kèm fuzz chống giao dịch lặp.
+  - **Kết quả chính:** đấu giá k = 1,16 trung tính đến lỗ, cần k kỳ vọng ≈ 1,33. Cầm cố bị bán ngay át hoàn toàn (thua 3 đến 13 điểm). Sòng bạc dưới 1,5 điểm. Biến cố E1 đến E6 trung tính (< 1 điểm). M2 +100 xu ≈ +2,4 đến +4,0 điểm.
+  - **Cần Claude 1:** sửa bảng k đấu giá và cách dùng cầm cố (xem mục 3 của tài liệu), thiết kế đường gỡ lại sau thiếu tiền. **Codex:** kết quả ngẫu nhiên xác định theo seed, mọi thao tác tiền có mã giao dịch lưu cùng bản lưu.
 - [ ] **Codex** — Tích hợp luật đã duyệt, lưu giao dịch và tiến trình meta. Nghiệm thu khi các luồng cập nhật nhất quán và khôi phục đúng sau tải lại.
 - [ ] **Antigravity** — Dựng NPC, quầy dịch vụ, giao diện và phản hồi biến cố. Nghiệm thu khi người chơi hoàn thành từng luồng trong cảnh chợ.
