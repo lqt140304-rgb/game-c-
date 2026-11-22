@@ -27,6 +27,10 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 - [ ] **Claude 1** — Soạn nội tại gia truyền, hai hệ tạo tác, combo và hai Bí Khế mẫu. Nghiệm thu khi mỗi hiệu ứng có điều kiện kích hoạt, hiệu lực và ví dụ.
 - [ ] **Claude 2** — Kiểm thử lịch nợ, combo, tiến độ Bí Khế và tải lại ván. Nghiệm thu khi có ca trả đúng hạn, chặn trả trước, thiếu tiền, đạt và chưa đạt điều kiện.
+  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint2.md](Docs/Balance/Sprint2.md). Chạy `cd QA && python3 -m unittest -v test_economy test_sprint2` (52 test đạt). Luật nợ lấy từ đề xuất của Claude 1 (commit `643ae03`). Combo và Bí Khế dùng giá trị tạm vì nội dung Sprint 2 của Claude 1 chưa có.
+  - **Cần chủ dự án chọn:** luật nợ tồn làm tỷ lệ thắng giảm mạnh và không ván nào thiếu tiền rồi gỡ lại được (D-05, O-02). Claude 2 đề xuất tăng giá bán 1,3 lần, chưa áp dụng.
+  - **Cần Claude 1:** chốt D-02, D-05 đến D-08 và chính sách lưu ván, soạn combo và Bí Khế thật, rà bảng giá nền (hộp H1 cho 4,58 lần giá hộp, Rương Đen 0,89 lần).
+  - **Codex:** các test trong `QA/` là đặc tả hành vi cho nợ tồn, combo, Bí Khế và lưu ván.
 - [ ] **Codex** — Nối gia truyền, tier, trang bị, combo, Bí Khế, tiến trình 7 ngày và lưu ván. Nghiệm thu khi có thể chơi tới kết quả và tải lại đúng trạng thái mà không lặp giao dịch.
 - [ ] **Antigravity** — Dựng Kho Tạo Tác, UI sổ và trang bị, cảnh thu nợ cùng màn kết quả. Nghiệm thu khi người thử đọc được nợ, combo, tiến độ Bí Khế và lý do kết thúc ván.
 

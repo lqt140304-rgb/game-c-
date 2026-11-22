@@ -1,12 +1,14 @@
 # Sprint 1 — Kiểm thử dòng tiền mẫu (Claude 2)
 
+> **Cập nhật:** mô hình đã chuyển sang luật nợ tồn của Claude 1 ở [Sprint 2](Sprint2.md). Bảng dòng tiền 6 ván bên dưới là kết quả với luật cũ (thua ngay khi thiếu tiền) nên không còn tái hiện được bằng mã hiện tại.
+
 Chưa có code gameplay, nên Claude 2 viết **mô hình tham chiếu** của luật kinh tế rồi kiểm thử nó. Codex có thể dùng các test làm đặc tả hành vi và chuyển sang C# khi triển khai.
 
 ## Cách tái hiện
 
 ```bash
 cd QA
-python3 -m unittest -v test_economy   # 17 test
+python3 -m unittest -v test_economy   # 17 test Sprint 1
 python3 scenario_cashflow.py          # dòng tiền 7 ngày, seed 1–3
 ```
 

@@ -56,12 +56,11 @@ class Debt(unittest.TestCase):
         g.end_day()
         self.assertEqual(g.cash, 450)
 
-    def test_bt08_shortfall_current_behavior(self):
-        # [MỞ] ghi nhận hành vi tạm của mô hình, chờ Claude 1 chốt luật.
+    def test_bt08_shortfall_follows_claude1_rule(self):
+        # Luật nợ [ĐỀ XUẤT] của Claude 1: trả hết tiền có, nợ tồn + phạt 20% làm tròn lên.
         g = fresh(); g.day = 2; g.cash = 349
         r = g.end_day()
-        self.assertEqual(r, {"result": "shortfall", "short": 1})
-        self.assertEqual(g.cash, 349)  # không trừ một phần
+        self.assertEqual((g.cash, g.arrears, r["result"]), (0, 2, "next_day"))
 
     def test_bt09_end_day_is_not_idempotent_ui_must_guard(self):
         # Phát hiện D-01: gọi end_day hai lần liên tiếp thu nợ của HAI ngày,
