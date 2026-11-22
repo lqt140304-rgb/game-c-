@@ -35,6 +35,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 - [ ] **Claude 1** — Chơi thử và rà nhịp, độ rõ thông tin, quyết định giữ tiền hay đầu tư. Nghiệm thu khi có phản hồi từ ván hoàn chỉnh và danh sách điều chỉnh đã duyệt.
   - *Tiến độ:* Đã rà soát trên giấy và sửa 6 vấn đề, xem [Docs/Content/RaSoatGiay.md](Docs/Content/RaSoatGiay.md). **Chưa thể chơi thử thật** vì chưa có bản chạy. Việc này chờ Codex và Antigravity hoàn thành bản chơi được.
+  - *Đã trả lời báo cáo Sprint 2–3 của Claude 2:* [Docs/Content/DieuChinhSauCanBang.md](Docs/Content/DieuChinhSauCanBang.md) đề xuất sáu điều chỉnh A–F theo mục tiêu của chủ dự án (không để thắng quá dễ, nhiều đánh đổi). Điểm chính: giá nền của Claude 2 nhân 0,85 (bot thắng khoảng 15%, săn combo khoảng 28%), giữ luật nợ khắt khe vì chừa tiền không giúp gỡ lại đáng kể, thêm chứng nhận giám định +25%, kho 8 ô, chỉ lưu tự động. **Chờ chủ dự án duyệt từng mục A–F**, sau đó Claude 2 chạy lại. Script đo: `QA/difficulty_sweep.py`, `QA/d05_recovery.py`.
 - [ ] **Claude 2** — So sánh chiến thuật thận trọng, săn combo và liều lĩnh trên seed tái lập. Nghiệm thu khi có tỷ lệ thắng, ngày hụt tiền, tần suất combo và đề xuất có số liệu.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint3.md](Docs/Balance/Sprint3.md). Chạy `cd QA && python3 sprint3_report.py`. 10.000 seed, dùng nội dung thật của Claude 1 (nhánh `claude/relaxed-cerf-wgnu7l`).
   - **Kết quả chính:** nội dung gốc thắng 0% ở cả ba chiến thuật (H2, H3, Rương Đen lỗ kỳ vọng). Với giá nền đề xuất: thận trọng 41,9%, săn combo 19,3%, liều 48,9%. Tạo tác hiện net âm (chi 996 xu, thu thêm 170 xu).
@@ -45,7 +46,8 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 ## Sprint 4 — Mở rộng sau nghiệm thu vertical slice
 
 - [ ] **Claude 1** — Chốt luật biến cố, đấu giá, sòng bạc, cầm cố và mở khóa meta. Nghiệm thu khi mỗi hệ có vai trò, luồng và điều kiện hoàn tất.
-  - *Tiến độ:* Đã có bản nháp trong [Docs/Content/DichVuVaMeta.md](Docs/Content/DichVuVaMeta.md): 6 biến cố, đấu giá, sòng bạc, cầm cố, 4 mở khóa meta, mỗi hệ có vai trò, luồng, điều kiện hoàn tất và ca kiểm thử. Chờ Claude 2 đo ảnh hưởng và chủ dự án nghiệm thu.
+  - *Tiến độ:* Đã có bản nháp trong [Docs/Content/DichVuVaMeta.md](Docs/Content/DichVuVaMeta.md): 6 biến cố, đấu giá, sòng bạc, cầm cố, 4 mở khóa meta, mỗi hệ có vai trò, luồng, điều kiện hoàn tất và ca kiểm thử.
+  - *Đã chỉnh theo khoảng đo của Claude 2:* đấu giá k kỳ vọng 1,40 và chỉ món từ 1.300 xu, sòng bạc cược 100/250/500 và 2 lượt mỗi ngày, cầm cố thêm tạo tác, biến cố giữ dưới ±20%. Các dịch vụ là nguồn đánh đổi, không phải đường cứu. **Cần Claude 2 chạy lại** khi chủ dự án duyệt giá nền mới, rồi chủ dự án nghiệm thu.
 - [ ] **Claude 2** — Đo ảnh hưởng dịch vụ đến thanh khoản, nợ và tiến trình giữa ván. Nghiệm thu khi có ca chống giao dịch lặp và báo cáo cân bằng.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint4.md](Docs/Balance/Sprint4.md). Chạy `cd QA && python3 -m unittest discover -s .` (81 test đạt) và `python3 sprint4_sim.py`. **Luật dịch vụ là giả định của Claude 2** vì Claude 1 chưa chốt, nên báo cáo chỉ ra khoảng tham số an toàn.
   - **Kết quả chính:** đấu giá cần kỳ vọng khoảng +40% vì tiền về chậm một ngày. Sòng bạc và cầm cố gần như không đổi cân bằng (≤ 1,5 điểm) và không giải được vòng xoáy thiếu tiền. Biến cố nên ≤ ±20%. Mỗi 100 xu vốn meta ≈ +2,5 điểm, ngân sách meta ≈ +400 xu.

@@ -48,16 +48,16 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 **Vai trò.** Cách bán hiện vật giá trị cao với giá kỳ vọng tốt hơn, đổi lại tiền về chậm một ngày và có rủi ro. Người chơi phải cân nhắc với kỳ nợ sắp đến.
 
 **Luồng.**
-1. Trong ngày, gửi 1 hiện vật vào phiên đấu giá chiều và chọn giá sàn: không sàn, hoặc 1,0 G, hoặc 1,3 G.
+1. Trong ngày, gửi 1 hiện vật có G từ **1.300 xu** trở lên vào phiên đấu giá chiều và chọn giá sàn: không sàn, hoặc 1,2 G, hoặc 1,6 G. Món rẻ hơn không được đấu giá.
 2. Trả ngay phí đăng ký 5% G (làm tròn lên). Phí không hoàn.
 3. Hiện vật bị khóa ở trạng thái "Chờ kết quả".
-4. Đầu ngày kế tiếp, kết quả công bố: giá chốt = G × k, trong đó k = 0,9 / 1,1 / 1,3 / 1,5 với xác suất 20% / 40% / 30% / 10%. Giá trị kỳ vọng của k là 1,16.
+4. Đầu ngày kế tiếp, kết quả công bố: giá chốt = G × k, trong đó k = 0,8 / 1,2 / 1,6 / 2,0 với xác suất 15% / 35% / 35% / 15%. Giá trị kỳ vọng của k là 1,40. Claude 2 đo ở [Sprint 4](../Balance/Sprint4.md) rằng đấu giá chỉ có lời khi kỳ vọng khoảng +40%, vì tiền về chậm một ngày làm kẹt vốn. Với kỳ vọng thấp hơn, đấu giá là cái bẫy.
 5. Nếu giá chốt không thấp hơn giá sàn thì bán thành công và tiền vào ngay đầu ngày. Nếu thấp hơn, hiện vật được trả lại và phí không hoàn.
 
 **Quy tắc.**
 - Mỗi ngày tối đa 1 hiện vật gửi đấu giá.
 - Không gửi đấu giá vào ngày 7, vì tiền không kịp về trước khi ván kết thúc.
-- Tiền đấu giá về vào đầu ngày nên có thể dùng trả nợ cuối ngày đó.
+- Tiền đấu giá về vào đầu ngày kế tiếp nên có thể dùng trả nợ cuối ngày đó, nhưng **không** dùng được trả nợ ngày gửi. Muốn có tiền cho một kỳ nợ thì phải gửi sớm một ngày. UI cần ghi rõ điều này để người chơi không thấy bị phạt oan.
 
 **Điều kiện hoàn tất.** Một lần đấu giá hoàn tất khi hiện vật được bán và tiền vào đúng một lần, hoặc hiện vật được trả về. Trạng thái "Chờ kết quả" nằm trong lưu ván.
 
@@ -65,9 +65,10 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 | Ca | Tình huống | Kết quả |
 | --- | --- | --- |
-| 1 | Ngày 3 gửi V10 (G = 1.800 xu), không giá sàn. | Trả phí 90 xu. Đầu ngày 4 nếu k = 1,3 thì nhận 2.340 xu. |
-| 2 | Gửi V10, sàn 1,3 G, kết quả k = 1,1 (1.980 xu, thấp hơn sàn 2.340). | Không bán, hiện vật trả về, mất phí 90 xu. |
+| 1 | Ngày 3 gửi V10 (G = 2.600 xu), không giá sàn. | Trả phí 130 xu. Đầu ngày 4 nếu k = 1,6 thì nhận 4.160 xu. |
+| 2 | Gửi V10, sàn 1,6 G (4.160 xu), kết quả k = 1,2 (3.120 xu, thấp hơn sàn). | Không bán, hiện vật trả về, mất phí 130 xu. |
 | 3 | Gửi vào ngày 7. | Bị từ chối. |
+| 3b | Gửi V09 (G = 815 xu). | Bị từ chối vì G dưới 1.300 xu. |
 | 4 | Thiếu 300 xu khi thu nợ cuối ngày, hiện vật đang chờ kết quả. | Không dùng được. Nợ tồn tính theo luật nợ. |
 | 5 | Tải lại ván sau khi gửi, trước khi có kết quả. | Hiện vật vẫn bị khóa, không gửi lần hai, phí không bị trừ lại. |
 
@@ -77,12 +78,13 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 **Luồng.**
 1. Sòng bạc mở từ ngày 2.
-2. Người chơi chọn mức cược 50, 100 hoặc 200 xu và phải có đủ tiền mặt.
+2. Người chơi chọn mức cược 100, 250 hoặc 500 xu và phải có đủ tiền mặt.
 3. Kết quả chốt theo seed: thắng với xác suất 45%, được nhận lại cược cộng thêm đúng bằng cược. Thua với xác suất 55%, mất cược.
 4. Kỳ vọng mỗi lượt là −10% mức cược.
 
 **Quy tắc.**
-- Mỗi ngày tối đa 3 lượt. Đủ 3 lượt thì sòng đóng đến hết ngày.
+- Mỗi ngày tối đa 2 lượt. Đủ 2 lượt thì sòng đóng đến hết ngày.
+- Claude 2 đo ở [Sprint 4](../Balance/Sprint4.md): sòng bạc đổi tỷ lệ thắng không quá 1,5 điểm và **không** giúp gỡ lại sau khi thiếu tiền, vì khoản thiếu lớn hơn mức cược tối đa. Sòng bạc là một canh bạc, không phải đường cứu.
 - Chỉ cược bằng tiền mặt, không cược bằng hiện vật.
 - Không có cược tự động hoặc cược nhiều lượt cùng lúc.
 
@@ -94,7 +96,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 | --- | --- | --- |
 | 1 | Cược 100 xu và thắng. | Tiền tăng 100 xu so với trước khi cược. |
 | 2 | Cược 100 xu và thua. | Tiền giảm 100 xu. |
-| 3 | Chơi lượt thứ 4 trong ngày. | Bị từ chối. |
+| 3 | Chơi lượt thứ 3 trong ngày. | Bị từ chối. |
 | 4 | Có 80 xu, chọn cược 100 xu. | Bị từ chối vì không đủ tiền. |
 | 5 | Thua, tải lại ván rồi cược lại để thử đổi kết quả. | Kết quả lượt đã lưu, tải lại không đổi và không trả lại cược. |
 
@@ -112,7 +114,8 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 - Tối đa 2 hiện vật đang cầm cùng lúc.
 - Hiện vật đang cầm không bán, giám định, phục chế hay đưa đấu giá được.
 - Hết ván (sau kỳ nợ ngày 7), hiện vật chưa chuộc coi như mất và không tính tài sản.
-- Chỉ cầm hiện vật, không cầm tạo tác hay gia truyền.
+- Cầm được **hiện vật và tạo tác**, không cầm gia truyền. Tiền cầm tạo tác bằng 60% giá mua. Trong lúc cầm, tạo tác bị tháo khỏi ô trang bị nên mất cả hiệu ứng và combo. Đây là đánh đổi chính của cầm cố: lấy thanh khoản bằng cách tạm bỏ một combo đã đầu tư.
+- Claude 2 đo ở [Sprint 4](../Balance/Sprint4.md): cầm cố tác động nhỏ (không quá 1,5 điểm) và không phụ thuộc nhiều vào phí chuộc, nên giữ phí 15% và hạn 2 ngày. Cầm cố chỉ thú vị khi người chơi có thứ đáng giá đang giữ, nhờ kho 8 ô và tạo tác ở [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md).
 
 **Điều kiện hoàn tất.** Một lần cầm hoàn tất khi hiện vật được chuộc hoặc bị mất, đúng một lần. Hạn chuộc nằm trong lưu ván.
 
@@ -120,12 +123,13 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 | Ca | Tình huống | Kết quả |
 | --- | --- | --- |
-| 1 | Ngày 3 cầm V10 (G = 1.800 xu). | Nhận 1.080 xu. |
-| 2 | Chuộc V10 vào ngày 4. | Trả 1.242 xu và nhận lại V10. |
+| 1 | Ngày 3 cầm V10 (G = 2.600 xu). | Nhận 1.560 xu. |
+| 2 | Chuộc V10 vào ngày 4. | Trả 1.794 xu và nhận lại V10. |
 | 3 | Không chuộc V10 trước hết ngày 5. | Mất V10. |
 | 4 | Đang cầm 2 món, cầm thêm món thứ 3. | Bị từ chối. |
-| 5 | Ngày 5 thiếu 300 xu trước khi thu nợ, cầm V06 (G = 900 xu). | Nhận 540 xu, dùng trả nợ cùng ngày. |
+| 5 | Ngày 5 thiếu 300 xu trước khi thu nợ, cầm V06 (G = 1.675 xu). | Nhận 1.005 xu, dùng trả nợ cùng ngày. |
 | 6 | Tải lại ván sau khi cầm. | Món vẫn ở trạng thái đang cầm, không nhận tiền lần hai. |
+| 7 | Cầm CP3 (giá mua 900 xu) đang trang bị. | Nhận 540 xu. CP3 bị tháo khỏi ô trang bị, mất hiệu ứng và combo CB3 nếu có. |
 
 ## 5. Mở khóa meta
 
@@ -161,10 +165,22 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 - Ngày 7 không đấu giá được. Cầm cố vẫn dùng được để lấy tiền trả kỳ cuối, nhưng món chưa chuộc coi như mất.
 - Sòng bạc không có giới hạn theo nợ, nên người chơi có thể cược mức cao khi sắp thua. Đây là cố ý.
 
-## 7. Cần Claude 2 kiểm tra
+## 7. Kết quả đo của Claude 2 và việc còn lại
 
-- Đấu giá có kỳ vọng 1,16 G trừ phí 5%, chậm một ngày. Có đủ hấp dẫn để người chơi chọn thay vì bán ngay không.
-- Sòng bạc kỳ vọng −10%. Có đủ rủi ro hấp dẫn khi người chơi sắp thua không, hay nên tăng tỷ lệ thắng.
-- Cầm cố 60% G, phí 15%, hạn 2 ngày. Có cho người chơi cứu được ván thiếu tiền mà không quá rẻ không.
-- Vốn +100 xu của M2 có làm ván sau quá dễ không, nhất là khi H1 đang lời nhiều (xem [RaSoatGiay.md](RaSoatGiay.md)).
-- Tần suất biến cố 50% mỗi ngày từ ngày 2 có đủ làm khác biệt giữa các ván, không quá dày.
+Claude 2 đã đo các dịch vụ trong [Sprint 4](../Balance/Sprint4.md) bằng luật giả định, vì lúc đó luật này chưa có. Bản này đã chỉnh theo khoảng Claude 2 khuyến nghị:
+
+| Hệ | Khuyến nghị của Claude 2 | Cách bản này đáp ứng |
+| --- | --- | --- |
+| Đấu giá | Kỳ vọng khoảng +40%, nhắm món đắt | k kỳ vọng 1,40, chỉ món từ 1.300 xu |
+| Sòng bạc | Không đổi cân bằng, lợi thế nhà cái 5–10% an toàn | Giữ lợi thế nhà cái 10%, mức cược 100/250/500, 2 lượt mỗi ngày |
+| Cầm cố | Tác động nhỏ, phí 15% là đủ | Giữ 60%, phí 15%, thêm cầm tạo tác để có đánh đổi |
+| Biến cố | Biên độ tối đa ±20% | Biến cố giá bán là ±15%, ±15%, +10%, thấp hơn mức này |
+| Meta | Ngân sách khoảng +400 xu vốn tương đương | M2 chỉ +100 xu, các mở khóa khác là lựa chọn hoặc thông tin |
+
+**Theo mục tiêu độ khó của chủ dự án** (xem [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md)), các dịch vụ này là nguồn đánh đổi, không phải đường cứu:
+- Đấu giá: giá cao hơn nhưng tiền về chậm và có thể thấp hơn giá bán thường.
+- Cầm cố: có tiền ngay nhưng tạm mất combo hoặc có nguy cơ mất món.
+- Sòng bạc: kỳ vọng âm, chỉ hợp khi đã tính kỹ.
+- Biến cố: buộc chọn giữa bán ngay và chờ giá.
+
+**Cần Claude 2 chạy lại** khi chủ dự án duyệt giá nền hệ số 0,85: chuyển luật này vào `QA/services_model.py` và `QA/sprint4_sim.py`, rồi xác nhận khoảng an toàn vẫn đúng, nhất là đấu giá với k kỳ vọng 1,40.
