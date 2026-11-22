@@ -54,3 +54,23 @@ Mọi thao tác 3D/UI của người chơi chỉ gửi yêu cầu (không tự t
    - `HUD_Canvas` (thanh trạng thái ngày/tiền/nợ/hộp, tâm ngắm, gợi ý tương tác)
 4. Nhấn **Play** để kiểm tra di chuyển First-Person và tương tác `[E]` với hộp mẫu.
 5. Khi có mẫu 3D (`.fbx`/`.glb`), đặt vào `Assets/_Project/Art/` và thay thế các `*_Placeholder` trong scene/prefab.
+
+---
+
+## 4. Thị trấn: Ô cửa hàng & Hướng dẫn thay Mesh
+
+- **Menu dựng scene:** `Tools → Cho Do La → Build Market Town Blockout` (sinh `Assets/_Project/Scenes/Market_Town.unity`).
+- **Hệ trục:** `+X` Đông, `+Z` Bắc, `+Y` lên (đơn vị mét). Gốc `(0,0,0)` ở mép Nam giữa trục phố.
+- **Đọc ô cửa hàng (Codex):** Tìm các `ShopSlotMarker` trong scene; dùng `SlotId` (`ShopSlot_01`…`ShopSlot_08`), `SizeMeters` và `IsUpperFloor` để gắn NPC/quầy dịch vụ.
+
+| `SlotId` | Vị trí | Kích thước | Tầng |
+| --- | --- | --- | --- |
+| `ShopSlot_01`, `ShopSlot_02` | Trục phố chính, gần phòng trọ | `4.0 × 3.0 m` | Trệt |
+| `ShopSlot_03` | Hẻm vòm Tây | `4.0 × 3.0 m` | Trệt |
+| `ShopSlot_04` | Ngõ Giếng Cổ Tự (Đông) | `5.0 × 4.0 m` | Trệt |
+| `ShopSlot_05` | Ngõ khuất Tây | `4.0 × 3.0 m` | Trệt |
+| `ShopSlot_06` | Sân hiên tầng 2 phía Đông | `5.0 × 4.0 m` | Tầng 2 (`+3.8m`) |
+| `ShopSlot_07` | Ngõ khuất Tây Bắc (sau tháp) | `4.0 × 3.0 m` | Trệt |
+| `ShopSlot_08` | Sân hiên tầng 2 phía Tây | `5.0 × 4.0 m` | Tầng 2 (`+3.8m`) |
+
+- **Thay mesh 3D:** Mở Prefab tương ứng trong `Assets/_Project/Prefabs/Town/{Architecture,Verticality,Landmarks,AccentSockets,Slots}/`, thay `MeshFilter` bằng mesh Blender/Meshy/Hyper3D, giữ pivot tâm khối và tỷ lệ đơn vị `1×1×1`.
