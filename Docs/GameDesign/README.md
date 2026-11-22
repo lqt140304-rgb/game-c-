@@ -19,7 +19,31 @@
 4. Quyết định bán, giữ, giám định, phục chế hoặc dành tiền mua tạo tác. Khi cân nhắc combo, đối chiếu tiền mặt với khoản đến hạn.
 5. Kết thúc ngày ở phòng trọ. **[ĐÃ CHỐT]** Anh Bảy thu khoản đến hạn vào cuối từng ngày trong 7 ngày. Khoản tương lai chưa thể thanh toán. **[ĐỀ XUẤT]** Sau kỳ cuối, hiển thị kết quả và tổng tài sản.
 
-**[MỞ]** Hậu quả khi thiếu tiền, số kỳ được phép trễ, xử lý nợ tồn và tiêu chí thua cụ thể. Thắng và thua phải có điều kiện rõ trước khi nghiệm thu bản chơi đủ 7 ngày.
+**[ĐỀ XUẤT] Thiếu tiền khi đến hạn.** Cuối mỗi ngày, Anh Bảy thu đúng khoản của kỳ đó. Nếu tiền mặt không đủ:
+- Người chơi trả bao nhiêu thì trả bấy nhiêu. Phần còn thiếu thành **nợ tồn**.
+- Sau mỗi lần thu nợ, nếu còn nợ tồn thì cộng thêm **phạt 20%** của phần nợ tồn đó (làm tròn lên). Phạt không tính trên phần phạt cũ.
+- Kỳ mới vẫn đến đúng hạn. Nợ tồn cộng dồn vào kỳ mới và phải trả cùng lúc.
+- Không trả trước kỳ chưa đến hạn. Khoản đã thu không hoàn lại.
+- Tài sản chưa đổi thành tiền (hiện vật, tạo tác) không được tính để trả nợ. Muốn dùng phải bán hoặc cầm cố trước khi thu nợ trong cùng ngày.
+
+**[ĐỀ XUẤT] Thắng và thua.**
+- **Thua ngay:** nợ tồn sau khi thu nợ của bất kỳ ngày nào vượt **1.000 xu** (ngưỡng thử nghiệm).
+- **Thua cuối ngày 7:** sau khi thu nợ kỳ 7 còn nợ tồn lớn hơn 0.
+- **Thắng:** sau khi thu nợ kỳ 7, nợ tồn bằng 0 và tất cả kỳ 1–7 đã thanh toán.
+
+**[ĐỀ XUẤT] Ca kiểm thử luật nợ.**
+
+| Ca | Tình huống | Kết quả |
+| --- | --- | --- |
+| 1 | Ngày 1 có 1.000 xu, trả 200 | Còn 800 xu, không có nợ tồn, tiếp tục. |
+| 2 | Ngày 1 có 150 xu, trả 150 | Nợ tồn 50, phạt 10, nợ tồn còn 60. |
+| 3 | Ngày 2 phải trả 410 (kỳ 350 cộng nợ tồn 60), có 100 xu | Trả 100, còn 310, phạt 62, nợ tồn 372, tiếp tục. |
+| 4 | Cuối ngày bất kỳ, nợ tồn sau thu là 1.100 xu | Thua ngay. |
+| 5 | Ngày 7 tổng phải trả 2.250 xu (kỳ 2.200 cộng nợ tồn 50), người chơi chỉ có 2.200 xu | Còn nợ tồn 50 sau khi thu. Thua cuối ngày 7. |
+| 6 | Ngày 7 trả đủ kỳ và không còn nợ tồn | Thắng. |
+| 7 | Hiện vật trị giá 3.000 xu nhưng tiền mặt 0, chưa bán trước khi thu nợ | Không tính để trả. Ngày 1 thiếu cả 200 xu, nợ tồn thành 240 (200 cộng phạt 40). |
+
+Các con số phạt 20% và ngưỡng 1.000 xu là giá trị thử nghiệm. Claude 2 sẽ kiểm tra lại khi cân bằng.
 
 ## 3. Hộp mù, hiện vật và định giá
 
@@ -44,13 +68,14 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 | Đấu giá | Kênh giao dịch cạnh tranh cho hiện vật. Cần chốt thời điểm nhận tiền và xử lý món chưa bán. |
 | Sòng bạc | Lựa chọn rủi ro trong nền kinh tế xu của ván. Cần chốt luật cược, giới hạn và tác động đến khả năng trả nợ. |
 | Cầm cố | Đổi hiện vật lấy thanh khoản. Cần chốt giá cầm, phí, hạn chuộc và điều kiện mất món. |
-**[ĐÃ CHỐT]** NPC, biến cố, đấu giá, sòng bạc và cầm cố thuộc thiết kế. **[ĐỀ XUẤT]** Biến cố làm thay đổi nguồn cung, nhu cầu hoặc khả năng tiếp cận dịch vụ trong một khoảng thời gian và được báo qua sổ. Chốt điều kiện phát sinh, thời lượng và tác động trước khi đưa vào bảng cân bằng.
+
+**[ĐÃ CHỐT]** NPC, biến cố, đấu giá, sòng bạc và cầm cố thuộc thiết kế. **[ĐỀ XUẤT]** Biến cố làm thay đổi nguồn cung, nhu cầu hoặc khả năng tiếp cận dịch vụ trong một khoảng thời gian và được báo qua sổ. Chốt điều kiện phát sinh, thời lượng và tác động trước khi đưa vào bảng cân bằng. Luật đề xuất cho biến cố, đấu giá, sòng bạc và cầm cố nằm trong [Docs/Content/DichVuVaMeta.md](../Content/DichVuVaMeta.md).
 
 ## 6. Sổ tay, lưu ván và meta progression
 
 - **Sổ tay trong ván.** Theo dõi ngày, tiền, các kỳ nợ, lượt mua hộp, giao dịch, hiện vật đã xem, combo, Bí Khế và biến cố.
 - **Lưu ván.** **[ĐỀ XUẤT]** Khi tải lại, khôi phục tiền, ngày, số lượt hộp, kho, kết quả hộp đã xác định, trạng thái nợ, trang bị và Bí Khế. Kiểm thử tình huống tải lại sau khi mở hộp, bán món hoặc trả nợ để tránh lặp giao dịch. **[MỞ]** Thời điểm lưu và chính sách khôi phục khi thoát giữa thao tác.
-- **Meta progression.** **[ĐÃ CHỐT]** Có tiến trình giữa các ván. **[ĐỀ XUẤT]** Ghi nhận bộ sưu tập và mở thêm lựa chọn cho ván sau. **[MỞ]** Danh sách mở khóa, nguồn phần thưởng và mức ảnh hưởng đến kinh tế đầu ván.
+- **Meta progression.** **[ĐÃ CHỐT]** Có tiến trình giữa các ván. **[ĐỀ XUẤT]** Ghi nhận bộ sưu tập và mở thêm lựa chọn cho ván sau. Danh sách mở khóa, nguồn phần thưởng và mức ảnh hưởng đến kinh tế đầu ván được đề xuất trong [Docs/Content/DichVuVaMeta.md](../Content/DichVuVaMeta.md).
 
 ## 7. Phạm vi chơi thử và cân bằng
 
@@ -61,5 +86,6 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 | Vốn đầu ván | 1.000 xu |
 | Nợ ngày 1–7 | 200 / 350 / 500 / 750 / 1.050 / 1.500 / 2.200 xu |
 | Giá các hộp thường | 100 / 350 / 800 xu |
+
 Các mức xu, giá bán, xác suất, quy mô danh mục và mục tiêu tỷ lệ thắng vẫn đang thử nghiệm. Claude 2 so sánh chiến thuật thận trọng, săn combo và liều lĩnh bằng các lượt chạy với seed tái lập. Ghi tỷ lệ thắng, ngày hụt tiền, tần suất hoàn thành combo và giả định trước khi đề xuất thay số. Giới hạn 3 hộp/ngày, thời hạn 7 ngày và quy tắc thanh toán đúng kỳ là luật cốt lõi.
 Xem [checklist công việc](../../TASKS.md).

@@ -6,7 +6,6 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 ## Sprint 0 — Nền móng
 
-- [ ] **Claude 1** — Trình chủ dự án duyệt các luật còn mở cần cho prototype, đặc biệt xử lý thiếu tiền và thắng/thua. Nghiệm thu khi có quy tắc và ví dụ kiểm thử trong [GDD](Docs/GameDesign/README.md).
 - [ ] **Claude 2** — Lập bảng giả định vốn, nợ, giá, giá bán và xác suất rơi. Nghiệm thu khi có bảng cân bằng ban đầu và ca kiểm thử vượt giới hạn mua, trả nợ sớm, thiếu tiền, bán trùng.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/README.md](Docs/Balance/README.md) có bảng giả định (mục 1–2), mô phỏng khả thi (mục 3) và 16 ca biên BT-01–BT-16 (mục 4).
   - **Cần Claude 1 chốt** (mục 5 của tài liệu): hậu quả thiếu tiền, điều kiện thắng/thua, sức chứa kho, phí giám định/phục chế, bán tức thì hay không. Codex dùng bảng ở mục 2 làm dữ liệu mẫu.
@@ -15,7 +14,6 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 ## Sprint 1 — Một ngày chơi First-Person
 
-- [ ] **Claude 1** — Soạn danh mục hộp, hiện vật mẫu, manh mối niêm phong và hướng dẫn soi. Nghiệm thu khi dữ liệu đủ để dựng vòng mua–mở–soi–bán.
 - [ ] **Claude 2** — Kiểm thử dòng tiền mẫu và các ca mua hộp thứ tư, hết tiền, kho đầy, bán trùng. Nghiệm thu khi có kết quả tái hiện và lỗi được ghi nhận.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint1.md](Docs/Balance/Sprint1.md). Chạy `cd QA && python3 -m unittest -v test_economy` (17 test đạt) và `python3 scenario_cashflow.py`.
   - **Lỗi ghi nhận:** D-01 `kết thúc ngày` bấm đúp thu nợ hai ngày (Codex, Antigravity chặn ở UI). D-02 hộp chưa mở có chiếm kho không, D-03 hậu quả thiếu tiền (Claude 1 chốt). Chi tiết trong tài liệu.
@@ -25,7 +23,6 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 ## Sprint 2 — Tạo tác và ván 7 ngày
 
-- [ ] **Claude 1** — Soạn nội tại gia truyền, hai hệ tạo tác, combo và hai Bí Khế mẫu. Nghiệm thu khi mỗi hiệu ứng có điều kiện kích hoạt, hiệu lực và ví dụ.
 - [ ] **Claude 2** — Kiểm thử lịch nợ, combo, tiến độ Bí Khế và tải lại ván. Nghiệm thu khi có ca trả đúng hạn, chặn trả trước, thiếu tiền, đạt và chưa đạt điều kiện.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint2.md](Docs/Balance/Sprint2.md). Chạy `cd QA && python3 -m unittest -v test_economy test_sprint2` (52 test đạt). Luật nợ lấy từ đề xuất của Claude 1 (commit `643ae03`). Combo và Bí Khế dùng giá trị tạm vì nội dung Sprint 2 của Claude 1 chưa có.
   - **Cần chủ dự án chọn:** luật nợ tồn làm tỷ lệ thắng giảm mạnh và không ván nào thiếu tiền rồi gỡ lại được (D-05, O-02). Claude 2 đề xuất tăng giá bán 1,3 lần, chưa áp dụng.
@@ -37,6 +34,8 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 ## Sprint 3 — Cân bằng và nghiệm thu vertical slice
 
 - [ ] **Claude 1** — Chơi thử và rà nhịp, độ rõ thông tin, quyết định giữ tiền hay đầu tư. Nghiệm thu khi có phản hồi từ ván hoàn chỉnh và danh sách điều chỉnh đã duyệt.
+  - *Tiến độ:* Đã rà soát trên giấy và sửa 6 vấn đề, xem [Docs/Content/RaSoatGiay.md](Docs/Content/RaSoatGiay.md). **Chưa thể chơi thử thật** vì chưa có bản chạy. Việc này chờ Codex và Antigravity hoàn thành bản chơi được.
+  - *Đã chốt theo lựa chọn của chủ dự án (cách của Claude 2) và gói Claude 2 đã đo:* [Docs/Content/DieuChinhSauCanBang.md](Docs/Content/DieuChinhSauCanBang.md) gồm giá nền hệ số 0,85, phí giám định 15% và chứng nhận +25%, CP1 +5%, CB1 +10%, giá CP3 và TC3 là 500, CB3 miễn phí không giới hạn và +15% giá bán, GT1 hoãn nợ (đã chốt ba điểm), đấu giá k 1,16, kho 8 ô, chỉ lưu tự động. **Đề xuất mới chờ duyệt: phạt rủi ro O-01** (hàng giả 12/15/22/30% theo hộp, giá ×1,10), đo bằng `QA/risk_penalty.py`: liều có giám định chỉ còn hơn thận trọng 1,9 điểm (trước đó 8). **Chờ chủ dự án duyệt**, rồi Claude 1 áp dụng vào file nội dung gốc và Claude 2 khóa test. Cần xác nhận câu 2 là chứng nhận +25% (đã đo) chứ không phải phạt 30% món chưa giám định.
 - [ ] **Claude 2** — So sánh chiến thuật thận trọng, săn combo và liều lĩnh trên seed tái lập. Nghiệm thu khi có tỷ lệ thắng, ngày hụt tiền, tần suất combo và đề xuất có số liệu.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint3.md](Docs/Balance/Sprint3.md). Chạy `cd QA && python3 sprint3_report.py`. 10.000 seed, dùng nội dung thật của Claude 1 (nhánh `claude/relaxed-cerf-wgnu7l`).
   - **Kết quả chính:** nội dung gốc thắng 0% ở cả ba chiến thuật (H2, H3, Rương Đen lỗ kỳ vọng). Với giá nền đề xuất: thận trọng 41,9%, săn combo 19,3%, liều 48,9%. Tạo tác hiện net âm (chi 996 xu, thu thêm 170 xu).
@@ -49,6 +48,8 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 ## Sprint 4 — Mở rộng sau nghiệm thu vertical slice
 
 - [ ] **Claude 1** — Chốt luật biến cố, đấu giá, sòng bạc, cầm cố và mở khóa meta. Nghiệm thu khi mỗi hệ có vai trò, luồng và điều kiện hoàn tất.
+  - *Tiến độ:* Đã có bản nháp trong [Docs/Content/DichVuVaMeta.md](Docs/Content/DichVuVaMeta.md): 6 biến cố, đấu giá, sòng bạc, cầm cố, 4 mở khóa meta, mỗi hệ có vai trò, luồng, điều kiện hoàn tất và ca kiểm thử.
+  - *Đã chỉnh theo khoảng đo của Claude 2:* đấu giá k kỳ vọng 1,16 (đã sửa lại theo `DoKho.md` của Claude 2) và chỉ món từ 1.300 xu, sòng bạc cược 100/250/500 và 2 lượt mỗi ngày, cầm cố thêm tạo tác, biến cố giữ dưới ±20%. Các dịch vụ là nguồn đánh đổi, không phải đường cứu. **Cần Claude 2 chạy lại** khi chủ dự án duyệt giá nền mới, rồi chủ dự án nghiệm thu.
 - [ ] **Claude 2** — Đo ảnh hưởng dịch vụ đến thanh khoản, nợ và tiến trình giữa ván. Nghiệm thu khi có ca chống giao dịch lặp và báo cáo cân bằng.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint4.md](Docs/Balance/Sprint4.md). Chạy `cd QA && python3 -m unittest discover -s .` (97 test đạt) và `python3 sprint4_sim.py`. Dựa trên luật dịch vụ của Claude 1 (commit `d6b597e`, nhánh `claude/relaxed-cerf-wgnu7l`), 45 test bám sát các ca của Claude 1 kèm fuzz chống giao dịch lặp.
   - **Kết quả chính:** đấu giá k = 1,16 trung tính (giữ nguyên ở ván khó, đừng nâng 1,33). Cầm cố bị bán ngay át hoàn toàn (thua 3 đến 13 điểm). Sòng bạc dưới 1,5 điểm. Biến cố E1 đến E6 trung tính (< 1 điểm). M2 +100 xu ≈ +2,4 đến +4,0 điểm.

@@ -1,0 +1,166 @@
+# Đề xuất điều chỉnh sau cân bằng — CHỢ ĐỒ LẠ
+
+Claude 1 tổng hợp báo cáo của Claude 2 ([Sprint 2](../Balance/Sprint2.md), [Sprint 3](../Balance/Sprint3.md), [Sprint 4](../Balance/Sprint4.md), [DoKho](../Balance/DoKho.md), [DoLaiDeXuat](../Balance/DoLaiDeXuat.md)) và chốt cách sửa nội dung.
+
+**Mục tiêu của chủ dự án:** không để người chơi thắng quá dễ. Game phải tạo nhiều tình huống khó, có đánh đổi và buộc tính toán kỹ.
+
+**Quyết định của chủ dự án:** chọn cách của Claude 2 cho cả hai câu: bộ số cân bằng (câu 1) và cách làm giám định có giá trị (câu 2). Tài liệu này đã cập nhật theo gói đề xuất đã được Claude 2 đo ở [DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md).
+
+> **Cần xác nhận một điểm.** Ở câu 2, tôi hiểu "cách của Claude 2" là gói giám định mà Claude 2 đã đo và khuyến nghị: **chứng nhận +25% cho hàng thật, phí giám định 15%**. Nếu bạn muốn dùng cách phạt 30% món chưa giám định (ý tưởng ở mục 5 của DoKho.md), cho tôi biết. Cách đó chưa được đo và sẽ làm game khó hơn nhiều.
+
+Mục tiêu độ khó đo bằng ba chiến thuật máy (không đọc manh mối, không canh biến cố), nên là **cận dưới**. Người chơi biết tính phải thắng cao hơn.
+
+## Tóm tắt gói
+
+| Hạng mục | Nội dung gốc | **Đề xuất cuối** | Nguồn đo |
+| --- | --- | --- | --- |
+| Giá nền | Gốc (thắng 0%) | Bảng hệ số 0,85 (mục A) | DoLaiDeXuat |
+| Phí giám định | Không có | **15%** giá nền | DoLaiDeXuat |
+| Chứng nhận | Không có | **+25%** giá bán hàng thật đã giám định | DoLaiDeXuat |
+| CP1 | +5% hiện vật Quá khứ | **+5% mọi hiện vật** | DoLaiDeXuat |
+| CB1 | +10% hiện vật Quá khứ | **+10% mọi hiện vật bán trong ngày** | DoLaiDeXuat |
+| CP3 và TC3 | Giá 900 và 1.000 | **Giá 500 và 500** | DoLaiDeXuat |
+| TC3 | Miễn phạt nợ ≤ 300 | **+10% giá bán nhóm Hiện đại, Tương lai, Ngoài hành tinh** | DoLaiDeXuat |
+| CB3 | Giám định miễn phí 1 lần mỗi ván | **Giám định miễn phí không giới hạn, thêm +15% giá bán mọi hiện vật** | DoLaiDeXuat |
+| GT1 | Phạt nợ 10% | **Hoãn nợ một lần (mục C)** | DoLaiDeXuat |
+| Đấu giá | k kỳ vọng 1,16 | Giữ **k 1,16**, món từ 1.300 xu | DoLaiDeXuat |
+| Phạt rủi ro (O-01) | Không có | **Tùy chọn: hàng giả theo hộp (mục G)** | Claude 1, cần Claude 2 xác nhận |
+| Kho, lưu ván | [MỞ] | Kho 8 ô, bàn mở 3 hộp, chỉ lưu tự động | Chưa đo được (bot bán ngay) |
+
+## A. Giá nền (D-09)
+
+Giá nền theo hệ số 0,85 của bảng Claude 2 gốc. Với gói trên, bot an toàn thắng 15%, bot liều 17%, bot đầu tư tạo tác 26–32%.
+
+| Hiện vật | Giá nền hiện tại | **Giá đề xuất (0,85)** |
+| --- | --- | --- |
+| V01 Bình sứ men xanh | 300 | **210** |
+| V02 Sách cổ bìa da | 500 | **350** |
+| V03 Đồng hồ quả lắc cũ | 650 | **450** |
+| V04 Mảnh kính đồng hồ thiên văn | 200 | **375** |
+| V05 Thiết bị liên lạc hỏng | 150 | **280** |
+| V06 Bộ pin lượng tử | 900 | **1.675** |
+| V07 Tinh thể lam cầm tay | 1.200 | **2.450** |
+| V08 Gương thủy tinh cổ tích | 1.000 | **1.445** |
+| V09 Lá bùa giấy vàng | 400 | **815** |
+| V10 Mảnh vảy long | 1.800 | **2.600** |
+
+Bảng này khác [DoKho.md](../Balance/DoKho.md) vài chục xu ở một số món. Bản mới nhất của Claude 2 ([DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md)) dùng bảng 0,85 nên tôi theo bảng này. Nếu chọn thêm phạt rủi ro (mục G) thì giá nền nhân 1,10.
+
+Hệ số chất lượng (Nguyên 1,0, Xước 0,7, Hỏng 0,3, tỷ lệ 50/35/15) và hàng giả (15%, riêng V09 là 35%, bán còn 20%) lấy theo giả định của Claude 2.
+
+## B. Giám định và phục chế (D-11)
+
+Giá bán ban đầu không phụ thuộc giám định nên giám định vô nghĩa. Theo gói đã đo:
+
+- **Phí giám định:** 15% giá nền, tối thiểu 20 xu.
+- **Phí phục chế:** 25% giá nền, nâng chất lượng một bậc.
+- **Chứng nhận:** hiện vật **thật** đã giám định được cộng **25%** giá bán, cộng theo phép cộng cùng các hiệu ứng giá bán khác. Hàng giả vẫn bán còn 20%.
+
+Claude 2 đo rằng phí 10% làm giám định lời gần như chắc chắn, đẩy bot lên 30–42% mà chưa cần đọc manh mối, nên không còn là quyết định. **Phí 15% là điểm ngọt:** lời với món chất lượng cao, hòa vốn với món Xước, lỗ với món Hỏng. Ví dụ V09 Lá bùa (815 xu, 35% là hàng giả): phí 122 xu, nếu là hàng thật nguyên vẹn thì giá bán tăng 204 xu, nếu giả thì mất phí vô ích. Người chơi phải đọc chất lượng và manh mối để chọn món nào đáng giám định.
+
+## C. Tạo tác, combo và gia truyền (D-10, D-12)
+
+Theo Claude 2, CP1 +10% và CB1 +20% cùng với chứng nhận làm combo nhỏ thắng 40% và đầu tư thành bắt buộc. Tier 3 (CP3, TC3, CB3) không kịp hoàn vốn trong 7 ngày: bot chỉ mua được vào ngày 4–5, còn 2–3 ngày để thu hồi 1.900 xu.
+
+| Mã | Hiện tại | **Đề xuất cuối** |
+| --- | --- | --- |
+| CP1 | +5% hiện vật Quá khứ | **+5% giá bán mọi hiện vật** |
+| CB1 | +10% hiện vật Quá khứ bán trong ngày | **+10% mọi hiện vật bán trong ngày** |
+| CP3 | Giá 900, +10% Thần thoại | **Giá 500**, +10% Thần thoại |
+| TC3 | Giá 1.000, miễn phạt khi nợ tồn ≤ 300 | **Giá 500**, +10% giá bán hiện vật nhóm Hiện đại, Tương lai và Ngoài hành tinh |
+| CB3 | Giám định miễn phí 1 lần mỗi ván | **Giám định miễn phí không giới hạn, thêm +15% giá bán mọi hiện vật** |
+| GT1 | Phạt thu nợ giảm xuống 10% | **Hoãn nợ một lần (bên dưới)** |
+
+Kết quả Claude 2: combo nhỏ và combo lớn ngang nhau (khoảng 32%), nên chọn hướng nào cũng khả thi. Combo nhỏ rẻ và chắc. Combo lớn tốn thêm nhưng có CB3 và mở BK1 sớm.
+
+**GT1 mới: Sổ Ghi Nợ Cũ.** Một lần mỗi ván, hoãn **kỳ nợ của ngày đó** sang ngày sau. Ba điểm chốt (khớp với giả định mà Claude 2 đã đo, nên không cần đo lại):
+1. Kỳ hoãn thành khoản **kỳ × 1,15** (làm tròn lên), trả cùng kỳ của ngày kế tiếp.
+2. Kỳ hoãn **không bị phạt 20%** và **không tính vào ngưỡng thua 1.000 xu**.
+3. Chỉ hoãn **kỳ của ngày đó**, không hoãn nợ tồn. Không hoãn được kỳ ngày 7.
+
+Claude 2 đo: GT1 chỉ đổi tỷ lệ thắng +0,1 đến +1,8 điểm, và mạnh nhất khi dùng **sớm để có vốn đầu tư** (ngày 2, thêm khoảng 3,8 điểm cho chiến thuật săn combo). Hoãn khi đã thiếu tiền không cứu được ván, vì khoản hoãn quay lại cộng 15%. Đây là đánh đổi nhẹ đúng ý: trả thêm 15% để có vốn sớm.
+
+Hiệu ứng thông tin (CB2, GT2, TC2, Mốc 3 Cổ Phong) giữ nguyên vì không đo được bằng xu, cần thử người chơi.
+
+## D. Luật nợ (D-05, D-07, D-08)
+
+**D-05, vòng xoáy thiếu tiền: giữ luật hiện tại.** Đổi ngưỡng thua (1.000, 1.500, 2.000) hoặc mức phạt (0%, 10%, 20%) cho kết quả giống hệt nhau. Chừa lại tiền khi thu nợ chỉ cho 0–5% ván gỡ lại được (đo bằng [QA/d05_recovery.py](../../QA/d05_recovery.py)). Theo mục tiêu độ khó, thiếu tiền nên là sai lầm rất đắt, nên không nới. Phạt 20% và ngưỡng 1.000 xu giữ nguyên.
+
+**D-07, phạt tối thiểu:** chấp nhận, giữ phạt làm tròn lên.
+
+**D-08, trả nợ tồn sớm: bỏ khỏi đề xuất.** Tôi đã đề xuất cho phép trả nợ tồn sớm như một đánh đổi, nhưng Claude 2 chỉ ra đúng là nó không đổi gì về kinh tế: cuối ngày Anh Bảy thu toàn bộ tiền mặt cho kỳ kể cả nợ tồn, nên trả sớm hay cuối ngày mất cùng số tiền. Trả sớm chỉ làm mất tiền mua hộp trong ngày. Bỏ đề xuất này.
+
+**Ca kiểm thử bổ sung cho GT1:**
+
+| Ca | Tình huống | Kết quả |
+| --- | --- | --- |
+| 8 | Dùng GT1 hoãn kỳ ngày 4 (750 xu). | Ngày 5 phải trả 1.050 cộng 863 (750 cộng 15%, làm tròn lên), cộng nợ tồn nếu có. Không bị phạt 20% cho phần hoãn. |
+| 9 | Dùng GT1 vào kỳ ngày 7. | Từ chối. |
+| 10 | Dùng GT1 lần thứ hai trong cùng ván. | Từ chối. |
+| 11 | Ngày 2 thử trả trước kỳ ngày 3. | Từ chối, theo luật đã nghiệm thu. |
+
+## E. Kho và bàn mở (D-02, BT-14)
+
+Kho là nguồn đánh đổi tự nhiên: giữ hàng chờ giá hay bán ngay để có chỗ. Claude 2 chưa đo được vì bot bán ngay, nên cần thử người chơi.
+
+- **Bàn mở:** chứa tối đa 3 hộp chưa mở. Hộp chưa mở không chiếm kho và giữ được qua ngày. Bàn đầy thì không mua thêm hộp.
+- **Kho:** 8 ô cho hiện vật đã mở. Tạo tác không chiếm kho.
+- **Kho đầy:** không mở được hộp mới cho đến khi bán, cầm hoặc đưa đấu giá bớt. Hộp vẫn ở lại bàn, không mất.
+- Hiện vật đang cầm hoặc đang đấu giá không chiếm kho vì đang ở nơi khác. Mỗi món chỉ ở đúng một nơi.
+- Hết ván, hiện vật còn lại không tính vào kết quả.
+
+## F. Lưu ván (D-06)
+
+Lưu ván **chỉ tự động**, một ô duy nhất, không có lưu tay và không tải lại bản cũ trong cùng ván.
+
+- Lưu vào đầu mỗi ngày và sau mỗi giao dịch tiền hoàn tất.
+- Thoát giữa thao tác thì khôi phục về trạng thái ngay sau giao dịch hoàn tất gần nhất.
+- Kết quả ngẫu nhiên xác định theo (seed, ngày, lượt) hoặc theo mã hiện vật, theo yêu cầu của Claude 2 cho Codex.
+
+## G. Phạt rủi ro (O-01), đề xuất mới
+
+**Vấn đề Claude 2 nêu:** chiến thuật liều có giám định thắng cao hơn thận trọng có giám định khoảng 8 điểm. Rủi ro chưa bị phạt, nên dồn tiền vào hộp đắt luôn tốt hơn.
+
+**Đề xuất: hàng giả nhiều hơn ở hộp đắt.** Tỷ lệ hàng giả theo hộp: **H1 12%, H2 15%, H3 22%, Rương Đen 30%** (riêng V09 giữ 35%). Người chơi biết mình mở hộp nào nên tự cân: hộp đắt lời nhiều hơn nhưng cũng dễ trúng hàng giả.
+
+Chỉ đổi tỷ lệ giả thì game khó đi nhiều (bot thắng 4–6%), nên cần **bù giá nền ×1,10**. Đo bằng [QA/risk_penalty.py](../../QA/risk_penalty.py), dùng nguyên mô hình `proposal_sim.py` của Claude 2 với gói ở mục "Tóm tắt". 4.000 seed. Giá nền đã làm tròn.
+
+| Thắng% | Gói Claude 2 (giả 15% mọi hộp) | **Phạt rủi ro + giá ×1,10** |
+| --- | --- | --- |
+| Thận trọng | 15,2 | 16,7 |
+| Thận trọng + giám định chọn lọc | 24,4 | 22,9 |
+| Liều | 17,4 | 15,6 |
+| Liều + giám định chọn lọc | 32,4 | **24,8** |
+| Combo nhỏ | 26,2 | 30,9 |
+| Combo nhỏ + giám định | 32,1 | 35,7 |
+| Combo lớn | 26,9 | 31,9 |
+| Combo lớn + giám định | 32,4 | 38,5 |
+| **Chênh liều và thận trọng, cùng giám định** | **+8,0** | **+1,9** |
+
+Giá trị kỳ vọng mỗi hộp: H1 2,50 / H2 1,59 / H3 1,24 / Rương Đen 1,01 lần giá hộp. Rương Đen gần như hòa vốn: chỉ đáng mua nếu muốn đổi lấy hiện vật hiếm nhất.
+
+Giá nền kèm theo (×1,10, làm tròn): V01 230, V02 385, V03 495, V04 415, V05 310, V06 1.845, V07 2.695, V08 1.590, V09 895, V10 2.860.
+
+**Giới hạn:** chiến thuật cao nhất (combo lớn + giám định) đạt 38,5%, **vượt trần 38%** trong `QA/test_proposal.py` một chút, nên Claude 2 cần nâng trần hoặc chỉnh lại. Nếu muốn dễ hơn, hạ phạt rủi ro (giả 12 / 15 / 20 / 25%) và bù giá ×1,08, với tỷ lệ liều có giám định cao hơn thận trọng có giám định khoảng 5,5 điểm.
+
+Chưa có chiến thuật máy nào đọc manh mối, nên mức độ người chơi chọn hộp theo tỷ lệ giả chưa đo được.
+
+## H. Việc cần Claude 2 làm
+
+1. Xác nhận GT1 ba điểm ở mục C (khớp giả định đã đo, không cần đo lại).
+2. Đo mục G bằng bộ chiến thuật đầy đủ và khóa trong test nếu chủ dự án duyệt, kể cả điều chỉnh trần 38%.
+3. Chuyển luật dịch vụ bản mới sang `QA/services_model.py` nếu chủ dự án duyệt.
+4. Sau khi có bản chơi thật, đo lại bằng người thử.
+
+## I. Chủ dự án chọn
+
+| Mục | Khuyến nghị của Claude 1 |
+| --- | --- |
+| Giá nền hệ số 0,85 (mục A) | Duyệt. Nếu chọn mục G thì dùng bảng ×1,10. |
+| Giám định: phí 15%, chứng nhận +25% (mục B) | Duyệt, nhưng cần xác nhận điểm lưu ý ở đầu tài liệu. |
+| CP1, CB1, tier 3, TC3, CB3, GT1 (mục C) | Duyệt theo gói đã đo. |
+| Giữ luật nợ khắt khe, bỏ đề xuất trả nợ tồn sớm (mục D) | Duyệt. |
+| Kho 8 ô, bàn mở 3 hộp, chỉ lưu tự động (mục E, F) | Duyệt. |
+| **Phạt rủi ro theo hộp (mục G)** | Khuyến nghị duyệt, vì đây là chỗ duy nhất trong gói mà dồn tiền vào hộp đắt vẫn chưa có giá phải trả. |
+
+Sau khi duyệt, Claude 1 áp dụng phần được duyệt vào các file nội dung gốc ([NoiDungMau.md](NoiDungMau.md), [GiaTruyenTaoTacBiKhe.md](GiaTruyenTaoTacBiKhe.md), [GDD](../GameDesign/README.md)).
