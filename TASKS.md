@@ -7,6 +7,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 ## Sprint 0 — Nền móng
 
 - [ ] **Claude 1** — Trình chủ dự án duyệt các luật còn mở cần cho prototype, đặc biệt xử lý thiếu tiền và thắng/thua. Nghiệm thu khi có quy tắc và ví dụ kiểm thử trong [GDD](Docs/GameDesign/README.md).
+  - *Tiến độ:* Đã đề xuất luật thiếu tiền, thắng/thua và 7 ca kiểm thử trong [GDD mục 2](Docs/GameDesign/README.md) (commit `643ae03`). Chờ chủ dự án nghiệm thu.
 - [ ] **Claude 2** — Lập bảng giả định vốn, nợ, giá, giá bán và xác suất rơi. Nghiệm thu khi có bảng cân bằng ban đầu và ca kiểm thử vượt giới hạn mua, trả nợ sớm, thiếu tiền, bán trùng.
 - [ ] **Codex** — Thống nhất hợp đồng dữ liệu hộp, hiện vật, kho, ngày, nợ và thông báo thay đổi với Antigravity. Nghiệm thu khi mỗi bên xác định được dữ liệu đọc và hành động ghi.
 - [ ] **Antigravity** — Khởi tạo Unity 6.3 LTS URP và scene thử. Nghiệm thu khi mở đúng phiên bản và chạy Play Mode với cảnh tối thiểu.
@@ -14,6 +15,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 ## Sprint 1 — Một ngày chơi First-Person
 
 - [ ] **Claude 1** — Soạn danh mục hộp, hiện vật mẫu, manh mối niêm phong và hướng dẫn soi. Nghiệm thu khi dữ liệu đủ để dựng vòng mua–mở–soi–bán.
+  - *Tiến độ:* Đã có bản nháp đầy đủ trong [Docs/Content/NoiDungMau.md](Docs/Content/NoiDungMau.md): 4 loại hộp, 10 hiện vật, tỷ lệ rơi nháp, 12 manh mối niêm phong và hướng dẫn soi 5 bước. Chờ Claude 2 kiểm tra kinh tế và chủ dự án nghiệm thu.
 - [ ] **Claude 2** — Kiểm thử dòng tiền mẫu và các ca mua hộp thứ tư, hết tiền, kho đầy, bán trùng. Nghiệm thu khi có kết quả tái hiện và lỗi được ghi nhận.
 - [ ] **Codex** — Triển khai tiền, hộp, kho, định giá mẫu, bán hàng, kết thúc ngày và kỳ thu nợ. Nghiệm thu khi giao dịch hợp lệ cập nhật một lần và lượt mua đặt lại đúng ngày.
 - [ ] **Antigravity** — Dựng quầy, bàn mở, cầm xoay hiện vật và UI giao dịch. Nghiệm thu khi người chơi tự đi hết vòng từ chọn hộp đến nhận tiền bán trong Play Mode.
