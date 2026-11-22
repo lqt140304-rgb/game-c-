@@ -175,7 +175,7 @@ Chưa có chiến thuật máy nào đọc manh mối, nên mức độ người
 | E, F. Kho 8 ô, bàn mở 3 hộp, chỉ lưu tự động | Duyệt. |
 | G. Phạt rủi ro theo hộp | Duyệt. |
 
-## J. Manh mối và kệ hộp (D-26, D-27, D-28), chờ chủ dự án duyệt
+## J. Manh mối và kệ hộp (D-26, D-27, D-28), đã duyệt
 
 **Vấn đề Claude 2 nêu** ([KyNangManhMoi.md](../Balance/KyNangManhMoi.md)): nội dung chưa nói manh mối của một hộp cụ thể có liên quan hiện vật bên trong không, và số hộp người chơi xem được (M) chưa có trong GDD. Claude 2 phải giả định, và toàn bộ kết quả phụ thuộc vào giả định đó. Đáng lo hơn: bot đọc manh mối tối ưu thắng **57–62%**, vượt xa mục tiêu "không thắng dễ".
 
@@ -215,4 +215,15 @@ Kết quả: người đọc tối ưu hơn bot thường 12 / 15 / 6 điểm, n
 - Nếu sau này muốn manh mối có ích ở nhiều hộp hơn, có thể thêm manh mối về **độ hiếm** (ở H3, độ hiếm phân biệt đúng V08, V09 và V10). Chưa làm vì chưa đo.
 - Mô hình rút hộp mới cho mỗi lượt giống đúng luật kệ hộp. Phần khác biệt nhỏ: giá niêm yết lấy theo manh mối miễn phí **đầu tiên**, còn mô hình tính theo mọi manh mối miễn phí (CB2 và Mốc 3 Cổ Phong). Claude 2 cần đo lại.
 
-**Việc cần Claude 2:** đo lại với luật kệ hộp đúng như mô tả (giá theo manh mối đầu tiên) và đưa vào test. **Chủ dự án** duyệt mục J.
+**Quyết định (2026-11-22):** chủ dự án **duyệt mục J**. Claude 2 đã đo lại đúng luật kệ hộp ([KyNangManhMoi.md](../Balance/KyNangManhMoi.md)).
+
+**Kết quả đo của Claude 2 (ưu tiên hơn số liệu sơ bộ ở trên):**
+- Người chơi tính toán hoàn hảo thắng **38–46%** ở luật chốt (cận trên), chấp nhận được.
+- **Đọc manh mối chỉ cộng +2 đến +4 điểm** ở λ = 0,75. Phần lớn kỹ năng đến từ **chọn loại hộp mỗi lượt** (+5 đến +17 điểm), do luật "mỗi lượt bày 1 hộp mỗi loại". Con số "34 / 38 / 44" ở trên gộp cả hai tác động.
+- Không cần đổi λ: từ 0,75 lên 1,0 chỉ giảm thêm khoảng 1,5 đến 2 điểm.
+
+**Điều chỉnh lại nhận định của tôi về giá mua thêm manh mối:** tôi từng viết 15 xu "hơi có lợi", nhưng Claude 2 đo bằng mô hình sát luật hơn thì mua thêm manh mối 15 xu **lỗ 0,6 đến 1,5 điểm**. Lợi tối đa của việc xem đủ 3 manh mối chỉ +1,4 đến +1,8 điểm. Vậy ở 15 xu mua thêm manh mối không phải một quyết định thật.
+
+**Hai việc còn mở, chờ chủ dự án chọn:**
+1. **D-28, giá mua thêm manh mối:** hạ xuống khoảng 5 xu, hoặc làm manh mối trả phí **chắc đúng** (manh mối miễn phí có thể sai) để người chơi trả tiền mua sự chắc chắn. Cách thứ hai tạo đánh đổi rõ hơn nhưng chưa đo.
+2. **O-04, giao diện:** hiển thị giá trị kỳ vọng từng loại hộp hay để người chơi tự tính. Việc này đổi độ khó cảm nhận chứ không đổi cân bằng.

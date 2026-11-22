@@ -32,6 +32,18 @@ class Clues(unittest.TestCase):
         C.R.FAKE_BY_BOX.clear()
         self.assertAlmostEqual(C.posterior_ev(r, "H1", [QK]), C.posterior_ev(r, "H1", []), places=6)
 
+    def test_per_box_reliability_matches_claude1_rule(self):
+        self.assertEqual(C.NTRUE, {"H1": 2, "H2": 2, "H3": 1, "RD": 1})
+
+    def test_one_true_clue_is_weaker_evidence(self):
+        for o in (HD, TT):
+            self.assertLess(C.likelihood([o], o, 1) / C.likelihood([o], TL, 1),
+                            C.likelihood([o], o, 2) / C.likelihood([o], TL, 2))
+
+    def test_likelihood_normalized_with_one_true_clue(self):
+        for o in C.GROUPS:
+            self.assertAlmostEqual(sum(C.likelihood([g], o, 1) for g in C.GROUPS), 1.0, places=9)
+
     def test_three_clues_pin_down_origin(self):
         self.assertGreater(C.likelihood([HD, HD, TL], HD), 10 * C.likelihood([HD, HD, TL], TL))
 
