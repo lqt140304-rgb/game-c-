@@ -54,3 +54,34 @@ Mọi thao tác 3D/UI của người chơi chỉ gửi yêu cầu (không tự t
    - `HUD_Canvas` (thanh trạng thái ngày/tiền/nợ/hộp, tâm ngắm, gợi ý tương tác)
 4. Nhấn **Play** để kiểm tra di chuyển First-Person và tương tác `[E]` với hộp mẫu.
 5. Khi có mẫu 3D (`.fbx`/`.glb`), đặt vào `Assets/_Project/Art/` và thay thế các `*_Placeholder` trong scene/prefab.
+
+## 4. Giao diện C# Sprint 1 cho scene
+
+Gắn một `MarketRunHost` vào GameObject ở gốc của scene gameplay. Component khởi tạo `Run` trong `Awake` và dùng một ô tự lưu trong `Application.persistentDataPath`. Trong Editor, dữ liệu được đọc trực tiếp từ `Docs/Content/data/content.json`. Build desktop đưa cùng file nguồn vào StreamingAssets. Khi người chơi chọn chơi lại sau thắng hoặc thua, gọi `StartNextRun()` và gắn lại listener vào `Run` mới khi nhận `RunReplaced`.
+
+| Scene đọc từ `Run` | Dùng để hiển thị |
+| --- | --- |
+| `Day`, `Cash`, `BoughtToday`, `DailyLimit` | Ngày, tiền và lượt mua |
+| `Shelf`, `ExtraCluePrice` | ID offer, ID loại hộp, giá theo manh mối đầu, tỷ lệ giả của loại và các manh mối đã mở |
+| `Table`, `TableCapacity` | ID và loại hộp chưa mở, giữ qua ngày |
+| `Inventory`, `InventoryCapacity`, `Inspect(itemId)` | Hiện vật đã mở, mã mẫu để chọn prefab, chất lượng, dấu hiệu soi và giá bán |
+| `DueToday`, `Arrears`, `Status`, `EndReason` | Kỳ thu hiện tại gồm nợ tồn và lý do kết thúc ván |
+
+| Lệnh Sprint 1 | Kết quả thành công |
+| --- | --- |
+| `BuyClue(transactionId, offerId)` | Trừ phí và lộ thêm một manh mối. Giá hộp giữ nguyên. |
+| `BuyBox(transactionId, offerId)` | Trừ giá, thêm hộp lên bàn, tăng lượt và bày kệ mới. |
+| `StopBuying(transactionId, expectedDay)` | Dừng mua đến ngày kế tiếp. |
+| `OpenBox(transactionId, boxId)` | Chuyển hộp trên bàn thành một hiện vật trong kho. `EntityId` là ID hiện vật. |
+| `Sell(transactionId, itemId)` | Xóa hiện vật khỏi kho và cộng giá bán. |
+| `EndDay(transactionId, expectedDay)` | Thu nợ, tính phạt, rồi sang ngày hoặc kết thúc ván. `Amount` là tiền đã thu, `Penalty` là tiền phạt mới. |
+
+Các chữ ký này thay phần lệnh hộp, bán và nợ được đề xuất ở mục 2 cho Sprint 1. `EndDay` là lệnh duy nhất thu nợ. Truyền ngày đang hiển thị tại thời điểm người chơi xác nhận, để xác nhận lặp của ngày cũ nhận `STALE_DAY`. Một ID giao dịch dùng cho đúng một ý định, giữ nguyên ID khi gửi lại. Gọi từ luồng chính của Unity, đọc `Result.Code` để hiện lỗi và dùng `Result.EntityId` cho hiệu ứng theo cá thể.
+
+Đăng ký `Changed` để đọc lại trạng thái sau khi lưu thành công. Lệnh bị từ chối giữ nguyên tiền, lượt mua, bàn, kho và nợ. Gameplay lưu cả kết quả hộp và ID giao dịch. Tiền đã trả trừ vào tổng nợ. Phạt mới tính trên toàn bộ số còn lại, gồm cả phần phạt cũ còn thiếu.
+
+Chạy kiểm thử C# ở thư mục gốc repo:
+
+```sh
+dotnet run --project QA/Gameplay -- Docs/Content/data/content.json
+```
