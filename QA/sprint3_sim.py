@@ -35,6 +35,7 @@ ART = {  # mã: (hệ, giá)
 }
 
 
+RD_FROM_DAY = 4  # ngày Rương Đen xuất hiện (M3 cho phép từ ngày 1)
 ALL_ORIGIN_BONUS = False  # phương án: hiệu ứng CP1/CB1 áp dụng mọi hiện vật
 BONUS_SCALE = 1.0   # nhân các hiệu ứng tăng giá bán (thử phương án)
 ART_PRICE_SCALE = 1.0
@@ -204,7 +205,7 @@ def ladder(run, keep_reserve, appraise_tt):
         r = reserve(run) if keep_reserve else 0
         if g.cash < r:  # đã không đủ trả kỳ này, không còn gì để bảo vệ: dồn tiền gỡ lại
             r = 0
-        order = (("RD",) if g.day >= 4 else ()) + ("H3", "H2", "H1")
+        order = (("RD",) if g.day >= RD_FROM_DAY else ()) + ("H3", "H2", "H1")
         for box in order:
             if g.cash - run.c.box_price[box] >= r:
                 it = run.buy_open(box)

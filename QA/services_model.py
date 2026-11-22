@@ -1,17 +1,20 @@
-"""Mô hình dịch vụ chợ cho Sprint 4 (Claude 2): cầm cố, đấu giá, sòng bạc, biến cố.
+"""Mô hình dịch vụ chợ theo đề xuất của Claude 1 (Docs/Content/DichVuVaMeta.md, commit d6b597e,
+nhánh claude/relaxed-cerf-wgnu7l): biến cố E1-E6, đấu giá, sòng bạc, cầm cố, meta.
 
-TẤT CẢ THAM SỐ LÀ GIẢ ĐỊNH CỦA CLAUDE 2. Claude 1 chưa chốt luật các dịch vụ này (Sprint 4).
-Mô hình có hai mục đích:
-1. Đặc tả hành vi chống giao dịch lặp (mỗi dịch vụ đổi trạng thái đúng một lần).
-2. Cho phép đo ảnh hưởng của từng dịch vụ lên thanh khoản và nợ (xem sprint4_sim.py).
+Mọi con số là [ĐỀ XUẤT] của Claude 1. Mô hình dùng để (1) kiểm thử chống giao dịch lặp và
+(2) đo ảnh hưởng ở sprint4_sim.py.
 """
+import math
 import random
-from economy_model import Game, Rejected, DEBT, FAKE_FACTOR
+from economy_model import Game, Rejected, DEBT, FAKE_FACTOR, BOX_PRICE
 
-PAWN_RATIO, PAWN_FEE, PAWN_DAYS = 0.5, 0.15, 2      # vay 50% giá trị, chuộc +15%, hạn 2 ngày
-AUCTION_PREMIUM, AUCTION_SPREAD, AUCTION_FEE = 0.25, 0.5, 0.10  # kỳ vọng +25%, dao động ±50%, phí 10%
-CASINO_WIN_P, CASINO_MAX_BET, CASINO_BETS_PER_DAY = 0.45, 500, 2  # thắng ăn 1 đền 1, lợi thế nhà cái 10%
-EVENT_P, EVENT_SWING = 0.5, 0.2                      # 50% ngày có biến cố, giá bán +-20%
+PAWN_RATIO, PAWN_FEE, PAWN_DAYS, PAWN_MAX = 0.60, 0.15, 2, 2
+AUCTION_FEE = 0.05
+AUCTION_K = [(0.2, 0.9), (0.4, 1.1), (0.3, 1.3), (0.1, 1.5)]   # kỳ vọng 1,16
+CASINO_STAKES, CASINO_P, CASINO_PER_DAY, CASINO_FROM_DAY = (50, 100, 200), 0.45, 3, 2
+EVENT_P, EVENT_FROM_DAY = 0.5, 2
+EVENTS = ["E1", "E2", "E3", "E4", "E5", "E6"]
+RARE_CODES = ()   # hiện vật "Rất hiếm": đặt it["rare"] = True
 
 
 class ServiceGame(Game):
@@ -19,58 +22,93 @@ class ServiceGame(Game):
         super().__post_init__()
         self._s()
 
-    # ----- thuộc tính trạng thái dịch vụ (khai báo lười để dataclass không đổi) -----
     def _s(self):
         d = self.__dict__
-        d.setdefault("tickets", {})       # mã vé -> {item, loan, redeem_cost, due, state}
-        d.setdefault("listings", {})      # mã lô -> {item, payout, due, state}
+        d.setdefault("tickets", {})
+        d.setdefault("listings", {})
         d.setdefault("svc_id", 1)
         d.setdefault("bets_today", 0)
-        d.setdefault("ledger", [])        # (tx, lý do, thay đổi tiền)
+        d.setdefault("auctions_today", 0)
+        d.setdefault("ledger", [])
         return d
 
     def _sid(self, prefix):
-        d = self._s()
-        n = d["svc_id"]; d["svc_id"] += 1
+        n = self.svc_id; self.svc_id += 1
         return f"{prefix}{n}"
 
-    def _money(self, delta, reason, tx=None):
+    def _money(self, delta, reason):
         self.cash += delta
-        self._s()["ledger"].append((tx, reason, delta))
+        self.ledger.append((reason, delta))
 
-    # ----- biến cố: xác định theo (seed, ngày), không phụ thuộc thứ tự thao tác -----
+    # ----- biến cố -----
     def event(self, day=None):
-        r = random.Random(f"{self.seed}-event-{day or self.day}")
+        day = day or self.day
+        if day < EVENT_FROM_DAY:
+            return None
+        r = random.Random(f"{self.seed}-event-{day}")
         if r.random() >= EVENT_P:
             return None
-        return 1 + EVENT_SWING if r.random() < 0.5 else 1 - EVENT_SWING
+        return EVENTS[r.randrange(6)]
+
+    def price_bonus(self, it):
+        e = self.event()
+        if e == "E1" and it.get("origin") == "Qua khu":
+            return 0.15
+        if e == "E2" and it.get("origin") in ("Hien dai", "Tuong lai"):
+            return -0.15
+        if e == "E6" and it.get("rare"):
+            return 0.10
+        return 0.0
+
+    def G(self, it):
+        """Giá bán thường ngay tại quầy, đã tính biến cố (theo phép cộng)."""
+        return math.floor(it["value"] * (FAKE_FACTOR if it["fake"] else 1) * (1 + self.price_bonus(it)))
+
+    def box_price(self, kind):
+        if kind == "vua" and self.event() == "E3":
+            return round(BOX_PRICE[kind] * 0.8)
+        return BOX_PRICE[kind]
+
+    def buy_box(self, kind):
+        from economy_model import BOX_PRICE as BP
+        old = BP[kind]
+        BP[kind] = self.box_price(kind)
+        try:
+            return super().buy_box(kind)
+        finally:
+            BP[kind] = old
+
+    def appraise(self, item_id):
+        if self.event() == "E4":
+            raise Rejected("Giáo Sư đi vắng")
+        return super().appraise(item_id)
 
     def sell_item(self, item_id):
         self._check_playing()
         if item_id not in self.items:
             raise Rejected("hiện vật không tồn tại hoặc đã bán")
         it = self.items.pop(item_id)
-        p = it["value"] * (FAKE_FACTOR if it["fake"] else 1) * (self.event() or 1)
-        p = round(p)
+        p = self.G(it)
         self._money(p, "sell")
         return p
 
     # ----- cầm cố -----
     def pawn(self, item_id):
-        self._check_playing(); self._s()
+        self._check_playing()
         if item_id not in self.items:
             raise Rejected("hiện vật không có trong kho")
+        if sum(1 for t in self.tickets.values() if t["state"] == "open") >= PAWN_MAX:
+            raise Rejected("đã cầm tối đa")
         it = self.items.pop(item_id)
-        v = it["value"] * (FAKE_FACTOR if it["fake"] else 1)
-        loan = round(v * PAWN_RATIO)
+        loan = math.floor(self.G(it) * PAWN_RATIO)
         tid = self._sid("T")
-        self.tickets[tid] = {"item": it, "loan": loan, "cost": round(loan * (1 + PAWN_FEE)),
-                             "due": self.day + PAWN_DAYS, "state": "open", "item_id": item_id}
+        self.tickets[tid] = {"item": it, "item_id": item_id, "loan": loan,
+                             "cost": math.ceil(loan * (1 + PAWN_FEE)), "due": self.day + PAWN_DAYS, "state": "open"}
         self._money(loan, "pawn")
         return tid
 
     def redeem(self, tid):
-        self._check_playing(); self._s()
+        self._check_playing()
         t = self.tickets.get(tid)
         if t is None or t["state"] != "open":
             raise Rejected("vé không tồn tại hoặc đã đóng")
@@ -83,54 +121,77 @@ class ServiceGame(Game):
         self.items[t["item_id"]] = t["item"]
 
     # ----- đấu giá -----
-    def auction(self, item_id):
-        self._check_playing(); self._s()
+    def auction(self, item_id, floor=None):
+        self._check_playing()
         if self.day >= len(DEBT):
-            raise Rejected("ngày 7 không kịp nhận tiền")
+            raise Rejected("ngày 7 không đấu giá")
+        if self.auctions_today >= 1:
+            raise Rejected("mỗi ngày một lô")
+        if floor not in (None, 1.0, 1.3):
+            raise Rejected("giá sàn không hợp lệ")
         if item_id not in self.items:
             raise Rejected("hiện vật không có trong kho")
+        g = self.G(self.items[item_id])
+        fee = math.ceil(g * AUCTION_FEE)
+        if self.cash < fee:
+            raise Rejected("không đủ tiền đăng ký")
         it = self.items.pop(item_id)
-        v = it["value"] * (FAKE_FACTOR if it["fake"] else 1)
-        # kết quả xác định lúc đăng lô, không đổi khi tải lại
+        self._money(-fee, "auction_fee")
         r = random.Random(f"{self.seed}-auction-{item_id}")
-        mult = 1 + AUCTION_PREMIUM + (r.random() * 2 - 1) * AUCTION_SPREAD
+        x, acc, k = r.random(), 0.0, AUCTION_K[-1][1]
+        for p, v in AUCTION_K:
+            acc += p
+            if x <= acc:
+                k = v
+                break
         lid = self._sid("L")
-        self.listings[lid] = {"payout": round(v * mult * (1 - AUCTION_FEE)), "due": self.day + 1, "state": "open"}
+        self.listings[lid] = {"item": it, "item_id": item_id, "G": g, "floor": floor, "k": k,
+                              "due": self.day + 1, "state": "open"}
+        self.auctions_today += 1
         return lid
 
     # ----- sòng bạc -----
     def bet(self, amount):
-        self._check_playing(); self._s()
-        if amount <= 0 or amount > CASINO_MAX_BET:
+        self._check_playing()
+        if self.day < CASINO_FROM_DAY:
+            raise Rejected("sòng bạc mở từ ngày 2")
+        if amount not in CASINO_STAKES:
             raise Rejected("mức cược không hợp lệ")
         if amount > self.cash:
             raise Rejected("không đủ tiền cược")
-        if self.bets_today >= CASINO_BETS_PER_DAY:
-            raise Rejected("hết lượt cược trong ngày")
-        # kết quả xác định theo (seed, ngày, số thứ tự lượt) để không thể tải lại để đổi
+        if self.bets_today >= CASINO_PER_DAY:
+            raise Rejected("hết lượt trong ngày")
         r = random.Random(f"{self.seed}-casino-{self.day}-{self.bets_today}")
-        win = r.random() < CASINO_WIN_P
+        win = r.random() < CASINO_P
         self.bets_today += 1
         self._money(amount if win else -amount, "bet")
         return win
 
     # ----- ngày -----
     def end_day(self):
-        self._s()
         res = super().end_day()
         if self.status != "playing":
+            # hết ván: hiện vật chưa chuộc coi như mất
+            for t in self.tickets.values():
+                if t["state"] == "open":
+                    t["state"] = "forfeited"
             return res
         self.bets_today = 0
-        for l in self.listings.values():
+        self.auctions_today = 0
+        for l in self.listings.values():       # đầu ngày mới: công bố kết quả
             if l["state"] == "open" and l["due"] <= self.day:
-                self._money(l["payout"], "auction")
-                l["state"] = "paid"
+                price = round(l["G"] * l["k"])
+                if l["floor"] is None or price >= round(l["G"] * l["floor"]):
+                    self._money(price, "auction_sale")
+                    l["state"] = "sold"
+                else:
+                    self.items[l["item_id"]] = l["item"]
+                    l["state"] = "returned"
         for t in self.tickets.values():
             if t["state"] == "open" and self.day > t["due"]:
                 t["state"] = "forfeited"
         return res
 
-    # ----- giao dịch có mã -----
     def do(self, tx, name, *args):
         if tx in self.applied_tx:
             raise Rejected("giao dịch đã áp dụng")
@@ -138,20 +199,56 @@ class ServiceGame(Game):
         self.applied_tx.add(tx)
         return r
 
-    # ----- bất biến để fuzz -----
     def check_invariants(self):
-        s = self._s()
         assert self.cash >= 0, "tiền âm"
         ids = list(self.items)
         ids += [t["item_id"] for t in self.tickets.values() if t["state"] == "open"]
-        assert len(ids) == len(set(ids)), "hiện vật trùng"
-        for t in self.tickets.values():
-            assert t["state"] in ("open", "redeemed", "forfeited")
-        for l in self.listings.values():
-            assert l["state"] in ("open", "paid")
-        pawn = sum(d for _, r, d in s["ledger"] if r == "pawn")
-        redeem = -sum(d for _, r, d in s["ledger"] if r == "redeem")
+        ids += [l["item_id"] for l in self.listings.values() if l["state"] == "open"]
+        assert len(ids) == len(set(ids)), "hiện vật ở hai nơi"
+        pawn = sum(d for r, d in self.ledger if r == "pawn")
         assert pawn == sum(t["loan"] for t in self.tickets.values())
+        redeem = -sum(d for r, d in self.ledger if r == "redeem")
         assert redeem == sum(t["cost"] for t in self.tickets.values() if t["state"] == "redeemed")
-        paid = sum(d for _, r, d in s["ledger"] if r == "auction")
-        assert paid == sum(l["payout"] for l in self.listings.values() if l["state"] == "paid")
+        sale = sum(d for r, d in self.ledger if r == "auction_sale")
+        assert sale == sum(round(l["G"] * l["k"]) for l in self.listings.values() if l["state"] == "sold")
+        fee = -sum(d for r, d in self.ledger if r == "auction_fee")
+        assert fee == sum(math.ceil(l["G"] * AUCTION_FEE) for l in self.listings.values())
+
+
+class Meta:
+    """Tiến trình giữa các ván (Sổ Sưu Tầm và mở khóa M1-M4)."""
+    BIKHE = ("BK1", "BK2")
+
+    def __init__(self):
+        self.collected, self.wins, self.bikhe = set(), set(), set()
+
+    def inspect(self, code):
+        self.collected.add(code)
+
+    def record_win(self, game_id):
+        self.wins.add(game_id)
+
+    def record_bikhe(self, bid):
+        self.bikhe.add(bid)
+
+    def unlocked(self):
+        u = set()
+        if len(self.collected) >= 5: u.add("M1")
+        if len(self.collected) >= 10: u.add("M2")
+        if self.wins: u.add("M3")
+        if set(self.BIKHE) <= self.bikhe: u.add("M4")
+        return u
+
+    def start_cash(self):
+        return 1000 + (100 if "M2" in self.unlocked() else 0)
+
+    def dump(self):
+        import json
+        return json.dumps({"c": sorted(self.collected), "w": sorted(self.wins), "b": sorted(self.bikhe)})
+
+    @classmethod
+    def load(cls, s):
+        import json
+        d = json.loads(s)
+        m = cls(); m.collected, m.wins, m.bikhe = set(d["c"]), set(d["w"]), set(d["b"])
+        return m

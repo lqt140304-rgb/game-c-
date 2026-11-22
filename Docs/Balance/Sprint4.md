@@ -1,133 +1,134 @@
 # Sprint 4 — Ảnh hưởng của dịch vụ và chống giao dịch lặp (Claude 2)
 
-Đo cầm cố, đấu giá, sòng bạc, biến cố và mở khóa meta lên thanh khoản, nợ và tiến trình. Kèm bộ ca chống giao dịch lặp cho từng dịch vụ.
+> **Cập nhật theo mục tiêu độ khó:** số liệu dưới đây đo trên cấu hình dễ của Sprint 3. Với ván khó ở [DoKho.md](DoKho.md), **đừng nâng k đấu giá lên 1,33** (đề xuất ở mục 3 sẽ làm tỷ lệ thắng tăng 8 đến 13 điểm). Giữ k = 1,16. Các kết luận về cầm cố bị át, sòng bạc ít ảnh hưởng và biến cố trung tính vẫn đúng, và DoKho.md đo lại chúng ở ván khó.
 
-## Điều cần biết trước
+Đo biến cố, đấu giá, sòng bạc, cầm cố và mở khóa meta theo **đúng luật Claude 1 đã soạn** trong [DichVuVaMeta.md](https://github.com/lqt140304-rgb/game-c-/blob/claude/relaxed-cerf-wgnu7l/Docs/Content/DichVuVaMeta.md) (commit `d6b597e`, nhánh `claude/relaxed-cerf-wgnu7l`, chưa gộp vào nhánh này). Mỗi "Ca" trong tài liệu của Claude 1 thành một test. Mục 7 của tài liệu đó đặt năm câu hỏi cho Claude 2, được trả lời ở mục 3.
 
-Claude 1 **chưa chốt** luật các dịch vụ này (mục Sprint 4 của Claude 1 còn mở). Mọi luật dịch vụ trong tài liệu này là **giả định tham số hóa của Claude 2**, nhằm trả lời câu hỏi "tham số nằm trong khoảng nào thì kinh tế còn lành". Khi Claude 1 chốt luật, chỉ cần đổi hằng số trong `QA/services_model.py` và `QA/sprint4_sim.py` rồi chạy lại.
+Bản đầu của tài liệu này dùng luật giả định của Claude 2 khi Claude 1 chưa soạn. Bản này **thay thế** bản đó.
 
-Kết quả đo dựa trên cấu hình Sprint 3 mà Claude 2 đề xuất: giá nền mới, CP1 và CB1 áp dụng mọi hiện vật với hiệu ứng nhân 2. Cấu hình này **chưa được chủ dự án duyệt**. Nội dung của Claude 1 sau đợt rà giấy (đổi TC3, quy tắc cộng dồn, manh mối thêm) cũng chưa được đưa vào mô phỏng.
+Mô phỏng chạy trên cấu hình Sprint 3 do Claude 2 đề xuất (giá nền mới, CP1 và CB1 áp dụng mọi hiện vật, nhân 2), **chưa được chủ dự án duyệt**. Hiệu ứng giá bán cộng theo phép cộng như quy tắc mới của Claude 1, nên mốc cơ sở của săn combo là 49,6% thay vì 51,1% ở Sprint 3.
 
 ## Cách tái hiện
 
 ```bash
 cd QA
-python3 -m unittest -v test_services       # 29 test chống giao dịch lặp
-python3 -m unittest discover -s .          # toàn bộ 81 test
-python3 sprint4_sim.py                     # số liệu ảnh hưởng, khoảng 3 phút
+python3 -m unittest discover -s .          # toàn bộ 97 test
+python3 sprint4_sim.py                     # số liệu mục 2, khoảng 4 phút
 ```
 
 | File | Nội dung |
 | --- | --- |
-| `QA/services_model.py` | Cầm cố, đấu giá, sòng bạc, biến cố, mã giao dịch, bất biến |
-| `QA/test_services.py` | 29 test, gồm 1 test fuzz 300 ván ngẫu nhiên |
-| `QA/sprint4_sim.py` | Quét tham số từng dịch vụ trên ba chiến thuật |
+| `QA/services_model.py` | Biến cố, đấu giá, sòng bạc, cầm cố, meta theo luật Claude 1, mã giao dịch, bất biến |
+| `QA/test_services.py` | 45 test, gồm các ca của Claude 1 và một test fuzz 300 ván |
+| `QA/sprint4_sim.py` | Mô phỏng ảnh hưởng, 4.000 seed mỗi ô |
 
-## 1. Ca chống giao dịch lặp
+## 1. Kiểm thử luật và chống giao dịch lặp
 
-29 test đều **đạt**. Nguyên tắc: mỗi giao dịch đổi trạng thái **đúng một lần**, bị từ chối thì trạng thái giữ nguyên, kết quả ngẫu nhiên không đổi khi tải lại.
+45 test đều **đạt**.
 
-| Dịch vụ | Mã | Ca kiểm tra |
+| Nhóm | Mã | Nội dung |
 | --- | --- | --- |
-| Cầm cố | PW-1 đến PW-8 | Nhận tiền vay và món rời kho. Cầm hai lần, chuộc hai lần bị từ chối. Chuộc thiếu tiền không đổi gì. Quá hạn thì mất món và không chuộc được. Chuộc đúng ngày hạn được. Món giả cầm theo giá giả. Món đã cầm không bán được |
-| Đấu giá | AU-1 đến AU-6 | Tiền về ngày sau, đúng một lần. Đăng hai lần bị từ chối. Ngày 7 không đăng được. Kết quả chốt lúc đăng nên tải lại không đổi. Món đang đấu giá không bán hay cầm được. Tiền về sau kỳ thu nợ nên không trả nợ cùng ngày (D-13) |
-| Sòng bạc | CS-1 đến CS-7 | Tiền đổi đúng bằng mức cược. Giới hạn mức cược và số lượt mỗi ngày, đặt lại khi sang ngày. Tải lại không đổi kết quả. Kết quả độc lập thứ tự thao tác khác. Phát lại mã giao dịch bị chặn. Nhà cái có lợi thế qua 4.000 seed |
-| Biến cố | EV-1 đến EV-4 | Biến cố xác định theo (seed, ngày). Không phụ thuộc thao tác khác. Áp dụng cho giá bán một lần. Giữ nguyên sau khi tải |
-| Lưu và tải | SV-1 đến SV-3 | Vé và lô đấu giá còn nguyên sau tải. Tải giữa lúc đấu giá vẫn chỉ nhận tiền một lần. Món quá hạn vẫn không chuộc được sau tải |
-| Fuzz | 1 test | 300 ván ngẫu nhiên, 120 bước mỗi ván, xen lưu/tải và phát lại mã cũ. Sau mỗi bước kiểm tra tiền không âm, hiện vật không trùng, tổng tiền vay, chuộc và đấu giá khớp sổ cái. Phát lại mã cũ không đổi trạng thái |
+| Biến cố | EV-1 đến EV-6 | Ngày 1 không có biến cố. E4 chặn giám định, hôm sau giám định được. E1 +15% cho Quá khứ, E2 −15%, E6 +10% cho Rất hiếm. E3 giảm giá H2 còn 280 xu và giữ nguyên sau tải lại. Biến cố không phụ thuộc thao tác khác. Tần suất xấp xỉ 50% |
+| Cầm cố | PW-1 đến PW-10 | V10 cầm nhận 1.080, chuộc ngày 4 tốn 1.242. Quá hạn ngày 5 mất món. Món thứ 3 bị từ chối. Cầm trước kỳ nợ dùng trả nợ cùng ngày. Tải lại không nhận tiền lần hai. Chuộc hai lần, chuộc thiếu tiền bị từ chối. Hết ván mất món chưa chuộc. Món đang cầm bị khóa với mọi dịch vụ |
+| Đấu giá | AU-1 đến AU-10 | Phí 90 và nhận 2.340 khi k = 1,3. Sàn 1,3 mà k = 1,1 thì trả món, mất phí. Ngày 7 bị từ chối. Tiền chưa về không trả nợ. Tải lại không trừ phí lần hai. Một lô mỗi ngày. Tiền về đầu ngày sau. Kết quả không đổi khi tải lại. Sàn không hợp lệ bị từ chối. Kỳ vọng k đúng 1,16 |
+| Sòng bạc | CS-1 đến CS-8 | Thắng cộng đúng mức cược, thua trừ đúng mức cược. Lượt thứ 4 bị từ chối, sang ngày đặt lại. Thiếu tiền hoặc sai mức cược bị từ chối. Tải lại không đổi kết quả. Không mở ngày 1. Phát lại mã giao dịch bị chặn. Kỳ vọng −10% |
+| Meta | MT-1 đến MT-6 | Sưu tầm một lần dù soi nhiều lần. 5 món mở M1. Thua ván không mất mở khóa. Thắng chỉ tính một lần mỗi ván dù tải lại. Vốn đầu ván không vượt 1.100. M4 cần đủ cả hai Bí Khế |
+| Lưu và tải | SV-1 đến SV-3 | Vé và lô đấu giá còn nguyên. Tải giữa lúc đấu giá vẫn nhận tiền một lần. Món quá hạn vẫn không chuộc được sau tải |
+| Fuzz | 1 test | 300 ván, 150 bước mỗi ván, xen lưu/tải và phát lại mã cũ. Sau mỗi bước: tiền không âm, hiện vật không nằm ở hai nơi, tổng tiền vay, chuộc, phí và bán đấu giá khớp sổ cái. Phát lại mã cũ không đổi trạng thái |
 
-Yêu cầu cho Codex rút ra từ các test:
-
-- **Kết quả ngẫu nhiên phải xác định theo (seed, ngày, số thứ tự lượt) hoặc theo mã hiện vật**, không lấy từ một bộ sinh số chung. Nếu dùng bộ chung, thao tác khác xen vào làm đổi kết quả, và tải lại bản lưu cũ cho phép đổi kết quả cược (CS-4, CS-5).
-- **Mỗi thao tác tiền cần mã giao dịch lưu cùng bản lưu**, kể cả giao dịch tự động như nhận tiền đấu giá.
-- **Món hàng chỉ ở đúng một nơi**: kho, vé cầm, hoặc lô đấu giá.
+Luật của Claude 1 đã giải các vấn đề mà bản đầu của tài liệu này nêu: tiền đấu giá về **đầu ngày** nên trả được nợ cuối ngày đó (D-13 đóng), và kết quả ngẫu nhiên **chốt theo seed** (D-14 đóng, test CS-5 và AU-8 xác nhận).
 
 ## 2. Ảnh hưởng lên thanh khoản và nợ
 
-Thắng% (chênh so với cơ sở) và số ngày hụt tiền trung bình mỗi ván. 4.000 seed mỗi ô, thứ tự thận trọng, săn combo, liều.
+Thắng% (chênh so với cơ sở) và số ngày hụt tiền trung bình mỗi ván. Thứ tự thận trọng, săn combo, liều.
 
-**Cơ sở (không dịch vụ): 42,0% (hụt 1,08), 51,1% (hụt 0,92), 48,9% (hụt 1,10).**
+**Cơ sở (không dịch vụ): 42,0% (hụt 1,08), 49,6% (hụt 0,94), 48,8% (hụt 1,10).**
 
-### Đấu giá (tiền về sau 1 ngày, phí 10%)
+### Biến cố E1 đến E6, 50% số ngày từ ngày 2
 
-| Tham số | Thận trọng | Săn combo | Liều |
+| | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- |
-| Đăng món từ 400 xu, kỳ vọng +0% | 11,5% (−30,5) | 18,9% (−32,2) | 4,0% (−44,9) |
-| Từ 400 xu, +25% | 32,4% (−9,6) | 39,8% (−11,3) | 24,1% (−24,8) |
-| Từ 400 xu, +25%, phí 20% | 20,0% (−22,0) | 29,4% (−21,7) | 10,4% (−38,5) |
-| Từ 400 xu, +50% | 51,6% (+9,6) | 56,5% (+5,4) | 49,4% (+0,5) |
-| Chỉ món từ 1.500 xu, +25% | 41,8% (−0,2) | 48,1% (−3,0) | 32,6% (−16,3) |
-| Chỉ món từ 1.500 xu, +50% | 52,2% (+10,2) | 55,6% (+4,5) | 51,2% (+2,3) |
-| Chỉ món từ 1.500 xu, +75% | 58,3% (+16,3) | 59,8% (+8,7) | 62,6% (+13,7) |
+| Có biến cố | 42,0% (+0,0) | 50,0% (+0,4) | 49,5% (+0,7) |
 
-- **Tiền về chậm một ngày là chi phí rất lớn.** Vốn kẹt khiến những ngày đầu mua được ít hộp hơn. Đấu giá hòa vốn khi kỳ vọng cao hơn giá bán thường khoảng 40 đến 45%.
-- **Đề xuất:** đăng đấu giá nhắm món đắt (từ 1.500 xu) với kỳ vọng khoảng +40%, dao động rộng. Khi đó thận trọng lời khoảng 5 điểm, còn liều chịu tác động mạnh nhất vì không chừa tiền (hụt 1,75 đến 2,15 ngày), đúng với vai trò kênh rủi ro.
-- **Tiền đấu giá về sau kỳ thu nợ cùng ngày** (D-13). Người chơi cần đăng sớm một ngày. Cần nói rõ điều này trong UI, nếu không sẽ có cảm giác bị phạt oan.
+Tác động trung bình gần như bằng 0. Biến cố làm ván khác nhau chứ không đổi độ khó. Một ván 6 ngày có trung bình 3 ngày biến cố và chỉ 1,6% ván không có biến cố nào.
 
-### Sòng bạc (dùng làm đường gỡ lại khi thiếu tiền, cược 1 ăn 1, tối đa 2 lượt mỗi ngày)
+### Đấu giá (1 lô mỗi ngày, phí 5%, k kỳ vọng 1,16, tiền về đầu ngày sau)
 
-| Tham số | Thận trọng | Săn combo | Liều |
+Chiến thuật đăng **món đầu tiên đạt ngưỡng giá** trong ngày.
+
+| Ngưỡng đăng | Giá sàn | Thận trọng | Săn combo | Liều |
+| --- | --- | --- | --- | --- |
+| 400 xu | không | −3,5 | −5,8 | −4,4 |
+| 400 xu | 1,0 G | −1,6 | −5,0 | −2,3 |
+| 400 xu | 1,3 G | −4,9 | −8,3 | −6,4 |
+| 1.000 xu | không | +0,3 | −1,7 | −3,2 |
+| 1.000 xu | 1,0 G | +2,0 | −0,8 | −1,1 |
+| 1.000 xu | 1,3 G | −1,6 | −3,8 | −4,3 |
+| 1.500 xu | 1,0 G | +1,6 | +0,4 | −0,9 |
+
+Tăng kỳ vọng k (món từ 1.000 xu, sàn 1,0 G):
+
+| k kỳ vọng | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- |
-| Thắng 40%, cược tối đa 500 | +0,5 | +0,2 | +0,8 |
-| Thắng 45%, cược tối đa 500 | +0,5 | +0,3 | +0,8 |
-| Thắng 50%, cược tối đa 500 | +0,6 | +0,3 | +0,9 |
-| Thắng 45%, cược tối đa 200 | +0,2 | +0,2 | +0,5 |
-| Thắng 45%, cược tối đa 1.000 | +1,1 | +0,4 | +1,3 |
+| 1,16 (đề xuất của Claude 1) | +2,0 | −0,8 | −1,1 |
+| 1,33 | **+9,7** | **+5,0** | **+9,2** |
+| 1,51 | +16,9 | +10,0 | +17,7 |
 
-- **Sòng bạc gần như không đổi cân bằng**: tối đa +1,3 điểm. Khoản thiếu hụt thường vài trăm đến vài nghìn xu, vượt xa mức cược tối đa, nên sòng bạc không giải được vòng xoáy thiếu tiền (D-05).
-- **Rủi ro cân bằng thấp.** Có thể đặt lợi thế nhà cái 5 đến 10% (thắng 45% đến 47,5%) mà không lo phá kinh tế. Ngược lại nó **không thay thế** được đường gỡ lại mà Claude 1 cần thiết kế cho D-05.
-- Mô phỏng chỉ gồm trường hợp cược để gỡ nợ. Người chơi cược sớm để nhân vốn có kỳ vọng âm nên không có lợi.
+### Sòng bạc (dùng khi thiếu tiền, cược 50/100/200, 3 lượt)
 
-### Cầm cố tạo tác (chỉ săn combo có tạo tác để cầm)
-
-| Tham số | Săn combo |
-| --- | --- |
-| Vay 50%, phí chuộc 15%, hạn 2 ngày | +0,7 |
-| Vay 70%, phí chuộc 15% | +1,5 |
-| Vay 70%, phí chuộc 30% | +1,5 |
-
-- Tác động nhỏ (≤ 1,5 điểm) và gần như không phụ thuộc phí chuộc. Cầm cố chưa tạo ra quyết định thú vị.
-- **Điều kiện để cầm cố có ý nghĩa:** người chơi phải có món đáng giá chưa bán. Hiện mô phỏng bán ngay nên chỉ còn tạo tác để cầm. Cần luật cho giữ hiện vật (kho, chờ giá) hoặc món chỉ bán được qua một kênh.
-- Giữ nguyên phí chuộc 15% là đủ. Hạn 2 ngày hợp lý với kỳ thu nợ mỗi ngày.
-
-### Biến cố (giá bán dao động ± trong 50% số ngày, người chơi không đoán trước)
-
-| Biên độ | Thận trọng | Săn combo | Liều |
+| Xác suất thắng | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- |
-| ±10% | −1,1 | +0,4 | −0,5 |
-| ±20% | −2,1 | −0,3 | −2,6 |
-| ±30% | −3,9 | −4,1 | −6,7 |
-| ±50% | −8,4 | −7,9 | −11,8 |
+| 45% (đề xuất) | +0,3 | +0,3 | +0,8 |
+| 50% | +0,4 | +0,4 | +0,8 |
+| 55% | +0,4 | +0,4 | +1,0 |
+| 45%, cược tối đa 500 | +1,0 | +0,8 | +1,4 |
 
-- Biến cố đối xứng vẫn **làm giảm** tỷ lệ thắng vì nợ là ngưỡng cứng: một ngày xấu gây hụt tiền mà một ngày tốt không bù lại.
-- **Đề xuất biên độ tối đa ±20%** (giảm không quá 3 điểm). Từ ±30% trở lên người chơi mất kiểm soát.
-- Mô phỏng chưa cho người chơi phản ứng. GDD nói biến cố được báo qua sổ nên người chơi có thể thích nghi, như mua nhiều vào ngày giá cao. Cần đo lại khi chiến thuật biết thích nghi. Biến cố tác động nguồn cung, nhu cầu hay phí dịch vụ cũng chưa mô phỏng.
+### Cầm cố so với bán (giữ một món từ 600 xu làm đệm mỗi ngày, khi thiếu tiền thì dùng)
 
-### Mở khóa meta (thêm vốn đầu ván)
-
-| Thêm vốn | Thận trọng | Săn combo | Liều |
+| Cách dùng đệm | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- |
-| +100 xu | +2,9 | +4,5 | +2,3 |
-| +200 xu | +5,7 | +4,8 | +4,8 |
-| +300 xu | +7,8 | +6,0 | +7,6 |
-| +500 xu | +12,8 | +11,4 | +11,7 |
+| Bán | 30,5% (−11,5) | 41,0% (−8,6) | 42,1% (−6,7) |
+| Cầm 60% G | 27,5% (−14,5) | 35,0% (−14,6) | 29,1% (−19,7) |
 
-- Mỗi 100 xu vốn tăng khoảng **2,5 điểm** thắng, gần như tuyến tính.
-- **Ngân sách meta đề xuất:** tổng các mở khóa có giá trị tiền không vượt khoảng **+400 xu vốn tương đương (≈ +10 điểm)**. Meta chỉ nên mở thêm lựa chọn chứ không làm game dễ hơn đáng kể, đúng với GDD ("mở thêm lựa chọn cho ván sau").
+Cả hai cách đều thua cơ sở vì món giữ lại làm tiền chưa về tay. Điểm cần so là **cầm so với bán**: cầm thua bán 3 điểm (thận trọng), 6 điểm (săn combo) và 13 điểm (liều).
 
-## 3. Lỗi và phát hiện mới
+### Mở khóa meta
+
+| Mở khóa | Thận trọng | Săn combo | Liều |
+| --- | --- | --- | --- |
+| M2 vốn +100 xu | +2,9 | +4,0 | +2,4 |
+| M3 Rương Đen từ ngày 1 | −0,4 | +2,5 | +0,6 |
+
+## 3. Trả lời câu hỏi của Claude 1
+
+**Đấu giá có đủ hấp dẫn không?** Chưa. Kỳ vọng 1,16 G trừ phí 5% còn +11%, đổi lấy chậm một ngày và rủi ro, kết quả là **trung tính đến lỗ** (−8 đến +2 điểm tùy ngưỡng và giá sàn). Bán ngay luôn an toàn hơn. Đề xuất đổi bảng k thành 1,0 / 1,25 / 1,5 / 1,75 với xác suất 20% / 40% / 30% / 10% (kỳ vọng 1,33). Khi đó đấu giá món từ 1.000 xu với sàn 1,0 G lời 5 đến 10 điểm, vẫn có rủi ro cho chiến thuật liều vì tiền về chậm.
+
+**Sòng bạc kỳ vọng −10% có đủ rủi ro không, hay nên tăng tỷ lệ thắng?** Đủ, đừng tăng. Dù nâng xác suất thắng lên 55% hay cược tối đa lên 500 xu, tác động lên tỷ lệ thắng ván vẫn dưới 1,5 điểm. Sòng bạc là trò giải trí rủi ro, không phải công cụ cứu ván. Cược tối đa 200 xu quá nhỏ so với khoản thiếu (vài trăm đến vài nghìn xu), nên sòng bạc không giải vòng xoáy thiếu tiền (D-05).
+
+**Cầm cố 60% G, phí 15%, hạn 2 ngày có cứu ván mà không quá rẻ không?** Nó không cứu ván tốt hơn việc **bán ngay**, vì người chơi luôn bán được món với G trước kỳ nợ, còn cầm chỉ được 0,6 G và phải trả thêm 0,09 G nếu chuộc. Cầm thua bán 3 đến 13 điểm (mục 2). Không ai có lý do chọn cầm, trừ khi muốn giữ món vì lý do ngoài tiền. Đề xuất một trong các hướng:
+
+1. Cho cầm **tạo tác** (hiện bị cấm), để người chơi lấy tiền trả nợ mà vẫn giữ combo. Với luật cũ của Claude 2 tác động nhỏ (+0,7 đến +1,5 điểm) nhưng có quyết định thật.
+2. Làm cho bán ngay kém hơn trong lúc thiếu tiền, ví dụ giá bán vội 85% G hoặc hạn mức bán mỗi ngày.
+3. Chấp nhận cầm là công cụ phụ, nhưng cần lý do giữ món: Sổ Sưu Tầm, chờ biến cố giá cao, hoặc đấu giá hôm sau.
+
+**Vốn +100 xu của M2 có làm ván sau quá dễ không?** Không, nếu bảng giá nền đã được cân bằng. M2 cộng thêm 2,4 đến 4,0 điểm. Điều kiện là H1 không còn lời 4,6 lần như nội dung gốc: ở nội dung gốc cả ván đều bất khả thi hoặc đều dễ tùy hộp. Giới hạn +100 xu tổng cộng của Claude 1 nằm trong ngân sách đã đo ở bản trước (khoảng 2,5 điểm mỗi 100 xu, tổng meta không quá khoảng +10 điểm).
+
+**Tần suất biến cố 50% mỗi ngày có hợp lý không?** Có. Tác động trung bình lên tỷ lệ thắng dưới 1 điểm, nên không làm ván khó hơn hay dễ hơn. Trung bình 3 ngày mỗi ván có biến cố, tức khác biệt rõ giữa các ván nhưng không dày. Có thể tăng độ ảnh hưởng của biến cố: ±15% hiện chỉ đổi ván khi người chơi thích nghi theo thông tin sổ, mà mô phỏng chưa đo.
+
+## 4. Lỗi và phát hiện
 
 | Mã | Mức | Mô tả | Đề xuất | Chủ xử lý |
 | --- | --- | --- | --- | --- |
-| D-13 | Trung bình | Tiền đấu giá về sau kỳ thu nợ cùng ngày, nên không trả nợ ngày đăng (AU-6) | Ghi rõ trong luật và UI. Hoặc cho kỳ thu nợ diễn ra sau khi nhận tiền | Claude 1, Antigravity |
-| D-14 | Cao | Nếu kết quả cược lấy từ bộ sinh số chung, người chơi tải lại bản lưu cũ để đổi kết quả | Kết quả xác định theo (seed, ngày, lượt). Đã có test CS-4, CS-5 | Codex |
-| D-15 | Trung bình | Đấu giá làm chậm vốn nên nếu kỳ vọng thấp hơn khoảng +40% thì là cái bẫy | Dùng khoảng +40% cho món từ 1.500 xu | Claude 1 |
-| D-16 | Trung bình | Sòng bạc và cầm cố gần như không giải được vòng xoáy thiếu tiền (D-05) | Thiết kế đường gỡ lại riêng, đừng trông vào sòng bạc | Claude 1, chủ dự án |
-| D-17 | Thấp | Biến cố giá lớn hơn ±20% làm tỷ lệ thắng giảm hơn 3 điểm | Giới hạn biên độ ±20% | Claude 1 |
-| T-02 | Thấp | Chưa đo biến cố khi người chơi thích nghi, nhiều biến cố cùng lúc, hoặc biến cố tác động nguồn cung | Đo khi có luật biến cố | Claude 2 |
+| D-18 | Trung bình | Cầm cố bị bán ngay át hoàn toàn (0,6 G và phí 15% so với 1,0 G) | Một trong ba hướng ở mục 3 | Claude 1 |
+| D-19 | Trung bình | Đấu giá k = 1,16 là trung tính đến lỗ | Bảng k kỳ vọng 1,33 | Claude 1 |
+| D-16 | Trung bình | Sòng bạc và cầm cố không giải vòng xoáy thiếu tiền (D-05) | Thiết kế đường gỡ lại riêng | Claude 1, chủ dự án |
+| T-02 | Thấp | Chưa đo người chơi thích nghi với biến cố (mua nhiều H2 ngày E3, tránh bán ngày E2) | Đo khi có bản chơi thật | Claude 2 |
+| T-03 | Thấp | Chưa đo ảnh hưởng của E4, E5 với chiến thuật hay giám định, phục chế | Đo khi giám định có giá trị tiền (D-11) | Claude 2 |
 
-## 4. Việc cần chốt
+Đã đóng nhờ luật của Claude 1: **D-13** (tiền đấu giá về đầu ngày), **D-14** (kết quả chốt theo seed), **D-17** (biến cố nhẹ, không cần giới hạn thêm).
 
-1. **Claude 1** chốt luật cầm cố, đấu giá, sòng bạc, biến cố và meta trong khoảng đã đo ở trên, rồi báo Claude 2 chạy lại.
-2. **Chủ dự án** duyệt cấu hình giá nền của Sprint 3 vì số liệu mục 2 dựa trên đó.
-3. **Codex** áp dụng ba yêu cầu ở cuối mục 1 khi nối dịch vụ và lưu giao dịch, rồi chuyển `QA/test_services.py` sang C#.
+## 5. Việc cần chốt
+
+1. **Claude 1** sửa bảng k đấu giá và cách dùng cầm cố, rồi báo Claude 2 chạy lại `sprint4_sim.py`.
+2. **Chủ dự án** duyệt cấu hình giá nền Sprint 3, vì mọi số liệu mục 2 dựa trên đó.
+3. **Codex** chuyển `QA/test_services.py` sang C# khi nối dịch vụ. Hai yêu cầu cần giữ: kết quả ngẫu nhiên xác định theo (seed, ngày, lượt hoặc mã hiện vật), và mọi thao tác tiền có mã giao dịch lưu cùng bản lưu.
