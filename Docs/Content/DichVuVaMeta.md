@@ -26,7 +26,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 | --- | --- | --- |
 | E1 | Chợ Phiên Cổ Vật | Hiện vật nhóm Quá khứ bán +15%. |
 | E2 | Mất Điện Khu Công Nghệ | Hiện vật nhóm Hiện đại và Tương lai bán −15%. |
-| E3 | Thuyền Hàng Ngoài Giới | Giá hộp H2 giảm 20% (350 xu còn 280 xu). |
+| E3 | Thuyền Hàng Ngoài Giới | Giá hộp H2 giảm thêm 20% so với giá hôm nay, tính sau dao động giá hằng ngày (ở giá gốc, 350 xu còn 280 xu). |
 | E4 | Giáo Sư Đi Vắng | Không giám định được. |
 | E5 | Chú Rỉ Nghỉ Lễ | Không phục chế được. |
 | E6 | Khách Sộp Đến Chợ | Hiện vật Rất hiếm bán +10%. Độ hiếm Rất hiếm gồm V07 Tinh thể lam và V10 Mảnh vảy long, hai món giá nền cao nhất (đã ghi trong [NoiDungMau.md](NoiDungMau.md)). |
@@ -42,7 +42,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 | 1 | Ngày 1 bắt đầu ván. | Không có biến cố. |
 | 2 | Ngày 3 rút được E4, người chơi muốn giám định. | Không giám định được. Sổ ghi lý do. Ngày 4 giám định bình thường. |
 | 3 | E1 (+15% nhóm Quá khứ) và người chơi trang bị CP1 (+5% mọi hiện vật). | Hiện vật Quá khứ bán thêm +20% theo phép cộng. Hiện vật nhóm khác chỉ bán thêm +5% từ CP1. |
-| 4 | Tải lại ván giữa ngày 3 đang có E3. | Vẫn thấy E3 và giá H2 là 280 xu, không rút lại biến cố. |
+| 4 | Tải lại ván giữa ngày 3 đang có E3. | Vẫn thấy E3 và giá H2 hôm nay giữ nguyên (ở giá gốc là 280 xu), không rút lại biến cố. |
 
 ## 2. Đấu giá
 

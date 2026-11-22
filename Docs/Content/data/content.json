@@ -755,9 +755,11 @@
     "rng_key": "seed, ngày, lượt, loại hộp",
     "free_clues_base": 1,
     "extra_clue_price": 15,
+    "extra_clue_kind": "certain_origin",
+    "extra_clue_per_box": 1,
+    "show_expected_value": false,
     "price_follows_clue": {
       "lambda": 0.75,
-      "round_to": 5,
       "based_on": "manh mối miễn phí đầu tiên",
       "origins_order": [
         "qua_khu",
@@ -767,40 +769,51 @@
         "co_tich",
         "than_thoai"
       ],
-      "tag_price": {
+      "round": "nearest_xu",
+      "applies_to": "giá hôm nay của loại hộp",
+      "multiplier": {
         "H1": [
-          100,
-          100,
-          100,
-          100,
-          100,
-          100
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
         ],
         "H2": [
-          350,
-          260,
-          395,
-          350,
-          350,
-          350
+          1.0,
+          0.736,
+          1.134,
+          1.0,
+          1.0,
+          1.0
         ],
         "H3": [
-          800,
-          800,
-          800,
-          800,
-          810,
-          790
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.013,
+          0.989
         ],
         "RD": [
-          1500,
-          1500,
-          1500,
-          1535,
-          1405,
-          1545
+          1.0,
+          1.0,
+          1.0,
+          1.022,
+          0.936,
+          1.031
         ]
       }
+    },
+    "day_price": {
+      "swing_amplitude": 0.2,
+      "distribution": "uniform",
+      "rng_key": "seed, ngày, loại hộp",
+      "applies_from_day": 1,
+      "round": "nearest_xu",
+      "announce": "đầu ngày, trước khi mua hộp",
+      "event_e3_applies": "after_swing"
     }
   }
 }
