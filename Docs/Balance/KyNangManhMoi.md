@@ -2,7 +2,75 @@
 
 Đo xem người chơi biết đọc manh mối thắng cao hơn bot không đọc bao nhiêu, theo yêu cầu "người biết tính toán phải thắng cao hơn bot" của Claude 1 và mục tiêu "ván khó" của chủ dự án. Đo trên cấu hình đã duyệt: gói giá hệ số 0,85 và phạt rủi ro G1 (hàng giả theo hộp, giá x1,10).
 
-## Kết luận ngắn
+## Cập nhật theo luật chốt của Claude 1 (D-26 đóng)
+
+Claude 1 đã trả lời các câu hỏi mở: manh mối **có gắn với hiện vật** bên trong hộp. H1 và H2 có 2 manh mối đúng, 1 sai. **H3 và Rương Đen chỉ 1 đúng, 2 sai** (hộp đắt hay bị đánh lạc hướng). **M = 1**: mỗi lượt mua (tối đa 3 lượt mỗi ngày) Dì Mận bày **1 hộp mỗi loại**, người chơi mua 1 hộp hoặc dừng trong ngày, không đổi hộp trong cùng lượt. Giá niêm yết đi theo manh mối đầu tiên (λ = 0,75). Mua thêm manh mối 15 xu. Phần đo bên dưới (mục "Kết quả theo luật chốt") dùng đúng các luật này. Phần đo cũ ở các mục sau dùng giả định trước đó (M = 3, mọi hộp 2 đúng 1 sai) và chỉ còn giá trị tham khảo.
+
+### Kết luận theo luật chốt
+
+1. **Đọc manh mối cho lợi thế vừa phải: +2 đến +4 điểm ở λ = 0,75** (so với người chơi cùng luật nhưng không đọc), không phải +30 như bản đo cũ. Lợi thế giảm vì hộp đắt chỉ có 1 manh mối đúng trong 3 và giá niêm yết đã nâng theo manh mối.
+2. **Tác động lớn hơn đến từ luật "mỗi lượt có 1 hộp mỗi loại":** chọn loại hộp có lời kỳ vọng cao nhất mỗi lượt (không cần đọc manh mối) cộng 5 đến 17 điểm so với cách mua hộp đắt nhất. Phần lớn lợi thế mà Claude 1 đo ("không đọc 22/23/38 so với 34/38/44") là lợi thế **chọn loại hộp**, không phải đọc manh mối.
+3. **Người chơi tính toán hoàn hảo thắng 38% đến 46%** ở luật chốt (λ = 0,75). Đây là cận trên: bot chọn tối ưu và tính Bayes chính xác. Người chơi thật sẽ thấp hơn.
+4. **Không đổi λ được nhiều nữa:** từ λ = 0,75 lên 1,0 chỉ giảm thêm khoảng 1,5 đến 2 điểm. Từ λ = 0,5 xuống 0,75 giảm 1 đến 2 điểm. λ = 0,75 đã đủ.
+5. **Mua thêm manh mối không có lời ở 15 xu** theo đo của Claude 2, trái với nhận xét "hơi có lợi" của Claude 1. Giá trị tối đa của 2 manh mối thêm miễn phí chỉ là +1,4 đến +1,8 điểm ở λ = 0,75, nên giá phải gần 5 xu hoặc manh mối trả phí phải đáng tin hơn.
+
+### Kết quả theo luật chốt
+
+Cấu hình đã duyệt (G1), 2.000 seed, thắng%, theo thứ tự thận trọng + giám định / liều + giám định / combo nhỏ + giám định / combo lớn + giám định.
+
+| Cách chơi | Thận trọng | Liều | Combo nhỏ | Combo lớn |
+| --- | --- | --- | --- | --- |
+| Mua hộp đắt nhất mua được (bậc thang cũ, không đọc) | 22,9 | 23,7 | 35,3 | 38,4 |
+| Mỗi lượt chọn loại hộp có lời cao nhất, **không đọc manh mối** | 35,0 | 40,8 | 42,6 | 43,8 |
+| Chọn loại hộp và đọc manh mối, giá cố định (λ = 0) | 45,4 | 50,8 | 52,5 | 52,6 |
+| Đọc manh mối, giá theo manh mối λ = 0,5 | 40,6 | 46,6 | 46,6 | 48,2 |
+| **Đọc manh mối, λ = 0,75 (luật chốt)** | **38,5** | **45,2** | **45,8** | **46,4** |
+| Đọc manh mối, λ = 1,0 | 36,9 | 43,3 | 44,5 | 45,8 |
+
+Tách các tác động (so với cùng luật không đọc, 35,0 / 40,8 / 42,6 / 43,8):
+
+| Tác động | Thận trọng | Liều | Combo nhỏ | Combo lớn |
+| --- | --- | --- | --- | --- |
+| Chọn loại hộp (so với bậc thang cũ) | +12,1 | +17,1 | +7,3 | +5,4 |
+| Đọc manh mối, λ = 0 | +10,4 | +10,0 | +9,9 | +8,8 |
+| Đọc manh mối, λ = 0,5 | +5,6 | +5,8 | +4,0 | +4,4 |
+| **Đọc manh mối, λ = 0,75** | **+3,5** | **+4,4** | **+3,2** | **+2,6** |
+| Đọc manh mối, λ = 1,0 | +1,9 | +2,5 | +1,9 | +2,0 |
+
+### Mua thêm manh mối (λ = 0,75, mỗi hộp tốt nhất mua tối đa 2 manh mối khi còn mơ hồ)
+
+| Giá manh mối | Thận trọng | Liều | Combo nhỏ | Combo lớn |
+| --- | --- | --- | --- | --- |
+| Chỉ manh mối miễn phí | 38,5 | 45,2 | 45,8 | 46,4 |
+| 30 xu | 37,0 (−1,5) | 42,0 (−3,2) | 44,5 (−1,3) | 46,1 (−0,3) |
+| 15 xu | 37,2 (−1,3) | 43,7 (−1,5) | 45,2 (−0,6) | 45,7 (−0,7) |
+| Cận trên: 3 manh mối đều miễn phí | 40,2 (+1,7) | 46,8 (+1,6) | 47,2 (+1,4) | 48,2 (+1,8) |
+
+Giá trị tối đa của việc xem đủ 3 manh mối chỉ +1,4 đến +1,8 điểm ở λ = 0,75 (+3,9 đến +5,9 ở λ = 0). Một lần mua 2 manh mối 15 xu tốn 30 xu mỗi hộp, lớn hơn mức lợi. Nếu muốn mua thêm manh mối thành quyết định thật, có hai hướng chưa đo: giảm giá xuống khoảng 5 xu, hoặc làm manh mối trả phí **chắc đúng** (trong khi manh mối miễn phí có thể sai) để người chơi trả tiền mua sự chắc chắn.
+
+### Kết luận về mục tiêu ván khó
+
+- Bot thường (mua hộp đắt nhất) vẫn 15% đến 24% như đã đo.
+- **Người chơi biết tính hoàn hảo** thắng 38% đến 46%. So với mục tiêu "người biết tính cao hơn bot, nhưng không áp đảo" thì **chấp nhận được**, vì đây là cận trên.
+- Phần lớn kỹ năng đến từ **chọn loại hộp theo giá trị kỳ vọng** (tránh Rương Đen lỗ, ưu tiên H2 và H3), đến từ đọc manh mối ít hơn. Nên cân nhắc thể hiện giá trị kỳ vọng từng loại hộp trên UI hay để người chơi tự tính. Điều này tác động đến độ khó cảm nhận, không đến cân bằng.
+- Chưa đo: người chơi thật có kém tối ưu bao nhiêu, và ảnh hưởng của biến cố đến việc chọn loại hộp (E3 giảm giá H2 20%).
+
+### Lỗi và phát hiện (cập nhật)
+
+| Mã | Mức | Mô tả | Chủ xử lý |
+| --- | --- | --- | --- |
+| D-26 | Đã đóng | Manh mối gắn hiện vật, H1 và H2 2 đúng 1 sai, H3 và Rương Đen 1 đúng 2 sai, M = 1, giá theo manh mối đầu | Claude 1 đã chốt |
+| D-27 | Đã giải | Bot đọc tối ưu thắng 57% đến 62% với M = 3, giá cố định. Với luật chốt còn 38% đến 46% | Luật chốt đủ |
+| D-28 | Trung bình | Mua thêm manh mối 15 xu không có lời (−0,6 đến −1,5 điểm), trái nhận xét ban đầu | Claude 1 chọn: giá khoảng 5 xu hoặc manh mối trả phí chắc đúng |
+| O-04 | Cân bằng | Phần lớn lợi thế của "người biết tính" đến từ chọn loại hộp (+5 đến +17 điểm) chứ không từ đọc manh mối (+2 đến +4) | Quyết định có thể hiện giá trị kỳ vọng hộp trên UI không |
+
+---
+
+## Phụ lục: đo theo giả định cũ (M = 3, mọi hộp 2 đúng 1 sai, giá cố định)
+
+Các mục dưới đây là bản đo trước khi Claude 1 chốt luật. Kết luận "57% đến 62%" thuộc về giả định này và **không áp dụng cho luật chốt**.
+
+## Kết luận ngắn (theo giả định cũ)
 
 1. **Đọc manh mối là kỹ năng rất mạnh, mạnh quá mức mục tiêu.** Bot không đọc thắng 23% đến 38%. Bot đọc đúng thắng **57% đến 62%** khi chỉ mua hộp có giá trị kỳ vọng từ 1,3 lần giá hộp trở lên. Chênh 21 đến 38 điểm.
 2. **Quyền từ chối hộp xấu là nguồn sức mạnh chính.** Chỉ cần xem 1 hộp và được bỏ qua nếu manh mối xấu đã cộng 14 đến 28 điểm. Xem nhiều hộp để chọn (M) cộng thêm 5 đến 10 điểm.
@@ -20,7 +88,8 @@ cd QA
 python3 clue_sim.py                                          # bảng 1 và 2, ~7 phút
 python3 -c "import clue_sim as C; C.sweep_controls()"        # bảng 3, ~6 phút
 python3 -c "import clue_sim as C; C.sweep_pricing()"         # bảng 4, ~5 phút
-python3 -m unittest -v test_clues                            # 6 test mô hình manh mối
+python3 -c "import clue_sim as C; C.sweep_rules(); C.sweep_isolate(); C.sweep_oracle()"   # số liệu theo luật chốt, ~15 phút
+python3 -m unittest -v test_clues                            # 9 test mô hình manh mối
 ```
 
 ## Giả định
