@@ -44,6 +44,18 @@ class Clues(unittest.TestCase):
         for o in C.GROUPS:
             self.assertAlmostEqual(sum(C.likelihood([g], o, 1) for g in C.GROUPS), 1.0, places=9)
 
+    def test_origin_masses_sum_to_one(self):
+        r = FakeRun()
+        C.R.FAKE_BY_BOX.clear()
+        for box in ("H2", "H3", "RD"):
+            self.assertAlmostEqual(sum(C.origin_masses(r, box, [HD]).values()), 1.0, places=9)
+
+    def test_known_origin_value_orders_items(self):
+        r = FakeRun()
+        C.R.FAKE_BY_BOX.clear()
+        self.assertLess(C.value_given_origin(r, "H2", HD), C.value_given_origin(r, "H2", TL))
+        self.assertGreater(C.value_given_origin(r, "RD", TT), C.value_given_origin(r, "RD", NHT) * 0.5)
+
     def test_three_clues_pin_down_origin(self):
         self.assertGreater(C.likelihood([HD, HD, TL], HD), 10 * C.likelihood([HD, HD, TL], TL))
 

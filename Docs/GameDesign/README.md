@@ -62,8 +62,10 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 **[ĐỀ XUẤT] Kệ hộp và manh mối.** Chi tiết và bảng giá ở [Docs/Content/NoiDungMau.md](../Content/NoiDungMau.md) mục 5.
 - Mỗi **lượt mua** (tối đa 3 lượt mỗi ngày), Dì Mận bày **1 hộp mỗi loại**. Người chơi chọn mua **1 hộp** hoặc **dừng mua** trong ngày. Không đổi hộp trong cùng lượt, hộp bị bỏ qua không quay lại.
 - Mỗi hộp là vật thể riêng, hiện vật bên trong định sẵn theo seed. Hộp có **3 manh mối** gợi nhóm nguồn gốc: H1 và H2 có 2 đúng 1 sai, H3 và Rương Đen chỉ 1 đúng 2 sai.
-- Người chơi thấy **1 manh mối miễn phí** mỗi hộp, mua thêm **15 xu** mỗi manh mối, tối đa 3.
-- **Giá niêm yết đi theo manh mối đầu tiên** (hệ số 0,75): Dì Mận cũng đọc manh mối nên hộp được cho là tốt bị nâng giá.
+- Người chơi thấy **1 manh mối miễn phí** mỗi hộp (có thể sai), và trả **15 xu** hỏi **lời mách của Dì Mận** để biết chắc nhóm nguồn gốc thật, một lần mỗi hộp.
+- **Giá hộp dao động theo ngày:** giá gốc của mỗi loại hộp lệch ngẫu nhiên đều trong khoảng cộng trừ 20% mỗi ngày, công bố đầu ngày trước khi mua, nên loại hộp tốt nhất đổi theo ngày và người chơi phải tính lại mỗi ngày.
+- **Giá niêm yết đi theo manh mối đầu tiên** (hệ số 0,75): Dì Mận cũng đọc manh mối nên hộp được cho là tốt bị nâng giá. Giá niêm yết bằng giá hôm nay nhân hệ số theo manh mối.
+- Giao diện **không hiển thị giá trị kỳ vọng** của từng loại hộp. Người chơi tự tính từ giá niêm yết, tỷ lệ hàng giả của loại và manh mối.
 
 ## 4. Gia truyền, tạo tác và Bí Khế
 
@@ -100,7 +102,7 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 | --- | --- |
 | Vốn đầu ván | 1.000 xu |
 | Nợ ngày 1–7 | 200 / 350 / 500 / 750 / 1.050 / 1.500 / 2.200 xu |
-| Giá các hộp thường | 100 / 350 / 800 xu |
+| Giá gốc các hộp thường (dao động cộng trừ 20% mỗi ngày) | 100 / 350 / 800 xu |
 
 Các mức xu, giá bán, xác suất, quy mô danh mục và mục tiêu tỷ lệ thắng vẫn đang thử nghiệm. Claude 2 so sánh chiến thuật thận trọng, săn combo và liều lĩnh bằng các lượt chạy với seed tái lập. Ghi tỷ lệ thắng, ngày hụt tiền, tần suất hoàn thành combo và giả định trước khi đề xuất thay số. Giới hạn 3 hộp/ngày, thời hạn 7 ngày và quy tắc thanh toán đúng kỳ là luật cốt lõi.
 Xem [checklist công việc](../../TASKS.md).
