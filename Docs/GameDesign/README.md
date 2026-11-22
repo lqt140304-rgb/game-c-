@@ -44,6 +44,7 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 | Đấu giá | Kênh giao dịch cạnh tranh cho hiện vật. Cần chốt thời điểm nhận tiền và xử lý món chưa bán. |
 | Sòng bạc | Lựa chọn rủi ro trong nền kinh tế xu của ván. Cần chốt luật cược, giới hạn và tác động đến khả năng trả nợ. |
 | Cầm cố | Đổi hiện vật lấy thanh khoản. Cần chốt giá cầm, phí, hạn chuộc và điều kiện mất món. |
+
 **[ĐÃ CHỐT]** NPC, biến cố, đấu giá, sòng bạc và cầm cố thuộc thiết kế. **[ĐỀ XUẤT]** Biến cố làm thay đổi nguồn cung, nhu cầu hoặc khả năng tiếp cận dịch vụ trong một khoảng thời gian và được báo qua sổ. Chốt điều kiện phát sinh, thời lượng và tác động trước khi đưa vào bảng cân bằng.
 
 ## 6. Sổ tay, lưu ván và meta progression
@@ -61,5 +62,6 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 | Vốn đầu ván | 1.000 xu |
 | Nợ ngày 1–7 | 200 / 350 / 500 / 750 / 1.050 / 1.500 / 2.200 xu |
 | Giá các hộp thường | 100 / 350 / 800 xu |
+
 Các mức xu, giá bán, xác suất, quy mô danh mục và mục tiêu tỷ lệ thắng vẫn đang thử nghiệm. Claude 2 so sánh chiến thuật thận trọng, săn combo và liều lĩnh bằng các lượt chạy với seed tái lập. Ghi tỷ lệ thắng, ngày hụt tiền, tần suất hoàn thành combo và giả định trước khi đề xuất thay số. Giới hạn 3 hộp/ngày, thời hạn 7 ngày và quy tắc thanh toán đúng kỳ là luật cốt lõi.
 Xem [checklist công việc](../../TASKS.md).
