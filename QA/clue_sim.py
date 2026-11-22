@@ -19,7 +19,7 @@ from sprint3_sim import BOXES, ITEMS, ART, FAKE_P, FAKE_P_V09, FAKE_X, DEBT, QK,
 
 GROUPS = [QK, HD, TL, NHT, CT, TT]
 CLUE_PRICE = 30
-SKILL = dict(M=3, tau=1.0, extra=0, n_true=2, must_buy=False)   # tham số kỹ năng, đổi khi quét
+SKILL = dict(M=3, tau=1.0, extra=0, n_true=2, must_buy=False, lam=0.0)   # tham số kỹ năng, đổi khi quét
 FAKE_BY_BOX = R.FAKE_BY_BOX                          # dùng chung với risk_penalty (G)
 
 
@@ -98,8 +98,14 @@ def choose_and_buy(run, box, reserve_cash):
     for c in cands:
         c["seen"] = nfree
     ev = [posterior_ev(run, box, c["clues"][:c["seen"]]) for c in cands]
+    # giá hộp theo manh mối nhìn thấy (Dì Mận cũng đọc manh mối): lam = 0 giá cố định, 1 giá đúng giá trị
+    lam = SKILL["lam"]
+    prior = posterior_ev(run, box, [])
+    mult = [1 + lam * (e / prior - 1) for e in ev]
+    ev = [e / m for e, m in zip(ev, mult)]
     order = sorted(range(len(cands)), key=lambda i: -ev[i])
     best = order[0]
+    price = round(price * mult[best])
     # mua thêm manh mối cho hộp tốt nhất nếu còn mơ hồ quanh ngưỡng
     extra = SKILL["extra"]
     while extra > 0 and cands[best]["seen"] < 3:
@@ -108,7 +114,7 @@ def choose_and_buy(run, box, reserve_cash):
             break
         g.cash -= CLUE_PRICE
         cands[best]["seen"] += 1
-        ev[best] = posterior_ev(run, box, cands[best]["clues"][:cands[best]["seen"]])
+        ev[best] = posterior_ev(run, box, cands[best]["clues"][:cands[best]["seen"]]) / mult[best]
         order = sorted(range(len(cands)), key=lambda i: -ev[i])
         best = order[0]
         extra -= 1
@@ -242,5 +248,18 @@ def sweep_controls():
                       ("M=3, tau 1,3, phải mua >= 1 hộp mỗi ngày", dict(M=3, tau=1.3, must_buy=True)),
                       ("M=2, tau 1,3, phải mua >= 1 hộp mỗi ngày", dict(M=2, tau=1.3, must_buy=True)),
                       ("M=2, tau 1,3, đúng 1/3, phải mua >= 1", dict(M=2, tau=1.3, n_true=1, must_buy=True))):
+        r = measure_skill(c, n=2000, **kw)
+        print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
+
+
+def sweep_pricing():
+    """Giá hộp phụ thuộc manh mối (lam). Cấu hình G1. python3 -c 'import clue_sim as C; C.sweep_pricing()'"""
+    c = setup(True)
+    ks = ["thận trọng + giám định", "liều + giám định", "combo lớn + giám định"]
+    for label, kw in (("lam 0 (giá cố định), tau 1,3", dict(M=3, tau=1.3)),
+                      ("lam 0,5, tau 1,3", dict(M=3, tau=1.3, lam=.5)),
+                      ("lam 0,5, tau 1,0", dict(M=3, tau=1.0, lam=.5)),
+                      ("lam 1,0, tau 1,0", dict(M=3, tau=1.0, lam=1.0)),
+                      ("lam 0,5, tau 1,3, manh mối đúng 1/3", dict(M=3, tau=1.3, lam=.5, n_true=1))):
         r = measure_skill(c, n=2000, **kw)
         print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
