@@ -9,7 +9,7 @@
 ## 1. Nhân vật và thế giới
 
 **[ĐÃ CHỐT]** Người chơi là người mua và săn đồ. Bối cảnh là khu chợ giao thương cổ vật và hàng hóa đa vũ trụ, từ quá khứ, hiện đại, tương lai đến ngoài hành tinh, thần thoại, cổ tích và các thực tại khác. Một ván xoay quanh áp lực tiền mặt của 7 ngày nợ giang hồ và những cơ hội bất ngờ từ hộp mù.
-**[ĐÃ CHỐT]** Unity 6.3 LTS (6000.3.x), URP, Blender và 3D First-Person. **[ĐỀ XUẤT]** Bản đầu chơi đơn trên Windows PC, dùng C# và Unity Input System. Khu chợ stylized có ánh đèn ấm, quầy sát nhau và đường đi ngắn. Vật phẩm được ưu tiên chi tiết ở khoảng cách gần để đọc vết nứt, dấu ấn và linh kiện.
+**[ĐÃ CHỐT]** Unity 6 (6000.6.9f1), URP, Blender và 3D First-Person. **[ĐỀ XUẤT]** Bản đầu chơi đơn trên Windows PC, dùng C# và Unity Input System. Khu chợ stylized có ánh đèn ấm, quầy sát nhau và đường đi ngắn. Vật phẩm được ưu tiên chi tiết ở khoảng cách gần để đọc vết nứt, dấu ấn và linh kiện.
 
 ## 2. Một ngày và một ván
 
@@ -21,7 +21,7 @@
 
 **[ĐỀ XUẤT] Thiếu tiền khi đến hạn.** Cuối mỗi ngày, Anh Bảy thu đúng khoản của kỳ đó. Nếu tiền mặt không đủ:
 - Người chơi trả bao nhiêu thì trả bấy nhiêu. Phần còn thiếu thành **nợ tồn**.
-- Sau mỗi lần thu nợ, nếu còn nợ tồn thì cộng thêm **phạt 20%** của phần nợ tồn đó (làm tròn lên). Phạt không tính trên phần phạt cũ.
+- Sau mỗi lần thu nợ, nếu còn nợ tồn thì cộng thêm **phạt 20%** của **toàn bộ nợ còn lại** (làm tròn lên). Tức là nợ tồn mới bằng nợ còn lại nhân 1,2. Nợ tồn là **một con số duy nhất**, không tách phần gốc và phần phạt. Tiền trả luôn trừ vào tổng nợ, nên phần phạt cũ cũng chịu phạt ở lần thu sau.
 - Kỳ mới vẫn đến đúng hạn. Nợ tồn cộng dồn vào kỳ mới và phải trả cùng lúc.
 - Không trả trước kỳ chưa đến hạn. Khoản đã thu không hoàn lại.
 - **Ngoại lệ duy nhất:** gia truyền GT1 (Sổ Ghi Nợ Cũ) cho hoãn kỳ nợ của một ngày, một lần mỗi ván, theo luật riêng ở [Docs/Content/GiaTruyenTaoTacBiKhe.md](../Content/GiaTruyenTaoTacBiKhe.md). Kỳ hoãn không bị phạt 20%.
@@ -43,6 +43,7 @@
 | 5 | Ngày 7 tổng phải trả 2.250 xu (kỳ 2.200 cộng nợ tồn 50), người chơi chỉ có 2.200 xu | Còn nợ tồn 50 sau khi thu. Thua cuối ngày 7. |
 | 6 | Ngày 7 trả đủ kỳ và không còn nợ tồn | Thắng. |
 | 7 | Hiện vật trị giá 3.000 xu nhưng tiền mặt 0, chưa bán trước khi thu nợ | Không tính để trả. Ngày 1 thiếu cả 200 xu, nợ tồn thành 240 (200 cộng phạt 40). |
+| 8 | Ngày 2 phải trả 410 (kỳ 350 cộng nợ tồn 60, trong đó 10 là phạt cũ), người chơi chỉ trả 5 xu | Còn 405, phạt 81, nợ tồn 486. Phạt tính trên tổng còn lại, kể cả phần phạt cũ. |
 
 Các con số phạt 20% và ngưỡng 1.000 xu là giá trị thử nghiệm. Claude 2 sẽ kiểm tra lại khi cân bằng.
 
@@ -57,6 +58,13 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 - **Kho đầy:** không mở được hộp mới cho đến khi bán, cầm hoặc đưa đấu giá bớt. Hộp vẫn ở lại bàn, không mất.
 - Hiện vật đang cầm hoặc đang đấu giá không chiếm kho vì đang ở nơi khác. Mỗi món chỉ ở đúng một nơi.
 - Hết ván, hiện vật còn lại không tính vào kết quả.
+
+**[ĐỀ XUẤT] Kệ hộp và manh mối.** Chi tiết và bảng giá ở [Docs/Content/NoiDungMau.md](../Content/NoiDungMau.md) mục 5.
+- Mỗi **lượt mua** (tối đa 3 lượt mỗi ngày), Dì Mận bày **1 hộp mỗi loại**. Người chơi chọn mua **1 hộp** hoặc **dừng mua** trong ngày. Không đổi hộp trong cùng lượt, hộp bị bỏ qua không quay lại.
+- Mỗi hộp là vật thể riêng, hiện vật bên trong định sẵn theo seed. Hộp có **3 manh mối** gợi nhóm nguồn gốc: H1 và H2 có 2 đúng 1 sai, H3 và Rương Đen chỉ 1 đúng 2 sai.
+- Người chơi thấy **1 manh mối miễn phí** mỗi hộp (có thể sai), và trả **15 xu** hỏi **lời mách của Dì Mận** để biết chắc nhóm nguồn gốc thật, một lần mỗi hộp.
+- **Giá niêm yết đi theo manh mối đầu tiên** (hệ số 0,75): Dì Mận cũng đọc manh mối nên hộp được cho là tốt bị nâng giá.
+- Giao diện **không hiển thị giá trị kỳ vọng** của từng loại hộp. Người chơi tự tính từ giá niêm yết, tỷ lệ hàng giả của loại và manh mối.
 
 ## 4. Gia truyền, tạo tác và Bí Khế
 

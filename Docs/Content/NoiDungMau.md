@@ -4,12 +4,12 @@ Danh mục hộp, hiện vật mẫu, manh mối niêm phong và hướng dẫn 
 
 ## 1. Danh mục hộp
 
-| Mã | Tên hộp | Giá | Nhóm nguồn gốc tiềm năng | Hàng giả | Ghi chú |
-| --- | --- | --- | --- | --- | --- |
-| H1 | Hộp Gỗ Nhỏ | 100 xu | Quá khứ | 12% | Hộp thường, dễ mua vào đầu ván. |
-| H2 | Hộp Kim Loại Mờ | 350 xu | Hiện đại, Tương lai | 15% | Hộp thường, có thể ra thiết bị hỏng. |
-| H3 | Hộp Vải Dày | 800 xu | Thần thoại, Cổ tích | 22% | Hộp thường, rủi ro cao hơn. |
-| RD | Rương Đen | 1.500 xu | Mọi nhóm | 30% | Hộp đặc biệt. Xuất hiện từ ngày 4. Gần như hòa vốn, chỉ đáng mua để lấy hiện vật hiếm nhất. |
+| Mã | Tên hộp | Giá | Nhóm nguồn gốc tiềm năng | Hàng giả | Manh mối đúng | Ghi chú |
+| --- | --- | --- | --- | --- | --- | --- |
+| H1 | Hộp Gỗ Nhỏ | 100 xu | Quá khứ | 12% | 2 trên 3 | Hộp thường, dễ mua vào đầu ván. |
+| H2 | Hộp Kim Loại Mờ | 350 xu | Hiện đại, Tương lai | 15% | 2 trên 3 | Hộp thường, có thể ra thiết bị hỏng. Manh mối đọc được nhiều nhất. |
+| H3 | Hộp Vải Dày | 800 xu | Thần thoại, Cổ tích | 22% | 1 trên 3 | Hộp thường, rủi ro cao hơn, nhiều manh mối đánh lạc hướng. |
+| RD | Rương Đen | 1.500 xu | Mọi nhóm | 30% | 1 trên 3 | Hộp đặc biệt. Xuất hiện từ ngày 4. Gần như hòa vốn, chỉ đáng mua để lấy hiện vật hiếm nhất. |
 
 Mỗi lần mở hộp chỉ ra **1 hiện vật**. Tỷ lệ rơi nằm ở mục 3.
 
@@ -72,6 +72,15 @@ Hộp càng đắt thì tỷ lệ lời càng thấp. Rương Đen gần như h�
 
 Hiệu ứng tăng giá bán gồm tạo tác, combo, biến cố và chứng nhận giám định, cộng với nhau theo phép cộng (xem [GiaTruyenTaoTacBiKhe.md](GiaTruyenTaoTacBiKhe.md)).
 
+**Làm tròn:** mọi giá bán **làm tròn xuống đến xu**. Ví dụ V02 (giá nền 385) chất lượng Xước: 385 × 0,7 = 269,5 nên bán 269 xu. Mô hình tham chiếu của Claude 2 dùng cách làm tròn này.
+
+**Giá hiển thị và giá thực nhận.** Hai giá này khác nhau với hiện vật chưa giám định:
+- **Giá hiển thị** (`ListedPrice`) tính như hàng **thật**, theo chất lượng đã thấy khi soi. Giá này **không bao giờ làm lộ hàng giả**.
+- **Giá thực nhận** khi bán tính theo G thật. Nếu là hàng giả thì chỉ bằng 20%, và người chơi chỉ biết điều đó sau khi bán hoặc sau giám định.
+- Sau giám định, món giả hiển thị giá thật (20%) và món thật hiển thị giá cộng 25% chứng nhận.
+
+Nếu giao diện hiển thị trực tiếp giá thực nhận thì người chơi nhìn giá là biết hàng giả, và phạt rủi ro theo hộp (hộp đắt nhiều hàng giả hơn) mất tác dụng.
+
 **Giám định (Giáo Sư Lẫm).**
 - Phí **15% giá nền**, tối thiểu 20 xu.
 - Cho biết món thật hay giả.
@@ -91,30 +100,64 @@ Hiệu ứng tăng giá bán gồm tạo tác, combo, biến cố và chứng nh
 
 Ví dụ V09 Lá bùa (giá nền 895 xu, Nguyên): phí 134 xu. Nếu là hàng thật thì giá bán tăng thêm 224 xu. Nếu là hàng giả thì mất phí 134 xu vô ích. Người chơi phải đọc chất lượng và tỷ lệ giả của hộp để quyết định.
 
-## 5. Manh mối niêm phong
+## 5. Manh mối niêm phong và kệ hộp
 
-Mỗi hộp có 3 manh mối trên niêm phong. Khi xem hộp **trước khi mua**, người chơi thấy **1 manh mối ngẫu nhiên miễn phí**. Hai manh mối còn lại mua thêm tại Quầy Niêm Phong của Dì Mận, **30 xu mỗi manh mối**. Các hiệu ứng "thêm manh mối miễn phí" của gia truyền, tạo tác và combo cộng dồn, nhưng mỗi hộp tối đa 3 manh mối. Manh mối chỉ có giá trị khi người chơi nhìn thấy nó trước lúc quyết định mua.
+### 5.1 Manh mối gắn với hiện vật bên trong
 
-| Hộp | Manh mối | Gợi ý nhóm | Ghi chú |
-| --- | --- | --- | --- |
-| H1 | Sáp đỏ đã sậm màu | Quá khứ | Đúng. |
-| H1 | Tem giấy in chữ mờ | Quá khứ | Đúng. |
-| H1 | Dây buộc có mùi thuốc bắc | Cổ tích | Gây hiểu nhầm. Dùng để thử kỹ năng đọc manh mối. |
-| H2 | Mã vạch bong một góc | Hiện đại | Đúng. |
-| H2 | Tem điện tử nhấp nháy yếu | Tương lai | Đúng. |
-| H2 | Hộp rỗng có tiếng kêu kim loại | Hiện đại | Gợi nhầm sang tiếng kêu của linh kiện. |
-| H3 | Chỉ thêu vàng | Thần thoại | Đúng. |
-| H3 | Lớp vải có hơi ẩm | Cổ tích | Đúng. |
-| H3 | Dấu móng vuốt nhỏ | Thần thoại | Gợi nhầm sang Ngoài hành tinh. |
-| RD | Ánh sáng lam lọt qua khe | Ngoài hành tinh | Đúng. |
-| RD | Có tiếng vọng nhiều lớp | Mọi nhóm | Không gợi nhóm cụ thể. |
-| RD | Ký hiệu khắc nghiêng | Thần thoại | Đúng. |
+Mỗi hộp là một vật thể riêng. Hiện vật, chất lượng và tính xác thực bên trong được định sẵn khi bày hàng (theo seed). Mỗi hộp có **3 manh mối**, mỗi manh mối gợi một **nhóm nguồn gốc**:
+
+- Manh mối **đúng** gợi nhóm nguồn gốc thật của hiện vật bên trong. H1 và H2 có **2 đúng, 1 sai**. H3 và Rương Đen chỉ có **1 đúng, 2 sai**, vì hộp đắt hay bị đánh lạc hướng.
+- Manh mối **sai** gợi một nhóm khác, chọn ngẫu nhiên đều trong 5 nhóm còn lại.
+- Thứ tự ba manh mối được xáo ngẫu nhiên. Người chơi không biết cái nào đúng.
+- Manh mối chỉ cho biết **nhóm nguồn gốc**, không cho biết chất lượng hay hàng giả.
+- H1 chỉ ra hiện vật Quá khứ nên manh mối không phân biệt được món nào, chỉ tạo bầu không khí.
+
+**Từ điển manh mối theo nhóm:**
+
+| Nhóm nguồn gốc | Manh mối |
+| --- | --- |
+| Quá khứ | Sáp đỏ đã sậm màu · Tem giấy in chữ mờ |
+| Hiện đại | Mã vạch bong một góc · Hộp rỗng có tiếng kêu kim loại |
+| Tương lai | Tem điện tử nhấp nháy yếu · Vỏ hộp ấm khi chạm |
+| Ngoài hành tinh | Ánh sáng lam lọt qua khe · Có tiếng vọng nhiều lớp |
+| Cổ tích | Dây buộc có mùi thuốc bắc · Lớp vải có hơi ẩm |
+| Thần thoại | Chỉ thêu vàng · Ký hiệu khắc nghiêng · Dấu móng vuốt nhỏ |
+
+### 5.2 Kệ hộp tại Quầy Niêm Phong
+
+- Mỗi **lượt mua** (tối đa 3 lượt mỗi ngày), Dì Mận bày **1 hộp mỗi loại**: 3 loại, thêm Rương Đen từ ngày 4.
+- Người chơi chọn mua **1 hộp** trong lượt, hoặc **dừng mua** trong ngày. Không đổi hộp trong cùng lượt. Hộp bị bỏ qua không quay lại, lượt sau bày hộp mới.
+- Hộp của mỗi lượt xác định theo (seed, ngày, lượt, loại hộp), nên tải lại không đổi hộp.
+- Mỗi hộp hiển thị: loại, tỷ lệ hàng giả của loại, giá niêm yết và **1 manh mối miễn phí**. CB2 và Mốc 3 Cổ Phong thêm manh mối miễn phí, tối đa 3 manh mối mỗi hộp.
+- **Lời mách của Dì Mận:** trả **15 xu** để biết **nhóm nguồn gốc thật** của hiện vật trong hộp đó. Lời mách **chắc đúng**, khác với manh mối miễn phí có thể sai. Mỗi hộp mua được một lần. Lời mách không cho biết chất lượng hay hàng giả. Giá niêm yết **không đổi** khi mua lời mách.
+
+### 5.3 Giá niêm yết đi theo manh mối
+
+Dì Mận cũng đọc manh mối. Giá niêm yết của hộp thay đổi theo **manh mối miễn phí đầu tiên**, kể cả khi manh mối đó là sai:
+
+> giá niêm yết = giá loại hộp × (1 + 0,75 × (giá trị kỳ vọng sau manh mối ÷ giá trị kỳ vọng trước manh mối − 1)), làm tròn đến 5 xu
+
+Bảng đã tính sẵn, theo độ tin cậy manh mối của từng loại hộp (nhóm của manh mối miễn phí đầu tiên):
+
+| Hộp | Quá khứ | Hiện đại | Tương lai | Ngoài hành tinh | Cổ tích | Thần thoại |
+| --- | --- | --- | --- | --- | --- | --- |
+| H1 | 100 xu | 100 xu | 100 xu | 100 xu | 100 xu | 100 xu |
+| H2 | 350 xu | 260 xu | 395 xu | 350 xu | 350 xu | 350 xu |
+| H3 | 800 xu | 800 xu | 800 xu | 800 xu | 810 xu | 790 xu |
+| RD | 1.500 xu | 1.500 xu | 1.500 xu | 1.535 xu | 1.405 xu | 1.545 xu |
+
+- H1 không đổi giá vì manh mối không phân biệt được hiện vật.
+- **H2 là hộp đọc manh mối rõ nhất:** nhóm Hiện đại chỉ ra V04 giá thấp (260 xu), nhóm Tương lai chỉ ra V05 hoặc V06 (395 xu).
+- H3 và Rương Đen gần như không đổi giá vì chỉ 1 trên 3 manh mối đúng. Hai hộp đắt này là canh bạc, ít thông tin.
+- Giá niêm yết là một thông tin: nếu giá thấp hơn giá loại hộp thì Dì Mận cho rằng hộp xấu. Người chơi tự cân xem có tin Dì Mận hay không.
+
+**Số liệu đo (cận trên, bot đọc manh mối tối ưu):** thắng 34% / 38% / 44% (thận trọng cộng giám định, liều cộng giám định, combo lớn cộng giám định), so với 22% / 23% / 38% khi không đọc manh mối. Xem [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md) mục J.
 
 ## 6. Hướng dẫn soi
 
 Đây là vòng người chơi làm với một hộp, theo đúng [GDD mục 2](../GameDesign/README.md).
 
-1. **Xem hộp và mua.** Trước khi mua, đọc 1 manh mối miễn phí, xem tỷ lệ hàng giả của hộp, và có thể trả thêm để xem manh mối khác. Sau khi mua, hộp nằm trên bàn mở và người chơi mở niêm phong.
+1. **Xem kệ và mua.** Mỗi lượt mua, xem các hộp Dì Mận bày: đọc manh mối miễn phí, giá niêm yết và tỷ lệ hàng giả, có thể trả 15 xu hỏi lời mách của Dì Mận để biết chắc nhóm nguồn gốc thật. Chọn 1 hộp hoặc dừng mua. Sau khi mua, hộp nằm trên bàn mở và người chơi mở niêm phong.
 2. **Nhấc và xoay.** Hiện vật được xoay theo ba trục. Người chơi cần xem ít nhất ba góc để soi xong.
 3. **Soi gần.** Di chuyển gần để thấy vết nứt, dấu triện, linh kiện và chữ. Mỗi hiện vật có ít nhất một dấu hiệu chỉ thấy khi soi gần.
 4. **Đọc thông tin.** Chất lượng và Độ hiếm đã biết. Tính xác thực chưa chắc chắn cho đến khi giám định.
@@ -126,9 +169,9 @@ Mỗi hộp có 3 manh mối trên niêm phong. Khi xem hộp **trước khi mua
 
 ## 7. Kiểm tra nội dung
 
-- Dữ liệu đủ để dựng vòng mua → mở → soi → bán: có 4 loại hộp, 10 hiện vật, 12 manh mối, hướng dẫn soi 6 bước.
+- Dữ liệu đủ để dựng vòng mua → mở → soi → bán: có 4 loại hộp, 10 hiện vật, từ điển 13 manh mối theo nhóm, luật kệ hộp, hướng dẫn soi 6 bước.
 - Mọi hiện vật có nguồn trong ít nhất một hộp (kiểm tra mục 3).
 - Mỗi nhóm nguồn gốc có ít nhất một hộp và một hiện vật.
 - Mỗi hiện vật có độ hiếm. Chỉ độ hiếm Rất hiếm (V07, V10) ảnh hưởng cơ chế, qua biến cố E6.
-- Có manh mối gây hiểu nhầm để thử kỹ năng đọc.
+- Mỗi nhóm nguồn gốc có ít nhất 2 manh mối trong từ điển. Hộp H3 và Rương Đen có nhiều manh mối sai hơn để thử kỹ năng đọc.
 - Hộp càng đắt thì kỳ vọng càng thấp (2,50 > 1,59 > 1,24 > 1,01).

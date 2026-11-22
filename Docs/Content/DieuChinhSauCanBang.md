@@ -174,3 +174,73 @@ Chưa có chiến thuật máy nào đọc manh mối, nên mức độ người
 | D. Luật nợ khắt khe, bỏ trả nợ tồn sớm | Duyệt. |
 | E, F. Kho 8 ô, bàn mở 3 hộp, chỉ lưu tự động | Duyệt. |
 | G. Phạt rủi ro theo hộp | Duyệt. |
+
+## J. Manh mối và kệ hộp (D-26, D-27, D-28), đã duyệt
+
+**Vấn đề Claude 2 nêu** ([KyNangManhMoi.md](../Balance/KyNangManhMoi.md)): nội dung chưa nói manh mối của một hộp cụ thể có liên quan hiện vật bên trong không, và số hộp người chơi xem được (M) chưa có trong GDD. Claude 2 phải giả định, và toàn bộ kết quả phụ thuộc vào giả định đó. Đáng lo hơn: bot đọc manh mối tối ưu thắng **57–62%**, vượt xa mục tiêu "không thắng dễ".
+
+**Quyết định của Claude 1:**
+1. **Manh mối gắn với hiện vật bên trong.** Mỗi hộp có 3 manh mối gợi nhóm nguồn gốc của hiện vật. H1 và H2 có 2 đúng 1 sai, H3 và Rương Đen chỉ 1 đúng 2 sai. Đây là giả định Claude 2 đã dùng, nay thành luật, riêng hộp đắt khó đọc hơn.
+2. **Kệ hộp:** mỗi lượt mua (tối đa 3 lượt mỗi ngày), Dì Mận bày **1 hộp mỗi loại** (M = 1). Chọn 1 hộp hoặc dừng mua, không đổi hộp trong lượt.
+3. **Giá niêm yết đi theo manh mối đầu tiên** với λ = 0,75. Cách này Claude 2 đã chỉ ra là đòn bẩy hiệu quả nhất.
+4. **Lời mách của Dì Mận, 15 xu:** trả tiền để biết chắc nhóm nguồn gốc thật của hiện vật trong hộp, một lần mỗi hộp (chốt sau khi Claude 2 đo hai hướng, xem bên dưới). Bản đầu của tôi là mua thêm manh mối có thể sai, đã bỏ.
+
+**Số liệu** ([QA/clue_rules.py](../../QA/clue_rules.py), mô hình `clue_sim.py` của Claude 2, bot đọc tối ưu và kén hộp τ = 1,3, 1.500 seed, cấu hình đã duyệt). Thắng% của thận trọng + giám định / liều + giám định / combo lớn + giám định:
+
+| Cấu hình | Thắng% |
+| --- | --- |
+| Không đọc manh mối (bot thường) | 22,0 / 23,2 / 37,9 |
+| Giá cố định, M = 3, 2/3 đúng (trước quyết định) | 57 / 62 / 59–60 (Claude 2) |
+| M = 2, λ 0,75, mọi hộp 2/3 đúng | 42,1 / 48,7 / 49,8 |
+| M = 2, λ 0,75, H3 và Rương Đen 1/3 đúng | 42,3 / 49,1 / 50,7 |
+| M = 2, λ 1,0, H3 và Rương Đen 1/3 đúng | 34,8 / 39,7 / 45,5 |
+| **M = 1, λ 0,75, H3 và Rương Đen 1/3 đúng (chọn)** | **33,9 / 38,3 / 43,5** |
+| M = 2, λ 0,75, H3 và Rương Đen 1/3 đúng, người đọc cẩn thận hơn (τ = 1,15) | 29,9 / 36,7 / 45,0 |
+
+Kết quả: người đọc tối ưu hơn bot thường 12 / 15 / 6 điểm, nằm trong khoảng "biết tính thì thắng hơn nhưng không áp đảo". Người chơi thật đọc kém hơn bot Bayes nên thấp hơn nữa.
+
+**Giá mua thêm manh mối có thể sai** (đo sơ bộ của tôi, **đã bị thay** bằng đo của Claude 2 ở dưới; M = 1, λ 0,75):
+
+| Giá mỗi manh mối | Thắng% | So với không mua thêm (33,9 / 38,3 / 43,5) |
+| --- | --- | --- |
+| 10 xu | 40,8 / 44,7 / 49,4 | +6,9 / +6,4 / +5,9 |
+| **15 xu (chọn)** | 37,1 / 40,5 / 48,4 | +3,2 / +2,2 / +4,9 |
+| 20 xu | 33,9 / 35,9 / 44,1 | 0 / −2,4 / +0,6 |
+| 30 xu | 27,9 / 28,1 / 39,1 | −6 / −10 / −4 |
+
+Phép đo sơ bộ này cho rằng 15 xu hơi có lợi, nhưng Claude 2 đo lại bằng mô hình sát luật hơn thì **không đúng** (xem phần D-28 bên dưới).
+
+**Điều cần biết:**
+- **Manh mối thực chất chỉ có ích rõ ở hộp H2.** H1 chỉ ra hiện vật cùng nhóm Quá khứ nên không phân biệt được món nào. H3 và Rương Đen chỉ 1 trên 3 manh mối đúng nên gần như không đổi giá. Vì vậy bảng giá niêm yết ([NoiDungMau.md](NoiDungMau.md) mục 5.3) gần như chỉ khác ở H2 (260 hoặc 395 xu thay vì 350).
+- Nếu sau này muốn manh mối có ích ở nhiều hộp hơn, có thể thêm manh mối về **độ hiếm** (ở H3, độ hiếm phân biệt đúng V08, V09 và V10). Chưa làm vì chưa đo.
+- Mô hình rút hộp mới cho mỗi lượt giống đúng luật kệ hộp. Phần khác biệt nhỏ: giá niêm yết lấy theo manh mối miễn phí **đầu tiên**, còn mô hình tính theo mọi manh mối miễn phí (CB2 và Mốc 3 Cổ Phong). Claude 2 cần đo lại.
+
+**Quyết định (2026-11-22):** chủ dự án **duyệt mục J**. Claude 2 đã đo lại đúng luật kệ hộp ([KyNangManhMoi.md](../Balance/KyNangManhMoi.md)).
+
+**Kết quả đo của Claude 2 (ưu tiên hơn số liệu sơ bộ ở trên):**
+- Người chơi tính toán hoàn hảo thắng **38–46%** ở luật chốt (cận trên), chấp nhận được.
+- **Đọc manh mối chỉ cộng +2 đến +4 điểm** ở λ = 0,75. Phần lớn kỹ năng đến từ **chọn loại hộp mỗi lượt** (+5 đến +17 điểm), do luật "mỗi lượt bày 1 hộp mỗi loại". Con số "34 / 38 / 44" ở trên gộp cả hai tác động.
+- Không cần đổi λ: từ 0,75 lên 1,0 chỉ giảm thêm khoảng 1,5 đến 2 điểm.
+
+**Điều chỉnh lại nhận định của tôi về giá mua thêm manh mối:** tôi từng viết 15 xu "hơi có lợi", nhưng Claude 2 đo bằng mô hình sát luật hơn thì mua thêm manh mối 15 xu **lỗ 0,6 đến 1,5 điểm**. Lợi tối đa của việc xem đủ 3 manh mối chỉ +1,4 đến +1,8 điểm. Vậy ở 15 xu mua thêm manh mối không phải một quyết định thật.
+
+**D-28 đã chốt: hướng B, lời mách chắc đúng 15 xu.** Claude 2 đo hai hướng ([KyNangManhMoi.md](../Balance/KyNangManhMoi.md), luật chốt, λ = 0,75, 2.000 seed). Thắng% của thận trọng / liều / combo nhỏ / combo lớn, kèm số lần bot mua mỗi ván:
+
+| Phương án | Thắng% |
+| --- | --- |
+| Chỉ manh mối miễn phí | 38,5 / 45,2 / 45,8 / 46,4 |
+| A. thêm manh mối **có thể sai**, 10 xu | 37,5 / 44,4 / 45,6 / 46,4 |
+| A. thêm manh mối có thể sai, 5 xu | 37,9 / 44,9 / 45,9 / 46,8 |
+| B. **chắc đúng**, 30 xu | 39,0 / 47,1 / 47,6 / 48,2 |
+| **B. chắc đúng, 15 xu (chọn)** | **40,8 / 47,9 / 48,5 / 48,9** |
+| B. chắc đúng, 10 xu | 39,5 / 47,8 / 48,8 / 49,4 |
+
+- **Hướng A không đáng ở mọi mức giá** (hòa vốn dù chỉ 5 xu), vì manh mối thêm vẫn có thể sai nên ít thông tin.
+- **Hướng B có lợi và là quyết định thật:** ở 15 đến 30 xu bot chỉ mua khoảng 3 đến 4 lần mỗi ván, đúng lúc hộp nằm sát ngưỡng và thông tin sẽ đổi quyết định. Ở 10 xu trở xuống bot mua tới 10 đến 12 lần, gần như mua cho có.
+- Ở 15 xu, lợi cho người chơi khoảng +2,3 đến +2,7 điểm. Trần thắng vẫn quanh 49%, gần như không tăng so với 46% khi chỉ dùng manh mối miễn phí.
+
+Vì vậy luật chốt là: **trả 15 xu hỏi lời mách của Dì Mận để biết chắc nhóm nguồn gốc thật, một lần mỗi hộp**, giá niêm yết không đổi ([NoiDungMau.md](NoiDungMau.md) mục 5.2). `content.json` ghi `extra_clue_kind = certain_origin` và `extra_clue_per_box = 1`.
+
+**O-04 đã chốt (2026-11-22): để người chơi tự tính.** Giao diện không hiển thị giá trị kỳ vọng của từng loại hộp, chỉ hiển thị giá niêm yết, tỷ lệ hàng giả của loại hộp và manh mối. Theo đo của Claude 2, phần lớn kỹ năng của người chơi giỏi nằm ở việc chọn loại hộp (+5 đến +17 điểm), nên quyết định này giữ đúng mục tiêu "cần tính toán kỹ". `content.json` ghi `shelf.show_expected_value = false`.
+
+**Câu hỏi thiết kế còn lại:** để tự tính được, người chơi cần biết hộp nào có thể ra những món nào. Hiện chỉ có nhóm nguồn gốc tiềm năng của hộp. Cần quyết định sổ tay có ghi các hiện vật đã gặp theo từng loại hộp (và giữ qua các ván nhờ Sổ Sưu Tầm) hay không, để người chơi tích lũy hiểu biết thay vì đoán.
