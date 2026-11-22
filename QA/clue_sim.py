@@ -19,7 +19,7 @@ from sprint3_sim import BOXES, ITEMS, ART, FAKE_P, FAKE_P_V09, FAKE_X, DEBT, QK,
 
 GROUPS = [QK, HD, TL, NHT, CT, TT]
 CLUE_PRICE = 30
-SKILL = dict(M=3, tau=1.0, extra=0, acc_free=None)   # tham số kỹ năng, đổi khi quét
+SKILL = dict(M=3, tau=1.0, extra=0, n_true=2, must_buy=False, lam=0.0)   # tham số kỹ năng, đổi khi quét
 FAKE_BY_BOX = R.FAKE_BY_BOX                          # dùng chung với risk_penalty (G)
 
 
@@ -28,16 +28,19 @@ def fake_rate(box, iid):
 
 
 def likelihood(obs, origin):
-    """P(tập manh mối quan sát | hiện vật có nguồn gốc `origin`), cấu trúc [origin, origin, sai]."""
+    """P(tập manh mối quan sát | hiện vật có nguồn gốc `origin`). Cấu trúc 3 manh mối:
+    n_true=2: [origin, origin, sai]; n_true=1: [origin, sai, sai]. Nhóm sai đồng đều trong 5 nhóm khác."""
     others = [g for g in GROUPS if g != origin]
-    total = 0.0
-    for w in others:                             # nhóm sai đồng đều trong 5 nhóm khác
-        L = [origin, origin, w]
+    total, cnt = 0.0, 0
+    wrongs = [(w,) for w in others] if SKILL["n_true"] == 2 else [(a, b) for a in others for b in others]
+    for ws in wrongs:
+        L = [origin] * SKILL["n_true"] + list(ws)
         k = len(obs)
         combos = list(itertools.combinations(range(3), k))
         match = sum(1 for c in combos if sorted(L[i] for i in c) == sorted(obs))
-        total += (match / len(combos)) / len(others)
-    return total
+        total += match / len(combos)
+        cnt += 1
+    return total / cnt
 
 
 def posterior_ev(run, box, obs):
@@ -67,7 +70,9 @@ def make_candidate(run, box):
     fake = run.rng.random() < fake_rate(box, iid)
     origin = run.c.items[iid][0]
     wrong = run.rng.choice([g for g in GROUPS if g != origin])
-    clues = [origin, origin, wrong]
+    clues = [origin] * SKILL["n_true"] + [wrong] * (3 - SKILL["n_true"])
+    if SKILL["n_true"] == 1:
+        clues[2] = run.rng.choice([g for g in GROUPS if g != origin])
     run.rng.shuffle(clues)
     return {"id": iid, "q": qf, "ql": ql, "fake": fake, "appraised": False, "box": box,
             "clues": clues, "seen": 1}
@@ -93,8 +98,14 @@ def choose_and_buy(run, box, reserve_cash):
     for c in cands:
         c["seen"] = nfree
     ev = [posterior_ev(run, box, c["clues"][:c["seen"]]) for c in cands]
+    # giá hộp theo manh mối nhìn thấy (Dì Mận cũng đọc manh mối): lam = 0 giá cố định, 1 giá đúng giá trị
+    lam = SKILL["lam"]
+    prior = posterior_ev(run, box, [])
+    mult = [1 + lam * (e / prior - 1) for e in ev]
+    ev = [e / m for e, m in zip(ev, mult)]
     order = sorted(range(len(cands)), key=lambda i: -ev[i])
     best = order[0]
+    price = round(price * mult[best])
     # mua thêm manh mối cho hộp tốt nhất nếu còn mơ hồ quanh ngưỡng
     extra = SKILL["extra"]
     while extra > 0 and cands[best]["seen"] < 3:
@@ -103,7 +114,7 @@ def choose_and_buy(run, box, reserve_cash):
             break
         g.cash -= CLUE_PRICE
         cands[best]["seen"] += 1
-        ev[best] = posterior_ev(run, box, cands[best]["clues"][:cands[best]["seen"]])
+        ev[best] = posterior_ev(run, box, cands[best]["clues"][:cands[best]["seen"]]) / mult[best]
         order = sorted(range(len(cands)), key=lambda i: -ev[i])
         best = order[0]
         extra -= 1
@@ -131,6 +142,14 @@ def ladder_skill(run, keep_reserve, smart):
                 bought = True
                 break
         if not bought:
+            if SKILL["must_buy"] and g.bought_today == 0:
+                tau, SKILL["tau"] = SKILL["tau"], -1.0
+                for box in ("H2", "H1"):
+                    it = choose_and_buy(run, box, 0)
+                    if it:
+                        P.handle5(run, it, 0, smart)
+                        break
+                SKILL["tau"] = tau
             break
 
 
@@ -215,3 +234,32 @@ if __name__ == "__main__":
             r = measure_skill(c, M=3, tau=tau)
             print("tau %.1f  %6.1f %6.1f %6.1f" % (tau, r["thận trọng + giám định"], r["liều + giám định"], r["combo lớn + giám định"]), flush=True)
         print()
+
+
+def sweep_controls():
+    """Các cách hạ lợi thế của người đọc manh mối (cấu hình G1, ngưỡng tau 1,3). Chạy: python3 -c 'import clue_sim as C; C.sweep_controls()'"""
+    c = setup(True)
+    ks = ["thận trọng + giám định", "liều + giám định", "combo lớn + giám định"]
+    plain = measure_plain(c, 2000)
+    print("không đọc manh mối: " + " ".join("%5.1f" % plain[k] for k in ks))
+    for label, kw in (("M=1, tau 1,3", dict(M=1, tau=1.3)), ("M=2, tau 1,3", dict(M=2, tau=1.3)), ("M=3, tau 1,3", dict(M=3, tau=1.3)),
+                      ("M=3, tau 1,3, manh mối đúng 1/3", dict(M=3, tau=1.3, n_true=1)),
+                      ("M=2, tau 1,3, manh mối đúng 1/3", dict(M=2, tau=1.3, n_true=1)),
+                      ("M=3, tau 1,3, phải mua >= 1 hộp mỗi ngày", dict(M=3, tau=1.3, must_buy=True)),
+                      ("M=2, tau 1,3, phải mua >= 1 hộp mỗi ngày", dict(M=2, tau=1.3, must_buy=True)),
+                      ("M=2, tau 1,3, đúng 1/3, phải mua >= 1", dict(M=2, tau=1.3, n_true=1, must_buy=True))):
+        r = measure_skill(c, n=2000, **kw)
+        print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
+
+
+def sweep_pricing():
+    """Giá hộp phụ thuộc manh mối (lam). Cấu hình G1. python3 -c 'import clue_sim as C; C.sweep_pricing()'"""
+    c = setup(True)
+    ks = ["thận trọng + giám định", "liều + giám định", "combo lớn + giám định"]
+    for label, kw in (("lam 0 (giá cố định), tau 1,3", dict(M=3, tau=1.3)),
+                      ("lam 0,5, tau 1,3", dict(M=3, tau=1.3, lam=.5)),
+                      ("lam 0,5, tau 1,0", dict(M=3, tau=1.0, lam=.5)),
+                      ("lam 1,0, tau 1,0", dict(M=3, tau=1.0, lam=1.0)),
+                      ("lam 0,5, tau 1,3, manh mối đúng 1/3", dict(M=3, tau=1.3, lam=.5, n_true=1))):
+        r = measure_skill(c, n=2000, **kw)
+        print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)

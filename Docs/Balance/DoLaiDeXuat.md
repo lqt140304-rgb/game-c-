@@ -228,7 +228,7 @@ Kết quả:
 4. **Rương Đen hòa vốn (1,01 lần giá hộp)** và trở thành canh bạc thuần: chỉ đáng mua để lấy hiện vật hiếm nhất. Với M3 (Rương Đen từ ngày 1) nó dễ thành bẫy cho người chơi non. Đúng ý "canh bạc cần tính kỹ" nhưng nên cho người chơi thấy tỷ lệ hàng giả của từng hộp.
 5. **Nếu chủ dự án thấy đầu tư thành gần bắt buộc,** dùng G2: liều + giám định hơn thận trọng + giám định 5,5 điểm, đầu tư thấp hơn G1 chút, trần 37,9%.
 
-**Khuyến nghị:** duyệt G1, nâng trần test lên 41. Test đã viết sẵn ở `QA/test_risk_penalty.py` nhưng **tắt cho đến khi duyệt** (đổi `RISK_PENALTY_APPROVED = True`). Đã chạy thử với cờ bật: cả 5 kiểm tra đạt.
+**Cập nhật:** chủ dự án đã duyệt G1 và cả gói (Claude 1 báo trong `TASKS.md`). Test `QA/test_risk_penalty.py` đã **bật** (`RISK_PENALTY_APPROVED = True`, trần 41), cả 5 kiểm tra đạt. `QA/test_proposal.py` khóa gói **trước** phạt rủi ro (giá hệ số 0,85) và giữ nguyên làm mốc so sánh.
 
 ## 11. Xác nhận và cập nhật mô hình theo gói đã chốt
 
@@ -236,6 +236,6 @@ Kết quả:
 
 **Luật dịch vụ bản chốt** đã chuyển vào `QA/services_model.py`: đấu giá chỉ món từ 1.300 xu, sòng bạc cược 100/250/500 và 2 lượt mỗi ngày, cầm được cả tạo tác (60% giá mua, tạo tác bị tháo khỏi ô nên mất combo, chuộc về kho phải trang bị lại). Ca số trong tài liệu của Claude 1 (V10 G 2.600) đều là test. Thêm 7 test cầm tạo tác và test từ chối đấu giá món dưới 1.300 xu.
 
-**Tổng số test:** 129, trong đó 5 test phạt rủi ro đang tắt chờ duyệt, còn lại đều đạt.
+**Tổng số test:** 129, tất cả đạt. Ví dụ dịch vụ đã cập nhật theo bảng giá đã duyệt (nhân 1,10): V10 G 2.860 (phí đấu giá 143, tiền cầm 1.716, chuộc 1.974), V06 G 1.845 (tiền cầm 1.107, đủ trả kỳ ngày 5), V09 G 895 dưới ngưỡng đấu giá 1.300.
 
-**Phát hiện nhỏ cho Claude 1 (D-25):** ca 7 của mục Cầm cố trong `DichVuVaMeta.md` còn ghi "CP3 giá mua 900 xu, nhận 540 xu". Giá CP3 đã chốt là 500 nên tiền cầm là **300 xu**. Mục 4 cũng đã nêu lại mức giá CP3 và TC3 cũ ở nhiều chỗ, cần rà theo gói mới.
+**D-25 đã đóng:** Claude 1 đã sửa ca 7 (CP3 giá 500, nhận 300 xu, chuộc 345) và rà lại ví dụ theo bảng giá mới.
