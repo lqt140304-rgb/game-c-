@@ -24,6 +24,7 @@
 - Sau mỗi lần thu nợ, nếu còn nợ tồn thì cộng thêm **phạt 20%** của phần nợ tồn đó (làm tròn lên). Phạt không tính trên phần phạt cũ.
 - Kỳ mới vẫn đến đúng hạn. Nợ tồn cộng dồn vào kỳ mới và phải trả cùng lúc.
 - Không trả trước kỳ chưa đến hạn. Khoản đã thu không hoàn lại.
+- **Ngoại lệ duy nhất:** gia truyền GT1 (Sổ Ghi Nợ Cũ) cho hoãn kỳ nợ của một ngày, một lần mỗi ván, theo luật riêng ở [Docs/Content/GiaTruyenTaoTacBiKhe.md](../Content/GiaTruyenTaoTacBiKhe.md). Kỳ hoãn không bị phạt 20%.
 - Tài sản chưa đổi thành tiền (hiện vật, tạo tác) không được tính để trả nợ. Muốn dùng phải bán hoặc cầm cố trước khi thu nợ trong cùng ngày.
 
 **[ĐỀ XUẤT] Thắng và thua.**
@@ -48,13 +49,20 @@ Các con số phạt 20% và ngưỡng 1.000 xu là giá trị thử nghiệm. C
 ## 3. Hộp mù, hiện vật và định giá
 
 **[ĐÃ CHỐT]** Hàng hóa có chất lượng, tính xác thực và độ hiếm. **[ĐỀ XUẤT]** Chất lượng thể hiện qua độ nguyên vẹn và độ chuẩn đẹp. Tính xác thực phản ánh nguồn gốc thật, giả hoặc mức độ đã xác minh. Độ hiếm là mức phổ biến của món trong nhóm hàng phù hợp. Một món hiếm vẫn có thể bị hỏng hoặc cần kiểm chứng.
-Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc lời người bán cung cấp manh mối về nguồn hàng. Mẫu vật có giá nền và dấu hiệu nhận diện. Hiện vật thu được có tình trạng và kết quả xác thực riêng. Người chơi cân nhắc giá bán hiện tại, phí giám định hoặc phục chế và lợi ích giữ vật phẩm. **[MỞ]** Bảng rơi, công thức định giá, sức chứa kho, mức thông tin được công bố trước khi mua và tác động của phục chế.
+Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc lời người bán cung cấp manh mối về nguồn hàng. Mẫu vật có giá nền và dấu hiệu nhận diện. Hiện vật thu được có tình trạng và kết quả xác thực riêng. Người chơi cân nhắc giá bán hiện tại, phí giám định hoặc phục chế và lợi ích giữ vật phẩm. **[ĐỀ XUẤT]** Bảng rơi, công thức định giá, giám định, phục chế và tỷ lệ hàng giả theo hộp nằm trong [Docs/Content/NoiDungMau.md](../Content/NoiDungMau.md). Tỷ lệ hàng giả của hộp được hiển thị khi xem hộp.
+
+**[ĐỀ XUẤT] Kho và bàn mở.**
+- **Bàn mở** chứa tối đa 3 hộp chưa mở. Hộp chưa mở không chiếm kho và giữ được qua ngày. Bàn đầy thì không mua thêm hộp.
+- **Kho** có 8 ô cho hiện vật đã mở. Tạo tác không chiếm kho.
+- **Kho đầy:** không mở được hộp mới cho đến khi bán, cầm hoặc đưa đấu giá bớt. Hộp vẫn ở lại bàn, không mất.
+- Hiện vật đang cầm hoặc đang đấu giá không chiếm kho vì đang ở nơi khác. Mỗi món chỉ ở đúng một nơi.
+- Hết ván, hiện vật còn lại không tính vào kết quả.
 
 ## 4. Gia truyền, tạo tác và Bí Khế
 
-- **[ĐÃ CHỐT] Cổ vật gia truyền.** Có từ đầu ván và đem lại nội tại bị động. **[MỞ]** Cách chọn hoặc cấp món đầu ván và danh sách nội tại.
-- **[ĐÃ CHỐT] Tạo tác.** Có tier và hệ. Các món đáp ứng luật cộng hưởng tạo combo, giúp mỗi ván có hướng đầu tư riêng. **[MỞ]** Số ô trang bị, các mốc cộng hưởng, quy tắc cộng dồn, thay món và danh sách hiệu ứng.
-- **[ĐÃ CHỐT] Bí Khế.** Mở khóa theo điều kiện đạt được trong chính ván đang chơi. **[ĐỀ XUẤT]** Sổ tay hiển thị tiến độ điều kiện và thông báo khi đạt. Ví dụ để thử là hoàn thành một combo hoặc giám định hiện vật thuộc nhóm nguồn gốc yêu cầu. **[MỞ]** Điều kiện, phần thưởng và thời điểm hiệu lực của từng Bí Khế.
+- **[ĐÃ CHỐT] Cổ vật gia truyền.** Có từ đầu ván và đem lại nội tại bị động. **[ĐỀ XUẤT]** Mỗi ván rút ngẫu nhiên 1 trong 2 món mẫu, danh sách nội tại nằm trong [Docs/Content/GiaTruyenTaoTacBiKhe.md](../Content/GiaTruyenTaoTacBiKhe.md). Gia truyền GT1 cho hoãn một kỳ nợ, là ngoại lệ duy nhất của luật thiếu tiền ở mục 2.
+- **[ĐÃ CHỐT] Tạo tác.** Có tier và hệ. Các món đáp ứng luật cộng hưởng tạo combo, giúp mỗi ván có hướng đầu tư riêng. **[ĐỀ XUẤT]** 3 ô trang bị (4 ô nếu đạt BK1), mốc cộng hưởng ở 2 và 3 món cùng hệ, quy tắc cộng dồn và danh sách hiệu ứng nằm trong [Docs/Content/GiaTruyenTaoTacBiKhe.md](../Content/GiaTruyenTaoTacBiKhe.md).
+- **[ĐÃ CHỐT] Bí Khế.** Mở khóa theo điều kiện đạt được trong chính ván đang chơi. **[ĐỀ XUẤT]** Sổ tay hiển thị tiến độ điều kiện và thông báo khi đạt. Ví dụ để thử là hoàn thành một combo hoặc giám định hiện vật thuộc nhóm nguồn gốc yêu cầu. **[ĐỀ XUẤT]** Hai Bí Khế mẫu (BK1, BK2) với điều kiện, phần thưởng và thời điểm hiệu lực nằm trong [Docs/Content/GiaTruyenTaoTacBiKhe.md](../Content/GiaTruyenTaoTacBiKhe.md).
 
 ## 5. NPC, biến cố và dịch vụ chợ
 
@@ -74,7 +82,7 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 ## 6. Sổ tay, lưu ván và meta progression
 
 - **Sổ tay trong ván.** Theo dõi ngày, tiền, các kỳ nợ, lượt mua hộp, giao dịch, hiện vật đã xem, combo, Bí Khế và biến cố.
-- **Lưu ván.** **[ĐỀ XUẤT]** Khi tải lại, khôi phục tiền, ngày, số lượt hộp, kho, kết quả hộp đã xác định, trạng thái nợ, trang bị và Bí Khế. Kiểm thử tình huống tải lại sau khi mở hộp, bán món hoặc trả nợ để tránh lặp giao dịch. **[MỞ]** Thời điểm lưu và chính sách khôi phục khi thoát giữa thao tác.
+- **Lưu ván.** **[ĐỀ XUẤT]** Khi tải lại, khôi phục tiền, ngày, số lượt hộp, kho, kết quả hộp đã xác định, trạng thái nợ, trang bị và Bí Khế. Kiểm thử tình huống tải lại sau khi mở hộp, bán món hoặc trả nợ để tránh lặp giao dịch. **[ĐỀ XUẤT]** Chỉ lưu tự động, một ô duy nhất, không có lưu tay và không tải lại bản cũ trong cùng ván. Lưu vào đầu mỗi ngày và sau mỗi giao dịch tiền hoàn tất. Thoát giữa thao tác thì khôi phục về trạng thái ngay sau giao dịch hoàn tất gần nhất. Kết quả ngẫu nhiên xác định theo (seed, ngày, lượt) hoặc theo mã hiện vật, nên tải lại không đổi kết quả.
 - **Meta progression.** **[ĐÃ CHỐT]** Có tiến trình giữa các ván. **[ĐỀ XUẤT]** Ghi nhận bộ sưu tập và mở thêm lựa chọn cho ván sau. Danh sách mở khóa, nguồn phần thưởng và mức ảnh hưởng đến kinh tế đầu ván được đề xuất trong [Docs/Content/DichVuVaMeta.md](../Content/DichVuVaMeta.md).
 
 ## 7. Phạm vi chơi thử và cân bằng

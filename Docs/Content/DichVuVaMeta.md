@@ -6,7 +6,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 - **Luật cốt lõi không bị thay đổi:** biến cố và dịch vụ không đổi lịch nợ, giới hạn 3 hộp mỗi ngày, ngưỡng thua 1.000 xu hay điều kiện thắng.
 - **Giá bán thường (G):** giá bán hiện vật ngay ở quầy tại thời điểm giao dịch. G = giá nền × hệ số chất lượng (Nguyên 1,0, Xước 0,7, Hỏng 0,3) × 0,2 nếu là hàng giả, rồi nhân (1 + tổng hiệu ứng tăng giá bán của tạo tác, combo, biến cố và chứng nhận giám định +25% cho hàng thật đã giám định). Đấu giá và cầm cố đều tính từ G.
-- **Các ví dụ giá trong tài liệu này** dùng hiện vật thật, chất lượng Nguyên, chưa giám định, theo bảng giá nền hệ số 0,85. Nếu chủ dự án duyệt phạt rủi ro (giá nền ×1,10) thì mọi số xu trong ví dụ nhân theo.
+- **Các ví dụ giá trong tài liệu này** dùng hiện vật thật, chất lượng Nguyên, chưa giám định, theo bảng giá nền đã duyệt (hệ số 0,85 nhân 1,10, xem [NoiDungMau.md](NoiDungMau.md)).
 - **Tiền chưa về tay không dùng để trả nợ:** tiền đang chờ đấu giá, hoặc hiện vật đang cầm, không tính vào tiền mặt khi thu nợ.
 - **Mỗi giao dịch có một mã duy nhất.** Tải lại ván không được lặp lại giao dịch đã hoàn tất, và không được hủy giao dịch đang chờ.
 - **Kết quả ngẫu nhiên được chốt theo seed và ghi vào lưu ván trước khi hiển thị.** Tải lại không đổi kết quả.
@@ -29,7 +29,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 | E3 | Thuyền Hàng Ngoài Giới | Giá hộp H2 giảm 20% (350 xu còn 280 xu). |
 | E4 | Giáo Sư Đi Vắng | Không giám định được. |
 | E5 | Chú Rỉ Nghỉ Lễ | Không phục chế được. |
-| E6 | Khách Sộp Đến Chợ | Hiện vật Rất hiếm bán +10%. Độ hiếm Rất hiếm **[ĐỀ XUẤT]** gồm V07 Tinh thể lam và V10 Mảnh vảy long, hai món giá nền cao nhất. Cần ghi vào [NoiDungMau.md](NoiDungMau.md) khi được duyệt. |
+| E6 | Khách Sộp Đến Chợ | Hiện vật Rất hiếm bán +10%. Độ hiếm Rất hiếm gồm V07 Tinh thể lam và V10 Mảnh vảy long, hai món giá nền cao nhất (đã ghi trong [NoiDungMau.md](NoiDungMau.md)). |
 
 **Quy tắc.** Hiệu ứng tăng hoặc giảm giá bán cộng với các hiệu ứng giá bán khác theo phép cộng, đúng quy tắc ở Sprint 2.
 
@@ -66,11 +66,11 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 | Ca | Tình huống | Kết quả |
 | --- | --- | --- |
-| 1 | Ngày 3 gửi V10 thật, Nguyên, chưa giám định (G = 2.600 xu), không giá sàn. | Trả phí 130 xu. Đầu ngày 4 nếu k = 1,3 thì nhận 3.380 xu. |
-| 2 | Gửi V10, sàn 1,3 G (3.380 xu), kết quả k = 1,1 (2.860 xu, thấp hơn sàn). | Không bán, hiện vật trả về, mất phí 130 xu. |
-| 2b | Gửi V10, không giá sàn, kết quả k = 0,9. | Nhận 2.340 xu, thấp hơn giá bán thường 2.600 xu và còn mất phí 130 xu. |
+| 1 | Ngày 3 gửi V10 thật, Nguyên, chưa giám định (G = 2.860 xu), không giá sàn. | Trả phí 143 xu. Đầu ngày 4 nếu k = 1,3 thì nhận 3.718 xu. |
+| 2 | Gửi V10, sàn 1,3 G (3.718 xu), kết quả k = 1,1 (3.146 xu, thấp hơn sàn). | Không bán, hiện vật trả về, mất phí 143 xu. |
+| 2b | Gửi V10, không giá sàn, kết quả k = 0,9. | Nhận 2.574 xu, thấp hơn giá bán thường 2.860 xu và còn mất phí 143 xu. |
 | 3 | Gửi vào ngày 7. | Bị từ chối. |
-| 3b | Gửi V09 (G = 815 xu). | Bị từ chối vì G dưới 1.300 xu. |
+| 3b | Gửi V09 (G = 895 xu). | Bị từ chối vì G dưới 1.300 xu. |
 | 4 | Thiếu 300 xu khi thu nợ cuối ngày, hiện vật đang chờ kết quả. | Không dùng được. Nợ tồn tính theo luật nợ. |
 | 5 | Tải lại ván sau khi gửi, trước khi có kết quả. | Hiện vật vẫn bị khóa, không gửi lần hai, phí không bị trừ lại. |
 
@@ -117,7 +117,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 - Hiện vật đang cầm không bán, giám định, phục chế hay đưa đấu giá được.
 - Hết ván (sau kỳ nợ ngày 7), hiện vật chưa chuộc coi như mất và không tính tài sản.
 - Cầm được **hiện vật và tạo tác**, không cầm gia truyền. Tiền cầm tạo tác bằng 60% giá mua. Trong lúc cầm, tạo tác bị tháo khỏi ô trang bị nên mất cả hiệu ứng và combo. Đây là đánh đổi chính của cầm cố: lấy thanh khoản bằng cách tạm bỏ một combo đã đầu tư.
-- Chuộc tạo tác xong, tạo tác về lại ô trang bị nếu còn ô trống. Nếu ô đã đầy thì giữ trong túi tạo tác (không chiếm kho 8 ô) cho đến khi người chơi thay món. Quá hạn mà chưa chuộc thì mất tạo tác.
+- Chuộc tạo tác xong, tạo tác về túi tạo tác (không chiếm kho 8 ô). Người chơi phải **trang bị lại** vào một ô trống thì mới có hiệu ứng. Quá hạn mà chưa chuộc thì mất tạo tác.
 - Claude 2 đo ở [Sprint 4](../Balance/Sprint4.md) và [DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md) mục 5: cầm tạo tác chỉ đổi tỷ lệ thắng từ −0,1 đến +0,9 điểm và cầm cố nói chung không phụ thuộc nhiều vào phí chuộc, nên giữ phí 15% và hạn 2 ngày. Nó vô hại nhưng chưa phải lựa chọn lớn, vì thường chỉ dùng khi sắp thiếu tiền mà lúc đó đã khá muộn. Cầm cố thú vị hơn khi người chơi có thứ đáng giá đang giữ, nhờ kho 8 ô và tạo tác ở [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md).
 
 **Tiền cầm và chuộc tạo tác** theo giá mua của gói mới (CP3 và TC3 đã giảm xuống 500):
@@ -137,15 +137,15 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 | Ca | Tình huống | Kết quả |
 | --- | --- | --- |
-| 1 | Ngày 3 cầm V10 (G = 2.600 xu). | Nhận 1.560 xu. |
-| 2 | Chuộc V10 vào ngày 4. | Trả 1.794 xu và nhận lại V10. |
+| 1 | Ngày 3 cầm V10 (G = 2.860 xu). | Nhận 1.716 xu. |
+| 2 | Chuộc V10 vào ngày 4. | Trả 1.974 xu và nhận lại V10. |
 | 3 | Không chuộc V10 trước hết ngày 5. | Mất V10. |
 | 4 | Đang cầm 2 món, cầm thêm món thứ 3. | Bị từ chối. |
-| 5 | Ngày 5 thiếu 300 xu trước khi thu nợ, cầm V06 (G = 1.675 xu). | Nhận 1.005 xu, dùng trả nợ cùng ngày. |
+| 5 | Ngày 5 thiếu 300 xu trước khi thu nợ, cầm V06 (G = 1.845 xu). | Nhận 1.107 xu, dùng trả nợ cùng ngày. |
 | 6 | Tải lại ván sau khi cầm. | Món vẫn ở trạng thái đang cầm, không nhận tiền lần hai. |
 | 7 | Cầm CP3 (giá mua 500 xu) đang trang bị. | Nhận 300 xu. CP3 bị tháo khỏi ô trang bị, mất hiệu ứng +10% giá bán hiện vật Thần thoại. Nếu đang có CB3 (CP3 và TC3) thì mất luôn CB3: giám định không còn miễn phí và mất +15% giá bán. |
-| 8 | Chuộc CP3 vào ngày kế tiếp khi còn ô trang bị trống. | Trả 345 xu. CP3 về lại ô trang bị, CB3 trở lại nếu vẫn còn TC3. |
-| 9 | Chuộc CP3 khi 3 ô trang bị đã đầy. | Trả 345 xu. CP3 vào túi tạo tác, chưa có hiệu ứng cho đến khi người chơi thay món. Không chiếm kho 8 ô. |
+| 8 | Chuộc CP3 vào ngày kế tiếp. | Trả 345 xu. CP3 về túi tạo tác. Người chơi trang bị lại thì hiệu ứng trở lại, CB3 trở lại nếu vẫn còn TC3. |
+| 9 | Chuộc CP3 khi 3 ô trang bị đã đầy. | Trả 345 xu. CP3 ở trong túi tạo tác, chưa có hiệu ứng cho đến khi người chơi thay món. Không chiếm kho 8 ô. |
 | 10 | Không chuộc CP3 trước hết ngày hạn. | Mất CP3, không hoàn tiền cầm. |
 
 ## 5. Mở khóa meta

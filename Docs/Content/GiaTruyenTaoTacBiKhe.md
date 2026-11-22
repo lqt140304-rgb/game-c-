@@ -1,46 +1,54 @@
 # Gia truyền, tạo tác, combo và Bí Khế — CHỢ ĐỒ LẠ
 
-Bản nháp của Claude 1 cho Sprint 2. Mọi con số là **[ĐỀ XUẤT]** để thử nghiệm và sẽ do Claude 2 cân bằng lại. Luật nền theo [GDD mục 4](../GameDesign/README.md).
+Nội dung Sprint 2 của Claude 1, **đã cập nhật theo gói điều chỉnh được chủ dự án duyệt** (xem [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md)). Các con số vẫn là giá trị thử nghiệm và đã được Claude 2 đo ở [DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md). Luật nền theo [GDD mục 4](../GameDesign/README.md). Giá bán, giám định và chứng nhận xem [NoiDungMau.md](NoiDungMau.md) mục 4.
 
 **Quy tắc chung áp dụng cho mọi hiệu ứng:**
-- **Giảm phạt nợ, giảm phí giám định, giảm phí phục chế:** không cộng dồn, chỉ lấy mức tốt nhất.
-- **Tăng giá bán:** cộng dồn theo phép cộng. Ví dụ +5% và +10% thành +15%.
+- **Giảm phí giám định, giảm phí phục chế:** không cộng dồn, chỉ lấy mức tốt nhất.
+- **Tăng giá bán:** cộng dồn theo phép cộng, gồm tạo tác, combo, biến cố và chứng nhận giám định. Ví dụ +5% và +10% thành +15%.
 - **Manh mối miễn phí thêm:** cộng dồn nhưng mỗi hộp chỉ có tối đa 3 manh mối.
 - "Trong ván" nghĩa là từ lúc đạt điều kiện đến hết ván. "Trong ngày" nghĩa là đến khi kết thúc ngày.
 - Mọi hiệu ứng đều được ghi vào sổ tay kèm điều kiện và trạng thái.
 
 ## 1. Cổ vật gia truyền
 
-Mỗi ván bắt đầu với **1 cổ vật gia truyền**, rút ngẫu nhiên từ 2 món mẫu. Nội tại là bị động và có hiệu lực trong suốt ván. Đây là cách chọn món đầu ván **[ĐỀ XUẤT]**.
+Mỗi ván bắt đầu với **1 cổ vật gia truyền**, rút ngẫu nhiên từ 2 món mẫu (người chơi đã mở khóa M1 thì được chọn, xem [DichVuVaMeta.md](DichVuVaMeta.md)). Nội tại có hiệu lực trong suốt ván.
 
-| Mã | Tên | Nội tại bị động | Điều kiện kích hoạt | Hiệu lực |
+| Mã | Tên | Nội tại | Điều kiện kích hoạt | Hiệu lực |
 | --- | --- | --- | --- | --- |
-| GT1 | Sổ Ghi Nợ Cũ | Phạt khi thu nợ giảm từ 20% xuống 10%. | Mỗi lần thu nợ còn nợ tồn. | Trong ván. |
+| GT1 | Sổ Ghi Nợ Cũ | **Hoãn nợ:** một lần mỗi ván, hoãn kỳ nợ của ngày đó sang ngày sau. | Người chơi chọn "Hoãn" khi thu nợ. | Một lần mỗi ván. |
 | GT2 | Đèn Dầu Thờ | Khi xem hộp H1 (Hộp Gỗ Nhỏ) trước khi mua, thấy thêm 1 manh mối niêm phong miễn phí. | Xem hộp H1. | Trong ván. |
 
+**Luật hoãn nợ của GT1:**
+1. Kỳ hoãn thành khoản **kỳ × 1,15** (làm tròn lên), trả cùng kỳ của ngày kế tiếp.
+2. Kỳ hoãn **không bị phạt 20%** và **không tính vào ngưỡng thua 1.000 xu**.
+3. Chỉ hoãn **kỳ của ngày đó**, không hoãn nợ tồn. **Không hoãn được kỳ ngày 7.**
+4. Nếu ngày kế tiếp không đủ tiền trả, phần thiếu thành nợ tồn như luật nợ thông thường.
+
 **Ví dụ:**
-- GT1: ngày 2 còn nợ tồn 310 xu, nếu không có GT1 thì phạt 62, có GT1 thì phạt 31. Nợ tồn thành 341 thay vì 372.
+- GT1: ngày 4 người chơi hoãn kỳ 750 xu. Cuối ngày 4 Anh Bảy không thu. Ngày 5 phải trả 1.050 cộng 863 (750 cộng 15%, làm tròn lên) là 1.913 xu, cộng nợ tồn nếu có.
 - GT2: xem H1 có 3 manh mối, người chơi thấy 2 manh mối thay vì 1.
+
+**Đánh đổi của GT1:** trả thêm 15% để có vốn sớm. Dùng sớm để đầu tư thường hợp hơn dùng khi đã thiếu tiền, vì hoãn lúc thiếu tiền chỉ đẩy khoản nợ lớn hơn sang ngày sau.
 
 ## 2. Tạo tác
 
-Có **2 hệ**, mỗi hệ 3 tạo tác với 3 tier. Tạo tác mua ở Kho Tạo Tác (Kim Khuy) và có số ô trang bị giới hạn.
+Có **2 hệ**, mỗi hệ 3 tạo tác với 3 tier. Tạo tác mua ở Kho Tạo Tác (Kim Khuy), có số ô trang bị giới hạn và **không chiếm kho hiện vật**.
 
 - **Hệ Cổ Phong** (gợi nhóm Quá khứ và Thần thoại).
 - **Hệ Thiên Cơ** (gợi nhóm Hiện đại và Tương lai).
 
 | Mã | Tên | Hệ | Tier | Giá mua | Hiệu ứng | Điều kiện kích hoạt | Hiệu lực |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| CP1 | Phiến khắc tre | Cổ Phong | 1 | 150 xu | +5% giá bán hiện vật nhóm Quá khứ. | Bán hiện vật nhóm Quá khứ. | Khi trang bị. |
+| CP1 | Phiến khắc tre | Cổ Phong | 1 | 150 xu | **+5% giá bán mọi hiện vật.** | Bán hiện vật. | Khi trang bị. |
 | CP2 | Hũ đựng đồ | Cổ Phong | 2 | 400 xu | Giảm 10% phí giám định. | Giám định hiện vật. | Khi trang bị. |
-| CP3 | Ấn triện đồng | Cổ Phong | 3 | 900 xu | Hiện vật nhóm Thần thoại bán thêm +10%. | Bán hiện vật nhóm Thần thoại. | Khi trang bị. |
+| CP3 | Ấn triện đồng | Cổ Phong | 3 | **500 xu** | Hiện vật nhóm Thần thoại bán thêm +10%. | Bán hiện vật nhóm Thần thoại. | Khi trang bị. |
 | TC1 | Ốc vít dự phòng | Thiên Cơ | 1 | 120 xu | Giảm 10% phí phục chế. | Phục chế hiện vật. | Khi trang bị. |
 | TC2 | Mắt máy soi | Thiên Cơ | 2 | 450 xu | Hiện vật nhóm Hiện đại hoặc Tương lai hiện thêm 1 dấu hiệu soi gần. | Soi hiện vật thuộc nhóm đó. | Khi trang bị. |
-| TC3 | Lõi năng lượng | Thiên Cơ | 3 | 1.000 xu | Miễn phạt thu nợ (0%) khi nợ tồn sau thu không quá 300 xu. | Mỗi lần thu nợ còn nợ tồn từ 300 xu trở xuống. | Khi trang bị. |
+| TC3 | Lõi năng lượng | Thiên Cơ | 3 | **500 xu** | **+10% giá bán hiện vật nhóm Hiện đại, Tương lai và Ngoài hành tinh.** | Bán hiện vật thuộc các nhóm đó. | Khi trang bị. |
 
 **Ô trang bị:** mặc định **3 ô**. Bí Khế BK1 có thể mở thêm ô thứ 4 (xem mục 5).
 
-**Mốc cộng hưởng [ĐỀ XUẤT]:**
+**Mốc cộng hưởng:**
 - **Mốc 2:** trang bị 2 tạo tác cùng hệ. Hiệu ứng:
   - Cổ Phong: +5% giá bán mọi hiện vật nhóm Quá khứ và Thần thoại.
   - Thiên Cơ: +5% giá bán mọi hiện vật nhóm Hiện đại và Tương lai.
@@ -49,7 +57,7 @@ Có **2 hệ**, mỗi hệ 3 tạo tác với 3 tier. Tạo tác mua ở Kho T�
   - Thiên Cơ: +10% giá bán hiện vật đã phục chế.
 
 **Ví dụ cộng hưởng:**
-- Trang bị CP1 và CP2: đạt Mốc 2 Cổ Phong. Hiện vật Quá khứ và Thần thoại bán thêm +5%, cộng với +5% của CP1 cho nhóm Quá khứ.
+- Trang bị CP1 và CP2: đạt Mốc 2 Cổ Phong. Hiện vật Quá khứ và Thần thoại được +5% từ Mốc 2. Cộng với CP1 +5% cho mọi hiện vật (xem thêm CB1 ở mục 3).
 - Trang bị CP1, CP2, CP3: đạt Mốc 3 Cổ Phong. Mốc 2 không còn áp dụng.
 
 ## 3. Combo
@@ -58,13 +66,13 @@ Combo kích hoạt khi trang bị **đủ các tạo tác trong danh sách**, kh
 
 | Mã | Tên | Điều kiện | Hiệu ứng | Hiệu lực |
 | --- | --- | --- | --- | --- |
-| CB1 | Bộ Trà Cổ (combo nhỏ) | CP1 và CP2 | Mỗi hiện vật nhóm Quá khứ bán trong ngày được cộng thêm 10% giá. | Trong ngày. Nếu đủ 2 món thì áp dụng ngay. |
+| CB1 | Bộ Trà Cổ (combo nhỏ) | CP1 và CP2 | **Mọi hiện vật bán trong ngày được cộng thêm 10% giá.** | Trong ngày bán, khi đang đủ 2 món. |
 | CB2 | Tuần Tra Giới (combo nhỏ) | TC1 và TC2 | Mỗi hộp xem trước khi mua có thêm 1 manh mối miễn phí. | Trong ván. |
-| CB3 | Chợ Đa Giới (combo lớn) | CP3, TC3 và 1 gia truyền bất kỳ | Mỗi ván được giám định miễn phí 1 hiện vật. | Trong ván, dùng 1 lần. |
+| CB3 | Chợ Đa Giới (combo lớn) | CP3, TC3 và gia truyền (luôn có sẵn) | **Giám định miễn phí không giới hạn và mọi hiện vật bán thêm +15% giá.** | Trong ván. |
 
 **Ví dụ combo:**
-- CB1: ngày 3 trang bị CP1 và CP2, bán 2 Bình sứ (V01) nhóm Quá khứ với giá nền 300 xu. Mỗi món được cộng thêm 10%.
-- CB3: khi trang bị CP3 và TC3, lần giám định đầu tiên trong ván được miễn phí (cổ vật gia truyền luôn có sẵn nên không cần kiểm tra thêm). Các lần sau tính phí bình thường.
+- CB1: ngày 3 trang bị CP1 và CP2, bán Bình sứ (V01, thật, Nguyên, giá nền 230 xu). Cộng CP1 +5%, CB1 +10% và Mốc 2 Cổ Phong +5% (nhóm Quá khứ) là +20%, nên bán được 276 xu thay vì 230. Với hiện vật nhóm Hiện đại như V04 (giá nền 415 xu) chỉ được CP1 và CB1, tức +15%, bán 477 xu.
+- CB3: khi trang bị CP3 và TC3, mọi lần giám định miễn phí. Giám định V10 (thật, Nguyên, giá nền 2.860 xu) được chứng nhận +25%, CP3 +10% cho Thần thoại, CB3 +15%, tổng +50% và bán được 4.290 xu.
 
 ## 4. Thứ tự áp dụng hiệu ứng
 
@@ -75,7 +83,7 @@ Khi có nhiều hiệu ứng trùng thời điểm, áp dụng theo thứ tự:
 4. Combo.
 5. Bí Khế.
 
-Hiệu ứng giảm phạt đã nói ở trên không cộng dồn, nên mức tốt nhất sẽ được chọn.
+Hiệu ứng giảm phí không cộng dồn, nên mức tốt nhất sẽ được chọn. Hiệu ứng tăng giá bán cộng với nhau.
 
 ## 5. Bí Khế mẫu
 
@@ -96,14 +104,18 @@ Bí Khế mở theo điều kiện đạt được **trong chính ván đang ch�
 | --- | --- | --- |
 | 1 | Trang bị CP1, CP2 và TC1. | Đạt Mốc 2 Cổ Phong. CB1 kích hoạt. TC1 giữ hiệu ứng riêng là giảm phí phục chế. Không đạt mốc Thiên Cơ vì chỉ có 1 món. |
 | 2 | Trang bị CP1, CP2, CP3. | Mốc 3 Cổ Phong. Mốc 2 không còn áp dụng. |
-| 3 | Có GT1 và TC3. Thu nợ còn nợ tồn 250 xu, rồi một lần khác còn 310 xu. | Lần 1 phạt 0 vì TC3 tốt hơn GT1. Lần 2 TC3 không áp dụng (quá 300), GT1 phạt 10% là 31. Không cộng dồn. |
-| 4 | Ô trang bị 3 món đã đầy, BK1 đạt. | Mở ô thứ 4 ngay. |
-| 5 | Tải lại ván sau khi đạt BK2. | Trạng thái BK2 và giảm phí giám định được khôi phục. |
-| 6 | Trang bị CP1, TC3 và CB3 nhưng không có CP3. | CB3 không kích hoạt vì thiếu CP3. TC3 vẫn có hiệu ứng riêng. |
+| 3 | Có GT1. Ngày 4 hoãn kỳ 750 xu. | Ngày 5 phải trả 1.050 cộng 863. Không bị phạt 20% cho phần hoãn. |
+| 4 | Có GT1. Hoãn lần thứ hai trong cùng ván. | Từ chối. |
+| 5 | Có GT1. Hoãn kỳ ngày 7. | Từ chối. |
+| 6 | Có GT1. Hoãn một khoản nợ tồn. | Từ chối. Chỉ hoãn được kỳ của ngày đó. |
+| 7 | Ô trang bị 3 món đã đầy, BK1 đạt. | Mở ô thứ 4 ngay. |
+| 8 | Tải lại ván sau khi đạt BK2. | Trạng thái BK2 và giảm phí giám định được khôi phục. |
+| 9 | Trang bị CP1, TC3 và CB3 nhưng không có CP3. | CB3 không kích hoạt vì thiếu CP3. TC3 vẫn có hiệu ứng riêng. |
+| 10 | Trang bị CP3 và TC3, giám định 2 hiện vật trong cùng ngày. | Cả hai lần đều miễn phí. Mọi hiện vật bán thêm +15%. |
+| 11 | Trang bị CP1 và CP2, bán V01 (Quá khứ, giá nền 230) và V04 (Hiện đại, giá nền 415). | V01 được +20% (276 xu). V04 được +15% (477 xu). |
 
-## 7. Cần Claude 2 kiểm tra
+## 7. Kết quả đo của Claude 2
 
-- Mức giảm 10% và 20% có đủ hấp dẫn để người chơi muốn đầu tư không.
-- Combo lớn CB3 có quá mạnh không, vì lần giám định miễn phí đầu tiên có thể đáng kể.
-- Tần suất BK1 đạt trước ngày 5 là bao nhiêu trong các lượt chạy có seed.
-- Phí giám định và phục chế ở mức nào để giảm 10% có ý nghĩa.
+Gói này đã được Claude 2 đo ở [DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md) với bot thường thắng khoảng 15% đến 18%, bot đầu tư 26% đến 38%, combo nhỏ và combo lớn ngang nhau. Hai điểm cần theo dõi khi có bản chơi thật:
+- Hiệu ứng thông tin (CB2, GT2, TC2, Mốc 3 Cổ Phong) không đo được bằng xu, cần thử người chơi.
+- Tần suất đạt BK1 trước ngày 5 và tần suất người chơi chọn combo lớn thay vì combo nhỏ.
