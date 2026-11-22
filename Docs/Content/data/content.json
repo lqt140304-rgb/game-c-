@@ -757,6 +757,7 @@
     "extra_clue_price": 15,
     "extra_clue_kind": "certain_origin",
     "extra_clue_per_box": 1,
+    "show_expected_value": false,
     "price_follows_clue": {
       "lambda": 0.75,
       "round_to": 5,

@@ -241,4 +241,6 @@ Phép đo sơ bộ này cho rằng 15 xu hơi có lợi, nhưng Claude 2 đo l�
 
 Vì vậy luật chốt là: **trả 15 xu hỏi lời mách của Dì Mận để biết chắc nhóm nguồn gốc thật, một lần mỗi hộp**, giá niêm yết không đổi ([NoiDungMau.md](NoiDungMau.md) mục 5.2). `content.json` ghi `extra_clue_kind = certain_origin` và `extra_clue_per_box = 1`.
 
-**Việc còn mở:** **O-04, giao diện:** hiển thị giá trị kỳ vọng từng loại hộp hay để người chơi tự tính. Việc này đổi độ khó cảm nhận chứ không đổi cân bằng. Chờ chủ dự án chọn.
+**O-04 đã chốt (2026-11-22): để người chơi tự tính.** Giao diện không hiển thị giá trị kỳ vọng của từng loại hộp, chỉ hiển thị giá niêm yết, tỷ lệ hàng giả của loại hộp và manh mối. Theo đo của Claude 2, phần lớn kỹ năng của người chơi giỏi nằm ở việc chọn loại hộp (+5 đến +17 điểm), nên quyết định này giữ đúng mục tiêu "cần tính toán kỹ". `content.json` ghi `shelf.show_expected_value = false`.
+
+**Câu hỏi thiết kế còn lại:** để tự tính được, người chơi cần biết hộp nào có thể ra những món nào. Hiện chỉ có nhóm nguồn gốc tiềm năng của hộp. Cần quyết định sổ tay có ghi các hiện vật đã gặp theo từng loại hộp (và giữ qua các ván nhờ Sổ Sưu Tầm) hay không, để người chơi tích lũy hiểu biết thay vì đoán.

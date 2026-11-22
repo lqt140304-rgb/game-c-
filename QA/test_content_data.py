@@ -279,6 +279,7 @@ class ClueRules(unittest.TestCase):
         self.assertEqual(15, sh["extra_clue_price"])
         self.assertEqual("certain_origin", sh["extra_clue_kind"])   # lời mách chắc đúng, không phải manh mối có thể sai
         self.assertEqual(1, sh["extra_clue_per_box"])
+        self.assertFalse(sh["show_expected_value"])   # O-04: người chơi tự tính, UI không hiển thị giá trị kỳ vọng
 
     def test_tag_prices_follow_the_bayes_model(self):
         self.assertEqual(recompute_tag_prices(), D["shelf"]["price_follows_clue"]["tag_price"])
