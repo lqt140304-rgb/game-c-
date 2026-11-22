@@ -44,6 +44,3 @@ sysinfo.txt
 # Python
 __pycache__/
 *.pyc
-
-# Meshy-generated item models (~40MB each); keep out of git, use LFS or compress first
-Assets/_Project/Art/Items/*.glb
