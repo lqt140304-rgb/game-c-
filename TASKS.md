@@ -6,28 +6,18 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 ## Sprint 0 — Nền móng
 
-- [ ] **Claude 2** — Lập bảng giả định vốn, nợ, giá, giá bán và xác suất rơi. Nghiệm thu khi có bảng cân bằng ban đầu và ca kiểm thử vượt giới hạn mua, trả nợ sớm, thiếu tiền, bán trùng.
-  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/README.md](Docs/Balance/README.md) có bảng giả định (mục 1–2), mô phỏng khả thi (mục 3) và 16 ca biên BT-01–BT-16 (mục 4).
-  - **Cần Claude 1 chốt** (mục 5 của tài liệu): hậu quả thiếu tiền, điều kiện thắng/thua, sức chứa kho, phí giám định/phục chế, bán tức thì hay không. Codex dùng bảng ở mục 2 làm dữ liệu mẫu.
-- [ ] **Codex** — Thống nhất hợp đồng dữ liệu hộp, hiện vật, kho, ngày, nợ và thông báo thay đổi với Antigravity. Nghiệm thu khi mỗi bên xác định được dữ liệu đọc và hành động ghi.
+Đã nghiệm thu toàn bộ.
 
 ## Sprint 1 — Một ngày chơi First-Person
 
-- [ ] **Claude 2** — Kiểm thử dòng tiền mẫu và các ca mua hộp thứ tư, hết tiền, kho đầy, bán trùng. Nghiệm thu khi có kết quả tái hiện và lỗi được ghi nhận.
-  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint1.md](Docs/Balance/Sprint1.md). Chạy `cd QA && python3 -m unittest -v test_economy` (17 test đạt) và `python3 scenario_cashflow.py`.
-  - **Lỗi ghi nhận:** D-01 `kết thúc ngày` bấm đúp thu nợ hai ngày (Codex, Antigravity chặn ở UI). D-02 hộp chưa mở có chiếm kho không, D-03 hậu quả thiếu tiền (Claude 1 chốt). Chi tiết trong tài liệu.
-  - **Codex:** `QA/test_economy.py` là đặc tả hành vi, có thể chuyển sang kiểm thử C#.
 - [ ] **Codex** — Triển khai tiền, hộp, kho, định giá mẫu, bán hàng, kết thúc ngày và kỳ thu nợ. Nghiệm thu khi giao dịch hợp lệ cập nhật một lần và lượt mua đặt lại đúng ngày.
+  - *Bàn giao từ các mục đã nghiệm thu:* đặc tả hành vi nằm ở `QA/test_economy.py` và `QA/economy_model.py` (kết quả tái hiện ở [Docs/Balance/Sprint1.md](Docs/Balance/Sprint1.md)). Cần chặn lỗi D-01: bấm đúp "kết thúc ngày" không được thu nợ hai lần. Hợp đồng dữ liệu còn thiếu các lệnh và trường của luật mới, xem [Docs/Content/YeuCauDuLieu.md](Docs/Content/YeuCauDuLieu.md). Số liệu nạp từ `Docs/Content/data/content.json`.
 - [ ] **Antigravity** — Dựng quầy, bàn mở, cầm xoay hiện vật và UI giao dịch. Nghiệm thu khi người chơi tự đi hết vòng từ chọn hộp đến nhận tiền bán trong Play Mode.
 
 ## Sprint 2 — Tạo tác và ván 7 ngày
 
-- [ ] **Claude 2** — Kiểm thử lịch nợ, combo, tiến độ Bí Khế và tải lại ván. Nghiệm thu khi có ca trả đúng hạn, chặn trả trước, thiếu tiền, đạt và chưa đạt điều kiện.
-  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint2.md](Docs/Balance/Sprint2.md). Chạy `cd QA && python3 -m unittest -v test_economy test_sprint2` (52 test đạt). Luật nợ lấy từ đề xuất của Claude 1 (commit `643ae03`). Combo và Bí Khế dùng giá trị tạm vì nội dung Sprint 2 của Claude 1 chưa có.
-  - **Cần chủ dự án chọn:** luật nợ tồn làm tỷ lệ thắng giảm mạnh và không ván nào thiếu tiền rồi gỡ lại được (D-05, O-02). Claude 2 đề xuất tăng giá bán 1,3 lần, chưa áp dụng.
-  - **Cần Claude 1:** chốt D-02, D-05 đến D-08 và chính sách lưu ván, soạn combo và Bí Khế thật, rà bảng giá nền (hộp H1 cho 4,58 lần giá hộp, Rương Đen 0,89 lần).
-  - **Codex:** các test trong `QA/` là đặc tả hành vi cho nợ tồn, combo, Bí Khế và lưu ván.
 - [ ] **Codex** — Nối gia truyền, tier, trang bị, combo, Bí Khế, tiến trình 7 ngày và lưu ván. Nghiệm thu khi có thể chơi tới kết quả và tải lại đúng trạng thái mà không lặp giao dịch.
+  - *Bàn giao từ các mục đã nghiệm thu:* đặc tả hành vi cho nợ tồn, combo, Bí Khế, hoãn nợ GT1 và lưu ván nằm ở các test trong `QA/` (xem [Docs/Balance/Sprint2.md](Docs/Balance/Sprint2.md)). Lưu ván chỉ tự động, theo GDD mục 6.
 - [ ] **Antigravity** — Dựng Kho Tạo Tác, UI sổ và trang bị, cảnh thu nợ cùng màn kết quả. Nghiệm thu khi người thử đọc được nợ, combo, tiến độ Bí Khế và lý do kết thúc ván.
 
 ## Sprint 3 — Cân bằng và nghiệm thu vertical slice
