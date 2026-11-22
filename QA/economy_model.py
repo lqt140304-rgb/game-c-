@@ -154,6 +154,9 @@ class Game:
     def end_day_collect_only(self):
         raise Rejected("thanh toán chỉ diễn ra khi kết thúc ngày")
 
+    def penalty_rate(self):
+        return PENALTY_RATE
+
     def end_day(self):
         self._check_playing()
         due_total = DEBT[self.day - 1] + self.arrears
@@ -161,7 +164,7 @@ class Game:
         self.cash -= pay
         self.arrears = due_total - pay
         if self.arrears > 0:
-            self.arrears += math.ceil(self.arrears * PENALTY_RATE)
+            self.arrears += math.ceil(self.arrears * self.penalty_rate())
         else:
             self.paid.append(self.day)
         if self.arrears > LOSE_ARREARS_OVER:

@@ -38,6 +38,9 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 - [ ] **Claude 1** — Chơi thử và rà nhịp, độ rõ thông tin, quyết định giữ tiền hay đầu tư. Nghiệm thu khi có phản hồi từ ván hoàn chỉnh và danh sách điều chỉnh đã duyệt.
 - [ ] **Claude 2** — So sánh chiến thuật thận trọng, săn combo và liều lĩnh trên seed tái lập. Nghiệm thu khi có tỷ lệ thắng, ngày hụt tiền, tần suất combo và đề xuất có số liệu.
+  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint3.md](Docs/Balance/Sprint3.md). Chạy `cd QA && python3 sprint3_report.py`. 10.000 seed, dùng nội dung thật của Claude 1 (nhánh `claude/relaxed-cerf-wgnu7l`).
+  - **Kết quả chính:** nội dung gốc thắng 0% ở cả ba chiến thuật (H2, H3, Rương Đen lỗ kỳ vọng). Với giá nền đề xuất: thận trọng 41,9%, săn combo 19,3%, liều 48,9%. Tạo tác hiện net âm (chi 996 xu, thu thêm 170 xu).
+  - **Cần chủ dự án chọn:** áp dụng bảng giá nền mới và chốt hệ số bán món chưa giám định. **Cần Claude 1:** cho CP1 và CB1 áp dụng mọi hiện vật và nhân 2 (săn combo lên 50,3%), cập nhật nội dung theo giá mới, tìm đường gỡ lại sau khi thiếu tiền.
 - [ ] **Codex** — Sửa lỗi cốt lõi, chạy hồi quy và đóng gói bản PC. Nghiệm thu khi bản chạy chơi được từ đầu đến kết quả ngày 7 với các ca biên đã kiểm.
 - [ ] **Antigravity** — Hoàn thiện tương tác, âm thanh, ánh sáng, phản hồi mở hộp và khả năng đọc UI. Nghiệm thu qua một ván chơi trên bản PC.
 
