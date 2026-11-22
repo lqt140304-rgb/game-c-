@@ -1,11 +1,12 @@
 # Biến cố, dịch vụ chợ và mở khóa meta — CHỢ ĐỒ LẠ
 
-Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** để thử nghiệm. Claude 2 sẽ đo ảnh hưởng đến thanh khoản, nợ và tiến trình. Luật nền theo [GDD mục 2, 5 và 6](../GameDesign/README.md). Hiệu ứng tạo tác theo [GiaTruyenTaoTacBiKhe.md](GiaTruyenTaoTacBiKhe.md).
+Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** để thử nghiệm. Luật nền theo [GDD mục 2, 5 và 6](../GameDesign/README.md). Hiệu ứng tạo tác theo [GiaTruyenTaoTacBiKhe.md](GiaTruyenTaoTacBiKhe.md), **đã rà theo gói điều chỉnh ở [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md)** (giá tạo tác tier 3 là 500, CP1 +5% mọi hiện vật, CB1 +10%, CB3 miễn phí giám định và +15% giá bán, chứng nhận giám định +25%, phí giám định 15%). Claude 2 đã đo đấu giá và cầm tạo tác theo gói này ([DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md)). Sòng bạc, biến cố và meta chưa đo theo gói mới, xem mục 7.
 
 ## 0. Quy tắc chung
 
 - **Luật cốt lõi không bị thay đổi:** biến cố và dịch vụ không đổi lịch nợ, giới hạn 3 hộp mỗi ngày, ngưỡng thua 1.000 xu hay điều kiện thắng.
-- **Giá bán thường (G):** giá bán hiện vật ngay ở quầy tại thời điểm giao dịch, đã tính hiệu ứng tăng giá bán của tạo tác, combo và biến cố. Đấu giá và cầm cố đều tính từ G.
+- **Giá bán thường (G):** giá bán hiện vật ngay ở quầy tại thời điểm giao dịch. G = giá nền × hệ số chất lượng (Nguyên 1,0, Xước 0,7, Hỏng 0,3) × 0,2 nếu là hàng giả, rồi nhân (1 + tổng hiệu ứng tăng giá bán của tạo tác, combo, biến cố và chứng nhận giám định +25% cho hàng thật đã giám định). Đấu giá và cầm cố đều tính từ G.
+- **Các ví dụ giá trong tài liệu này** dùng hiện vật thật, chất lượng Nguyên, chưa giám định, theo bảng giá nền đã duyệt (hệ số 0,85 nhân 1,10, xem [NoiDungMau.md](NoiDungMau.md)).
 - **Tiền chưa về tay không dùng để trả nợ:** tiền đang chờ đấu giá, hoặc hiện vật đang cầm, không tính vào tiền mặt khi thu nợ.
 - **Mỗi giao dịch có một mã duy nhất.** Tải lại ván không được lặp lại giao dịch đã hoàn tất, và không được hủy giao dịch đang chờ.
 - **Kết quả ngẫu nhiên được chốt theo seed và ghi vào lưu ván trước khi hiển thị.** Tải lại không đổi kết quả.
@@ -28,7 +29,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 | E3 | Thuyền Hàng Ngoài Giới | Giá hộp H2 giảm 20% (350 xu còn 280 xu). |
 | E4 | Giáo Sư Đi Vắng | Không giám định được. |
 | E5 | Chú Rỉ Nghỉ Lễ | Không phục chế được. |
-| E6 | Khách Sộp Đến Chợ | Hiện vật có độ hiếm Rất hiếm bán +10%. |
+| E6 | Khách Sộp Đến Chợ | Hiện vật Rất hiếm bán +10%. Độ hiếm Rất hiếm gồm V07 Tinh thể lam và V10 Mảnh vảy long, hai món giá nền cao nhất (đã ghi trong [NoiDungMau.md](NoiDungMau.md)). |
 
 **Quy tắc.** Hiệu ứng tăng hoặc giảm giá bán cộng với các hiệu ứng giá bán khác theo phép cộng, đúng quy tắc ở Sprint 2.
 
@@ -40,7 +41,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 | --- | --- | --- |
 | 1 | Ngày 1 bắt đầu ván. | Không có biến cố. |
 | 2 | Ngày 3 rút được E4, người chơi muốn giám định. | Không giám định được. Sổ ghi lý do. Ngày 4 giám định bình thường. |
-| 3 | E1 và người chơi trang bị CP1 (+5% nhóm Quá khứ). | Bán hiện vật Quá khứ được +20% theo phép cộng. |
+| 3 | E1 (+15% nhóm Quá khứ) và người chơi trang bị CP1 (+5% mọi hiện vật). | Hiện vật Quá khứ bán thêm +20% theo phép cộng. Hiện vật nhóm khác chỉ bán thêm +5% từ CP1. |
 | 4 | Tải lại ván giữa ngày 3 đang có E3. | Vẫn thấy E3 và giá H2 là 280 xu, không rút lại biến cố. |
 
 ## 2. Đấu giá
@@ -51,7 +52,7 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 1. Trong ngày, gửi 1 hiện vật có G từ **1.300 xu** trở lên vào phiên đấu giá chiều và chọn giá sàn: không sàn, hoặc 1,0 G, hoặc 1,3 G. Món rẻ hơn không được đấu giá.
 2. Trả ngay phí đăng ký 5% G (làm tròn lên). Phí không hoàn.
 3. Hiện vật bị khóa ở trạng thái "Chờ kết quả".
-4. Đầu ngày kế tiếp, kết quả công bố: giá chốt = G × k, trong đó k = 0,9 / 1,1 / 1,3 / 1,5 với xác suất 20% / 40% / 30% / 10%. Giá trị kỳ vọng của k là 1,16. Theo [DoKho.md](../Balance/DoKho.md) của Claude 2, ở ván khó nâng k lên 1,33 làm tỷ lệ thắng tăng 8 đến 13 điểm, quá dễ so với mục tiêu. Với k 1,16, đấu giá chỉ lời với món đắt và giá sàn thấp, còn lại là cái bẫy, đúng là một đánh đổi thật.
+4. Đầu ngày kế tiếp, kết quả công bố: giá chốt = G × k, trong đó k = 0,9 / 1,1 / 1,3 / 1,5 với xác suất 20% / 40% / 30% / 10%. Giá trị kỳ vọng của k là 1,16. Claude 2 đo trên gói mới ([DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md) mục 6): k kỳ vọng 1,16 cho bot thường thêm 3 đến 6 điểm, còn k 1,40 cho thêm khoảng 17 điểm, gần như gấp đôi tỷ lệ thắng, quá dễ so với mục tiêu. Với k 1,16, đấu giá chỉ lời với món đắt và giá sàn thấp, còn lại là cái bẫy, đúng là một đánh đổi thật.
 5. Nếu giá chốt không thấp hơn giá sàn thì bán thành công và tiền vào ngay đầu ngày. Nếu thấp hơn, hiện vật được trả lại và phí không hoàn.
 
 **Quy tắc.**
@@ -65,11 +66,11 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 | Ca | Tình huống | Kết quả |
 | --- | --- | --- |
-| 1 | Ngày 3 gửi V10 (G = 2.600 xu), không giá sàn. | Trả phí 130 xu. Đầu ngày 4 nếu k = 1,3 thì nhận 3.380 xu. |
-| 2 | Gửi V10, sàn 1,3 G (3.380 xu), kết quả k = 1,1 (2.860 xu, thấp hơn sàn). | Không bán, hiện vật trả về, mất phí 130 xu. |
-| 2b | Gửi V10, không giá sàn, kết quả k = 0,9. | Nhận 2.340 xu, thấp hơn giá bán thường 2.600 xu và còn mất phí 130 xu. |
+| 1 | Ngày 3 gửi V10 thật, Nguyên, chưa giám định (G = 2.860 xu), không giá sàn. | Trả phí 143 xu. Đầu ngày 4 nếu k = 1,3 thì nhận 3.718 xu. |
+| 2 | Gửi V10, sàn 1,3 G (3.718 xu), kết quả k = 1,1 (3.146 xu, thấp hơn sàn). | Không bán, hiện vật trả về, mất phí 143 xu. |
+| 2b | Gửi V10, không giá sàn, kết quả k = 0,9. | Nhận 2.574 xu, thấp hơn giá bán thường 2.860 xu và còn mất phí 143 xu. |
 | 3 | Gửi vào ngày 7. | Bị từ chối. |
-| 3b | Gửi V09 (G = 815 xu). | Bị từ chối vì G dưới 1.300 xu. |
+| 3b | Gửi V09 (G = 895 xu). | Bị từ chối vì G dưới 1.300 xu. |
 | 4 | Thiếu 300 xu khi thu nợ cuối ngày, hiện vật đang chờ kết quả. | Không dùng được. Nợ tồn tính theo luật nợ. |
 | 5 | Tải lại ván sau khi gửi, trước khi có kết quả. | Hiện vật vẫn bị khóa, không gửi lần hai, phí không bị trừ lại. |
 
@@ -116,7 +117,19 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 - Hiện vật đang cầm không bán, giám định, phục chế hay đưa đấu giá được.
 - Hết ván (sau kỳ nợ ngày 7), hiện vật chưa chuộc coi như mất và không tính tài sản.
 - Cầm được **hiện vật và tạo tác**, không cầm gia truyền. Tiền cầm tạo tác bằng 60% giá mua. Trong lúc cầm, tạo tác bị tháo khỏi ô trang bị nên mất cả hiệu ứng và combo. Đây là đánh đổi chính của cầm cố: lấy thanh khoản bằng cách tạm bỏ một combo đã đầu tư.
-- Claude 2 đo ở [Sprint 4](../Balance/Sprint4.md): cầm cố tác động nhỏ (không quá 1,5 điểm) và không phụ thuộc nhiều vào phí chuộc, nên giữ phí 15% và hạn 2 ngày. Cầm cố chỉ thú vị khi người chơi có thứ đáng giá đang giữ, nhờ kho 8 ô và tạo tác ở [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md).
+- Chuộc tạo tác xong, tạo tác về túi tạo tác (không chiếm kho 8 ô). Người chơi phải **trang bị lại** vào một ô trống thì mới có hiệu ứng. Quá hạn mà chưa chuộc thì mất tạo tác.
+- Claude 2 đo ở [Sprint 4](../Balance/Sprint4.md) và [DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md) mục 5: cầm tạo tác chỉ đổi tỷ lệ thắng từ −0,1 đến +0,9 điểm và cầm cố nói chung không phụ thuộc nhiều vào phí chuộc, nên giữ phí 15% và hạn 2 ngày. Nó vô hại nhưng chưa phải lựa chọn lớn, vì thường chỉ dùng khi sắp thiếu tiền mà lúc đó đã khá muộn. Cầm cố thú vị hơn khi người chơi có thứ đáng giá đang giữ, nhờ kho 8 ô và tạo tác ở [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md).
+
+**Tiền cầm và chuộc tạo tác** theo giá mua của gói mới (CP3 và TC3 đã giảm xuống 500):
+
+| Tạo tác | Giá mua | Tiền cầm (60%) | Chuộc (tiền cầm × 1,15, làm tròn lên) |
+| --- | --- | --- | --- |
+| CP1 | 150 | 90 | 104 |
+| CP2 | 400 | 240 | 276 |
+| CP3 | 500 | 300 | 345 |
+| TC1 | 120 | 72 | 83 |
+| TC2 | 450 | 270 | 311 |
+| TC3 | 500 | 300 | 345 |
 
 **Điều kiện hoàn tất.** Một lần cầm hoàn tất khi hiện vật được chuộc hoặc bị mất, đúng một lần. Hạn chuộc nằm trong lưu ván.
 
@@ -124,13 +137,16 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 | Ca | Tình huống | Kết quả |
 | --- | --- | --- |
-| 1 | Ngày 3 cầm V10 (G = 2.600 xu). | Nhận 1.560 xu. |
-| 2 | Chuộc V10 vào ngày 4. | Trả 1.794 xu và nhận lại V10. |
+| 1 | Ngày 3 cầm V10 (G = 2.860 xu). | Nhận 1.716 xu. |
+| 2 | Chuộc V10 vào ngày 4. | Trả 1.974 xu và nhận lại V10. |
 | 3 | Không chuộc V10 trước hết ngày 5. | Mất V10. |
 | 4 | Đang cầm 2 món, cầm thêm món thứ 3. | Bị từ chối. |
-| 5 | Ngày 5 thiếu 300 xu trước khi thu nợ, cầm V06 (G = 1.675 xu). | Nhận 1.005 xu, dùng trả nợ cùng ngày. |
+| 5 | Ngày 5 thiếu 300 xu trước khi thu nợ, cầm V06 (G = 1.845 xu). | Nhận 1.107 xu, dùng trả nợ cùng ngày. |
 | 6 | Tải lại ván sau khi cầm. | Món vẫn ở trạng thái đang cầm, không nhận tiền lần hai. |
-| 7 | Cầm CP3 (giá mua 900 xu) đang trang bị. | Nhận 540 xu. CP3 bị tháo khỏi ô trang bị, mất hiệu ứng và combo CB3 nếu có. |
+| 7 | Cầm CP3 (giá mua 500 xu) đang trang bị. | Nhận 300 xu. CP3 bị tháo khỏi ô trang bị, mất hiệu ứng +10% giá bán hiện vật Thần thoại. Nếu đang có CB3 (CP3 và TC3) thì mất luôn CB3: giám định không còn miễn phí và mất +15% giá bán. |
+| 8 | Chuộc CP3 vào ngày kế tiếp. | Trả 345 xu. CP3 về túi tạo tác. Người chơi trang bị lại thì hiệu ứng trở lại, CB3 trở lại nếu vẫn còn TC3. |
+| 9 | Chuộc CP3 khi 3 ô trang bị đã đầy. | Trả 345 xu. CP3 ở trong túi tạo tác, chưa có hiệu ứng cho đến khi người chơi thay món. Không chiếm kho 8 ô. |
+| 10 | Không chuộc CP3 trước hết ngày hạn. | Mất CP3, không hoàn tiền cầm. |
 
 ## 5. Mở khóa meta
 
@@ -162,6 +178,8 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 ## 6. Tương tác giữa các hệ
 
 - Biến cố E1, E2 và E6 thay đổi G, nên đổi cả giá cầm và giá chốt đấu giá.
+- Hàng giả có G chỉ bằng 20% giá thật, nên cầm cố và đấu giá cho rất ít tiền (và thường dưới ngưỡng đấu giá 1.300 xu). Hàng thật đã giám định có G cao hơn 25%, nên cầm hoặc đấu giá được nhiều hơn. Đây là thêm một lý do để giám định món đắt trước khi đưa vào dịch vụ.
+- Cầm tạo tác lấy tiền ngay nhưng mất hiệu ứng, kể cả hiệu ứng tăng giá bán. Nên bán hiện vật trước rồi mới cầm tạo tác trong cùng ngày, vì cầm trước làm các món bán sau mất phần cộng giá.
 - E4 và E5 không chặn đấu giá, cầm cố hay sòng bạc.
 - Ngày 7 không đấu giá được. Cầm cố vẫn dùng được để lấy tiền trả kỳ cuối, nhưng món chưa chuộc coi như mất.
 - Sòng bạc không có giới hạn theo nợ, nên người chơi có thể cược mức cao khi sắp thua. Đây là cố ý.
@@ -172,9 +190,9 @@ Claude 2 đã đo các dịch vụ trong [Sprint 4](../Balance/Sprint4.md) bằn
 
 | Hệ | Khuyến nghị của Claude 2 | Cách bản này đáp ứng |
 | --- | --- | --- |
-| Đấu giá | Kỳ vọng khoảng +40% ở bảng giá dễ cũ, nhưng ở ván khó (DoKho.md) giữ 1,16 | k kỳ vọng 1,16, chỉ món từ 1.300 xu |
+| Đấu giá | Ở ván khó giữ k 1,16. k 1,40 cho thêm khoảng 17 điểm, quá dễ (DoLaiDeXuat.md) | k kỳ vọng 1,16, chỉ món từ 1.300 xu. **Đã đo theo gói mới** |
 | Sòng bạc | Không đổi cân bằng, lợi thế nhà cái 5–10% an toàn | Giữ lợi thế nhà cái 10%, mức cược 100/250/500, 2 lượt mỗi ngày |
-| Cầm cố | Tác động nhỏ, phí 15% là đủ | Giữ 60%, phí 15%, thêm cầm tạo tác để có đánh đổi |
+| Cầm cố | Tác động nhỏ, phí 15% là đủ. Cầm tạo tác −0,1 đến +0,9 điểm | Giữ 60%, phí 15%, thêm cầm tạo tác để có đánh đổi. **Đã đo theo gói mới** |
 | Biến cố | Biên độ tối đa ±20% | Biến cố giá bán là ±15%, ±15%, +10%, thấp hơn mức này |
 | Meta | Ngân sách khoảng +400 xu vốn tương đương | M2 chỉ +100 xu, các mở khóa khác là lựa chọn hoặc thông tin |
 
@@ -184,4 +202,7 @@ Claude 2 đã đo các dịch vụ trong [Sprint 4](../Balance/Sprint4.md) bằn
 - Sòng bạc: kỳ vọng âm, chỉ hợp khi đã tính kỹ.
 - Biến cố: buộc chọn giữa bán ngay và chờ giá.
 
-**Cần Claude 2 chạy lại** khi chủ dự án duyệt giá nền hệ số 0,85: chuyển luật này vào `QA/services_model.py` và `QA/sprint4_sim.py`, rồi xác nhận khoảng an toàn vẫn đúng, nhất là đấu giá với k kỳ vọng 1,16 và ngưỡng món từ 1.300 xu.
+**Việc còn lại cho Claude 2:**
+- Đấu giá (k 1,16, món từ 1.300 xu) và cầm tạo tác đã được đo theo gói mới. Sòng bạc (cược 100/250/500, 2 lượt), biến cố và meta chưa đo theo gói mới.
+- Khi chủ dự án duyệt, chuyển luật dịch vụ này vào `QA/services_model.py` và `QA/sprint4_sim.py`, rồi xác nhận khoảng an toàn vẫn đúng.
+- Nếu chủ dự án duyệt phạt rủi ro (giá nền ×1,10, hàng giả theo hộp), đo lại đấu giá và cầm cố vì G thay đổi.
