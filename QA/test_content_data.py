@@ -277,6 +277,8 @@ class ClueRules(unittest.TestCase):
         self.assertEqual(D["rules"]["max_boxes_per_day"], sh["turns_per_day"])
         self.assertFalse(sh["reroll_within_turn"])
         self.assertEqual(15, sh["extra_clue_price"])
+        self.assertEqual("certain_origin", sh["extra_clue_kind"])   # lời mách chắc đúng, không phải manh mối có thể sai
+        self.assertEqual(1, sh["extra_clue_per_box"])
 
     def test_tag_prices_follow_the_bayes_model(self):
         self.assertEqual(recompute_tag_prices(), D["shelf"]["price_follows_clue"]["tag_price"])

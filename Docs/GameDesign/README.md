@@ -62,7 +62,7 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 **[ĐỀ XUẤT] Kệ hộp và manh mối.** Chi tiết và bảng giá ở [Docs/Content/NoiDungMau.md](../Content/NoiDungMau.md) mục 5.
 - Mỗi **lượt mua** (tối đa 3 lượt mỗi ngày), Dì Mận bày **1 hộp mỗi loại**. Người chơi chọn mua **1 hộp** hoặc **dừng mua** trong ngày. Không đổi hộp trong cùng lượt, hộp bị bỏ qua không quay lại.
 - Mỗi hộp là vật thể riêng, hiện vật bên trong định sẵn theo seed. Hộp có **3 manh mối** gợi nhóm nguồn gốc: H1 và H2 có 2 đúng 1 sai, H3 và Rương Đen chỉ 1 đúng 2 sai.
-- Người chơi thấy **1 manh mối miễn phí** mỗi hộp, mua thêm **15 xu** mỗi manh mối, tối đa 3.
+- Người chơi thấy **1 manh mối miễn phí** mỗi hộp (có thể sai), và trả **15 xu** hỏi **lời mách của Dì Mận** để biết chắc nhóm nguồn gốc thật, một lần mỗi hộp.
 - **Giá niêm yết đi theo manh mối đầu tiên** (hệ số 0,75): Dì Mận cũng đọc manh mối nên hộp được cho là tốt bị nâng giá.
 
 ## 4. Gia truyền, tạo tác và Bí Khế

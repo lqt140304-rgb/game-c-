@@ -64,6 +64,31 @@ def posterior_ev(run, box, obs):
     return (num / den) / price if den else 0.0
 
 
+def origin_masses(run, box, obs):
+    """P(nguồn gốc thật | manh mối đã xem)."""
+    masses = {}
+    for iid, wgt in BOXES[box][1].items():
+        origin = run.c.items[iid][0]
+        l = likelihood(obs, origin, n_true(box)) if obs else 1.0
+        masses[origin] = masses.get(origin, 0.0) + wgt * l
+    tot = sum(masses.values())
+    return {o: m / tot for o, m in masses.items()}
+
+
+def value_given_origin(run, box, origin):
+    price = run.c.box_price[box]
+    qm = sum(p * f for _, p, f in run.c.quality)
+    num = den = 0.0
+    for iid, wgt in BOXES[box][1].items():
+        if run.c.items[iid][0] != origin:
+            continue
+        base = run.c.items[iid][1]
+        fp = fake_rate(box, iid)
+        num += wgt * base * qm * (1 - fp + fp * FAKE_X)
+        den += wgt
+    return num / den if den else 0.0
+
+
 def make_candidate(run, box):
     w = BOXES[box][1]
     iid = run.rng.choices(list(w), weights=list(w.values()))[0]
@@ -293,14 +318,36 @@ def turn_choose(run, reserve_cash, tiers):
     if not ok:
         return None
     best = max(ok, key=lambda c: c["value"] - c["price"])
-    # mua thêm manh mối cho hộp tốt nhất nếu còn mơ hồ quanh ngưỡng
     tau = SKILL["tau"]
-    extra = SKILL["extra"]
+    if SKILL.get("paid_true") and SKILL["clue_price"] is not None:
+        # manh mối trả phí chắc đúng: chỉ mua khi giá trị thông tin vượt giá manh mối
+        others = [c for c in ok if c is not best]
+        alt = max([c["value"] - c["price"] for c in others if c["value"] / c["price"] >= tau] + [0.0])
+        cur = max(best["value"] - best["price"] if best["value"] / best["price"] >= tau else 0.0, alt)
+        masses = origin_masses(run, best["box"], best["clues"][:best["seen"]])
+        exp = 0.0
+        for o, pm in masses.items():
+            v = value_given_origin(run, best["box"], o)
+            gain = v - best["price"] if v / best["price"] >= tau else 0.0
+            exp += pm * max(gain, alt)
+        if exp - cur > SKILL["clue_price"] and g.cash - best["price"] - SKILL["clue_price"] >= reserve_cash:
+            g.cash -= SKILL["clue_price"]
+            run.clue_buys = getattr(run, "clue_buys", 0) + 1
+            true_origin = run.c.items[best["id"]][0]
+            best["value"] = value_given_origin(run, best["box"], true_origin)
+            # người chơi biết nhóm thật nên chọn lại nếu hộp này không còn tốt
+            if best["value"] / best["price"] < tau or best["value"] - best["price"] < alt:
+                if alt > 0:
+                    best = max(others, key=lambda c: c["value"] - c["price"])
+                else:
+                    return None
+    extra = SKILL["extra"] if not SKILL.get("paid_true") else 0
     while extra > 0 and best["seen"] < 3 and SKILL["clue_price"] is not None:
         ratio = best["value"] / best["price"]
         if not (0.85 * tau <= ratio <= 1.25 * tau) or g.cash - best["price"] - SKILL["clue_price"] < reserve_cash:
             break
         g.cash -= SKILL["clue_price"]
+        run.clue_buys = getattr(run, "clue_buys", 0) + 1
         best["seen"] += 1
         best["value"] = posterior_ev(run, best["box"], best["clues"][:best["seen"]]) * best["tier_price"]
         extra -= 1
@@ -355,8 +402,13 @@ def measure_turns(content, n=2000, **skill):
     SKILL.update(skill); SKILL["per_box"] = True
     res = {}
     for k, st in TURN_NAMES.items():
-        w = sum(P.play5(s, content, st).g.status == "won" for s in range(n))
+        w = b = 0
+        for s in range(n):
+            r = P.play5(s, content, st)
+            w += r.g.status == "won"
+            b += getattr(r, "clue_buys", 0)
         res[k] = round(100 * w / n, 1)
+        res[k + " [mua]"] = round(b / n, 2)
     SKILL.clear(); SKILL.update(old)
     return res
 
@@ -408,3 +460,18 @@ def sweep_oracle():
                       ("lam 0, 3 manh mối miễn phí", dict(lam=0.0, tau=1.0, free_n=3))):
         r = measure_turns(c, 2000, **kw)
         print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
+
+
+def sweep_paid():
+    """Hai hướng cho manh mối trả phí (luật chốt, G1, lam 0,75, tau 1,0, 2.000 seed)."""
+    c = setup(True)
+    ks = list(TURN_NAMES)
+    print("%-44s" % "(thắng% | số manh mối mua mỗi ván)")
+    rows = [("chỉ manh mối miễn phí", dict())]
+    for p in (5, 10):
+        rows.append((f"A. manh mối thêm có thể sai, {p} xu", dict(extra=2, clue_price=p)))
+    for p in (30, 15, 10, 5):
+        rows.append((f"B. manh mối trả phí CHẮC ĐÚNG, {p} xu", dict(paid_true=True, clue_price=p)))
+    for label, kw in rows:
+        r = measure_turns(c, 2000, lam=.75, tau=1.0, **kw)
+        print("%-44s" % label + " ".join("%5.1f|%4.2f" % (r[k], r[k + " [mua]"]) for k in ks), flush=True)

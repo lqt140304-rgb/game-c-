@@ -129,7 +129,7 @@ Mỗi hộp là một vật thể riêng. Hiện vật, chất lượng và tín
 - Người chơi chọn mua **1 hộp** trong lượt, hoặc **dừng mua** trong ngày. Không đổi hộp trong cùng lượt. Hộp bị bỏ qua không quay lại, lượt sau bày hộp mới.
 - Hộp của mỗi lượt xác định theo (seed, ngày, lượt, loại hộp), nên tải lại không đổi hộp.
 - Mỗi hộp hiển thị: loại, tỷ lệ hàng giả của loại, giá niêm yết và **1 manh mối miễn phí**. CB2 và Mốc 3 Cổ Phong thêm manh mối miễn phí, tối đa 3 manh mối mỗi hộp.
-- Mua thêm manh mối: **15 xu** mỗi manh mối. Giá niêm yết **không đổi** khi mua thêm.
+- **Lời mách của Dì Mận:** trả **15 xu** để biết **nhóm nguồn gốc thật** của hiện vật trong hộp đó. Lời mách **chắc đúng**, khác với manh mối miễn phí có thể sai. Mỗi hộp mua được một lần. Lời mách không cho biết chất lượng hay hàng giả. Giá niêm yết **không đổi** khi mua lời mách.
 
 ### 5.3 Giá niêm yết đi theo manh mối
 
@@ -157,7 +157,7 @@ Bảng đã tính sẵn, theo độ tin cậy manh mối của từng loại h�
 
 Đây là vòng người chơi làm với một hộp, theo đúng [GDD mục 2](../GameDesign/README.md).
 
-1. **Xem kệ và mua.** Mỗi lượt mua, xem các hộp Dì Mận bày: đọc manh mối miễn phí, giá niêm yết và tỷ lệ hàng giả, có thể trả 15 xu cho mỗi manh mối thêm. Chọn 1 hộp hoặc dừng mua. Sau khi mua, hộp nằm trên bàn mở và người chơi mở niêm phong.
+1. **Xem kệ và mua.** Mỗi lượt mua, xem các hộp Dì Mận bày: đọc manh mối miễn phí, giá niêm yết và tỷ lệ hàng giả, có thể trả 15 xu hỏi lời mách của Dì Mận để biết chắc nhóm nguồn gốc thật. Chọn 1 hộp hoặc dừng mua. Sau khi mua, hộp nằm trên bàn mở và người chơi mở niêm phong.
 2. **Nhấc và xoay.** Hiện vật được xoay theo ba trục. Người chơi cần xem ít nhất ba góc để soi xong.
 3. **Soi gần.** Di chuyển gần để thấy vết nứt, dấu triện, linh kiện và chữ. Mỗi hiện vật có ít nhất một dấu hiệu chỉ thấy khi soi gần.
 4. **Đọc thông tin.** Chất lượng và Độ hiếm đã biết. Tính xác thực chưa chắc chắn cho đến khi giám định.
