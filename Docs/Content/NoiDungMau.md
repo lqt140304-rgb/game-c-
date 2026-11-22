@@ -49,7 +49,7 @@ Tỷ lệ này chỉ để thử phân bố nội dung. Cần Claude 2 kiểm tr
 
 ## 4. Manh mối niêm phong
 
-Mỗi hộp có 3 manh mối trên niêm phong. Lúc mua, người chơi thấy **1 manh mối ngẫu nhiên miễn phí**. Hai manh mối còn lại mở qua giám định **[ĐỀ XUẤT]**.
+Mỗi hộp có 3 manh mối trên niêm phong. Khi xem hộp **trước khi mua**, người chơi thấy **1 manh mối ngẫu nhiên miễn phí**. Hai manh mối còn lại mua thêm tại Quầy Niêm Phong của Dì Mận, **30 xu mỗi manh mối** **[ĐỀ XUẤT]**. Các hiệu ứng "thêm manh mối miễn phí" của gia truyền, tạo tác và combo cộng dồn, nhưng mỗi hộp tối đa 3 manh mối. Manh mối chỉ có giá trị khi người chơi nhìn thấy nó trước lúc quyết định mua.
 
 | Hộp | Manh mối | Gợi ý nhóm | Ghi chú |
 | --- | --- | --- | --- |
@@ -70,7 +70,7 @@ Mỗi hộp có 3 manh mối trên niêm phong. Lúc mua, người chơi thấy 
 
 Đây là vòng người chơi làm với một hộp đã mở, theo đúng [GDD mục 2](../GameDesign/README.md).
 
-1. **Mở niêm phong.** Chọn "Mở" để xem manh mối miễn phí.
+1. **Xem hộp và mua.** Trước khi mua, đọc 1 manh mối miễn phí và có thể trả thêm để xem manh mối khác. Sau khi mua, đặt hộp lên bàn và mở niêm phong.
 2. **Nhấc và xoay.** Hiện vật được xoay theo ba trục. Người chơi cần xem ít nhất ba góc để soi xong **[ĐỀ XUẤT]**.
 3. **Soi gần.** Di chuyển gần để thấy vết nứt, dấu triện, linh kiện và chữ. Mỗi hiện vật có ít nhất một dấu hiệu chỉ thấy khi soi gần.
 4. **Đọc ba dòng thông tin.** Chất lượng, Tính xác thực, Độ hiếm. Nếu Tính xác thực là "Chưa rõ" thì cần giám định.

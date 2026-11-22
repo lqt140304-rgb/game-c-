@@ -39,7 +39,7 @@
 | 2 | Ngày 1 có 150 xu, trả 150 | Nợ tồn 50, phạt 10, nợ tồn còn 60. |
 | 3 | Ngày 2 phải trả 410 (kỳ 350 cộng nợ tồn 60), có 100 xu | Trả 100, còn 310, phạt 62, nợ tồn 372, tiếp tục. |
 | 4 | Cuối ngày bất kỳ, nợ tồn sau thu là 1.100 xu | Thua ngay. |
-| 5 | Ngày 7 trả đủ 2.200 xu nhưng còn nợ tồn 50 xu | Thua cuối ngày 7. |
+| 5 | Ngày 7 tổng phải trả 2.250 xu (kỳ 2.200 cộng nợ tồn 50), người chơi chỉ có 2.200 xu | Còn nợ tồn 50 sau khi thu. Thua cuối ngày 7. |
 | 6 | Ngày 7 trả đủ kỳ và không còn nợ tồn | Thắng. |
 | 7 | Hiện vật trị giá 3.000 xu nhưng tiền mặt 0, chưa bán trước khi thu nợ | Không tính để trả. Ngày 1 thiếu cả 200 xu, nợ tồn thành 240 (200 cộng phạt 40). |
 
