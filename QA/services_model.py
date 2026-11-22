@@ -11,7 +11,9 @@ from economy_model import Game, Rejected, DEBT, FAKE_FACTOR, BOX_PRICE
 PAWN_RATIO, PAWN_FEE, PAWN_DAYS, PAWN_MAX = 0.60, 0.15, 2, 2
 AUCTION_FEE = 0.05
 AUCTION_K = [(0.2, 0.9), (0.4, 1.1), (0.3, 1.3), (0.1, 1.5)]   # kỳ vọng 1,16
-CASINO_STAKES, CASINO_P, CASINO_PER_DAY, CASINO_FROM_DAY = (50, 100, 200), 0.45, 3, 2
+CASINO_STAKES, CASINO_P, CASINO_PER_DAY, CASINO_FROM_DAY = (100, 250, 500), 0.45, 2, 2
+AUCTION_MIN_G = 1300
+ART_BUY_PRICE = {"A1": 150, "A2": 400, "A3": 500, "B1": 120, "B2": 450, "B3": 500}  # CP1..TC3, giá đã chốt
 EVENT_P, EVENT_FROM_DAY = 0.5, 2
 EVENTS = ["E1", "E2", "E3", "E4", "E5", "E6"]
 RARE_CODES = ()   # hiện vật "Rất hiếm": đặt it["rare"] = True
@@ -107,6 +109,22 @@ class ServiceGame(Game):
         self._money(loan, "pawn")
         return tid
 
+    def pawn_art(self, aid):
+        """Cầm tạo tác đang trang bị: 60% giá mua. Tạo tác bị tháo khỏi ô nên mất hiệu ứng và combo."""
+        self._check_playing()
+        if aid not in self.equipped:
+            raise Rejected("tạo tác không ở trong ô trang bị")
+        if sum(1 for t in self.tickets.values() if t["state"] == "open") >= PAWN_MAX:
+            raise Rejected("đã cầm tối đa")
+        loan = math.floor(ART_BUY_PRICE[aid] * PAWN_RATIO)
+        self.equipped.remove(aid)
+        self.owned.remove(aid)
+        tid = self._sid("T")
+        self.tickets[tid] = {"kind": "art", "aid": aid, "loan": loan, "cost": math.ceil(loan * (1 + PAWN_FEE)),
+                             "due": self.day + PAWN_DAYS, "state": "open"}
+        self._money(loan, "pawn")
+        return tid
+
     def redeem(self, tid):
         self._check_playing()
         t = self.tickets.get(tid)
@@ -118,7 +136,10 @@ class ServiceGame(Game):
             raise Rejected("không đủ tiền chuộc")
         self._money(-t["cost"], "redeem")
         t["state"] = "redeemed"
-        self.items[t["item_id"]] = t["item"]
+        if t.get("kind") == "art":
+            self.owned.append(t["aid"])        # chuộc về kho tạo tác, phải trang bị lại
+        else:
+            self.items[t["item_id"]] = t["item"]
 
     # ----- đấu giá -----
     def auction(self, item_id, floor=None):
@@ -132,6 +153,8 @@ class ServiceGame(Game):
         if item_id not in self.items:
             raise Rejected("hiện vật không có trong kho")
         g = self.G(self.items[item_id])
+        if g < AUCTION_MIN_G:
+            raise Rejected("G dưới 1.300 xu không đấu giá")
         fee = math.ceil(g * AUCTION_FEE)
         if self.cash < fee:
             raise Rejected("không đủ tiền đăng ký")
@@ -202,7 +225,7 @@ class ServiceGame(Game):
     def check_invariants(self):
         assert self.cash >= 0, "tiền âm"
         ids = list(self.items)
-        ids += [t["item_id"] for t in self.tickets.values() if t["state"] == "open"]
+        ids += [t["item_id"] for t in self.tickets.values() if t["state"] == "open" and t.get("kind") != "art"]
         ids += [l["item_id"] for l in self.listings.values() if l["state"] == "open"]
         assert len(ids) == len(set(ids)), "hiện vật ở hai nơi"
         pawn = sum(d for r, d in self.ledger if r == "pawn")

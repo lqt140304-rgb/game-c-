@@ -66,6 +66,9 @@ class Game:
     appraised: dict = field(default_factory=dict)  # nhóm nguồn gốc -> số lần giám định
     unlocked: list = field(default_factory=list)   # Bí Khế đã mở
     applied_tx: set = field(default_factory=set)   # mã giao dịch đã áp dụng
+    carry: int = 0                              # kỳ nợ đã hoãn (GT1) phải trả cùng kỳ sau
+    postpone_pending: bool = False
+    gt1_used: bool = False
 
     def __post_init__(self):
         self.rng = random.Random(self.seed)
@@ -157,21 +160,38 @@ class Game:
     def penalty_rate(self):
         return PENALTY_RATE
 
+    def use_gt1(self):
+        """GT1 Sổ Ghi Nợ Cũ (đề xuất Claude 1): hoãn KỲ CỦA NGÀY NÀY một lần mỗi ván.
+        Kỳ hoãn thành kỳ x 1,15 (làm tròn lên), trả cùng kỳ ngày sau, không bị phạt 20%,
+        không tính vào ngưỡng thua, không hoãn nợ tồn, không hoãn kỳ 7."""
+        self._check_playing()
+        if self.gt1_used:
+            raise Rejected("GT1 đã dùng")
+        if self.day >= len(DEBT):
+            raise Rejected("không hoãn kỳ 7")
+        self.gt1_used = True
+        self.postpone_pending = True
+
     def end_day(self):
         self._check_playing()
-        due_total = DEBT[self.day - 1] + self.arrears
+        D = DEBT[self.day - 1]
+        post, self.postpone_pending = self.postpone_pending, False
+        due_total = (0 if post else D) + self.arrears + self.carry
+        self.carry = 0
         pay = min(max(self.cash - KEEP_MIN_CASH, 0), due_total)
         self.cash -= pay
         self.arrears = due_total - pay
         if self.arrears > 0:
             self.arrears += math.ceil(self.arrears * self.penalty_rate())
-        else:
+        elif not post:
             self.paid.append(self.day)
+        if post:
+            self.carry = math.ceil(D * 1.15)
         if self.arrears > LOSE_ARREARS_OVER:
             self.status, self.lose_reason = "lost", "arrears_over_limit"
             return {"result": "lost", "arrears": self.arrears}
         if self.day == len(DEBT):
-            if self.arrears == 0:
+            if self.arrears == 0 and self.carry == 0:
                 self.status = "won"
                 return {"result": "won", "cash": self.cash}
             self.status, self.lose_reason = "lost", "arrears_on_day7"

@@ -14,7 +14,7 @@ def G(cash=5000, seed=3, day=1):
     return g
 
 
-def item(g, value=1800, fake=False, origin="x", rare=False):
+def item(g, value=2600, fake=False, origin="x", rare=False):
     i = g._id()
     g.items[i] = {"value": value, "fake": fake, "origin": origin, "appraised": False, "rare": rare}
     return i
@@ -70,7 +70,7 @@ class Events(unittest.TestCase):
 
     def test_ev5_event_independent_of_actions(self):
         a, b = G(seed=11, day=4), G(seed=11, day=4)
-        b.bet(50)
+        b.bet(100)
         self.assertEqual(a.event(), b.event())
 
     def test_ev6_event_frequency_near_half(self):
@@ -79,21 +79,21 @@ class Events(unittest.TestCase):
 
 
 class Pawn(unittest.TestCase):
-    def test_pw1_pawn_v10_gets_1080(self):
-        g = G(0); i = item(g, 1800)
+    def test_pw1_pawn_v10_gets_1560(self):
+        g = G(0); i = item(g, 2600)
         g.pawn(i)
-        self.assertEqual(g.cash, 1080)
+        self.assertEqual(g.cash, 1560)
 
-    def test_pw2_redeem_costs_1242(self):
-        g = G(0, day=3); i = item(g, 1800)
-        t = g.pawn(i); g.cash += 200
+    def test_pw2_redeem_costs_1794(self):
+        g = G(0, day=3); i = item(g, 2600)
+        t = g.pawn(i); g.cash += 400
         g.day = 4
         g.redeem(t)
-        self.assertEqual(g.cash, 1080 + 200 - 1242)
+        self.assertEqual(g.cash, 1560 + 400 - 1794)
         self.assertIn(i, g.items)
 
     def test_pw3_lost_after_day5_deadline(self):
-        g = G(100000, day=3); i = item(g, 1800)
+        g = G(100000, day=3); i = item(g, 2600)
         t = g.pawn(i)
         g.end_day(); g.end_day()           # tới ngày 5: vẫn chuộc được
         self.assertEqual(g.tickets[t]["state"], "open")
@@ -112,20 +112,20 @@ class Pawn(unittest.TestCase):
         self.assertIn(k, g.items)
 
     def test_pw5_pawn_pays_debt_same_day(self):
-        g = G(0, day=5); i = item(g, 900)
-        g.pawn(i)                          # 540
+        g = G(0, day=5); i = item(g, 1675)
+        g.pawn(i)                          # 1.005
         g.end_day()
-        self.assertEqual((g.cash, g.arrears), (0, 612))   # nợ 1.050 trả 540, tồn 510 + phạt 102
+        self.assertEqual((g.cash, g.arrears), (0, 54))    # nợ 1.050 trả 1.005, tồn 45 + phạt 9
 
     def test_pw6_reload_keeps_ticket_no_second_loan(self):
-        g = G(0); i = item(g, 1800); g.pawn(i)
+        g = G(0); i = item(g, 2600); g.pawn(i)
         h = ServiceGame.load(g.save())
         with self.assertRaises(Rejected):
             h.pawn(i)
-        self.assertEqual(h.cash, 1080)
+        self.assertEqual(h.cash, 1560)
 
     def test_pw7_double_redeem_rejected(self):
-        g = G(0); i = item(g, 1800); t = g.pawn(i); g.cash += 500
+        g = G(0); i = item(g, 2600); t = g.pawn(i); g.cash += 500
         g.redeem(t)
         c = g.cash
         with self.assertRaises(Rejected):
@@ -133,15 +133,15 @@ class Pawn(unittest.TestCase):
         self.assertEqual(g.cash, c)
 
     def test_pw8_redeem_without_cash_changes_nothing(self):
-        g = G(0); i = item(g, 1800); t = g.pawn(i); g.cash = 1000
+        g = G(0); i = item(g, 2600); t = g.pawn(i); g.cash = 1000
         snap = g.snapshot()
         with self.assertRaises(Rejected):
             g.redeem(t)
         self.assertEqual(snap, g.snapshot())
 
     def test_pw9_end_of_game_forfeits_open_tickets(self):
-        g = G(0, day=7); i = item(g, 1800); t = g.pawn(i)
-        g.end_day()               # nợ 2.200, có 1.080 từ tiền cầm
+        g = G(0, day=7); i = item(g, 2600); t = g.pawn(i)
+        g.end_day()               # nợ 2.200, có 1.560 từ tiền cầm
         self.assertEqual((g.tickets[t]["state"], g.status), ("forfeited", "lost"))
 
     def test_pw10_pawned_item_locked(self):
@@ -151,22 +151,80 @@ class Pawn(unittest.TestCase):
                 fn(i)
 
 
+class PawnArtifact(unittest.TestCase):
+    def _g(self, *ids):
+        g = G(0)
+        for a in ids:
+            g.grant_artifact(a); g.equip(a)
+        return g
+
+    def test_pa1_cp3_gives_300_and_unequips(self):
+        g = self._g("A3")                       # CP3 giá mua 500
+        g.pawn_art("A3")
+        self.assertEqual((g.cash, g.equipped, g.owned), (300, [], []))
+
+    def test_pa2_pawn_breaks_combo(self):
+        g = self._g("A1", "A2")
+        self.assertTrue(g.active_combos())
+        g.pawn_art("A2")
+        self.assertEqual(g.active_combos(), [])
+
+    def test_pa3_redeem_returns_to_owned_must_reequip(self):
+        g = self._g("A3"); t = g.pawn_art("A3"); g.cash += 100
+        g.redeem(t)                             # 345 = ceil(300*1,15)
+        self.assertEqual((g.cash, g.owned, g.equipped), (55, ["A3"], []))
+        g.equip("A3")
+        self.assertEqual(g.equipped, ["A3"])
+
+    def test_pa4_forfeit_loses_artifact(self):
+        g = self._g("A3"); t = g.pawn_art("A3")
+        g.cash = 100000
+        for _ in range(3):
+            g.end_day()
+        self.assertEqual(g.tickets[t]["state"], "forfeited")
+        self.assertEqual(g.owned, [])
+        with self.assertRaises(Rejected):
+            g.redeem(t)
+
+    def test_pa5_cannot_pawn_unequipped_or_twice(self):
+        g = self._g("A3")
+        g.grant_artifact("B1")                  # có nhưng chưa trang bị
+        with self.assertRaises(Rejected):
+            g.pawn_art("B1")
+        g.pawn_art("A3")
+        with self.assertRaises(Rejected):
+            g.pawn_art("A3")
+
+    def test_pa6_shares_two_ticket_limit_with_items(self):
+        g = self._g("A1", "A2", "A3")
+        g.pawn(item(g)); g.pawn(item(g))
+        with self.assertRaises(Rejected):
+            g.pawn_art("A1")
+        self.assertIn("A1", g.equipped)
+
+    def test_pa7_reload_keeps_ticket_no_second_loan(self):
+        g = self._g("A3"); g.pawn_art("A3")
+        h = ServiceGame.load(g.save())
+        with self.assertRaises(Rejected):
+            h.pawn_art("A3")
+        self.assertEqual(h.cash, 300)
+
+
 class Auction(unittest.TestCase):
-    def test_au1_fee_90_and_sale_2340_when_k13(self):
+    def test_au1_fee_130_and_sale_3380_when_k13(self):
         s = seed_for_k(1.3)
-        g = G(1000, seed=s, day=3); i = item(g, 1800)
+        g = G(1000, seed=s, day=3); i = item(g, 2600)
         g.auction(i)
-        self.assertEqual(g.cash, 910)
-        g.cash = 1000 + 910 - 910  # đủ trả nợ
+        self.assertEqual(g.cash, 870)       # phí 130
         g.cash += 5000
         before = g.cash
         g.end_day()
         gained = g.cash - (before - DEBT[2])
-        self.assertEqual(gained, 2340)
+        self.assertEqual(gained, 3380)
 
     def test_au2_floor_not_met_item_returned_fee_lost(self):
         s = seed_for_k(1.1)
-        g = G(1000, seed=s, day=3); i = item(g, 1800)
+        g = G(1000, seed=s, day=3); i = item(g, 2600)
         g.auction(i, 1.3)
         g.cash = 5000
         g.end_day()
@@ -186,7 +244,7 @@ class Auction(unittest.TestCase):
         self.assertGreater(g.arrears, 0)
 
     def test_au5_reload_keeps_lock_fee_not_recharged(self):
-        g = G(1000, day=3); i = item(g, 1800); g.auction(i)
+        g = G(1000, day=3); i = item(g, 2600); g.auction(i)
         h = ServiceGame.load(g.save())
         cash = h.cash
         with self.assertRaises(Rejected):
@@ -204,18 +262,25 @@ class Auction(unittest.TestCase):
 
     def test_au7_proceeds_arrive_start_of_next_day(self):
         s = seed_for_k(1.5)
-        g = G(2000, seed=s, day=3); i = item(g, 1800)
-        g.auction(i)                       # phí 90, còn 1.910
-        g.end_day()                        # trả nợ 500, rồi nhận 2.700 đầu ngày 4
-        self.assertEqual((g.day, g.cash), (4, 1910 - 500 + 2700))
+        g = G(2000, seed=s, day=3); i = item(g, 2600)
+        g.auction(i)                       # phí 130, còn 1.870
+        g.end_day()                        # trả nợ 500, rồi nhận 3.900 đầu ngày 4
+        self.assertEqual((g.day, g.cash), (4, 1870 - 500 + 3900))
 
     def test_au8_result_fixed_by_seed_not_reroll(self):
         g = G(1000, day=3); blob = g.save()
-        i = item(g, 1800); l = g.auction(i); k1 = g.listings[l]["k"]
+        i = item(g, 2600); l = g.auction(i); k1 = g.listings[l]["k"]
         h = ServiceGame.load(blob)
-        j = item(h, 1800)
+        j = item(h, 2600)
         l2 = h.auction(j)
         self.assertEqual(k1, h.listings[l2]["k"])
+
+    def test_au3b_below_min_g_rejected(self):
+        g = G(day=3); i = item(g, 815)
+        with self.assertRaises(Rejected):
+            g.auction(i)
+        self.assertIn(i, g.items)
+        self.assertEqual(g.cash, 5000)
 
     def test_au9_invalid_floor_rejected(self):
         g = G(day=3); i = item(g)
@@ -238,14 +303,14 @@ class Casino(unittest.TestCase):
         g = G(1000, s, 2); g.bet(100)
         self.assertEqual(g.cash, 900)
 
-    def test_cs3_fourth_bet_rejected_and_resets(self):
+    def test_cs3_third_bet_rejected_and_resets(self):
         g = G(1000, day=2)
-        for _ in range(3):
-            g.bet(50)
+        for _ in range(2):
+            g.bet(100)
         with self.assertRaises(Rejected):
-            g.bet(50)
+            g.bet(100)
         g.end_day()
-        g.bet(50)
+        g.bet(100)
 
     def test_cs4_insufficient_cash(self):
         g = G(80, day=2)
@@ -261,17 +326,17 @@ class Casino(unittest.TestCase):
 
     def test_cs6_not_before_day2_and_stakes_fixed(self):
         with self.assertRaises(Rejected):
-            G(1000, day=1).bet(50)
+            G(1000, day=1).bet(100)
         g = G(1000, day=2)
-        for amt in (0, 75, 500):
+        for amt in (0, 50, 200, 1000):
             with self.assertRaises(Rejected):
                 g.bet(amt)
 
     def test_cs7_replayed_tx_rejected(self):
-        g = G(1000, day=2); g.do("a", "bet", 50)
+        g = G(1000, day=2); g.do("a", "bet", 100)
         c = g.cash
         with self.assertRaises(Rejected):
-            g.do("a", "bet", 50)
+            g.do("a", "bet", 100)
         self.assertEqual((g.cash, g.bets_today), (c, 1))
 
     def test_cs8_expected_value_is_minus_10_percent(self):
@@ -327,7 +392,7 @@ class SaveLoad(unittest.TestCase):
         self.assertEqual((h.tickets, h.listings), (g.tickets, g.listings))
 
     def test_sv2_load_mid_auction_pays_once(self):
-        g = G(5000, day=3); i = item(g, 1800); g.auction(i)
+        g = G(5000, day=3); i = item(g, 2600); g.auction(i)
         h = ServiceGame.load(g.save())
         h.end_day(); h.end_day()
         self.assertEqual(sum(1 for r, d in h.ledger if r == "auction_sale"), 1)
@@ -365,7 +430,7 @@ class Fuzz(unittest.TestCase):
                     elif kind == "redeem" and g.tickets:
                         g.do(tx, "redeem", r.choice(list(g.tickets)))
                     elif kind == "bet":
-                        g.do(tx, "bet", r.choice([50, 100, 200]))
+                        g.do(tx, "bet", r.choice([100, 250, 500]))
                     elif kind == "day":
                         g.do(tx, "end_day")
                     elif kind == "load":
@@ -373,7 +438,7 @@ class Fuzz(unittest.TestCase):
                     elif kind == "replay" and g.applied_tx:
                         before = g.save()
                         with self.assertRaises(Rejected):
-                            g.do(r.choice(sorted(g.applied_tx)), "bet", 50)
+                            g.do(r.choice(sorted(g.applied_tx)), "bet", 100)
                         self.assertEqual(before, g.save())
                 except Rejected:
                     pass
