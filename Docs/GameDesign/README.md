@@ -19,7 +19,31 @@
 4. Quyết định bán, giữ, giám định, phục chế hoặc dành tiền mua tạo tác. Khi cân nhắc combo, đối chiếu tiền mặt với khoản đến hạn.
 5. Kết thúc ngày ở phòng trọ. **[ĐÃ CHỐT]** Anh Bảy thu khoản đến hạn vào cuối từng ngày trong 7 ngày. Khoản tương lai chưa thể thanh toán. **[ĐỀ XUẤT]** Sau kỳ cuối, hiển thị kết quả và tổng tài sản.
 
-**[MỞ]** Hậu quả khi thiếu tiền, số kỳ được phép trễ, xử lý nợ tồn và tiêu chí thua cụ thể. Thắng và thua phải có điều kiện rõ trước khi nghiệm thu bản chơi đủ 7 ngày.
+**[ĐỀ XUẤT] Thiếu tiền khi đến hạn.** Cuối mỗi ngày, Anh Bảy thu đúng khoản của kỳ đó. Nếu tiền mặt không đủ:
+- Người chơi trả bao nhiêu thì trả bấy nhiêu. Phần còn thiếu thành **nợ tồn**.
+- Sau mỗi lần thu nợ, nếu còn nợ tồn thì cộng thêm **phạt 20%** của phần nợ tồn đó (làm tròn lên). Phạt không tính trên phần phạt cũ.
+- Kỳ mới vẫn đến đúng hạn. Nợ tồn cộng dồn vào kỳ mới và phải trả cùng lúc.
+- Không trả trước kỳ chưa đến hạn. Khoản đã thu không hoàn lại.
+- Tài sản chưa đổi thành tiền (hiện vật, tạo tác) không được tính để trả nợ. Muốn dùng phải bán hoặc cầm cố trước khi thu nợ trong cùng ngày.
+
+**[ĐỀ XUẤT] Thắng và thua.**
+- **Thua ngay:** nợ tồn sau khi thu nợ của bất kỳ ngày nào vượt **1.000 xu** (ngưỡng thử nghiệm).
+- **Thua cuối ngày 7:** sau khi thu nợ kỳ 7 còn nợ tồn lớn hơn 0.
+- **Thắng:** sau khi thu nợ kỳ 7, nợ tồn bằng 0 và tất cả kỳ 1–7 đã thanh toán.
+
+**[ĐỀ XUẤT] Ca kiểm thử luật nợ.**
+
+| Ca | Tình huống | Kết quả |
+| --- | --- | --- |
+| 1 | Ngày 1 có 1.000 xu, trả 200 | Còn 800 xu, không có nợ tồn, tiếp tục. |
+| 2 | Ngày 1 có 150 xu, trả 150 | Nợ tồn 50, phạt 10, nợ tồn còn 60. |
+| 3 | Ngày 2 phải trả 410 (kỳ 350 cộng nợ tồn 60), có 100 xu | Trả 100, còn 310, phạt 62, nợ tồn 372, tiếp tục. |
+| 4 | Cuối ngày bất kỳ, nợ tồn sau thu là 1.100 xu | Thua ngay. |
+| 5 | Ngày 7 trả đủ 2.200 xu nhưng còn nợ tồn 50 xu | Thua cuối ngày 7. |
+| 6 | Ngày 7 trả đủ kỳ và không còn nợ tồn | Thắng. |
+| 7 | Hiện vật trị giá 3.000 xu nhưng tiền mặt 0, chưa bán trước khi thu nợ | Không tính để trả. Ngày 1 thiếu cả 200 xu, nợ tồn thành 240 (200 cộng phạt 40). |
+
+Các con số phạt 20% và ngưỡng 1.000 xu là giá trị thử nghiệm. Claude 2 sẽ kiểm tra lại khi cân bằng.
 
 ## 3. Hộp mù, hiện vật và định giá
 
