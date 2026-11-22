@@ -409,9 +409,137 @@ def make_wet_stone():
     return mat
 
 
+def make_hanoi_terrazzo_paving():
+    """Authentic Vietnamese grey grooved sidewalk terrazzo pavers."""
+    mat, nt, bsdf = _new_bsdf_mat("Mat_HanoiTerrazzo")
+    if nt is None:
+        return mat
+    geom = nt.nodes.new("ShaderNodeNewGeometry")
+
+    brick = nt.nodes.new("ShaderNodeTexBrick")
+    brick.inputs["Color1"].default_value = (0.56, 0.55, 0.52, 1.0)
+    brick.inputs["Color2"].default_value = (0.48, 0.47, 0.44, 1.0)
+    brick.inputs["Mortar"].default_value = (0.24, 0.23, 0.22, 1.0)
+    brick.inputs["Scale"].default_value = 2.4
+    brick.inputs["Brick Width"].default_value = 0.50
+    brick.inputs["Row Height"].default_value = 0.50
+    brick.inputs["Mortar Size"].default_value = 0.018
+
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 18.0
+    noise.inputs["Detail"].default_value = 7.0
+
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.blend_type = "MULTIPLY"
+    mix.inputs[0].default_value = 0.20
+    mix.inputs[7].default_value = (0.82, 0.80, 0.76, 1.0)
+
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.28
+    bump.inputs["Distance"].default_value = 0.014
+    bump.invert = True
+
+    nt.links.new(geom.outputs["Position"], brick.inputs["Vector"])
+    nt.links.new(geom.outputs["Position"], noise.inputs["Vector"])
+    nt.links.new(brick.outputs["Color"], mix.inputs[6])
+    nt.links.new(mix.outputs[2], bsdf.inputs["Base Color"])
+    nt.links.new(brick.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    bsdf.inputs["Roughness"].default_value = 0.84
+    return mat
+
+
+def make_vn_red_terrazzo():
+    """Iconic Vietnamese terracotta-red sidewalk terrazzo tiles."""
+    mat, nt, bsdf = _new_bsdf_mat("Mat_VnRedTile")
+    if nt is None:
+        return mat
+    geom = nt.nodes.new("ShaderNodeNewGeometry")
+
+    brick = nt.nodes.new("ShaderNodeTexBrick")
+    brick.inputs["Color1"].default_value = (0.54, 0.22, 0.16, 1.0)
+    brick.inputs["Color2"].default_value = (0.46, 0.19, 0.14, 1.0)
+    brick.inputs["Mortar"].default_value = (0.25, 0.17, 0.14, 1.0)
+    brick.inputs["Scale"].default_value = 2.6
+    brick.inputs["Brick Width"].default_value = 0.45
+    brick.inputs["Row Height"].default_value = 0.45
+    brick.inputs["Mortar Size"].default_value = 0.020
+
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.30
+    bump.inputs["Distance"].default_value = 0.014
+    bump.invert = True
+
+    nt.links.new(geom.outputs["Position"], brick.inputs["Vector"])
+    nt.links.new(brick.outputs["Color"], bsdf.inputs["Base Color"])
+    nt.links.new(brick.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    bsdf.inputs["Roughness"].default_value = 0.84
+    return mat
+
+
+def make_vn_street_matte():
+    """Matte natural dark Hanoi pedestrian walkway stone/asphalt (non-glaring)."""
+    mat, nt, bsdf = _new_bsdf_mat("Mat_VnStreetMatte")
+    if nt is None:
+        return mat
+    geom = nt.nodes.new("ShaderNodeNewGeometry")
+
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 14.0
+    noise.inputs["Detail"].default_value = 8.0
+
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].position = 0.25
+    ramp.color_ramp.elements[0].color = (0.21, 0.21, 0.22, 1.0)
+    ramp.color_ramp.elements[1].position = 0.78
+    ramp.color_ramp.elements[1].color = (0.31, 0.30, 0.29, 1.0)
+
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.24
+    bump.inputs["Distance"].default_value = 0.015
+
+    nt.links.new(geom.outputs["Position"], noise.inputs["Vector"])
+    nt.links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
+    nt.links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
+    nt.links.new(noise.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    bsdf.inputs["Roughness"].default_value = 0.88
+    return mat
+
+
+def make_foliage_pbr():
+    mat, nt, bsdf = _new_bsdf_mat("Mat_TreeFoliage")
+    if nt is None:
+        return mat
+    geom = nt.nodes.new("ShaderNodeNewGeometry")
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 6.5
+    noise.inputs["Detail"].default_value = 7.0
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].position = 0.25
+    ramp.color_ramp.elements[0].color = (0.07, 0.26, 0.08, 1.0)
+    ramp.color_ramp.elements[1].position = 0.78
+    ramp.color_ramp.elements[1].color = (0.19, 0.46, 0.14, 1.0)
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.45
+    bump.inputs["Distance"].default_value = 0.04
+    nt.links.new(geom.outputs["Position"], noise.inputs["Vector"])
+    nt.links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
+    nt.links.new(ramp.outputs["Color"], bsdf.inputs["Base Color"])
+    nt.links.new(noise.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    bsdf.inputs["Roughness"].default_value = 0.72
+    return mat
+
+
 def create_materials():
     return {
         "cobble": make_cobble_pbr(),
+        "terrazzo_paving": make_hanoi_terrazzo_paving(),
+        "vn_red_tile": make_vn_red_terrazzo(),
+        "vn_street_matte": make_vn_street_matte(),
         "wet_stone": make_wet_stone(),
         "moss_clump": make_moss_clump(),
         "plaster_weathered": make_weathered_plaster("Mat_WeatheredPlaster", (0.72, 0.64, 0.50), (0.24, 0.26, 0.17)),
@@ -430,8 +558,8 @@ def create_materials():
         "roof_slate": make_brick_pbr("Mat_RoofSlate", (0.16, 0.19, 0.23), (0.11, 0.13, 0.17), (0.08, 0.09, 0.11), scale=2.4, bw=0.42, rh=0.24, brick_rough=0.52, bump_str=0.38),
         "brass": make_simple_mat("Mat_Brass", (0.70, 0.50, 0.18), roughness=0.34, metallic=0.86),
         "gold": make_simple_mat("Mat_Gold", (0.90, 0.72, 0.22), roughness=0.24, metallic=0.94),
-        "sign_gold": make_simple_mat("Mat_SignGold", (0.96, 0.78, 0.28), roughness=0.25, metallic=0.85, emission=(0.96, 0.75, 0.25), emission_strength=0.48),
-        "sign_sub": make_simple_mat("Mat_SignSub", (0.92, 0.85, 0.70), roughness=0.6, emission=(0.85, 0.78, 0.62), emission_strength=0.25),
+        "sign_gold": make_simple_mat("Mat_SignGold", (0.94, 0.78, 0.30), roughness=0.35, metallic=0.35, emission=(0.94, 0.78, 0.30), emission_strength=0.45),
+        "sign_sub": make_simple_mat("Mat_SignSub", (0.92, 0.88, 0.80), roughness=0.60, emission=(0.86, 0.82, 0.72), emission_strength=0.28),
         "iron": make_simple_mat("Mat_Iron", (0.13, 0.14, 0.16), roughness=0.50, metallic=0.85),
         "velvet": make_simple_mat("Mat_Velvet", (0.42, 0.04, 0.07), roughness=0.92),
         "carpet_gold": make_simple_mat("Mat_CarpetGold", (0.68, 0.50, 0.16), roughness=0.86),
@@ -440,13 +568,25 @@ def create_materials():
         "parchment": make_simple_mat("Mat_Parchment", (0.82, 0.74, 0.57), roughness=0.86),
         "blueprint": make_simple_mat("Mat_Blueprint", (0.11, 0.24, 0.44), roughness=0.76),
         "jade": make_simple_mat("Mat_Jade", (0.11, 0.55, 0.36), roughness=0.22, metallic=0.05),
-        "amber": make_simple_mat("Mat_Amber", (0.86, 0.45, 0.06), roughness=0.14, emission=(0.86, 0.45, 0.06), emission_strength=0.45),
+        "amber": make_simple_mat("Mat_Amber", (0.86, 0.45, 0.06), roughness=0.14, emission=(0.86, 0.45, 0.06), emission_strength=0.35),
         "obsidian": make_simple_mat("Mat_Obsidian", (0.05, 0.04, 0.08), roughness=0.12, metallic=0.25),
-        "water": make_simple_mat("Mat_Water", (0.09, 0.56, 0.64), roughness=0.06, metallic=0.10, emission=(0.10, 0.55, 0.68), emission_strength=0.65),
-        "cyan_glow": make_simple_mat("Mat_CyanGlow", (0.20, 0.85, 1.0), roughness=0.2, emission=(0.20, 0.85, 1.0), emission_strength=3.4),
-        "arcane_glow": make_simple_mat("Mat_ArcaneGlow", (0.62, 0.28, 0.96), roughness=0.2, emission=(0.62, 0.28, 0.96), emission_strength=3.2),
-        "warm_glow": make_simple_mat("Mat_WarmGlow", (1.0, 0.76, 0.35), roughness=0.2, emission=(1.0, 0.72, 0.28), emission_strength=4.5),
-        "glass": make_simple_mat("Mat_Glass", (0.68, 0.82, 0.90), roughness=0.06, metallic=0.15),
+        "water": make_simple_mat("Mat_Water", (0.09, 0.56, 0.64), roughness=0.06, metallic=0.10, emission=(0.10, 0.55, 0.68), emission_strength=0.45),
+        "cyan_glow": make_simple_mat("Mat_CyanGlow", (0.20, 0.85, 1.0), roughness=0.2, emission=(0.20, 0.85, 1.0), emission_strength=1.8),
+        "arcane_glow": make_simple_mat("Mat_ArcaneGlow", (0.62, 0.28, 0.96), roughness=0.2, emission=(0.62, 0.28, 0.96), emission_strength=1.8),
+        "warm_glow": make_simple_mat("Mat_WarmGlow", (1.0, 0.82, 0.48), roughness=0.3, emission=(1.0, 0.78, 0.40), emission_strength=2.2),
+        "glass": make_simple_mat("Mat_Glass", (0.68, 0.84, 0.92), roughness=0.10, metallic=0.10),
+        # Modern Hanoi materials
+        "wall_cream": make_simple_mat("Mat_HanoiCreamWall", (0.88, 0.85, 0.79), roughness=0.84),
+        "wall_yellow": make_simple_mat("Mat_HanoiYellowWall", (0.86, 0.73, 0.42), roughness=0.84),
+        "steel_black": make_simple_mat("Mat_SteelBlack", (0.12, 0.13, 0.15), roughness=0.52, metallic=0.72),
+        "inox_steel": make_simple_mat("Mat_InoxSteel", (0.74, 0.77, 0.80), roughness=0.28, metallic=0.90),
+        "plastic_blue": make_simple_mat("Mat_PlasticBlue", (0.10, 0.36, 0.80), roughness=0.42),
+        "plastic_red": make_simple_mat("Mat_PlasticRed", (0.78, 0.16, 0.15), roughness=0.42),
+        "sign_red": make_simple_mat("Mat_HanoiRedSign", (0.66, 0.10, 0.10), roughness=0.55, emission=(0.60, 0.08, 0.08), emission_strength=0.22),
+        "sign_blue": make_simple_mat("Mat_HanoiBlueSign", (0.10, 0.24, 0.54), roughness=0.55, emission=(0.08, 0.20, 0.48), emission_strength=0.20),
+        "tree_bark": make_wood_pbr("Mat_TreeBark", (0.24, 0.17, 0.12), (0.14, 0.10, 0.07), roughness=0.88, bump_str=0.45),
+        "tree_foliage": make_foliage_pbr(),
+        "steam_mist": make_simple_mat("Mat_SteamMist", (0.94, 0.96, 0.98), roughness=0.45, emission=(0.90, 0.94, 0.98), emission_strength=0.65),
     }
 
 
@@ -673,99 +813,98 @@ def add_spot_light(name, parent, loc, target_loc, color, energy, spot_deg=55, co
     return lobj
 
 
-# ==================== 1. ORGANIC PLAZA FLOOR, CURBSTONES & MULTIVERSE FOUNTAIN ====================
+# ==================== 1. VIETNAMESE SIDEWALK TERRAZZO & HANOI CENTER PARK ISLAND ====================
 
 def build_street_and_plaza(mats, rng, col):
-    add_box("Cobble_Road", None, (0, 0, -0.05), (48.0, 48.0, 0.10), mats["cobble"], bevel=0.0, col=col)
+    # Matte natural dark urban pedestrian street base (90m x 96m)
+    add_box("Cobble_Road", None, (0, 0, -0.05), (90.0, 96.0, 0.10), mats["vn_street_matte"], bevel=0.0, col=col)
 
-    # Wet dark stone apron & Radial Compass-Rose Mosaic around Fountain
-    add_cyl("Plaza_WetApron", None, (0, 0, 0.012), 2.55, 0.024, mats["wet_stone"], verts=24, bevel=0.006, smooth=False, col=col)
-    add_torus_ring("Plaza_RuneRing_Brass", None, (0, 0, 0.022), 2.82, 0.045, mats["brass"], major_segs=48, col=col)
-    add_torus_ring("Plaza_RuneRing_Glow", None, (0, 0, 0.020), 2.94, 0.025, mats["arcane_glow"], major_segs=48, col=col)
+    # Subtle granite paver border & recessed tactile paving bands along pedestrian center lane
+    for lx in (-2.95, 2.95):
+        add_box(f"LaneBorder_{lx}", None, (lx, 0, 0.006), (0.36, 48.0, 0.012), mats["ashlar_stone"], bevel=0.004, col=col)
 
-    # 16 Radial weathered stone wedge slabs forming a compass-rose plaza floor
-    for i in range(16):
-        ang = i * (2 * math.pi / 16)
-        r = 3.45
-        sx, sy = math.cos(ang) * r, math.sin(ang) * r
-        m = mats["ashlar_stone"] if i % 2 == 0 else mats["stone_dark"]
-        tilt = rng.uniform(-0.018, 0.018)
-        z_off = rng.uniform(0.008, 0.020)
-        add_box(f"PlazaMosaic_{i}", None, (sx, sy, z_off), (0.85, 0.56, 0.04), m, rot=(tilt, tilt * 0.5, ang), bevel=0.012, col=col)
-
-    # Scattered irregular 3D stepping stones along main road for organic surface relief
-    for i in range(38):
-        px = rng.uniform(-3.9, 3.9)
-        py = rng.uniform(-11.0, 10.5)
-        if math.hypot(px, py) < 3.95:
-            continue
-        w = rng.uniform(0.38, 0.72)
-        d = rng.uniform(0.32, 0.62)
-        m = mats["ashlar_stone"] if i % 3 != 0 else mats["wet_stone"]
-        add_box(f"RoadSlab_{i}", None, (px, py, rng.uniform(0.006, 0.020)), (w, d, 0.036), m,
-                rot=(rng.uniform(-0.025, 0.025), rng.uniform(-0.025, 0.025), rng.uniform(0, math.pi)), bevel=0.010, col=col)
-
-    # Raised stone sidewalks + weathered tilted curbstones + moss clumps along curb joints
-    for side_name, sx in (("Sidewalk_West", -10.5), ("Sidewalk_East", 10.5)):
-        add_box(side_name, None, (sx, 0, 0.055), (12.2, 46.0, 0.11), mats["ashlar_stone"], bevel=0.012, col=col)
-        curb_x = -4.38 if sx < 0 else 4.38
-        for i in range(-18, 19):
-            cy = i * 0.72 + rng.uniform(-0.015, 0.015)
-            m = mats["stone_dark"] if i % 4 != 0 else mats["wet_stone"]
-            add_box(f"{side_name}_Curb_{i}", None, (curb_x + rng.uniform(-0.01, 0.01), cy, 0.075 + rng.uniform(-0.006, 0.006)),
-                    (0.24, 0.67, 0.15), m, rot=(rng.uniform(-0.02, 0.02), 0, rng.uniform(-0.02, 0.02)), bevel=0.015, col=col)
-            if i % 3 == 0:
-                add_moss_cluster(f"CurbMoss_{side_name}_{i}", None, (curb_x - (0.14 if sx > 0 else -0.14), cy, 0.02), (0.65, 0.65, 0.55), mats, rng, col)
+    # Classic Vietnamese Red-and-Grey Grooved Terrazzo Sidewalks + Curbs + Storm Drain Grates
+    for side_name, sx, curb_x, red_x, drain_x in (
+        ("Sidewalk_West", -10.5, -4.38, -7.2, -4.18),
+        ("Sidewalk_East", 10.5, 4.38, 7.2, 4.18),
+    ):
+        add_box(side_name, None, (sx, 0, 0.045), (12.2, 56.0, 0.09), mats["terrazzo_paving"], bevel=0.010, col=col)
+        # Signature terracotta-red Vietnamese sidewalk tile runner
+        add_box(f"{side_name}_RedStrip", None, (red_x, 0, 0.092), (3.8, 42.0, 0.012), mats["vn_red_tile"], bevel=0.004, col=col)
+        for i in range(-22, 23):
+            cy = i * 0.72
+            m = mats["ashlar_stone"] if i % 3 != 0 else mats["stone_dark"]
+            add_box(f"{side_name}_Curb_{i}", None, (curb_x, cy, 0.068), (0.24, 0.69, 0.14), m, bevel=0.010, col=col)
+        for dy in (-10.0, -3.5, 3.5, 10.0):
+            add_box(f"{side_name}_Drain_{dy}", None, (drain_x, dy, 0.008), (0.34, 0.65, 0.016), mats["steel_black"], bevel=0.003, col=col)
 
 
-def build_fountain(mats, rng, col):
-    root = bpy.data.objects.new("Fountain_Central", None)
+def _add_vn_park_bench(name, parent, loc, rot_z, mats, col):
+    """Authentic Vietnamese Terrazzo Park Bench (Ghế đá công viên Hà Nội)."""
+    b = bpy.data.objects.new(name, None)
+    b.location = Vector(loc)
+    b.rotation_euler = Euler((0, 0, rot_z))
+    if parent:
+        b.parent = parent
+    link_obj(b, col)
+    # Side leg supports
+    for ly in (-0.58, 0.58):
+        add_box(f"Leg_{ly}", b, (0, ly, 0.22), (0.46, 0.09, 0.44), mats["terrazzo_paving"], bevel=0.01, col=col)
+    # Smooth seat slab & curved-backrest slab
+    add_box("SeatSlab", b, (0.04, 0, 0.46), (0.48, 1.48, 0.07), mats["dial_white"], bevel=0.012, col=col)
+    add_box("BackSlab", b, (-0.18, 0, 0.78), (0.07, 1.48, 0.42), mats["dial_white"], rot=(0, -0.18, 0), bevel=0.012, col=col)
+    return b
+
+
+def build_hanoi_center_island(mats, font_data, rng, col):
+    """Modern Hanoi Pedestrian Park Island replacing old fountain: tree planter, stone benches & neighborhood bulletin board."""
+    root = bpy.data.objects.new("Hanoi_CenterIsland", None)
     link_obj(root, col)
 
-    add_cyl("Plinth_Step1", root, (0, 0, 0.09), 2.35, 0.18, mats["wet_stone"], verts=8, bevel=0.02, smooth=False, col=col)
-    add_cyl("Plinth_Step2", root, (0, 0, 0.24), 2.10, 0.14, mats["ashlar_stone"], verts=8, bevel=0.02, smooth=False, col=col)
+    # Raised Granite & Red-Brick Park Island Planter Bed
+    add_box("Island_Apron", root, (0, 0, 0.025), (3.8, 5.6, 0.05), mats["vn_red_tile"], bevel=0.012, col=col)
+    add_box("Island_Curb", root, (0, 0, 0.19), (2.7, 4.5, 0.34), mats["ashlar_stone"], bevel=0.015, col=col)
+    add_box("Island_BrickBand", root, (0, 0, 0.17), (2.74, 4.54, 0.16), mats["brick_exposed"], bevel=0.008, col=col)
+    add_box("Island_Soil", root, (0, 0, 0.31), (2.3, 4.1, 0.12), mats["wood_dark"], bevel=0.008, col=col)
 
-    rim_r = 1.72
-    seg_w = 2 * rim_r * math.tan(math.pi / 8) + 0.12
-    for i in range(8):
-        ang = i * (math.pi / 4)
-        cx, cy = math.cos(ang) * rim_r, math.sin(ang) * rim_r
-        add_box(f"BasinWall_{i}", root, (cx, cy, 0.56), (0.26, seg_w, 0.56), mats["ashlar_stone"], rot=(0, 0, ang), bevel=0.02, col=col)
-        add_box(f"BasinCap_{i}", root, (cx, cy, 0.87), (0.34, seg_w + 0.04, 0.10), mats["wet_stone"], rot=(0, 0, ang), bevel=0.02, col=col)
-        pang = ang + math.pi / 8
-        px, py = math.cos(pang) * (rim_r + 0.06), math.sin(pang) * (rim_r + 0.06)
-        add_box(f"CornerPost_{i}", root, (px, py, 0.62), (0.32, 0.32, 0.68), mats["stone_dark"], rot=(0, 0, pang), bevel=0.02, col=col)
-        add_sphere(f"CornerBrassOrb_{i}", root, (px, py, 1.02), 0.085, mats["brass"], col=col)
-        if i % 2 == 0:
-            add_moss_cluster(f"FountainMoss_{i}", root, (px * 1.18, py * 1.18, 0.16), (0.7, 0.7, 0.7), mats, rng, col)
+    # Central Lush Shade Tree (Cây Sấu Hà Nội) anchored right in the median
+    add_cone_frustum("Trunk_Low", root, (0, 0.15, 1.35), 0.24, 0.17, 2.25, mats["tree_bark"], verts=14, col=col)
+    add_cone_frustum("Trunk_Mid", root, (0.02, 0.17, 2.85), 0.16, 0.10, 1.25, mats["tree_bark"], rot=(0.04, -0.03, 0), verts=14, col=col)
+    for b_idx, (bx, by, bz, brot) in enumerate((
+        (-0.36, -0.12, 3.25, (0.42, -0.45, 0.3)),
+        (0.38, 0.36, 3.30, (-0.36, 0.45, 0.8)),
+        (0.06, -0.24, 3.38, (0.50, 0.12, -0.4)),
+    )):
+        add_cone_frustum(f"Branch_{b_idx}", root, (bx, by, bz), 0.09, 0.035, 1.20, mats["tree_bark"], rot=brot, verts=10, col=col)
+    add_sphere("TreeCanopy_Main", root, (0.04, 0.16, 4.45), 1.56, mats["tree_foliage"], scale=(1.15, 1.15, 0.80), segs=16, col=col)
+    add_sphere("TreeCanopy_L", root, (-0.98, -0.35, 3.95), 0.98, mats["tree_foliage"], scale=(1.12, 1.05, 0.80), segs=14, col=col)
+    add_sphere("TreeCanopy_R", root, (1.02, 0.68, 4.05), 1.05, mats["tree_foliage"], scale=(1.15, 1.08, 0.78), segs=14, col=col)
+    add_sphere("TreeCanopy_Top", root, (-0.10, 0.55, 5.10), 0.95, mats["tree_foliage"], scale=(1.08, 1.05, 0.76), segs=14, col=col)
 
-    add_cyl("WaterSurface_Lower", root, (0, 0, 0.68), 1.62, 0.06, mats["water"], verts=8, bevel=0.0, smooth=True, col=col)
-    add_cyl("Pedestal_Base", root, (0, 0, 0.72), 0.52, 0.85, mats["wet_stone"], verts=16, bevel=0.015, col=col)
-    add_cone_frustum("Pedestal_Flute", root, (0, 0, 1.32), 0.42, 0.28, 0.60, mats["ashlar_stone"], verts=16, col=col)
-    add_cone_frustum("Bowl_Tier1", root, (0, 0, 1.68), 0.32, 0.96, 0.32, mats["ashlar_stone"], verts=24, col=col)
-    add_cyl("Bowl_Tier1_Rim", root, (0, 0, 1.85), 0.98, 0.08, mats["stone_dark"], verts=24, bevel=0.015, col=col)
-    add_cyl("WaterSurface_Tier1", root, (0, 0, 1.82), 0.88, 0.04, mats["water"], verts=24, bevel=0.0, col=col)
-    add_cone_frustum("Pedestal_Upper", root, (0, 0, 2.15), 0.24, 0.16, 0.65, mats["ashlar_stone"], verts=16, col=col)
-    add_cone_frustum("Bowl_Tier2", root, (0, 0, 2.52), 0.18, 0.52, 0.22, mats["ashlar_stone"], verts=24, col=col)
-    add_cyl("WaterSurface_Tier2", root, (0, 0, 2.61), 0.46, 0.03, mats["water"], verts=24, bevel=0.0, col=col)
-    add_cyl("Finial_Stem", root, (0, 0, 2.78), 0.07, 0.34, mats["brass"], verts=16, col=col)
-    add_sphere("Finial_Orb", root, (0, 0, 3.00), 0.14, mats["cyan_glow"], col=col)
+    # Low Ornamental Bushes inside the Median Bed
+    for bi, (bx, by, br) in enumerate(((-0.55, -1.25, 0.42), (0.60, -1.10, 0.38), (-0.52, 1.32, 0.36), (0.58, 1.28, 0.40))):
+        add_sphere(f"Bush_{bi}", root, (bx, by, 0.54), br, mats["tree_foliage"], scale=(1.2, 1.1, 0.75), segs=10, col=col)
 
-    # Multiverse Astrolabe / Orrery Brass Rings + Levitating Arcane Runestones around Spire!
-    add_torus_ring("Orrery_RingA", root, (0, 0, 2.95), 0.62, 0.025, mats["brass"], rot=(math.radians(38), math.radians(22), 0), col=col)
-    add_torus_ring("Orrery_RingB", root, (0, 0, 2.95), 0.48, 0.020, mats["gold"], rot=(math.radians(-42), math.radians(30), 0.4), col=col)
-    for k in range(4):
-        ang = k * (math.pi / 2) + 0.4
-        rx, ry = math.cos(ang) * 0.78, math.sin(ang) * 0.78
-        add_box(f"LevitatingRuneStone_{k}", root, (rx, ry, 2.88 + (k % 2) * 0.22), (0.14, 0.10, 0.24), mats["obsidian"], rot=(0.2, 0.3, ang), bevel=0.01, col=col)
-        add_box(f"LevitatingRuneGlow_{k}", root, (rx, ry, 2.88 + (k % 2) * 0.22), (0.15, 0.04, 0.10), mats["arcane_glow"], rot=(0.2, 0.3, ang), bevel=0.004, col=col)
+    # Two Authentic Vietnamese Stone Park Benches (Ghế đá công viên) along the Island edges
+    _add_vn_park_bench("GheDa_West", root, (-1.45, -0.35, 0.04), math.pi, mats, col)
+    _add_vn_park_bench("GheDa_East", root, (1.45, 0.35, 0.04), 0.0, mats, col)
 
-    for i in range(4):
-        ang = i * (math.pi / 2)
-        add_cyl(f"Spout_{i}", root, (math.cos(ang) * 0.42, math.sin(ang) * 0.42, 1.30), 0.04, 0.34, mats["brass"], rot=(0, math.radians(72), ang), col=col)
-        add_cyl(f"WaterJet_{i}", root, (math.cos(ang) * 0.72, math.sin(ang) * 0.72, 1.02), 0.024, 0.62, mats["water"], rot=(0, math.radians(24), ang), bevel=0.0, col=col)
+    # Classic Hanoi Neighborhood Notice Board ("BẢNG TIN PHỐ HÀ NỘI") at South end of Island facing incoming player (-Y)!
+    add_cyl("Board_PostL", root, (-0.65, -1.78, 1.15), 0.045, 1.95, mats["steel_black"], col=col)
+    add_cyl("Board_PostR", root, (0.65, -1.78, 1.15), 0.045, 1.95, mats["steel_black"], col=col)
+    add_box("Board_Frame", root, (0, -1.78, 1.48), (1.42, 0.10, 0.96), mats["steel_black"], bevel=0.01, col=col)
+    add_box("Board_Backing", root, (0, -1.815, 1.48), (1.30, 0.05, 0.84), mats["sign_red"], bevel=0.005, col=col)
+    add_box("Board_Roof", root, (0, -1.80, 2.04), (1.58, 0.42, 0.14), mats["roof_tile"], rot=(0.22, 0, 0), bevel=0.01, col=col)
+    add_3d_text("Board_Title", root, "BẢNG TIN PHỐ HÀ NỘI", (0, -1.845, 1.72), (math.pi / 2, 0, 0), 0.092, mats["sign_gold"], font_data=font_data, extrude=0.003, col=col)
+    add_3d_text("Board_Sub", root, "KHU PHỐ VĂN MINH · SẠCH ĐẸP", (0, -1.845, 1.56), (math.pi / 2, 0, 0), 0.054, mats["sign_sub"], font_data=font_data, extrude=0.002, col=col)
+    for ni, nx in enumerate((-0.38, 0.0, 0.38)):
+        add_box(f"NoticeSheet_{ni}", root, (nx, -1.848, 1.24), (0.30, 0.02, 0.38), mats["dial_white"], bevel=0.002, col=col)
 
-    add_point_light("Fountain_AquaLight", root, (0, 0, 1.25), (0.35, 0.92, 1.0), 55.0, radius=0.4, col=col)
+    # Low Steel Pedestrian Bollards at corners of Island
+    for bx in (-1.75, 1.75):
+        for by in (-2.55, 2.55):
+            add_cyl(f"Bollard_{bx}_{by}", root, (bx, by, 0.36), 0.065, 0.68, mats["steel_black"], verts=12, col=col)
+            add_cyl(f"BollardBand_{bx}_{by}", root, (bx, by, 0.58), 0.068, 0.08, mats["gold"], verts=12, col=col)
     return root
 
 
@@ -865,24 +1004,55 @@ def build_artifact(name, key, loc, mats, col, parent=None, scale=1.0):
     return root
 
 
-# ==================== 3. MULTIVERSE WALK-IN HOUSES (ASYMMETRIC & WEATHERED) ====================
+# ==================== 3. MODERN HANOI SHOPHOUSES (WALK-IN + MULTIVERSE ACCENTS) ====================
 
-def _build_house_shell(name, loc, facing_east, ext_low_mat, ext_up_mat, int_low_mat, int_up_mat, roof_mat, sign_title, sign_sub, sign_z, mats, font_data, rng, col):
+def _add_ac_unit(name, parent, loc, mats, col, rot_z=0.0):
+    ac = bpy.data.objects.new(name, None)
+    ac.location = Vector(loc)
+    ac.rotation_euler = Euler((0, 0, rot_z))
+    if parent:
+        ac.parent = parent
+    link_obj(ac, col)
+    add_box("Case", ac, (0, 0, 0), (0.28, 0.72, 0.48), mats["dial_white"], bevel=0.015, col=col)
+    add_cyl("FanGrille", ac, (0.145, -0.14, 0), 0.17, 0.02, mats["steel_black"], rot=(0, math.pi / 2, 0), verts=16, col=col)
+    add_box("SideVent", ac, (0.145, 0.20, 0), (0.02, 0.18, 0.34), mats["steel_black"], bevel=0.004, col=col)
+    return ac
+
+
+def _add_potted_plant(name, parent, loc, mats, col, scale=1.0):
+    p = bpy.data.objects.new(name, None)
+    p.location = Vector(loc)
+    p.scale = Vector((scale, scale, scale))
+    if parent:
+        p.parent = parent
+    link_obj(p, col)
+    add_cone_frustum("Pot", p, (0, 0, 0.16), 0.14, 0.19, 0.32, mats["stone_dark"], verts=16, col=col)
+    add_sphere("LeafA", p, (0, 0, 0.42), 0.22, mats["tree_foliage"], scale=(1.1, 1.1, 0.85), segs=12, col=col)
+    add_sphere("LeafB", p, (0.10, -0.06, 0.54), 0.15, mats["tree_foliage"], segs=10, col=col)
+    return p
+
+
+def _build_house_shell(name, loc, facing_east, ext_low_mat, ext_up_mat, int_low_mat, int_up_mat, sign_bg_mat, sign_title, sign_sub, sign_z, mats, font_data, rng, col):
+    """
+    Modern Hanoi 2.5-story tube shophouse shell preserving exact ground-floor doorway/interior
+    bounds (5.2m x 6.2m) for Unity colliders, topped with cantilevered glass balconies,
+    vertical wood-tone sun louvers, modern LED lightbox signs, AC condenser, and flat roof.
+    """
     root = bpy.data.objects.new(name, None)
     root.location = Vector(loc)
     if not facing_east:
         root.rotation_euler = Euler((0, 0, math.pi))
     link_obj(root, col)
 
-    # Weathered stone foundation & stepped entryway
-    add_box("Foundation", root, (0, 0, 0.14), (5.2, 6.2, 0.18), mats["wet_stone"], bevel=0.02, col=col)
-    add_box("StepEntry", root, (2.78, 0, 0.12), (0.55, 2.7, 0.14), mats["ashlar_stone"], bevel=0.015, col=col)
+    # Clean Granite Porch Plinth & Modern Stepped Threshold
+    add_box("Foundation", root, (0, 0, 0.14), (5.2, 6.2, 0.18), mats["ashlar_stone"], bevel=0.015, col=col)
+    add_box("StepEntry", root, (2.78, 0, 0.12), (0.55, 2.7, 0.14), mats["terrazzo_paving"], bevel=0.012, col=col)
 
-    # Outer & Inner Shells
-    add_box("Ext_BackLow", root, (-2.46, 0, 0.72), (0.14, 6.0, 1.05), ext_low_mat, bevel=0.012, col=col)
-    add_box("Ext_BackUp", root, (-2.46, 0, 2.32), (0.12, 6.0, 2.16), ext_up_mat, bevel=0.01, col=col)
-    add_box("Int_BackLow", root, (-2.33, 0, 0.72), (0.06, 5.75, 1.05), int_low_mat, bevel=0.008, col=col)
-    add_box("Int_BackUp", root, (-2.33, 0, 2.32), (0.06, 5.75, 2.16), int_up_mat, bevel=0.008, col=col)
+    # Ground Floor Outer & Inner Shells (exact walk-in room envelope)
+    add_box("Ext_BackLow", root, (-2.46, 0, 0.72), (0.14, 6.0, 1.05), ext_low_mat, bevel=0.010, col=col)
+    add_box("Ext_BackUp", root, (-2.46, 0, 2.32), (0.12, 6.0, 2.16), ext_up_mat, bevel=0.008, col=col)
+    add_box("Int_BackLow", root, (-2.33, 0, 0.72), (0.06, 5.75, 1.05), int_low_mat, bevel=0.006, col=col)
+    add_box("Int_BackUp", root, (-2.33, 0, 2.32), (0.06, 5.75, 2.16), int_up_mat, bevel=0.006, col=col)
 
     for sy_name, sy, isign in (("SideL", -2.90, -1), ("SideR", 2.90, 1)):
         ext_y = sy + isign * 0.05
@@ -890,202 +1060,144 @@ def _build_house_shell(name, loc, facing_east, ext_low_mat, ext_up_mat, int_low_
         for prefix, wy, thk in (("Ext", ext_y, 0.12), ("Int", int_y, 0.06)):
             low_m = ext_low_mat if prefix == "Ext" else int_low_mat
             up_m = ext_up_mat if prefix == "Ext" else int_up_mat
-            add_box(f"{prefix}_{sy_name}_Low", root, (0, wy, 0.72), (4.95, thk, 1.05), low_m, bevel=0.01, col=col)
+            add_box(f"{prefix}_{sy_name}_Low", root, (0, wy, 0.72), (4.95, thk, 1.05), low_m, bevel=0.008, col=col)
             add_box(f"{prefix}_{sy_name}_BackPier", root, (-1.60, wy, 2.32), (1.76, thk, 2.16), up_m, bevel=0.008, col=col)
             add_box(f"{prefix}_{sy_name}_FrontPier", root, (1.60, wy, 2.32), (1.76, thk, 2.16), up_m, bevel=0.008, col=col)
             add_box(f"{prefix}_{sy_name}_WinLintel", root, (0, wy, 2.90), (1.45, thk, 1.00), up_m, bevel=0.008, col=col)
-        add_box(f"{sy_name}_WinSill", root, (0, sy, 1.24), (1.48, 0.28, 0.12), mats["wood_dark"], bevel=0.01, col=col)
-        add_box(f"{sy_name}_Glass", root, (0, sy, 1.82), (1.30, 0.04, 1.10), mats["glass"], bevel=0.004, col=col)
-        add_box(f"{sy_name}_MullionV", root, (0, sy, 1.82), (0.06, 0.14, 1.10), mats["wood_dark"], bevel=0.005, col=col)
-        add_box(f"{sy_name}_MullionH", root, (0, sy, 1.82), (1.30, 0.14, 0.06), mats["wood_dark"], bevel=0.005, col=col)
+        add_box(f"{sy_name}_WinFrame", root, (0, sy, 1.82), (1.46, 0.24, 0.08), mats["steel_black"], bevel=0.008, col=col)
+        add_box(f"{sy_name}_Glass", root, (0, sy, 1.82), (1.36, 0.04, 1.12), mats["glass"], bevel=0.004, col=col)
+        add_box(f"{sy_name}_MullionV", root, (0, sy, 1.82), (0.05, 0.12, 1.12), mats["steel_black"], bevel=0.004, col=col)
 
     for side, fy in (("FrontL", -2.10), ("FrontR", 2.10)):
-        add_box(f"Ext_{side}_Low", root, (2.46, fy, 0.72), (0.14, 1.80, 1.05), ext_low_mat, bevel=0.012, col=col)
-        add_box(f"Ext_{side}_Up", root, (2.46, fy, 2.32), (0.12, 1.80, 2.16), ext_up_mat, bevel=0.01, col=col)
-        add_box(f"Int_{side}_Low", root, (2.34, fy, 0.72), (0.06, 1.68, 1.05), int_low_mat, bevel=0.008, col=col)
-        add_box(f"Int_{side}_Up", root, (2.34, fy, 2.32), (0.06, 1.68, 2.16), int_up_mat, bevel=0.008, col=col)
+        add_box(f"Ext_{side}_Low", root, (2.46, fy, 0.72), (0.14, 1.80, 1.05), ext_low_mat, bevel=0.010, col=col)
+        add_box(f"Ext_{side}_Up", root, (2.46, fy, 2.32), (0.12, 1.80, 2.16), ext_up_mat, bevel=0.008, col=col)
+        add_box(f"Int_{side}_Low", root, (2.34, fy, 0.72), (0.06, 1.68, 1.05), int_low_mat, bevel=0.006, col=col)
+        add_box(f"Int_{side}_Up", root, (2.34, fy, 2.32), (0.06, 1.68, 2.16), int_up_mat, bevel=0.006, col=col)
+        # Modern shopfront display glass panels flanking entry (glass proud of dark steel frame)
+        add_box(f"{side}_ShowFrame", root, (2.535, fy, 1.80), (0.05, 1.22, 1.22), mats["steel_black"], bevel=0.005, col=col)
+        add_box(f"{side}_ShowGlass", root, (2.560, fy, 1.80), (0.04, 1.08, 1.08), mats["glass"], bevel=0.003, col=col)
+        add_box(f"{side}_ShowBar", root, (2.582, fy, 1.80), (0.02, 1.12, 0.04), mats["steel_black"], bevel=0.002, col=col)
 
-    add_box("Ext_DoorWall", root, (2.46, 0, 3.16), (0.14, 2.44, 0.56), ext_up_mat, bevel=0.01, col=col)
-    add_box("Int_DoorWall", root, (2.34, 0, 3.16), (0.06, 2.44, 0.56), int_up_mat, bevel=0.008, col=col)
-    add_box("DoorPostL", root, (2.44, -1.22, 1.56), (0.28, 0.16, 2.75), mats["wood_dark"], bevel=0.012, col=col)
-    add_box("DoorPostR", root, (2.44, 1.22, 1.56), (0.28, 0.16, 2.75), mats["wood_dark"], bevel=0.012, col=col)
-    add_box("DoorHeaderBeam", root, (2.44, 0, 2.92), (0.32, 2.76, 0.18), mats["wood_dark"], bevel=0.012, col=col)
+    add_box("Ext_DoorWall", root, (2.46, 0, 3.16), (0.14, 2.44, 0.56), ext_up_mat, bevel=0.008, col=col)
+    add_box("Int_DoorWall", root, (2.34, 0, 3.16), (0.06, 2.44, 0.56), int_up_mat, bevel=0.006, col=col)
+    add_box("DoorPostL", root, (2.46, -1.22, 1.56), (0.24, 0.14, 2.75), mats["steel_black"], bevel=0.008, col=col)
+    add_box("DoorPostR", root, (2.46, 1.22, 1.56), (0.24, 0.14, 2.75), mats["steel_black"], bevel=0.008, col=col)
+    add_box("DoorHeaderBeam", root, (2.46, 0, 2.92), (0.26, 2.72, 0.14), mats["steel_black"], bevel=0.008, col=col)
 
-    for cx in (-2.48, 2.48):
-        for cy in (-2.94, 2.94):
-            add_box(f"CornerBeam_{cx}_{cy}", root, (cx, cy, 1.82), (0.22, 0.22, 3.35), mats["wood_dark"], bevel=0.012, col=col)
-    add_box("EaveBeamL", root, (0, -2.94, 3.48), (5.2, 0.22, 0.18), mats["wood_dark"], bevel=0.01, col=col)
-    add_box("EaveBeamR", root, (0, 2.94, 3.48), (5.2, 0.22, 0.18), mats["wood_dark"], bevel=0.01, col=col)
-    add_box("FrontTieBeam", root, (2.48, 0, 3.48), (0.22, 6.08, 0.18), mats["wood_dark"], bevel=0.01, col=col)
-    add_box("BackTieBeam", root, (-2.48, 0, 3.48), (0.22, 6.08, 0.18), mats["wood_dark"], bevel=0.01, col=col)
+    # Interior Modern Slab Ceiling & Floor 1->2 Structural Slab (Z = 3.48)
+    add_box("Floor2_Slab", root, (0.10, 0, 3.52), (5.45, 6.16, 0.24), ext_up_mat, bevel=0.012, col=col)
+    add_box("Int_CeilingTrackL", root, (0, -0.85, 3.36), (4.2, 0.06, 0.06), mats["steel_black"], bevel=0.004, col=col)
+    add_box("Int_CeilingTrackR", root, (0, 0.85, 3.36), (4.2, 0.06, 0.06), mats["steel_black"], bevel=0.004, col=col)
 
-    for gx_name, gx in (("FrontGable", 2.42), ("BackGable", -2.42)):
-        for step in range(5):
-            w = 5.4 - step * 1.05
-            z = 3.63 + step * 0.30
-            add_box(f"{gx_name}_{step}", root, (gx, 0, z), (0.16, w, 0.32), ext_up_mat, bevel=0.008, col=col)
+    # Sleek Modern Cantilevered Entrance Canopy + LED Recessed Lights
+    add_box("FrontCanopy_Slab", root, (2.98, 0, 2.98), (1.05, 5.85, 0.12), mats["steel_black"], bevel=0.010, col=col)
+    add_box("Canopy_WarmStrip", root, (2.98, 0, 2.91), (0.22, 4.80, 0.03), mats["warm_glow"], bevel=0.004, col=col)
+    add_point_light(f"{name}_PorchGlow", root, (3.15, 0, 2.55), (1.0, 0.90, 0.75), 42.0, radius=0.4, col=col)
 
-    slope_angle = math.atan2(1.70, 3.30)
-    slope_len = math.hypot(1.70, 3.30) + 0.35
-    for side_sign, sname in ((-1, "RoofL"), (1, "RoofR")):
-        ry = side_sign * 1.65
-        rz = 4.33
-        rot_x = -side_sign * slope_angle
-        rot = (rot_x, 0, 0)
-        add_box(f"{sname}_Base", root, (0, ry, rz), (5.65, slope_len, 0.14), mats["wood_dark"], rot=rot, bevel=0.01, col=col)
-        for row in range(6):
-            t_local = -0.40 + row * 0.16
-            dist = t_local * slope_len
-            wy = ry + dist * math.cos(rot_x)
-            wz = rz + dist * math.sin(rot_x) + 0.08
-            # Organic subtle sag/tilt variation on roof tile courses
-            jitter_x = rot_x + rng.uniform(-0.022, 0.022)
-            jitter_z = rng.uniform(-0.014, 0.014)
-            add_box(f"{sname}_Tiles_{row}", root, (0, wy, wz), (5.75, 0.56, 0.08), roof_mat, rot=(jitter_x, 0, jitter_z), bevel=0.012, col=col)
-    add_box("RoofRidgeCap", root, (0, 0, 5.26), (5.82, 0.28, 0.18), mats["stone_dark"], bevel=0.02, col=col)
+    # Modern 2nd Floor Recessed Studio Box & Balcony Terrace
+    add_box("F2_RoomBox", root, (-0.35, 0, 5.15), (4.35, 5.95, 3.05), ext_up_mat, bevel=0.012, col=col)
+    add_box("F2_GlassCurtain", root, (1.84, 0, 5.05), (0.06, 4.60, 2.55), mats["glass"], bevel=0.004, col=col)
+    for my in (-2.25, -0.75, 0.75, 2.25):
+        add_box(f"F2_Mullion_{my}", root, (1.85, my, 5.05), (0.10, 0.08, 2.65), mats["steel_black"], bevel=0.004, col=col)
 
-    # Slightly weathered crooked ceiling rafters
-    for rx in (-1.6, -0.5, 0.6, 1.7):
-        add_box(f"CeilingRafter_{rx}", root, (rx, 0, 3.45), (0.14, 5.7, 0.16), mats["wood_dark"], rot=(rng.uniform(-0.02, 0.02), 0, 0), bevel=0.008, col=col)
+    # Vertical Architectural Wood-Tone Sun Louvers on 2nd floor wing (classic modern Hanoi nhà ống look!)
+    for lv in range(7):
+        ly = 1.35 + lv * 0.24
+        add_box(f"F2_Louver_{lv}", root, (2.25, ly, 5.10), (0.18, 0.06, 2.75), mats["wood_light"], bevel=0.005, col=col)
 
-    # Moderate-sized Signboard + Hanging Blade Sign
-    add_box("MainSign_Frame", root, (2.64, 0, sign_z), (0.09, 2.24, 0.58), mats["brass"], bevel=0.012, col=col)
-    add_box("MainSign_Board", root, (2.67, 0, sign_z), (0.07, 2.12, 0.48), mats["wood_dark"], bevel=0.008, col=col)
+    # 2nd Floor Cantilevered Balcony Floor + Glass & Black-Steel Railing
+    add_box("F2_BalconyDeck", root, (2.38, 0, 3.66), (1.15, 5.95, 0.10), mats["ashlar_stone"], bevel=0.008, col=col)
+    add_box("F2_BalconyGlass", root, (2.90, 0, 4.18), (0.04, 5.80, 0.92), mats["glass"], bevel=0.003, col=col)
+    add_box("F2_BalconyRailTop", root, (2.90, 0, 4.66), (0.08, 5.88, 0.06), mats["steel_black"], bevel=0.006, col=col)
+    for py in (-2.88, -1.44, 0.0, 1.44, 2.88):
+        add_box(f"F2_RailPost_{py}", root, (2.90, py, 4.18), (0.07, 0.07, 1.00), mats["steel_black"], bevel=0.004, col=col)
+
+    # Modern Flat Architectural Roof + Parapet Rim + Penthouse Pergola Frame
+    add_box("Roof_Slab", root, (0.20, 0, 6.76), (5.55, 6.20, 0.22), ext_up_mat, bevel=0.012, col=col)
+    add_box("Roof_TrimRim", root, (2.96, 0, 6.84), (0.16, 6.24, 0.36), mats["steel_black"], bevel=0.008, col=col)
+    add_box("Roof_SideWingL", root, (0.20, -3.05, 6.84), (5.55, 0.14, 0.34), mats["steel_black"], bevel=0.008, col=col)
+    add_box("Roof_SideWingR", root, (0.20, 3.05, 6.84), (5.55, 0.14, 0.34), mats["steel_black"], bevel=0.008, col=col)
+
+    # Urban Hanoi Facade Details: AC Outdoor Unit & Balcony Planters
+    _add_ac_unit(f"{name}_ACUnit", root, (2.02, -2.18, 4.25), mats, col, rot_z=0.0)
+    _add_potted_plant(f"{name}_BalconyPlantL", root, (2.45, -1.35, 3.72), mats, col, scale=0.85)
+    _add_potted_plant(f"{name}_BalconyPlantR", root, (2.45, 0.55, 3.72), mats, col, scale=0.90)
+    _add_potted_plant(f"{name}_PorchPlantL", root, (2.82, -2.50, 0.23), mats, col, scale=0.95)
+    _add_potted_plant(f"{name}_PorchPlantR", root, (2.82, 2.50, 0.23), mats, col, scale=0.95)
+
+    # Modern LED Backlit Box Signboard proud of 2nd floor fascia (X = 2.92..3.00) + Vertical Hanoi Blade Sign
+    add_box("MainSign_Frame", root, (2.92, 0, sign_z + 0.04), (0.12, 4.10, 0.76), mats["steel_black"], bevel=0.010, col=col)
+    add_box("MainSign_Board", root, (2.96, 0, sign_z + 0.04), (0.08, 3.96, 0.64), sign_bg_mat, bevel=0.006, col=col)
     txt_rot = (math.pi / 2, 0, math.pi / 2)
-    add_3d_text("MainSign_Title", root, sign_title, (2.716, 0, sign_z + 0.08), txt_rot, 0.145, mats["sign_gold"], font_data=font_data, extrude=0.004, col=col)
-    add_3d_text("MainSign_Sub", root, sign_sub, (2.716, 0, sign_z - 0.10), txt_rot, 0.092, mats["sign_sub"], font_data=font_data, extrude=0.003, col=col)
+    add_3d_text("MainSign_Title", root, sign_title, (3.015, 0, sign_z + 0.14), txt_rot, 0.185, mats["sign_gold"], font_data=font_data, extrude=0.006, col=col)
+    add_3d_text("MainSign_Sub", root, sign_sub, (3.015, 0, sign_z - 0.10), txt_rot, 0.10, mats["sign_sub"], font_data=font_data, extrude=0.004, col=col)
 
-    add_box("BladeBracket", root, (2.72, -1.78, 2.76), (0.05, 1.16, 0.05), mats["iron"], bevel=0.006, col=col)
-    add_cyl("BladeRingL", root, (2.72, -2.12, 2.70), 0.015, 0.12, mats["iron"], col=col)
-    add_cyl("BladeRingR", root, (2.72, -1.58, 2.70), 0.015, 0.12, mats["iron"], col=col)
-    add_box("BladeBoard", root, (2.72, -1.85, 2.46), (0.05, 0.88, 0.42), mats["wood_dark"], bevel=0.008, col=col)
-    add_box("BladeTrim", root, (2.72, -1.85, 2.46), (0.035, 0.94, 0.48), mats["brass"], bevel=0.008, col=col)
-    add_3d_text("Blade_TextF", root, sign_title, (2.752, -1.85, 2.46), txt_rot, 0.068, mats["sign_gold"], font_data=font_data, extrude=0.003, col=col)
-    add_3d_text("Blade_TextB", root, sign_title, (2.688, -1.85, 2.46), (math.pi / 2, 0, -math.pi / 2), 0.068, mats["sign_gold"], font_data=font_data, extrude=0.003, col=col)
+    add_box("BladeBracket", root, (2.82, -2.70, 2.65), (0.06, 0.75, 0.06), mats["steel_black"], bevel=0.005, col=col)
+    add_box("BladeTrim", root, (2.86, -2.76, 2.38), (0.05, 0.54, 0.92), mats["steel_black"], bevel=0.008, col=col)
+    add_box("BladeBoard", root, (2.86, -2.76, 2.38), (0.06, 0.46, 0.84), sign_bg_mat, bevel=0.006, col=col)
+    add_3d_text("Blade_TextF", root, sign_title[:10], (2.898, -2.76, 2.38), txt_rot, 0.062, mats["sign_gold"], font_data=font_data, extrude=0.003, col=col)
 
-    for ly in (-1.35, 1.35):
-        add_box(f"PorchBracket_{ly}", root, (2.66, ly, 2.63), (0.28, 0.05, 0.05), mats["iron"], bevel=0.005, col=col)
-        add_cyl(f"PorchLantern_{ly}", root, (2.78, ly, 2.44), 0.09, 0.22, mats["warm_glow"], verts=8, col=col)
-    add_point_light(f"{name}_PorchGlow", root, (3.1, 0, 2.48), (1.0, 0.78, 0.45), 38.0, radius=0.35, col=col)
-
-    add_cyl("CeilingCord", root, (0, 0, 3.30), 0.02, 1.10, mats["iron"], col=col)
-    add_cyl("CeilingLanternRing", root, (0, 0, 2.75), 0.34, 0.05, mats["brass"], verts=16, col=col)
-    add_cyl("CeilingLanternCore", root, (0, 0, 2.68), 0.12, 0.18, mats["warm_glow"], verts=8, col=col)
-    add_point_light(f"{name}_InteriorLight", root, (0.2, 0, 2.55), (1.0, 0.82, 0.55), 125.0, radius=0.5, col=col)
-
+    # Interior Modern Pendant Track Lamp + Bright Warm-Daylight Wash
+    add_cyl("CeilingCord", root, (0, 0, 3.16), 0.018, 0.48, mats["steel_black"], col=col)
+    add_cyl("CeilingLanternRing", root, (0, 0, 2.90), 0.36, 0.045, mats["brass"], verts=24, col=col)
+    add_cyl("CeilingLanternCore", root, (0, 0, 2.84), 0.14, 0.14, mats["warm_glow"], verts=16, col=col)
+    add_point_light(f"{name}_InteriorLight", root, (0.2, 0, 2.65), (1.0, 0.90, 0.76), 140.0, radius=0.5, col=col)
     return root
 
 
 def build_blindbox_house_unique(loc, mats, font_data, rng, col):
     """
-    House 1 (Dì Mận — Cổ Tự & Khe Nứt Dị Giới):
-    - Asymmetric Octagonal Arcane Corner Turret with crooked witch-hat spire & floating rune halo!
-    - Stepped Gothic stone archway with glowing arcane keystone.
-    - Organic jagged exposed-brick clusters + 3D moss clumps on damp corners.
-    - Interior: 32 staggered aged timber floorboards + Sunken Brass & Glowing Arcane Astrolabe Floor Medallion!
+    House 1 (Tiệm Hộp Mù Dì Mận — Phố Hà Nội Hiện Đại x Cổ Vật):
+    - Crisp 2.5-story modern Hanoi shophouse: cream stucco, glazed teal ceramic dado, glass balcony, sun-louvers.
+    - Modern rooftop corner glass showcase pedestal displaying a levitating arcane crystal halo!
+    - Interior: Warm timber plank flooring + Sunken Brass & Glowing Arcane Astrolabe Medallion!
     """
     root = _build_house_shell(
         "Shop_BlindBox_House", loc, True,
-        ext_low_mat=mats["brick_exposed"],
-        ext_up_mat=mats["plaster_weathered"],
+        ext_low_mat=mats["brick_glazed_teal"],
+        ext_up_mat=mats["wall_cream"],
         int_low_mat=mats["wood_dark"],
-        int_up_mat=mats["brick_exposed"],
-        roof_mat=mats["roof_tile"],
-        sign_title="QUẦY NIÊM PHONG",
-        sign_sub="BÁN HỘP MÙ · DÌ MẬN",
-        sign_z=3.30,
+        int_up_mat=mats["wall_cream"],
+        sign_bg_mat=mats["sign_red"],
+        sign_title="TIỆM HỘP MÙ DÌ MẬN",
+        sign_sub="SỐ 18 · KỲ VẬT PHỐ HÀ NỘI",
+        sign_z=3.34,
         mats=mats, font_data=font_data, rng=rng, col=col,
     )
 
-    # Interior Floor: 32 Staggered Aged Wood Planks + Sunken Arcane Astrolabe Medallion!
+    # Interior Floor: 32 Warm Aged Wood Planks + Sunken Arcane Astrolabe Medallion
     plank_mats = [mats["wood_aged_floor"], mats["wood_dark"], mats["wood_light"]]
     for row in range(16):
         py = -2.66 + row * 0.355
         split_x = rng.uniform(-0.8, 0.8)
         for seg, (cx, len_x) in enumerate((((-2.4 + split_x) * 0.5, split_x + 2.4 - 0.02), ((2.4 + split_x) * 0.5, 2.4 - split_x - 0.02))):
             m = plank_mats[(row + seg) % 3]
-            add_box(f"FloorPlank_{row}_{seg}", root, (cx, py, 0.24 + rng.uniform(-0.003, 0.003)),
-                    (len_x, 0.335, 0.032), m, rot=(rng.uniform(-0.008, 0.008), 0, 0), bevel=0.005, col=col)
+            add_box(f"FloorPlank_{row}_{seg}", root, (cx, py, 0.24), (len_x, 0.335, 0.032), m, bevel=0.004, col=col)
 
-    # Sunken Brass & Glowing Arcane Astrolabe Medallion embedded in floor center (X = +1.05, Y = 0)
-    add_cyl("FloorMedallion_Slate", root, (1.05, 0, 0.256), 0.76, 0.020, mats["obsidian"], verts=28, bevel=0.003, col=col)
-    add_torus_ring("FloorMedallion_OuterBrass", root, (1.05, 0, 0.268), 0.76, 0.028, mats["brass"], major_segs=32, col=col)
-    add_torus_ring("FloorMedallion_GlowRing", root, (1.05, 0, 0.268), 0.54, 0.018, mats["arcane_glow"], major_segs=32, col=col)
-    add_torus_ring("FloorMedallion_InnerBrass", root, (1.05, 0, 0.270), 0.30, 0.015, mats["gold"], major_segs=24, col=col)
-    add_cyl("FloorMedallion_CenterHub", root, (1.05, 0, 0.271), 0.08, 0.016, mats["gold"], verts=16, col=col)
-    for sp in range(4):
-        add_box(f"MedallionSpoke_{sp}", root, (1.05, 0, 0.267), (1.36, 0.04, 0.010), mats["brass"], rot=(0, 0, sp * math.pi / 4), bevel=0.002, col=col)
+    # Traditional Vietnamese Woven Entryway Carpet & Lounge Rug inside shop
+    add_box("FloorRug_Border", root, (1.05, 0, 0.262), (1.35, 1.75, 0.012), mats["carpet_gold"], bevel=0.004, col=col)
+    add_box("FloorRug_Core", root, (1.05, 0, 0.268), (1.18, 1.56, 0.012), mats["velvet"], bevel=0.004, col=col)
 
-    # Asymmetric Octagonal Arcane Corner Turret on front-left corner (X = +1.15, Y = -3.15)
-    turret = bpy.data.objects.new("Arcane_Corner_Turret", None)
-    turret.location = Vector((1.15, -3.15, 0.0))
-    turret.parent = root
-    link_obj(turret, col)
-    add_cyl("Turret_Base", turret, (0, 0, 0.65), 1.05, 1.30, mats["ashlar_stone"], verts=8, bevel=0.02, smooth=False, col=col)
-    add_cyl("Turret_Shaft", turret, (0, 0, 2.85), 0.92, 3.10, mats["plaster_weathered"], verts=8, bevel=0.02, smooth=False, col=col)
-    add_cyl("Turret_Crown", turret, (0, 0, 4.48), 1.04, 0.24, mats["wood_dark"], verts=8, bevel=0.02, smooth=False, col=col)
-    # Steep crooked witch-hat spire
-    add_cone_frustum("Turret_Spire", turret, (0.04, -0.04, 5.75), 1.18, 0.05, 2.35, mats["roof_tile"], rot=(0.04, -0.05, 0.2), verts=8, smooth=False, col=col)
-    add_sphere("Turret_Finial", turret, (0.08, -0.08, 6.95), 0.12, mats["arcane_glow"], col=col)
-    add_torus_ring("Turret_LevitatingHalo", turret, (0.05, -0.05, 5.65), 0.92, 0.028, mats["arcane_glow"], rot=(0.25, -0.20, 0), col=col)
-    # Glowing arcane slit windows on turret
-    for wz in (2.5, 3.6):
-        add_box(f"Turret_Slit_{wz}", turret, (0.85, -0.35, wz), (0.14, 0.18, 0.55), mats["arcane_glow"], rot=(0, 0, -0.35), bevel=0.005, col=col)
+    # Rooftop Pergola Planter Accent (clean modern urban terrace)
+    _add_potted_plant("RoofTerrace_Plant", root, (1.35, -2.05, 6.88), mats, col, scale=1.25)
 
-    # Stepped Gothic Stone Archway + Glowing Arcane Keystone around front doorway
-    for i, (ay, az, rot_x) in enumerate(((-1.26, 2.35, 0.35), (-0.82, 2.75, 0.72), (0.0, 2.96, 0.0), (0.82, 2.75, -0.72), (1.26, 2.35, -0.35))):
-        m = mats["arcane_glow"] if i == 2 else mats["ashlar_stone"]
-        add_box(f"ArchVoussoir_{i}", root, (2.60, ay, az), (0.18, 0.40, 0.20), m, rot=(rot_x, 0, 0), bevel=0.012, col=col)
+    # Sleek Exterior Decorative Trim & Sidewalk Potted Bamboo/Shrubs
+    add_box("Modern_EntryStepTrim", root, (2.78, 0, 0.19), (0.58, 2.74, 0.02), mats["brass"], bevel=0.004, col=col)
 
-    # Stone Quoins & Organic Jagged Exposed Brick Patches + 3D Moss Clumps
-    for qx in (-2.48, 2.48):
-        for qy in (-2.94, 2.94):
-            for step in range(6):
-                qz = 0.50 + step * 0.48
-                w_scale = 0.34 if step % 2 == 0 else 0.24
-                add_box(f"Quoin_{qx}_{qy}_{step}", root, (qx, qy, qz), (w_scale, 0.28, 0.24), mats["ashlar_stone"], bevel=0.012, col=col)
+    # Interior Carpet beside Medallion + Framed Gallery Poster + Modern Display Shelves + Counter
+    add_box("Int_Carpet_Border", root, (0.15, -1.35, 0.264), (1.45, 2.15, 0.015), mats["carpet_gold"], bevel=0.004, col=col)
+    add_box("Int_Carpet_Center", root, (0.15, -1.35, 0.270), (1.30, 1.98, 0.015), mats["velvet"], bevel=0.004, col=col)
 
-    # Non-overlapping staggered brick clusters breaking out of damp plaster (distinct X depth avoids Z-fighting)
-    for idx, (px, py, pz, sy, sz) in enumerate((
-        (2.505, -2.18, 1.92, 0.85, 0.48),
-        (2.512, -1.88, 2.26, 0.52, 0.24),
-        (2.515, -2.35, 1.56, 0.48, 0.28),
-        (2.505, 1.95, 1.58, 0.62, 0.42),
-    )):
-        add_box(f"JaggedBrick_{idx}", root, (px, py, pz), (0.04, sy, sz), mats["brick_exposed"], bevel=0.008, col=col)
-
-    add_moss_cluster("House1_Moss_1", root, (2.55, -2.55, 0.24), (0.9, 1.1, 0.9), mats, rng, col)
-    add_moss_cluster("House1_Moss_2", root, (2.55, 2.65, 0.24), (0.8, 0.9, 0.8), mats, rng, col)
-    add_moss_cluster("House1_RoofMoss", root, (1.1, -1.8, 4.15), (1.2, 0.8, 0.5), mats, rng, col)
-
-    # Brick Chimney & Dormer
-    add_box("Chimney_Shaft", root, (-1.65, -1.65, 4.95), (0.62, 0.62, 1.85), mats["brick_exposed"], bevel=0.015, col=col)
-    add_box("Chimney_Cap", root, (-1.65, -1.65, 5.92), (0.76, 0.76, 0.14), mats["stone_dark"], bevel=0.015, col=col)
-    add_cyl("Chimney_Pot", root, (-1.65, -1.65, 6.12), 0.12, 0.28, mats["roof_tile"], col=col)
-
-    add_box("Dormer_Body", root, (0.4, 1.75, 4.35), (1.15, 0.95, 0.90), mats["plaster_weathered"], bevel=0.01, col=col)
-    add_box("Dormer_Roof", root, (0.4, 1.75, 4.92), (1.28, 1.10, 0.22), mats["roof_tile"], bevel=0.015, col=col)
-    add_box("Dormer_Glass", root, (0.4, 2.23, 4.35), (0.65, 0.04, 0.55), mats["glass"], bevel=0.004, col=col)
-
-    # Exterior Porch Props (crates & ceramic amphora)
-    c = build_blind_box("Porch_Crate_1", "WoodCrate_Old", (2.82, 2.05, 0.20), mats, col, parent=root)
-    c.rotation_euler = Euler((0, 0, 0.22))
-    add_cyl("Porch_Amphora", root, (2.82, 2.48, 0.42), 0.16, 0.46, mats["roof_tile"], col=col)
-
-    # Interior Carpet beside Medallion + Framed Map + Shelves + Counter
-    add_box("Int_Carpet_Border", root, (0.15, -1.35, 0.264), (1.45, 2.15, 0.015), mats["carpet_gold"], rot=(0, 0, -0.06), bevel=0.004, col=col)
-    add_box("Int_Carpet_Center", root, (0.15, -1.35, 0.270), (1.30, 1.98, 0.015), mats["velvet"], rot=(0, 0, -0.06), bevel=0.004, col=col)
-
-    add_box("Map_Frame", root, (-1.35, -2.79, 2.05), (1.15, 0.05, 0.78), mats["wood_dark"], bevel=0.008, col=col)
+    add_box("Map_Frame", root, (-1.35, -2.79, 2.05), (1.15, 0.05, 0.78), mats["steel_black"], bevel=0.008, col=col)
     add_box("Map_Parchment", root, (-1.35, -2.76, 2.05), (1.02, 0.03, 0.65), mats["parchment"], bevel=0.003, col=col)
 
-    add_box("BackShelf_PostL", root, (-2.05, -1.85, 1.32), (0.45, 0.08, 2.15), mats["wood_dark"], bevel=0.008, col=col)
-    add_box("BackShelf_PostR", root, (-2.05, 1.85, 1.32), (0.45, 0.08, 2.15), mats["wood_dark"], bevel=0.008, col=col)
+    add_box("BackShelf_PostL", root, (-2.05, -1.85, 1.32), (0.45, 0.08, 2.15), mats["steel_black"], bevel=0.008, col=col)
+    add_box("BackShelf_PostR", root, (-2.05, 1.85, 1.32), (0.45, 0.08, 2.15), mats["steel_black"], bevel=0.008, col=col)
     for sz in (0.85, 1.45, 2.05):
         add_box(f"BackShelf_Plank_{sz}", root, (-2.05, 0, sz), (0.42, 3.65, 0.05), mats["wood_light"], bevel=0.008, col=col)
 
-    add_box("Counter_Base", root, (-0.65, 0, 0.68), (0.88, 2.75, 0.88), mats["wood_dark"], bevel=0.015, col=col)
-    add_box("Counter_Top", root, (-0.62, 0, 1.16), (1.04, 2.92, 0.08), mats["wood_aged_floor"], bevel=0.012, col=col)
+    add_box("Counter_Base", root, (-0.65, 0, 0.68), (0.88, 2.75, 0.88), mats["wood_dark"], bevel=0.012, col=col)
+    add_box("Counter_Top", root, (-0.62, 0, 1.16), (1.04, 2.92, 0.08), mats["wood_aged_floor"], bevel=0.010, col=col)
     add_box("Counter_BrassTrim", root, (-0.14, 0, 1.08), (0.04, 2.78, 0.05), mats["brass"], bevel=0.006, col=col)
 
     variants = ["WoodCrate_Old", "BrassChest_Steam", "RunicBox_Arcane", "HoloPod_SciFi"]
@@ -1096,119 +1208,68 @@ def build_blindbox_house_unique(loc, mats, font_data, rng, col):
 
     build_blind_box("Shelf_Crate_1", "WoodCrate_Old", (-2.02, -1.10, 1.48), mats, col, parent=root)
     build_blind_box("Shelf_Chest_2", "BrassChest_Steam", (-2.02, 1.10, 1.48), mats, col, parent=root)
-    add_cyl("Shelf_Potion_1", root, (-2.02, 0.10, 1.60), 0.10, 0.24, mats["jade"], col=col)
-    add_cyl("Shelf_SoulJar_2", root, (-2.02, -0.42, 1.60), 0.09, 0.22, mats["arcane_glow"], col=col)
+    add_cyl("Shelf_CeramicVase_1", root, (-2.02, 0.10, 1.60), 0.10, 0.24, mats["jade"], col=col)
+    add_cyl("Shelf_BronzeUrn_2", root, (-2.02, -0.42, 1.60), 0.09, 0.22, mats["brass"], col=col)
     add_cyl("Shelf_Scroll_2", root, (-2.02, -0.35, 2.14), 0.06, 0.34, mats["parchment"], rot=(math.pi / 2, 0, 0), col=col)
-    add_point_light("CounterSpot", root, (0.35, 0, 2.20), (1.0, 0.85, 0.58), 55.0, radius=0.3, col=col)
+    add_point_light("CounterSpot", root, (0.35, 0, 2.20), (1.0, 0.88, 0.65), 55.0, radius=0.3, col=col)
     return root
 
 
 def build_openbox_house_unique(loc, mats, font_data, rng, col):
     """
-    House 2 (Chrono-Artisan Appraisal Workshop — Steampunk x Sci-Fi):
-    - Asymmetric Brass & Glass Observatory Dome bursting from upper roof + Giant Interlocking Clockwork Gears!
-    - Riveted Iron/Brass Portal Arch + Glowing Cyan Aether Condenser Tank & Steam Pipes.
-    - Interior: Weathered Industrial Stone Slab Floor + Recessed Glowing Sub-Floor Chrono-Gear Grate!
+    House 2 (Xưởng Khui Hộp & Thẩm Định — Phố Hà Nội Hiện Đại x Công Nghệ Dị Giới):
+    - Sleek modern ashlar stone + white stucco studio with matte-black steel frames & blue LED signage.
+    - Rooftop Glass Geodesic Skylight Pavilion (Observatory_Dome) + Kinetic Clockwork Facade Sculpture!
+    - Interior: Industrial concrete studio slabs + Recessed Glowing Sub-Floor Chrono-Gear Pit!
     """
     root = _build_house_shell(
         "Shop_OpenBox_House", loc, False,
-        ext_low_mat=mats["brick_glazed_teal"],
-        ext_up_mat=mats["ashlar_stone"],
+        ext_low_mat=mats["ashlar_stone"],
+        ext_up_mat=mats["wall_cream"],
         int_low_mat=mats["brick_glazed_teal"],
-        int_up_mat=mats["brick_whitewash"],
-        roof_mat=mats["roof_slate"],
-        sign_title="TIỆM MỞ & SOI",
-        sign_sub="KHUI HỘP · ĐỊNH GIÁ",
-        sign_z=3.45,
+        int_up_mat=mats["wall_cream"],
+        sign_bg_mat=mats["sign_blue"],
+        sign_title="XƯỞNG KHUI & ĐỊNH GIÁ",
+        sign_sub="SỐ 22 · STUDIO THẨM ĐỊNH",
+        sign_z=3.34,
         mats=mats, font_data=font_data, rng=rng, col=col,
     )
 
-    # Interior Floor: Weathered Oil-Stained Stone Slabs + Recessed Glowing Sub-Floor Chrono-Gear Grate!
+    # Interior Floor: Studio Concrete Slabs + Recessed Glowing Sub-Floor Chrono-Gear Pit
     add_box("Workshop_BaseSlab", root, (0, 0, 0.232), (4.85, 5.75, 0.025), mats["workshop_floor"], bevel=0.005, col=col)
-    # Individual beveled stone slabs around the floor perimeter for subtle physical relief
     for sx in (-1.75, -0.85, 0.05, 1.95):
         for sy in (-2.1, -1.05, 1.05, 2.1):
-            add_box(f"StoneTile_{sx}_{sy}", root, (sx, sy, 0.246 + rng.uniform(-0.003, 0.003)),
-                    (0.84, 0.96, 0.018), mats["workshop_floor"], rot=(0, 0, rng.uniform(-0.01, 0.01)), bevel=0.006, col=col)
+            add_box(f"StoneTile_{sx}_{sy}", root, (sx, sy, 0.246), (0.84, 0.96, 0.018), mats["workshop_floor"], bevel=0.005, col=col)
 
-    # Recessed Sub-Floor Chrono-Gear Viewport Pit at X = +0.95, Y = 0
-    add_cyl("FloorPit_DarkBase", root, (0.95, 0, 0.244), 0.78, 0.014, mats["obsidian"], verts=28, col=col)
-    add_torus_ring("FloorPit_BrassRim", root, (0.95, 0, 0.264), 0.78, 0.032, mats["brass"], major_segs=32, col=col)
-    add_torus_ring("FloorPit_CyanConduit", root, (0.95, 0, 0.254), 0.58, 0.020, mats["cyan_glow"], major_segs=32, col=col)
-    add_gear_wheel("FloorPit_GearA", root, (0.78, -0.15, 0.256), 0.34, 0.020, 12, mats["brass"], col=col)
-    add_gear_wheel("FloorPit_GearB", root, (1.16, 0.20, 0.256), 0.24, 0.020, 10, mats["gold"], col=col)
-    # Bolted brass floor grate bars over the pit
-    for gx in (-0.35, 0.0, 0.35):
-        add_box(f"FloorGrateBar_{gx}", root, (0.95 + gx, 0, 0.274), (0.04, 1.48, 0.012), mats["iron"], bevel=0.003, col=col)
+    # Studio Entryway Runner Rug & Rooftop Greenery (pure modern Hanoi studio aesthetic)
+    add_box("FloorPit_SlatePad", root, (0.95, 0, 0.258), (1.35, 1.65, 0.012), mats["ashlar_stone"], bevel=0.004, col=col)
+    _add_potted_plant("RoofTerrace_StudioPlant", root, (-0.25, -1.35, 6.88), mats, col, scale=1.20)
 
-    # Exterior Asymmetric Brass & Glass Observatory Dome bursting out of front-left roof!
-    dome = bpy.data.objects.new("Observatory_Dome", None)
-    dome.location = Vector((0.85, -2.05, 4.35))
-    dome.parent = root
-    link_obj(dome, col)
-    add_cyl("Dome_Base", dome, (0, 0, 0), 1.05, 0.75, mats["iron"], verts=16, bevel=0.015, col=col)
-    add_sphere("Dome_Glass", dome, (0, 0, 0.38), 0.96, mats["glass"], scale=(1.0, 1.0, 0.92), segs=24, col=col)
-    add_sphere("Dome_InnerAether", dome, (0, 0, 0.42), 0.36, mats["cyan_glow"], segs=16, col=col)
-    add_torus_ring("Dome_RibA", dome, (0, 0, 0.38), 0.97, 0.04, mats["brass"], rot=(math.pi / 2, 0, 0.4), col=col)
-    add_torus_ring("Dome_RibB", dome, (0, 0, 0.38), 0.97, 0.04, mats["brass"], rot=(math.pi / 2, 0, 1.9), col=col)
-    # Telescope/Brass Lens protruding toward the plaza!
-    add_cyl("Dome_Telescope", dome, (0.85, 0.25, 0.65), 0.16, 1.15, mats["brass"], rot=(0, math.radians(68), 0.3), col=col)
-
-    # Giant Interlocking Clockwork Gears mounted cleanly proud of the Front Tie Beam!
-    add_gear_wheel("Ext_GableGear_Big", root, (2.63, 1.52, 3.92), 0.62, 0.08, 12, mats["brass"], rot=(0, math.pi / 2, 0.2), col=col)
-    add_gear_wheel("Ext_GableGear_Small", root, (2.66, 2.25, 3.42), 0.38, 0.08, 9, mats["gold"], rot=(0, math.pi / 2, 0.5), col=col)
-
-    # Riveted Iron Portal Arch + Glowing Cyan Conduit + Glass-Brass Entrance Canopy
-    add_box("PortalArch_L", root, (2.52, -1.24, 1.56), (0.20, 0.18, 2.75), mats["iron"], bevel=0.012, col=col)
-    add_box("PortalArch_R", root, (2.52, 1.24, 1.56), (0.20, 0.18, 2.75), mats["iron"], bevel=0.012, col=col)
-    add_box("Portal_CyanStripL", root, (2.63, -1.24, 1.60), (0.03, 0.04, 2.40), mats["cyan_glow"], bevel=0.004, col=col)
-    add_box("Portal_CyanStripR", root, (2.63, 1.24, 1.60), (0.03, 0.04, 2.40), mats["cyan_glow"], bevel=0.004, col=col)
-
-    add_box("Canopy_Glass", root, (2.92, 0, 2.90), (0.92, 2.65, 0.045), mats["glass"], rot=(0, math.radians(14), 0), bevel=0.005, col=col)
-    add_box("Canopy_RimF", root, (3.35, 0, 2.79), (0.06, 2.72, 0.07), mats["brass"], bevel=0.006, col=col)
-    for py in (-1.28, 1.28):
-        add_box(f"Canopy_Strut_{py}", root, (2.88, py, 2.90), (0.94, 0.06, 0.06), mats["iron"], rot=(0, math.radians(14), 0), bevel=0.005, col=col)
-
-    # Glowing Cyan Aether Condenser Tank + Brass Steam Pipes & Pressure Gauge
-    add_cyl("AetherTank_Base", root, (2.68, 2.12, 0.45), 0.24, 0.45, mats["iron"], col=col)
-    add_cyl("AetherTank_Core", root, (2.68, 2.12, 1.05), 0.18, 0.80, mats["cyan_glow"], col=col)
-    add_cyl("AetherTank_Cap", root, (2.68, 2.12, 1.50), 0.24, 0.14, mats["brass"], col=col)
-    add_cyl("Ext_SteamPipeV", root, (2.56, 1.75, 1.95), 0.045, 2.4, mats["brass"], col=col)
-    add_cyl("Ext_SteamPipeH", root, (2.56, 2.25, 2.65), 0.04, 1.05, mats["brass"], rot=(math.pi / 2, 0, 0), col=col)
-    add_cyl("Ext_SteamGauge", root, (2.61, 1.75, 2.20), 0.11, 0.05, mats["brass"], rot=(0, math.pi / 2, 0), col=col)
-    add_cyl("Ext_SteamDial", root, (2.64, 1.75, 2.20), 0.08, 0.02, mats["dial_white"], rot=(0, math.pi / 2, 0), col=col)
-
-    add_moss_cluster("House2_Moss_1", root, (2.58, -2.65, 0.22), (0.7, 0.8, 0.6), mats, rng, col)
-
-    # Interior: Toolboard nudged cleanly away from window (X = -1.58) + Overhead Gantry Rail!
+    # Interior: Workbench, Notice/Tool Board, Shelves & Props (exact sprint coordinates!)
     add_box("Toolboard_Panel", root, (-1.58, 2.78, 1.95), (1.28, 0.06, 0.85), mats["wood_dark"], bevel=0.008, col=col)
-    add_box("Blueprint_Sheet", root, (-1.82, 2.74, 2.02), (0.60, 0.02, 0.48), mats["blueprint"], bevel=0.003, col=col)
-    add_gear_wheel("Wall_Gear_1", root, (-1.22, 2.73, 2.08), 0.14, 0.03, 8, mats["brass"], rot=(math.pi / 2, 0, 0), col=col)
-    add_gear_wheel("Wall_Gear_2", root, (-1.05, 2.73, 1.82), 0.09, 0.03, 6, mats["gold"], rot=(math.pi / 2, 0, 0), col=col)
+    add_box("Blueprint_Sheet", root, (-1.82, 2.74, 2.02), (0.60, 0.02, 0.48), mats["dial_white"], bevel=0.003, col=col)
+    add_box("Clipboard_Sheet", root, (-1.15, 2.74, 1.92), (0.32, 0.02, 0.42), mats["parchment"], bevel=0.003, col=col)
 
-    add_box("Gantry_Beam", root, (-0.55, 0, 3.12), (0.14, 3.2, 0.14), mats["iron"], bevel=0.008, col=col)
-    add_cyl("Gantry_Hook", root, (-0.48, 0.10, 2.82), 0.025, 0.55, mats["brass"], col=col)
-
-    add_box("BackShelf_PostL", root, (-2.05, -1.85, 1.32), (0.45, 0.08, 2.15), mats["iron"], bevel=0.008, col=col)
-    add_box("BackShelf_PostR", root, (-2.05, 1.85, 1.32), (0.45, 0.08, 2.15), mats["iron"], bevel=0.008, col=col)
+    add_box("BackShelf_PostL", root, (-2.05, -1.85, 1.32), (0.45, 0.08, 2.15), mats["steel_black"], bevel=0.008, col=col)
+    add_box("BackShelf_PostR", root, (-2.05, 1.85, 1.32), (0.45, 0.08, 2.15), mats["steel_black"], bevel=0.008, col=col)
     for sz in (0.85, 1.45, 2.05):
         add_box(f"BackShelf_Plank_{sz}", root, (-2.05, 0, sz), (0.42, 3.65, 0.05), mats["wood_dark"], bevel=0.008, col=col)
 
     for lx in (-0.98, -0.12):
         for ly in (-1.18, 1.18):
-            add_box(f"BenchLeg_{lx}_{ly}", root, (lx, ly, 0.64), (0.12, 0.12, 0.82), mats["iron"], bevel=0.01, col=col)
+            add_box(f"BenchLeg_{lx}_{ly}", root, (lx, ly, 0.64), (0.12, 0.12, 0.82), mats["steel_black"], bevel=0.01, col=col)
     add_box("BenchTop", root, (-0.55, 0, 1.08), (1.12, 2.65, 0.09), mats["wood_light"], bevel=0.015, col=col)
-    add_box("VelvetMat", root, (-0.48, 0.10, 1.132), (0.58, 0.82, 0.018), mats["velvet"], bevel=0.006, col=col)
+    add_box("VelvetMat", root, (-0.48, 0.52, 1.132), (0.58, 0.72, 0.018), mats["velvet"], bevel=0.006, col=col)
 
-    add_cyl("LampBase", root, (-0.82, 0.85, 1.14), 0.11, 0.03, mats["brass"], col=col)
-    add_cyl("LampStem", root, (-0.82, 0.85, 1.36), 0.018, 0.42, mats["brass"], col=col)
-    add_cone_frustum("LampShade", root, (-0.66, 0.68, 1.56), 0.12, 0.05, 0.14, mats["brass"], rot=(0.45, 0.45, 0), col=col)
-    add_sphere("LampBulb", root, (-0.64, 0.65, 1.52), 0.04, mats["warm_glow"], col=col)
-    add_spot_light("WorkbenchLampSpot", root, (-0.62, 0.62, 1.50), (-0.48, 0.10, 1.14), (1.0, 0.90, 0.72), 95.0, spot_deg=60, col=col)
+    add_cyl("LampBase", root, (-0.85, 1.08, 1.14), 0.11, 0.03, mats["brass"], col=col)
+    add_cyl("LampStem", root, (-0.85, 1.08, 1.36), 0.018, 0.42, mats["brass"], col=col)
+    add_cone_frustum("LampShade", root, (-0.68, 0.92, 1.56), 0.12, 0.05, 0.14, mats["brass"], rot=(0.45, 0.45, 0), col=col)
+    add_sphere("LampBulb", root, (-0.66, 0.90, 1.52), 0.04, mats["warm_glow"], col=col)
+    add_spot_light("WorkbenchLampSpot", root, (-0.64, 0.88, 1.50), (-0.48, 0.52, 1.14), (1.0, 0.90, 0.72), 95.0, spot_deg=60, col=col)
 
-    add_cyl("MagLens", root, (-0.25, -0.45, 1.135), 0.075, 0.012, mats["glass"], col=col)
-    add_cyl("MagRim", root, (-0.25, -0.45, 1.135), 0.082, 0.016, mats["brass"], col=col)
-    add_cyl("MagHandle", root, (-0.16, -0.54, 1.135), 0.014, 0.14, mats["wood_dark"], rot=(math.pi / 2, 0, -0.78), col=col)
+    add_cyl("MagLens", root, (-0.26, 0.98, 1.135), 0.075, 0.012, mats["glass"], col=col)
+    add_cyl("MagRim", root, (-0.26, 0.98, 1.135), 0.082, 0.016, mats["brass"], col=col)
+    add_cyl("MagHandle", root, (-0.17, 1.07, 1.135), 0.014, 0.14, mats["wood_dark"], rot=(math.pi / 2, 0, -0.78), col=col)
 
     w_ch = build_artifact("Art_Chalice", "Chalice_Royal", (-0.48, 0.10, 1.141), mats, col, parent=root, scale=1.35)
     w_ch.rotation_euler = Euler((0, 0, math.pi))
@@ -1227,43 +1288,264 @@ def build_openbox_house_unique(loc, mats, font_data, rng, col):
     return root
 
 
-# ==================== 4. SURROUNDING INTERSPERSED BUILDINGS ====================
+# ==================== 4. MODERN HANOI STREET TREES, PHO SHOP, TRA DA VE SO & TUBE HOUSES ====================
 
-def build_surrounding_town(mats, rng, col):
-    flanking_specs = [
-        ("Bldg_NW_Brick", (-13.5, 9.5, 0.10), (6.0, 5.5, 5.2), mats["brick_exposed"], mats["roof_slate"]),
-        ("Bldg_NW_Timber", (-7.6, 10.5, 0.10), (4.8, 4.2, 4.0), mats["plaster_alt"], mats["roof_tile"]),
-        ("Bldg_NE_Stone", (13.5, 9.5, 0.10), (6.0, 5.5, 5.6), mats["ashlar_stone"], mats["roof_tile"]),
-        ("Bldg_NE_Teal", (7.6, 10.5, 0.10), (4.8, 4.2, 4.2), mats["brick_glazed_teal"], mats["roof_slate"]),
-        ("Bldg_W_Alley", (-14.5, 0.0, 0.10), (4.5, 6.5, 4.8), mats["plaster_weathered"], mats["roof_slate"]),
-        ("Bldg_E_Alley", (14.5, 0.0, 0.10), (4.5, 6.5, 4.6), mats["brick_exposed"], mats["roof_tile"]),
-        ("Bldg_SW_Side", (-12.5, -8.5, 0.10), (5.5, 5.0, 4.4), mats["plaster_weathered"], mats["roof_tile"]),
-        ("Bldg_SE_Side", (12.5, -8.5, 0.10), (5.5, 5.0, 4.9), mats["ashlar_stone"], mats["roof_slate"]),
-        ("Tower_North_Landmark", (0, 17.0, 0.0), (6.2, 6.2, 10.5), mats["ashlar_stone"], mats["roof_slate"]),
+def build_hanoi_street_tree(name, loc, mats, rng, col, parent=None, scale=1.0):
+    """Lush Hanoi urban street tree (Cây Sấu / Xà Cừ) in a granite seating planter."""
+    root = bpy.data.objects.new(name, None)
+    root.location = Vector(loc)
+    root.scale = Vector((scale, scale, scale))
+    if parent:
+        root.parent = parent
+    link_obj(root, col)
+
+    # Granite tree planter box & dark soil
+    add_box("Planter_Base", root, (0, 0, 0.16), (1.45, 1.45, 0.32), mats["ashlar_stone"], bevel=0.015, col=col)
+    add_box("Planter_Soil", root, (0, 0, 0.28), (1.16, 1.16, 0.10), mats["wood_dark"], bevel=0.008, col=col)
+
+    # Smoothly tapered organic branching bark trunk & limbs
+    add_cone_frustum("Trunk_Low", root, (0, 0, 1.05), 0.23, 0.16, 2.05, mats["tree_bark"], verts=14, col=col)
+    add_cone_frustum("Trunk_Mid", root, (0.02, 0.01, 2.48), 0.16, 0.10, 1.15, mats["tree_bark"], rot=(0.03, -0.03, 0), verts=14, col=col)
+    for b_idx, (bx, by, bz, brot) in enumerate((
+        (-0.34, -0.22, 2.92, (0.42, -0.45, 0.3)),
+        (0.36, 0.20, 2.98, (-0.36, 0.45, 0.8)),
+        (0.08, -0.36, 3.06, (0.50, 0.12, -0.4)),
+    )):
+        add_cone_frustum(f"Branch_{b_idx}", root, (bx, by, bz), 0.09, 0.035, 1.15, mats["tree_bark"], rot=brot, verts=10, col=col)
+
+    # Multi-layered leaf clusters (named TreeCanopy_* for gentle wind sway animation in Unity)
+    add_sphere("TreeCanopy_Main", root, (0.05, 0.02, 4.15), 1.48, mats["tree_foliage"], scale=(1.15, 1.10, 0.82), segs=16, col=col)
+    add_sphere("TreeCanopy_L", root, (-0.95, -0.58, 3.68), 0.96, mats["tree_foliage"], scale=(1.12, 1.05, 0.82), segs=14, col=col)
+    add_sphere("TreeCanopy_R", root, (0.98, 0.55, 3.80), 1.02, mats["tree_foliage"], scale=(1.15, 1.08, 0.80), segs=14, col=col)
+    add_sphere("TreeCanopy_Top", root, (-0.12, 0.48, 4.82), 0.92, mats["tree_foliage"], scale=(1.08, 1.05, 0.78), segs=14, col=col)
+    return root
+
+
+def build_hanoi_pho_shop(name, loc, facing_east, mats, font_data, rng, col):
+    """Quán Phở Bò Hà Nội Hiện Đại: glass open front, inox broth counter with 2 steaming pots, dining tables, 2nd floor balcony."""
+    root = bpy.data.objects.new(name, None)
+    root.location = Vector(loc)
+    if not facing_east:
+        root.rotation_euler = Euler((0, 0, math.pi))
+    link_obj(root, col)
+
+    # Ground plinth & clean bright cafe-style floor
+    add_box("Pho_Plinth", root, (0, 0, 0.12), (5.2, 5.4, 0.24), mats["ashlar_stone"], bevel=0.015, col=col)
+    add_box("Pho_TileFloor", root, (0, 0, 0.245), (4.9, 5.1, 0.02), mats["terrazzo_paving"], bevel=0.004, col=col)
+
+    # Walls (open wide entrance facing +X)
+    add_box("Pho_BackWall", root, (-2.42, 0, 1.85), (0.16, 5.1, 3.25), mats["wall_cream"], bevel=0.01, col=col)
+    add_box("Pho_SideWallL", root, (0, -2.55, 1.85), (5.0, 0.16, 3.25), mats["wall_yellow"], bevel=0.01, col=col)
+    add_box("Pho_SideWallR", root, (0, 2.55, 1.85), (5.0, 0.16, 3.25), mats["wall_yellow"], bevel=0.01, col=col)
+    add_box("Pho_FrontPierL", root, (2.42, -2.18, 1.85), (0.18, 0.85, 3.25), mats["wall_cream"], bevel=0.008, col=col)
+    add_box("Pho_FrontPierR", root, (2.42, 2.18, 1.85), (0.18, 0.85, 3.25), mats["wall_cream"], bevel=0.008, col=col)
+
+    # 2nd Floor Modern Balcony, Glass Railing, Wood Sun Louvers & AC Unit
+    add_box("Pho_F2Slab", root, (0.18, 0, 3.55), (5.5, 5.45, 0.22), mats["wall_cream"], bevel=0.01, col=col)
+    add_box("Pho_F2Box", root, (-0.42, 0, 5.05), (4.1, 5.2, 2.85), mats["wall_cream"], bevel=0.01, col=col)
+    add_box("Pho_F2Glass", root, (1.66, 0, 4.95), (0.06, 4.0, 2.35), mats["glass"], bevel=0.004, col=col)
+    for lv in range(6):
+        add_box(f"Pho_Louver_{lv}", root, (2.05, 1.05 + lv * 0.24, 5.00), (0.16, 0.06, 2.65), mats["wood_light"], bevel=0.004, col=col)
+    add_box("Pho_BalGlass", root, (2.82, 0, 4.12), (0.04, 5.20, 0.88), mats["glass"], bevel=0.003, col=col)
+    add_box("Pho_BalRail", root, (2.82, 0, 4.58), (0.08, 5.26, 0.06), mats["steel_black"], bevel=0.005, col=col)
+    add_box("Pho_Roof", root, (0.18, 0, 6.56), (5.5, 5.45, 0.22), mats["steel_black"], bevel=0.012, col=col)
+    _add_ac_unit("Pho_AC", root, (1.76, -2.10, 4.15), mats, col)
+    _add_potted_plant("Pho_BalPlant", root, (2.38, -1.25, 3.68), mats, col, scale=0.8)
+
+    # Prominent LED Lightbox Signboard mounted cleanly in front of Canopy/F2 fascia: PHỞ BÒ HÀ NỘI
+    add_box("Pho_Canopy", root, (2.95, 0, 3.04), (1.05, 5.3, 0.12), mats["steel_black"], bevel=0.008, col=col)
+    add_box("Pho_SignFrame", root, (3.44, 0, 3.36), (0.12, 4.3, 0.84), mats["steel_black"], bevel=0.008, col=col)
+    add_box("Pho_SignBg", root, (3.48, 0, 3.36), (0.08, 4.16, 0.72), mats["sign_red"], bevel=0.006, col=col)
+    txt_rot = (math.pi / 2, 0, math.pi / 2)
+    add_3d_text("Pho_SignTitle", root, "PHỞ BÒ HÀ NỘI", (3.535, 0, 3.46), txt_rot, 0.24, mats["sign_gold"], font_data=font_data, extrude=0.006, col=col)
+    add_3d_text("Pho_SignSub", root, "GIA TRUYỀN · NƯỚC DÙNG NGON", (3.535, 0, 3.16), txt_rot, 0.105, mats["sign_sub"], font_data=font_data, extrude=0.004, col=col)
+
+    # Perpendicular Glowing Side Blade Sign
+    add_box("Pho_BladeTrim", root, (2.82, -2.52, 2.35), (0.05, 0.56, 1.05), mats["steel_black"], bevel=0.006, col=col)
+    add_box("Pho_BladeBg", root, (2.82, -2.52, 2.35), (0.06, 0.48, 0.96), mats["sign_red"], bevel=0.005, col=col)
+    add_3d_text("Pho_BladeTxt", root, "PHỞ BÒ", (2.86, -2.52, 2.35), txt_rot, 0.082, mats["sign_gold"], font_data=font_data, extrude=0.003, col=col)
+
+    # Signature Stainless-Steel (Inox) Broth Counter + Glass Cabinet + 2 Broth Pots + Rising Steam!
+    add_box("Pho_CounterBody", root, (1.15, -1.05, 0.68), (0.92, 2.35, 0.86), mats["inox_steel"], bevel=0.012, col=col)
+    add_box("Pho_GlassCaseFrame", root, (1.28, -1.05, 1.48), (0.58, 1.55, 0.72), mats["glass"], bevel=0.005, col=col)
+    add_box("Pho_GlassFrameTrim", root, (1.28, -1.05, 1.85), (0.62, 1.59, 0.05), mats["steel_black"], bevel=0.004, col=col)
+
+    for idx, py in enumerate((-0.62, -1.55)):
+        add_cyl(f"PhoPot_{idx+1}", root, (0.96, py, 1.08), 0.28, 0.48, mats["inox_steel"], verts=24, bevel=0.01, col=col)
+        add_cyl(f"PhoSoup_{idx+1}", root, (0.96, py, 1.31), 0.25, 0.02, mats["amber"], verts=20, col=col)
+        add_cyl(f"PhoStoveGlow_{idx+1}", root, (0.96, py, 0.82), 0.22, 0.04, mats["warm_glow"], verts=16, col=col)
+
+    # Billowing 3D Steam Plumes above Phở Broth Pots (animated by MarketAmbientAnimator!)
+    add_sphere("PhoSteam_1", root, (0.96, -0.62, 1.56), 0.14, mats["steam_mist"], scale=(0.9, 0.9, 1.3), segs=10, col=col)
+    add_sphere("PhoSteam_2", root, (0.98, -0.58, 1.84), 0.18, mats["steam_mist"], scale=(1.0, 1.0, 1.2), segs=10, col=col)
+    add_sphere("PhoSteam_3", root, (0.96, -1.55, 1.66), 0.16, mats["steam_mist"], scale=(1.0, 1.0, 1.3), segs=10, col=col)
+
+    # Stack of white porcelain Phở bowls on counter
+    for bz in (1.16, 1.22, 1.28):
+        add_cone_frustum(f"PhoBowl_{bz}", root, (1.30, -1.92, bz), 0.06, 0.11, 0.07, mats["dial_white"], verts=16, col=col)
+
+    # Inox Dining Tables & Stools with Condiment Holders
+    for ti, (tx, ty) in enumerate(((0.15, 1.15), (-1.25, 1.15), (1.75, 1.45))):
+        add_box(f"PhoTable_{ti}", root, (tx, ty, 0.72), (0.76, 1.05, 0.04), mats["inox_steel"], bevel=0.008, col=col)
+        add_cyl(f"PhoTableLeg_{ti}", root, (tx, ty, 0.48), 0.045, 0.46, mats["inox_steel"], col=col)
+        add_cyl(f"ChiliJar_{ti}", root, (tx - 0.12, ty + 0.14, 0.78), 0.04, 0.09, mats["plastic_red"], col=col)
+        add_cyl(f"ChopstickCup_{ti}", root, (tx + 0.14, ty - 0.12, 0.80), 0.045, 0.12, mats["wood_light"], col=col)
+        for sy_off in (-0.42, 0.42):
+            add_cyl(f"PhoStool_{ti}_{sy_off}", root, (tx, ty + sy_off, 0.42), 0.16, 0.36, mats["inox_steel"], verts=16, col=col)
+
+    add_point_light(f"{name}_WarmLight", root, (0.6, 0, 2.55), (1.0, 0.88, 0.68), 115.0, radius=0.45, col=col)
+    add_point_light(f"{name}_PorchLight", root, (2.95, 0, 2.65), (1.0, 0.86, 0.65), 48.0, radius=0.35, col=col)
+    return root
+
+
+def build_hanoi_trada_veso(name, loc, facing_east, mats, font_data, rng, col):
+    """Quầy Trà Đá & Vé Số Vỉa Hè Hà Nội: ô che ngoài trời, bàn vé số Xổ Số Thủ Đô, phích Rạng Đông, bàn ghế nhựa xanh đỏ."""
+    root = bpy.data.objects.new(name, None)
+    root.location = Vector(loc)
+    if not facing_east:
+        root.rotation_euler = Euler((0, 0, math.pi))
+    link_obj(root, col)
+
+    # Low stone sidewalk mat pad
+    add_box("TraDa_Pad", root, (0, 0, 0.03), (3.4, 3.0, 0.06), mats["terrazzo_paving"], bevel=0.01, col=col)
+
+    # Lottery Stall Table & Upright Glass Ticket Display Board
+    add_box("VeSo_DeskBody", root, (-0.45, -0.55, 0.42), (0.68, 1.35, 0.80), mats["wood_light"], bevel=0.012, col=col)
+    add_box("VeSo_DeskTop", root, (-0.42, -0.55, 0.84), (0.76, 1.44, 0.06), mats["wood_aged_floor"], bevel=0.01, col=col)
+    add_box("VeSo_BoardBack", root, (-0.75, -0.55, 1.38), (0.06, 1.38, 1.05), mats["sign_blue"], bevel=0.008, col=col)
+    add_box("VeSo_BoardFrame", root, (-0.75, -0.55, 1.38), (0.08, 1.46, 1.12), mats["steel_black"], bevel=0.008, col=col)
+    txt_rot = (math.pi / 2, 0, math.pi / 2)
+    add_3d_text("VeSo_Title", root, "TRÀ ĐÁ · VÉ SỐ", (-0.70, -0.55, 1.66), txt_rot, 0.145, mats["sign_gold"], font_data=font_data, extrude=0.004, col=col)
+    add_3d_text("VeSo_Sub", root, "XỔ SỐ KIẾN THIẾT THỦ ĐÔ", (-0.70, -0.55, 1.42), txt_rot, 0.078, mats["sign_sub"], font_data=font_data, extrude=0.003, col=col)
+
+    # Lottery ticket rows pinned on display & countertop
+    for r in range(3):
+        add_box(f"TicketSheet_{r}", root, (-0.70, -0.95 + r * 0.38, 1.12), (0.02, 0.28, 0.32),
+                mats["plastic_red"] if r % 2 == 0 else mats["dial_white"], bevel=0.002, col=col)
+    add_box("TicketStack", root, (-0.32, -0.85, 0.90), (0.24, 0.34, 0.06), mats["dial_white"], bevel=0.004, col=col)
+
+    # Red Rạng Đông Thermos Flask & Candy/Sunflower Seed Jars on Tea Stall
+    add_cyl("PhichNuoc_Body", root, (-0.30, -0.15, 1.06), 0.09, 0.36, mats["plastic_red"], verts=20, col=col)
+    add_cyl("PhichNuoc_Neck", root, (-0.30, -0.15, 1.26), 0.06, 0.08, mats["inox_steel"], verts=16, col=col)
+    add_cyl("CandyJar", root, (-0.32, -0.46, 0.99), 0.085, 0.24, mats["glass"], verts=16, col=col)
+    add_cyl("CandyFill", root, (-0.32, -0.46, 0.95), 0.072, 0.16, mats["amber"], verts=14, col=col)
+
+    # Signature Low Sidewalk Plastic Table + Green Tea Pitcher + Iced Tea Cups
+    add_box("PlasticTable_Top", root, (0.58, 0.58, 0.34), (0.58, 0.58, 0.04), mats["plastic_blue"], bevel=0.01, col=col)
+    for lx in (0.35, 0.81):
+        for ly in (0.35, 0.81):
+            add_box(f"PTLeg_{lx}_{ly}", root, (lx, ly, 0.18), (0.04, 0.04, 0.32), mats["plastic_blue"], bevel=0.004, col=col)
+    add_cyl("TeaPitcher", root, (0.52, 0.58, 0.48), 0.075, 0.22, mats["jade"], verts=16, col=col)
+    for gi, (gx, gy) in enumerate(((0.68, 0.48), (0.68, 0.68), (0.48, 0.72))):
+        add_cyl(f"TeaCup_{gi}", root, (gx, gy, 0.40), 0.036, 0.09, mats["glass"], verts=12, col=col)
+
+    # 5 Iconic Hanoi Blue & Red Low Plastic Sidewalk Stools (Ghế Nhựa Vỉa Hè)
+    stool_specs = [
+        (0.18, 0.58, mats["plastic_red"]),
+        (0.58, 1.12, mats["plastic_blue"]),
+        (1.06, 0.62, mats["plastic_red"]),
+        (0.62, 0.02, mats["plastic_blue"]),
+        (0.25, -0.58, mats["plastic_red"]),
+    ]
+    for si, (sx, sy, smat) in enumerate(stool_specs):
+        add_box(f"PlasticStool_{si}", root, (sx, sy, 0.16), (0.28, 0.28, 0.24), smat, rot=(0, 0, si * 0.4), bevel=0.01, col=col)
+
+    # Tilted Urban Street Umbrella / Parasol + Warm String Light Glow
+    add_cyl("Parasol_Pole", root, (-0.15, 0.25, 1.35), 0.032, 2.55, mats["inox_steel"], col=col)
+    add_cone_frustum("Parasol_Canopy", root, (-0.15, 0.25, 2.48), 1.68, 0.12, 0.48, mats["sign_blue"], rot=(0.08, -0.06, 0), verts=8, smooth=False, col=col)
+    for bi in range(4):
+        ang = bi * (math.pi / 2) + 0.3
+        add_sphere(f"ParasolBulb_{bi}", root, (-0.15 + math.cos(ang) * 1.1, 0.25 + math.sin(ang) * 1.1, 2.24), 0.045, mats["warm_glow"], segs=8, col=col)
+    add_point_light(f"{name}_BulbLight", root, (0.15, 0.25, 2.15), (1.0, 0.88, 0.62), 45.0, radius=0.35, col=col)
+    return root
+
+
+def build_hanoi_shophouse_block(name, loc, facing_east, mats, font_data, rng, col):
+    """Trio of adjoining 3-4 story Modern Hanoi Tube-Houses (Nhà Ống Hiện Đại Hà Nội)."""
+    root = bpy.data.objects.new(name, None)
+    root.location = Vector(loc)
+    if not facing_east:
+        root.rotation_euler = Euler((0, 0, math.pi))
+    link_obj(root, col)
+
+    specs = [
+        ("TH_Cafe", -4.0, 5.2, 3.8, 9.6, mats["wall_cream"], mats["sign_blue"], "CÀ PHÊ PHỐ"),
+        ("TH_TraChanh", 0.0, 5.4, 3.8, 12.2, mats["wall_yellow"], mats["sign_red"], "TRÀ CHANH VỈA HÈ"),
+        ("TH_TapHoa", 4.0, 5.2, 3.8, 10.6, mats["ashlar_stone"], mats["sign_blue"], "BÁCH HÓA HÀ NỘI"),
     ]
 
-    for bname, loc, sz, wall_m, roof_m in flanking_specs:
-        bx, by, bz = loc
-        bw, bd, bh = sz
-        broot = bpy.data.objects.new(bname, None)
-        broot.location = Vector((bx, by, bz))
-        link_obj(broot, col)
-        add_box("Plinth", broot, (0, 0, 0.45), (bw + 0.15, bd + 0.15, 0.90), mats["wet_stone"], bevel=0.02, col=col)
-        add_box("Walls", broot, (0, 0, 0.90 + (bh - 0.90) * 0.5), (bw, bd, bh - 0.90), wall_m, bevel=0.02, col=col)
-        add_box("Eave", broot, (0, 0, bh + 0.08), (bw + 0.35, bd + 0.35, 0.16), mats["wood_dark"], bevel=0.02, col=col)
-        add_cone_frustum("PitchedRoof", broot, (0, 0, bh + 0.72), max(bw, bd) * 0.74, 0.25, 1.15, roof_m, rot=(0, 0, math.pi / 4), verts=4, smooth=False, col=col)
-        # Add subtle timber braces & moss at base of surrounding houses
-        add_moss_cluster(f"{bname}_Moss", broot, (0, -bd * 0.52, 0.12), (1.0, 0.7, 0.7), mats, rng, col)
+    for hname, hy, hx, hw, hh, wall_m, sign_m, sign_txt in specs:
+        add_box(f"{hname}_Body", root, (0, hy, hh * 0.5), (hx, hw, hh), wall_m, bevel=0.015, col=col)
+        # Ground shopfront black-steel + glass window & awning + sign
+        add_box(f"{hname}_ShopGlass", root, (hx * 0.5 + 0.02, hy, 1.55), (0.06, hw * 0.78, 2.40), mats["glass"], bevel=0.005, col=col)
+        add_box(f"{hname}_ShopFrame", root, (hx * 0.5 + 0.03, hy, 1.55), (0.09, hw * 0.82, 0.08), mats["steel_black"], bevel=0.005, col=col)
+        add_box(f"{hname}_Awning", root, (hx * 0.5 + 0.48, hy, 2.95), (0.95, hw * 0.92, 0.10), mats["steel_black"], bevel=0.008, col=col)
+        add_box(f"{hname}_SignBg", root, (hx * 0.5 + 0.08, hy, 3.38), (0.10, hw * 0.84, 0.58), sign_m, bevel=0.006, col=col)
+        add_3d_text(f"{hname}_SignTxt", root, sign_txt, (hx * 0.5 + 0.145, hy, 3.38), (math.pi / 2, 0, math.pi / 2), 0.18, mats["sign_gold"], font_data=font_data, extrude=0.004, col=col)
 
-    # Multiverse crystals on North Tower Landmark
-    add_box("Tower_RuneBand", None, (0, 13.85, 5.5), (4.2, 0.18, 0.25), mats["arcane_glow"], bevel=0.01, col=col)
+        # Upper story recessed balconies + glass guardrails + wood louvers + AC units
+        num_floors = int((hh - 3.2) // 3.0)
+        for fl in range(num_floors):
+            fz = 4.6 + fl * 3.0
+            add_box(f"{hname}_F{fl}_Win", root, (hx * 0.5 + 0.02, hy, fz), (0.06, hw * 0.68, 1.85), mats["glass"], bevel=0.004, col=col)
+            add_box(f"{hname}_F{fl}_BalSlab", root, (hx * 0.5 + 0.38, hy, fz - 0.95), (0.78, hw * 0.90, 0.12), mats["ashlar_stone"], bevel=0.008, col=col)
+            add_box(f"{hname}_F{fl}_BalGlass", root, (hx * 0.5 + 0.72, hy, fz - 0.48), (0.04, hw * 0.86, 0.84), mats["glass"], bevel=0.003, col=col)
+            add_box(f"{hname}_F{fl}_Rail", root, (hx * 0.5 + 0.72, hy, fz - 0.05), (0.07, hw * 0.88, 0.06), mats["steel_black"], bevel=0.005, col=col)
+            # Wood sun louvers on one side
+            for lv in range(4):
+                add_box(f"{hname}_F{fl}_Louver_{lv}", root, (hx * 0.5 + 0.18, hy + 0.95 + lv * 0.22, fz), (0.14, 0.05, 2.2), mats["wood_light"], bevel=0.004, col=col)
+        # Rooftop parapet & Stainless Water Tank (Téc nước Inox Sơn Hà) on tallest house
+        add_box(f"{hname}_Parapet", root, (0, hy, hh + 0.18), (hx + 0.2, hw, 0.36), mats["steel_black"], bevel=0.01, col=col)
+        if hh > 11.5:
+            add_cyl(f"{hname}_WaterTank", root, (-0.8, hy, hh + 0.88), 0.55, 1.20, mats["inox_steel"], rot=(math.pi / 2, 0, 0), verts=20, col=col)
+            add_box(f"{hname}_TankStand", root, (-0.8, hy, hh + 0.42), (1.1, 0.9, 0.45), mats["steel_black"], bevel=0.005, col=col)
+
+    return root
+
+
+def build_surrounding_town(mats, font_data, rng, col):
+    # Modern Hanoi 3-4 Story Tube Shophouse Blocks framing North, South, West, and East avenues!
+    for bname, bloc, facing_e in (
+        ("Block_NW", (-14.8, 12.5, 0.10), True),
+        ("Block_NE", (14.8, 12.5, 0.10), False),
+        ("Block_SW", (-14.8, -11.5, 0.10), True),
+        ("Block_SE", (14.8, -11.5, 0.10), False),
+    ):
+        build_hanoi_shophouse_block(bname, bloc, facing_e, mats, font_data, rng, col)
+
+    # Signature Modern Hanoi Neighborhood Highlights visible from main plaza!
+    build_hanoi_pho_shop("Shop_Hanoi_Pho", (-7.4, -7.8, 0.0), True, mats, font_data, rng, col)
+    build_hanoi_trada_veso("Stall_TraDa_VeSo", (6.0, -7.0, 0.0), False, mats, font_data, rng, col)
+
+    # Lush Hanoi Street Trees (Cây Sấu / Xà Cừ) with stone seating planters along sidewalks & park plaza!
+    tree_spots = [
+        (-5.2, -3.9, 1.05),
+        (-5.2, 4.4, 1.12),
+        (5.2, -4.4, 1.08),
+        (5.2, 4.4, 1.10),
+        (6.4, -9.2, 1.18),   # giant shade tree next to Trà Đá & Vé Số!
+        (-5.6, -12.8, 1.00),
+        (5.6, -12.8, 1.04),
+        (-6.2, 10.5, 1.12),
+        (6.2, 10.5, 1.06),
+        (-10.8, 4.8, 0.95),
+        (10.8, 4.8, 0.95),
+    ]
+    for ti, (tx, ty, ts) in enumerate(tree_spots):
+        build_hanoi_street_tree(f"HanoiTree_{ti}", (tx, ty, 0.0), mats, rng, col, scale=ts)
+
+    # Background Modern Hanoi Tube-Houses closing North Avenue cleanly (zero plain greybox towers!)
+    nb1 = build_hanoi_shophouse_block("Block_North_W", (-6.0, 18.2, 0.0), True, mats, font_data, rng, col)
+    nb1.rotation_euler = Euler((0, 0, -math.pi / 2))
+    nb2 = build_hanoi_shophouse_block("Block_North_E", (6.0, 18.2, 0.0), True, mats, font_data, rng, col)
+    nb2.rotation_euler = Euler((0, 0, -math.pi / 2))
 
     for sx, sy in ((-3.8, 5.2), (3.8, 5.2), (-3.8, -5.2), (3.8, -5.2)):
         add_cyl(f"StreetBase_{sx}_{sy}", None, (sx, sy, 0.18), 0.14, 0.36, mats["stone_dark"], verts=8, col=col)
-        add_cyl(f"StreetPost_{sx}_{sy}", None, (sx, sy, 1.55), 0.055, 2.6, mats["iron"], col=col)
-        add_cyl(f"StreetLantern_{sx}_{sy}", None, (sx, sy, 2.95), 0.13, 0.24, mats["warm_glow"], verts=6, col=col)
-        add_cone_frustum(f"StreetCap_{sx}_{sy}", None, (sx, sy, 3.16), 0.20, 0.02, 0.18, mats["iron"], verts=6, smooth=False, col=col)
-        add_point_light(f"StreetLight_{sx}_{sy}", None, (sx, sy, 2.95), (1.0, 0.78, 0.48), 55.0, radius=0.3, col=col)
+        add_cyl(f"StreetPost_{sx}_{sy}", None, (sx, sy, 1.55), 0.055, 2.6, mats["steel_black"], col=col)
+        add_cyl(f"StreetLantern_{sx}_{sy}", None, (sx, sy, 2.95), 0.13, 0.24, mats["warm_glow"], verts=8, col=col)
+        add_cone_frustum(f"StreetCap_{sx}_{sy}", None, (sx, sy, 3.16), 0.20, 0.02, 0.18, mats["steel_black"], verts=8, smooth=False, col=col)
+        add_point_light(f"StreetLight_{sx}_{sy}", None, (sx, sy, 2.95), (1.0, 0.85, 0.60), 58.0, radius=0.3, col=col)
 
 
 # ==================== 5. LIGHTING & CAMERAS ====================
@@ -1274,14 +1556,14 @@ def setup_world_and_sun(col):
     world.use_nodes = True
     bg = world.node_tree.nodes.get("Background")
     if bg:
-        bg.inputs["Color"].default_value = (0.24, 0.30, 0.42, 1.0)
-        bg.inputs["Strength"].default_value = 0.70
+        bg.inputs["Color"].default_value = (0.42, 0.54, 0.70, 1.0)
+        bg.inputs["Strength"].default_value = 0.78
 
     sun_data = bpy.data.lights.new(name="Sun_GoldenHour", type="SUN")
-    sun_data.color = (1.0, 0.88, 0.72)
-    sun_data.energy = 3.2
+    sun_data.color = (1.0, 0.94, 0.84)
+    sun_data.energy = 2.8
     sun_obj = bpy.data.objects.new("Sun_GoldenHour", sun_data)
-    sun_obj.rotation_euler = Euler((math.radians(48), math.radians(-20), math.radians(-35)))
+    sun_obj.rotation_euler = Euler((math.radians(44), math.radians(-24), math.radians(-30)))
     link_obj(sun_obj, col)
 
 
@@ -1311,8 +1593,8 @@ def main():
 
     setup_world_and_sun(col_env)
     build_street_and_plaza(mats, rng, col_env)
-    build_surrounding_town(mats, rng, col_env)
-    build_fountain(mats, rng, col_env)
+    build_surrounding_town(mats, font_data, rng, col_env)
+    build_hanoi_center_island(mats, font_data, rng, col_env)
 
     build_blindbox_house_unique((-7.2, 0.0, 0.0), mats, font_data, rng, col_shops)
     build_openbox_house_unique((7.2, 0.0, 0.0), mats, font_data, rng, col_shops)
@@ -1326,11 +1608,12 @@ def main():
     scene.render.image_settings.file_format = "PNG"
 
     cameras = [
-        ("Cam_Plaza_Overview", (0.0, -14.0, 6.8), (0.0, 1.5, 2.0), 25.0, "preview_1_plaza_overview.png"),
-        ("Cam_BlindBox_Exterior", (-0.5, -5.2, 2.6), (-5.5, -0.5, 2.7), 28.0, "preview_2_blindbox_shop_exterior.png"),
+        ("Cam_Plaza_Overview", (0.0, -14.8, 4.8), (0.0, 1.5, 2.2), 24.0, "preview_1_plaza_overview.png"),
+        ("Cam_BlindBox_Exterior", (0.2, -5.8, 2.8), (-6.2, -1.0, 2.8), 26.0, "preview_2_blindbox_shop_exterior.png"),
         ("Cam_BlindBox_Interior", (-5.05, -1.75, 1.85), (-7.25, 0.15, 0.85), 24.0, "preview_3_blindbox_shop_interior.png"),
-        ("Cam_OpenBox_Exterior", (0.5, -5.2, 2.6), (5.5, -0.5, 2.7), 28.0, "preview_4_openbox_shop_exterior.png"),
-        ("Cam_OpenBox_Interior", (5.05, 1.75, 1.85), (7.25, -0.15, 0.85), 24.0, "preview_5_openbox_shop_interior.png"),
+        ("Cam_OpenBox_Exterior", (-0.2, -5.8, 2.8), (6.2, -1.0, 2.8), 26.0, "preview_4_openbox_shop_exterior.png"),
+        ("Cam_Pho_TraDa_Closeup", (-2.6, -7.8, 2.3), (-6.8, -8.3, 1.8), 26.0, "preview_5_hanoi_pho_shop.png"),
+        ("Cam_TraDa_Closeup", (0.5, -9.8, 2.0), (5.8, -7.0, 1.3), 28.0, "preview_6_hanoi_trada_veso.png"),
     ]
 
     for cname, cloc, ctarget, clens, fname in cameras:

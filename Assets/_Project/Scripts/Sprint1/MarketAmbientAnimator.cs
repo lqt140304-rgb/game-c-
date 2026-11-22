@@ -148,6 +148,15 @@ namespace ChoDoLa.Sprint1
                 {
                     _floaters.Add(new FloatItem { Target = t, BaseLocalPos = t.localPosition, Amplitude = 0.014f, Speed = 2.2f, Phase = phaseCounter += 1.5f, SpinYDeg = 0f });
                 }
+                // Modern Hanoi Phở broth pot steam plumes & swaying Hanoi street tree canopies
+                else if (n.StartsWith("PhoSteam_"))
+                {
+                    _floaters.Add(new FloatItem { Target = t, BaseLocalPos = t.localPosition, Amplitude = 0.14f, Speed = 1.9f, Phase = phaseCounter += 1.1f, SpinYDeg = 28f });
+                }
+                else if (n.StartsWith("TreeCanopy_"))
+                {
+                    _floaters.Add(new FloatItem { Target = t, BaseLocalPos = t.localPosition, Amplitude = 0.035f, Speed = 1.15f, Phase = phaseCounter += 0.7f, SpinYDeg = 1.2f });
+                }
             }
 
             foreach (Light l in root.GetComponentsInChildren<Light>(true))

@@ -88,23 +88,27 @@ def bake_pbr_texture_pair(mat, out_name, size=256, vertical_wall=True, plane_w=2
 def bake_all_textures_if_missing():
     os.makedirs(TEX_DIR, exist_ok=True)
     specs = [
-        ("cobble", "T_Cobble", False, 2.5, 2.5, True),
-        ("plaster_weathered", "T_WeatheredPlaster", True, 2.4, 3.0, True),
-        ("brick_exposed", "T_ExposedBrick", True, (0.42 / 2.2) * 8, (2 * 0.17 / 2.2) * 8, True),
-        ("brick_glazed_teal", "T_GlazedBrickTeal", True, (0.46 / 2.8) * 8, (2 * 0.20 / 2.8) * 8, True),
-        ("brick_whitewash", "T_WhitewashedBrick", True, (0.45 / 2.4) * 8, (2 * 0.19 / 2.4) * 8, True),
-        ("ashlar_stone", "T_AshlarStone", True, (0.85 / 1.25) * 4, (2 * 0.40 / 1.25) * 4, True),
-        ("wood_aged_floor", "T_AgedWood", False, 2.0, 2.0, True),
-        ("workshop_floor", "T_WorkshopFloor", False, 2.4, 2.4, True),
-        ("roof_tile", "T_RoofTile", True, (0.38 / 2.4) * 8, (2 * 0.24 / 2.4) * 6, False),
-        ("roof_slate", "T_RoofSlate", True, (0.42 / 2.4) * 8, (2 * 0.24 / 2.4) * 6, False),
+        ("cobble", "T_Cobble", False, 2.5, 2.5, True, False),
+        ("terrazzo_paving", "T_HanoiTerrazzo", False, 2.5, 2.5, True, True),
+        ("vn_red_tile", "T_VnRedTile", False, 2.5, 2.5, True, True),
+        ("vn_street_matte", "T_VnStreetMatte", False, 2.5, 2.5, True, True),
+        ("plaster_weathered", "T_WeatheredPlaster", True, 2.4, 3.0, True, False),
+        ("brick_exposed", "T_ExposedBrick", True, (0.42 / 2.2) * 8, (2 * 0.17 / 2.2) * 8, True, False),
+        ("brick_glazed_teal", "T_GlazedBrickTeal", True, (0.46 / 2.8) * 8, (2 * 0.20 / 2.8) * 8, True, False),
+        ("brick_whitewash", "T_WhitewashedBrick", True, (0.45 / 2.4) * 8, (2 * 0.19 / 2.4) * 8, True, False),
+        ("ashlar_stone", "T_AshlarStone", True, (0.85 / 1.25) * 4, (2 * 0.40 / 1.25) * 4, True, False),
+        ("wood_aged_floor", "T_AgedWood", False, 2.0, 2.0, True, False),
+        ("workshop_floor", "T_WorkshopFloor", False, 2.4, 2.4, True, False),
+        ("roof_tile", "T_RoofTile", True, (0.38 / 2.4) * 8, (2 * 0.24 / 2.4) * 6, False, False),
+        ("roof_slate", "T_RoofSlate", True, (0.42 / 2.4) * 8, (2 * 0.24 / 2.4) * 6, False, False),
     ]
-    for mat_key, out_name, is_vert, pw, ph, do_norm in specs:
+    for mat_key, out_name, is_vert, pw, ph, do_norm, force in specs:
         a_exists = os.path.exists(os.path.join(TEX_DIR, f"{out_name}_Albedo.png"))
         n_exists = (not do_norm) or os.path.exists(os.path.join(TEX_DIR, f"{out_name}_Normal.png"))
-        if a_exists and n_exists:
+        if (not force) and a_exists and n_exists:
             continue
-        bake_pbr_texture_pair(mat_key, out_name, size=256, vertical_wall=is_vert, plane_w=pw, plane_h=ph, bake_normal=do_norm)
+        tex_sz = 512 if force else 256
+        bake_pbr_texture_pair(mat_key, out_name, size=tex_sz, vertical_wall=is_vert, plane_w=pw, plane_h=ph, bake_normal=do_norm)
 
 
 def build_extra_artifacts(name, key, mats, col):
@@ -207,11 +211,7 @@ def flatten_to_root(root, animated_empty_prefixes=()):
     bpy.context.view_layer.update()
     convert_and_apply_modifiers(root)
 
-    root.rotation_euler = Euler((0.0, 0.0, 0.0))
-    root.scale = Vector((1.0, 1.0, 1.0))
-    bpy.context.view_layer.update()
-
-    # Join named animated empty assemblies first (preserving pivot + multi-materials)
+    # Join named animated empty assemblies while root transform is still active (preserving pivot + multi-materials)
     if animated_empty_prefixes:
         # Deepest-first order so child empties join cleanly
         empties = [o for o in root.children_recursive if o.type != "MESH"]
@@ -221,8 +221,12 @@ def flatten_to_root(root, animated_empty_prefixes=()):
 
     meshes = [o for o in root.children_recursive if o.type == "MESH"]
     empties = [o for o in root.children_recursive if o.type != "MESH"]
-
     world_mats = {m: m.matrix_world.copy() for m in meshes}
+
+    root.rotation_euler = Euler((0.0, 0.0, 0.0))
+    root.scale = Vector((1.0, 1.0, 1.0))
+    bpy.context.view_layer.update()
+
     for m in meshes:
         m.parent = root
         m.matrix_world = world_mats[m]
@@ -239,6 +243,10 @@ def flatten_to_root(root, animated_empty_prefixes=()):
 
 
 def export_clean_fbx(root, filename):
+    import shutil
+    import tempfile
+    import time
+
     os.makedirs(MODEL_DIR, exist_ok=True)
     objs = [root] + list(root.children_recursive)
     bpy.ops.object.select_all(action="DESELECT")
@@ -247,8 +255,9 @@ def export_clean_fbx(root, filename):
     bpy.context.view_layer.objects.active = root
 
     out_path = os.path.join(MODEL_DIR, filename)
+    tmp_path = os.path.join(tempfile.gettempdir(), f"chodola_export_{filename}")
     bpy.ops.export_scene.fbx(
-        filepath=out_path,
+        filepath=tmp_path,
         use_selection=True,
         global_scale=1.0,
         apply_unit_scale=True,
@@ -262,6 +271,14 @@ def export_clean_fbx(root, filename):
         bake_anim=False,
         path_mode="AUTO",
     )
+    for attempt in range(5):
+        try:
+            shutil.copy2(tmp_path, out_path)
+            break
+        except OSError:
+            if attempt == 4:
+                raise
+            time.sleep(0.5)
     print("EXPORTED_FBX:", out_path)
 
 
@@ -343,7 +360,7 @@ def build_and_export_plaza_street_details(rng):
     root = bpy.data.objects.new("Plaza_StreetDetails", None)
     base.link_obj(root, col)
 
-    # Raised ashlar sidewalks behind ALL curbstones (Plaza + South street + North street)
+    # Clean Modern Vietnamese red-and-grey terrazzo sidewalks + curbstones + storm drains
     sidewalk_slabs = [
         ("Sidewalk_Plaza_W", (-7.2, 0.0, 0.045), (5.5, 10.4, 0.09)),
         ("Sidewalk_Plaza_E", (7.2, 0.0, 0.045), (5.5, 10.4, 0.09)),
@@ -353,85 +370,86 @@ def build_and_export_plaza_street_details(rng):
         ("Sidewalk_North_E", (6.5, 11.4, 0.045), (6.6, 12.2, 0.09)),
     ]
     for sname, sloc, ssz in sidewalk_slabs:
-        base.add_box(sname, root, sloc, ssz, mats["ashlar_stone"], bevel=0.012, col=col)
+        base.add_box(sname, root, sloc, ssz, mats["terrazzo_paving"], bevel=0.010, col=col)
 
-    # Beveled curbstones & moss clumps framing the Plaza (X = ±4.42, Y in [-5.2, +5.2]) and South/North Main Street (X = ±3.12)
+    for rname, rx in (("RedRunner_W", -7.1), ("RedRunner_E", 7.1)):
+        base.add_box(rname, root, (rx, 0.0, 0.092), (3.4, 34.0, 0.012), mats["vn_red_tile"], bevel=0.004, col=col)
+
+    for drain_x in (-4.15, 4.15):
+        for dy in (-10.0, -3.5, 3.5, 10.0):
+            base.add_box(f"DrainGrate_{drain_x}_{dy}", root, (drain_x, dy, 0.008), (0.34, 0.65, 0.016), mats["steel_black"], bevel=0.003, col=col)
+
+    # Crisp Modern Granite Curbstones framing Pedestrian Plaza & Walks (no road lanes/moss)
     curb_segments = [
-        (-4.42, -5.0, 5.2, 1),   # West Plaza curb
-        (4.42, -5.0, 5.2, -1),   # East Plaza curb
-        (-3.12, -18.5, -5.4, 1), # West MainStreet_S curb
-        (3.12, -18.5, -5.4, -1), # East MainStreet_S curb
-        (-3.12, 5.4, 17.5, 1),   # West MainStreet_N curb
-        (3.12, 5.4, 17.5, -1),   # East MainStreet_N curb
+        (-4.42, -5.0, 5.2),   # West Plaza curb
+        (4.42, -5.0, 5.2),    # East Plaza curb
+        (-3.12, -18.5, -5.4), # West South walk curb
+        (3.12, -18.5, -5.4),  # East South walk curb
+        (-3.12, 5.4, 17.5),   # West North walk curb
+        (3.12, 5.4, 17.5),    # East North walk curb
     ]
     c_idx = 0
-    for cx, y_min, y_max, moss_dir in curb_segments:
+    for cx, y_min, y_max in curb_segments:
         y = y_min
         while y <= y_max:
-            m = mats["stone_dark"] if c_idx % 4 != 0 else mats["wet_stone"]
-            base.add_box(f"Curb_{c_idx}", root,
-                         (cx + rng.uniform(-0.01, 0.01), y, 0.065 + rng.uniform(-0.005, 0.005)),
-                         (0.24, 0.68, 0.14), m,
-                         rot=(rng.uniform(-0.02, 0.02), 0, rng.uniform(-0.02, 0.02)), bevel=0.015, col=col)
-            if c_idx % 3 == 0:
-                base.add_moss_cluster(f"CurbMoss_{c_idx}", root, (cx + moss_dir * 0.15, y, 0.02), (0.6, 0.6, 0.5), mats, rng, col)
+            m = mats["ashlar_stone"] if c_idx % 3 != 0 else mats["stone_dark"]
+            base.add_box(f"Curb_{c_idx}", root, (cx, y, 0.065), (0.24, 0.69, 0.14), m, bevel=0.010, col=col)
             y += 0.72
             c_idx += 1
-
-    # Scattered irregular 3D stepping flagstones along Plaza & Main Street
-    for i in range(44):
-        py = rng.uniform(-17.0, 15.0)
-        x_lim = 3.8 if -5.0 <= py <= 5.0 else 2.5
-        px = rng.uniform(-x_lim, x_lim)
-        if math.hypot(px, py) < 3.95:
-            continue
-        w = rng.uniform(0.38, 0.72)
-        d = rng.uniform(0.32, 0.62)
-        m = mats["ashlar_stone"] if i % 3 != 0 else mats["wet_stone"]
-        base.add_box(f"RoadSlab_{i}", root,
-                     (px, py, rng.uniform(0.006, 0.020)), (w, d, 0.036), m,
-                     rot=(rng.uniform(-0.022, 0.022), rng.uniform(-0.022, 0.022), rng.uniform(0, math.pi)),
-                     bevel=0.010, col=col)
 
     flatten_to_root(root)
     export_clean_fbx(root, "SM_Plaza_StreetDetails.fbx")
 
 
-def export_all_models():
-    rng = random.Random(20261123)
-
-    # 1. Central Fountain + Plaza Compass Mosaic (remove static WaterJet sticks — Unity renders live flowing water!)
+def export_hanoi_assets(rng):
+    # 0. Modern Hanoi Pedestrian Park Island (replaces old central fountain!)
     base.clear_scene()
     col = base.get_or_create_collection("Export")
     mats = base.create_materials()
-    fountain = base.build_fountain(mats, rng, col)
-    remove_children_by_prefix(fountain, ("WaterJet_",))
-    base.add_cyl("Plaza_WetApron", fountain, (0, 0, 0.012), 2.55, 0.024, mats["wet_stone"], verts=24, bevel=0.006, smooth=False, col=col)
-    base.add_torus_ring("Plaza_RuneRing_Brass", fountain, (0, 0, 0.022), 2.82, 0.045, mats["brass"], major_segs=48, col=col)
-    base.add_torus_ring("Plaza_RuneRing_Glow", fountain, (0, 0, 0.020), 2.94, 0.025, mats["arcane_glow"], major_segs=48, col=col)
-    for i in range(16):
-        ang = i * (2 * math.pi / 16)
-        r = 3.45
-        sx, sy = math.cos(ang) * r, math.sin(ang) * r
-        m = mats["ashlar_stone"] if i % 2 == 0 else mats["stone_dark"]
-        tilt = rng.uniform(-0.018, 0.018)
-        base.add_box(f"PlazaMosaic_{i}", fountain, (sx, sy, rng.uniform(0.008, 0.020)), (0.85, 0.56, 0.04), m, rot=(tilt, tilt * 0.5, ang), bevel=0.012, col=col)
-    flatten_to_root(fountain)
-    # Join each LevitatingRuneStone_k + LevitatingRuneGlow_k into a centered LevitatingRune_k mesh
-    for k in range(4):
-        stone = next((o for o in fountain.children if o.name == f"LevitatingRuneStone_{k}"), None)
-        glow = next((o for o in fountain.children if o.name == f"LevitatingRuneGlow_{k}"), None)
-        if stone and glow:
-            bpy.ops.object.select_all(action="DESELECT")
-            stone.select_set(True)
-            glow.select_set(True)
-            bpy.context.view_layer.objects.active = stone
-            bpy.ops.object.join()
-            stone.name = f"LevitatingRune_{k}"
-            bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY", center="MEDIAN")
-    export_clean_fbx(fountain, "SM_Fountain_Central.fbx")
+    font = base.load_unicode_font()
+    island = base.build_hanoi_center_island(mats, font, rng, col)
+    flatten_to_root(island)
+    export_clean_fbx(island, "SM_Hanoi_CenterIsland.fbx")
+    # A. Hanoi Street Tree (Cây Sấu / Xà Cừ trong bồn đá)
+    base.clear_scene()
+    col = base.get_or_create_collection("Export")
+    mats = base.create_materials()
+    tree = base.build_hanoi_street_tree("SM_Hanoi_StreetTree", (0, 0, 0), mats, rng, col, scale=1.0)
+    flatten_to_root(tree)
+    export_clean_fbx(tree, "SM_Hanoi_StreetTree.fbx")
 
-    # 2. Walk-in House 1: Shop_BlindBox_House
+    # B. Quán Phở Bò Hà Nội Hiện Đại
+    base.clear_scene()
+    col = base.get_or_create_collection("Export")
+    mats = base.create_materials()
+    font = base.load_unicode_font()
+    pho = base.build_hanoi_pho_shop("SM_Hanoi_PhoShop", (0, 0, 0), True, mats, font, rng, col)
+    flatten_to_root(pho)
+    export_clean_fbx(pho, "SM_Hanoi_PhoShop.fbx")
+
+    # C. Quầy Trà Đá & Vé Số Vỉa Hè
+    base.clear_scene()
+    col = base.get_or_create_collection("Export")
+    mats = base.create_materials()
+    font = base.load_unicode_font()
+    trada = base.build_hanoi_trada_veso("SM_Hanoi_TraDaVeSo", (0, 0, 0), True, mats, font, rng, col)
+    flatten_to_root(trada)
+    export_clean_fbx(trada, "SM_Hanoi_TraDaVeSo.fbx")
+
+    # D. Modern Hanoi Multi-Story Tube Shophouse Block
+    base.clear_scene()
+    col = base.get_or_create_collection("Export")
+    mats = base.create_materials()
+    font = base.load_unicode_font()
+    block = base.build_hanoi_shophouse_block("SM_Hanoi_ShophouseBlock", (0, 0, 0), True, mats, font, rng, col)
+    flatten_to_root(block)
+    export_clean_fbx(block, "SM_Hanoi_ShophouseBlock.fbx")
+
+
+def export_all_models():
+    rng = random.Random(20261123)
+
+    # 1. Walk-in House 1: Shop_BlindBox_House (Modern Hanoi Shophouse)
     base.clear_scene()
     col = base.get_or_create_collection("Export")
     mats = base.create_materials()
@@ -481,9 +499,10 @@ def export_all_models():
         flatten_to_root(art)
         export_clean_fbx(art, fname)
 
-    # 6. Blender Street Lantern & Sidewalks/Curbs/Flagstones
+    # 6. Blender Street Lantern, Modern Hanoi Sidewalks & Hanoi Neighborhood Assets
     build_and_export_street_lantern()
     build_and_export_plaza_street_details(rng)
+    export_hanoi_assets(rng)
 
 
 if __name__ == "__main__":

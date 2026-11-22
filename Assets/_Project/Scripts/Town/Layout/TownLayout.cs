@@ -20,13 +20,17 @@ namespace ChoDoLa.Town.Layout
             new Walkway("Alley_RampBaseE", new Rect2(13.5f, 23.5f, 20.5f, 27.0f), 0f),
             new Walkway("Deck_W", new Rect2(-20.5f, 35.0f, -3f, 41.0f), TownSpec.DeckElevation),
             new Walkway("Bridge", new Rect2(-3f, 36.4f, 3f, 39.6f), TownSpec.DeckElevation),
-            new Walkway("Deck_E", new Rect2(3f, 35.0f, 20.5f, 41.0f), TownSpec.DeckElevation)
+            new Walkway("Deck_E", new Rect2(3f, 35.0f, 20.5f, 41.0f), TownSpec.DeckElevation),
+            new Walkway("Connector_RearToNorth", new Rect2(-3.5f, 59.5f, 3.5f, 70.0f), 0f),
+            new Walkway("Promenade_North", new Rect2(-40.0f, 70.0f, 40.0f, 86.0f), 0f),
+            new Walkway("Promenade_OuterW", new Rect2(-40.0f, 8.0f, -34.0f, 70.0f), 0f),
+            new Walkway("Promenade_OuterE", new Rect2(34.0f, 8.0f, 40.0f, 70.0f), 0f)
         };
 
         public static readonly IReadOnlyList<TownPiece> Pieces = new List<TownPiece>
         {
-            // Expanded Ground base (60m x 68m)
-            new TownPiece("Ground_Town", TownPieceKind.Ground, new Float3(0f, -0.05f, 34f), new Float3(60f, 0.1f, 68f), 0f, TownPalette.Stone),
+            // Expanded Modern Hanoi Ground base (90m x 96m)
+            new TownPiece("Ground_Town", TownPieceKind.Ground, new Float3(0f, -0.05f, 48f), new Float3(90f, 0.1f, 96f), 0f, TownPalette.Stone),
 
             // Markers
             new TownPiece("Inn_Spawn", TownPieceKind.InnSpawn, new Float3(0f, 0f, 4f), new Float3(4f, 0.1f, 3f), 0f, TownPalette.Marker),
@@ -77,19 +81,19 @@ namespace ChoDoLa.Town.Layout
             new TownPiece("Building_Inter_N1", TownPieceKind.Building, new Float3(-10.5f, 4.2f, 63.2f), new Float3(8f, 8.4f, 6.5f), 0f, TownPalette.Roof, "Facade_InterN1"),
             new TownPiece("Building_Inter_N2", TownPieceKind.Building, new Float3(10.5f, 4.2f, 63.2f), new Float3(8f, 8.4f, 6.5f), 0f, TownPalette.Wood, "Facade_InterN2"),
 
-            // Inn Facade & Expanded Perimeter Buildings
+            // Inn Facade & Expanded 90x96m Perimeter Buildings
             new TownPiece("Building_InnFacade", TownPieceKind.Building, new Float3(0f, 4.5f, 1.25f), new Float3(14f, 9f, 2.5f), 0f, TownPalette.Wood, "Facade_Inn"),
-            new TownPiece("Wall_South_W", TownPieceKind.Wall, new Float3(-18.5f, 3.5f, 1.25f), new Float3(23f, 7f, 2.5f), 0f, TownPalette.Stone),
-            new TownPiece("Wall_South_E", TownPieceKind.Wall, new Float3(18.5f, 3.5f, 1.25f), new Float3(23f, 7f, 2.5f), 0f, TownPalette.Stone),
-            new TownPiece("Wall_North", TownPieceKind.Wall, new Float3(0f, 4f, 67.5f), new Float3(60f, 8f, 1.0f), 0f, TownPalette.Stone, "Facade_NorthWall"),
+            new TownPiece("Wall_South_W", TownPieceKind.Wall, new Float3(-26f, 3.5f, 1.25f), new Float3(38f, 7f, 2.5f), 0f, TownPalette.Stone),
+            new TownPiece("Wall_South_E", TownPieceKind.Wall, new Float3(26f, 3.5f, 1.25f), new Float3(38f, 7f, 2.5f), 0f, TownPalette.Stone),
+            new TownPiece("Wall_North", TownPieceKind.Wall, new Float3(0f, 4f, 95.5f), new Float3(90f, 8f, 1.0f), 0f, TownPalette.Stone, "Facade_NorthWall"),
             new TownPiece("Building_West_S", TownPieceKind.Building, new Float3(-21.5f, 5f, 8.5f), new Float3(15f, 10f, 11f), 0f, TownPalette.Stone, "Facade_WestS"),
             new TownPiece("Wall_West_Slot03Back", TownPieceKind.Wall, new Float3(-22.5f, 4f, 15.5f), new Float3(10f, 8f, 3f), 0f, TownPalette.Stone),
-            new TownPiece("Building_West_N", TownPieceKind.Building, new Float3(-22.5f, 5.5f, 56f), new Float3(11f, 11f, 12f), 0f, TownPalette.Roof, "Facade_WestN"),
-            new TownPiece("Wall_West_Edge", TownPieceKind.Wall, new Float3(-29.25f, 4f, 34.5f), new Float3(1.5f, 8f, 65f), 0f, TownPalette.Stone),
+            new TownPiece("Building_West_N", TownPieceKind.Building, new Float3(-22.5f, 5.5f, 56f), new Float3(11f, 12f, 12f), 0f, TownPalette.Roof, "Facade_WestN"),
+            new TownPiece("Wall_West_Edge", TownPieceKind.Wall, new Float3(-44.25f, 4f, 48.5f), new Float3(1.5f, 8f, 93f), 0f, TownPalette.Stone),
             new TownPiece("Building_East_S", TownPieceKind.Building, new Float3(21.5f, 5f, 8.75f), new Float3(15f, 10f, 11.5f), 0f, TownPalette.Stone, "Facade_EastS"),
             new TownPiece("Wall_East_Slot04Back", TownPieceKind.Wall, new Float3(23.0f, 4f, 16.5f), new Float3(10f, 8f, 4f), 0f, TownPalette.Stone),
-            new TownPiece("Building_East_N", TownPieceKind.Building, new Float3(22.5f, 5.5f, 56f), new Float3(11f, 11f, 12f), 0f, TownPalette.Roof, "Facade_EastN"),
-            new TownPiece("Wall_East_Edge", TownPieceKind.Wall, new Float3(29.25f, 4f, 34.5f), new Float3(1.5f, 8f, 65f), 0f, TownPalette.Stone),
+            new TownPiece("Building_East_N", TownPieceKind.Building, new Float3(22.5f, 5.5f, 56f), new Float3(11f, 12f, 12f), 0f, TownPalette.Roof, "Facade_EastN"),
+            new TownPiece("Wall_East_Edge", TownPieceKind.Wall, new Float3(44.25f, 4f, 48.5f), new Float3(1.5f, 8f, 93f), 0f, TownPalette.Stone),
 
             // Scattered 20% Accents (21 total: 7 Steam, 7 SciFi, 7 Arcane; <= 2 per FacadeId)
             new TownPiece("Acc_Steam_01", TownPieceKind.AccentSteam, new Float3(-3.3f, 3.2f, 14f), new Float3(0.6f, 1.4f, 0.6f), 0f, TownPalette.Brass, "Facade_CoverW1"),
@@ -112,7 +116,7 @@ namespace ChoDoLa.Town.Layout
             new TownPiece("Acc_SciFi_06", TownPieceKind.AccentSciFi, new Float3(-17.0f, 2.8f, 54f), new Float3(0.4f, 1.0f, 1.0f), 0f, TownPalette.SciFi, "Facade_WestN"),
             new TownPiece("Acc_Arcane_06", TownPieceKind.AccentArcane, new Float3(13.8f, 3.0f, 11f), new Float3(0.5f, 0.9f, 0.5f), 0f, TownPalette.Arcane, "Facade_EastS"),
             new TownPiece("Acc_SciFi_07", TownPieceKind.AccentSciFi, new Float3(17.0f, 3.0f, 54f), new Float3(0.4f, 1.0f, 1.0f), 0f, TownPalette.SciFi, "Facade_EastN"),
-            new TownPiece("Acc_Arcane_07", TownPieceKind.AccentArcane, new Float3(0f, 3.5f, 66.8f), new Float3(1.4f, 1.4f, 0.3f), 0f, TownPalette.Arcane, "Facade_NorthWall"),
+            new TownPiece("Acc_Arcane_07", TownPieceKind.AccentArcane, new Float3(0f, 3.5f, 94.8f), new Float3(1.4f, 1.4f, 0.3f), 0f, TownPalette.Arcane, "Facade_NorthWall"),
 
             // Street Lights (grounded on walkway edges, Y = 0..3.0)
             new TownPiece("Light_Main_S", TownPieceKind.StreetLight, new Float3(-3.2f, 1.5f, 7f), new Float3(0.3f, 3.0f, 0.3f), 0f, TownPalette.Wood),
@@ -121,7 +125,7 @@ namespace ChoDoLa.Town.Layout
             new TownPiece("Light_Main_N", TownPieceKind.StreetLight, new Float3(3.2f, 1.5f, 33f), new Float3(0.3f, 3.0f, 0.3f), 0f, TownPalette.Wood),
             new TownPiece("Light_Alley_W", TownPieceKind.StreetLight, new Float3(-13.7f, 1.5f, 30f), new Float3(0.3f, 3.0f, 0.3f), 0f, TownPalette.Wood),
             new TownPiece("Light_Alley_E", TownPieceKind.StreetLight, new Float3(13.7f, 1.5f, 30f), new Float3(0.3f, 3.0f, 0.3f), 0f, TownPalette.Wood),
-            new TownPiece("Light_Rear", TownPieceKind.StreetLight, new Float3(0f, 1.5f, 59.7f), new Float3(0.3f, 3.0f, 0.3f), 0f, TownPalette.Wood)
+            new TownPiece("Light_Rear", TownPieceKind.StreetLight, new Float3(-4.2f, 1.5f, 59.7f), new Float3(0.3f, 3.0f, 0.3f), 0f, TownPalette.Wood)
         };
 
         public static TownPiece Spawn

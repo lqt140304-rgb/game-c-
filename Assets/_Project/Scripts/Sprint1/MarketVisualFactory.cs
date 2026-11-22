@@ -54,7 +54,7 @@ namespace ChoDoLa.Sprint1
         private static Material MatObsidian => GetMaterial("Obsidian", new Color(0.08f, 0.07f, 0.12f), 0.30f, 0.90f);
         private static Material MatCyanGlow => GetMaterial("CyanGlow", new Color(0.25f, 0.82f, 0.98f), 0.20f, 0.85f, new Color(0.2f, 1.3f, 1.6f));
         private static Material MatArcaneGlow => GetMaterial("ArcaneGlow", new Color(0.58f, 0.32f, 0.95f), 0.20f, 0.75f, new Color(0.75f, 0.25f, 1.4f));
-        private static Material MatWarmGlow => GetMaterial("WarmGlow", new Color(1.0f, 0.76f, 0.35f), 0.0f, 0.5f, new Color(1.6f, 1.0f, 0.35f));
+        private static Material MatWarmGlow => GetMaterial("WarmGlow", new Color(1.0f, 0.80f, 0.44f), 0.0f, 0.4f, new Color(0.95f, 0.65f, 0.25f));
         private static Material MatCrack => GetMaterial("Crack", new Color(0.06f, 0.05f, 0.05f), 0.0f, 0.1f);
 
         public static Material GetTexturedMaterial(
@@ -106,6 +106,31 @@ namespace ChoDoLa.Sprint1
             return GetTexturedMaterial(key, "T_Cobble_Albedo", "T_Cobble_Normal", Color.white, 0.0f, 0.26f, 0.9f, tiling);
         }
 
+        public static Material GetHanoiPavingMaterial(Vector2? tiling = null)
+        {
+            string key = tiling.HasValue ? $"VnStreetMatte_PBR_{tiling.Value.x}_{tiling.Value.y}" : "VnStreetMatte_PBR";
+            return GetTexturedMaterial(key, "T_VnStreetMatte_Albedo", "T_VnStreetMatte_Normal", Color.white, 0.0f, 0.14f, 0.55f, tiling);
+        }
+
+        private static Material GetSteamMistMaterial()
+        {
+            const string key = "Blender_SteamMist";
+            if (MaterialCache.TryGetValue(key, out Material cached) && cached != null) return cached;
+
+            Material mat = GetMaterial(key, new Color(0.96f, 0.98f, 1.0f, 0.38f), 0.0f, 0.15f, new Color(0.32f, 0.35f, 0.38f));
+            if (mat.HasProperty("_Surface"))
+            {
+                mat.SetFloat("_Surface", 1f);
+                mat.SetFloat("_Blend", 0f);
+                mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                mat.SetInt("_ZWrite", 0);
+                mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            }
+            return mat;
+        }
+
         private static Material GetGlassMaterial()
         {
             const string key = "Blender_Glass";
@@ -135,46 +160,74 @@ namespace ChoDoLa.Sprint1
             {
                 case "Mat_Cobble_PBR":
                     return GetCobbleMaterial();
+                case "Mat_HanoiTerrazzo":
+                    return GetTexturedMaterial("B_HanoiTerrazzo", "T_HanoiTerrazzo_Albedo", "T_HanoiTerrazzo_Normal", Color.white, 0.0f, 0.14f, 0.65f);
+                case "Mat_VnRedTile":
+                    return GetTexturedMaterial("B_VnRedTile", "T_VnRedTile_Albedo", "T_VnRedTile_Normal", Color.white, 0.0f, 0.16f, 0.65f);
+                case "Mat_VnStreetMatte":
+                    return GetTexturedMaterial("B_VnStreetMatte", "T_VnStreetMatte_Albedo", "T_VnStreetMatte_Normal", Color.white, 0.0f, 0.14f, 0.55f);
+                case "Mat_HanoiCreamWall":
+                    return GetMaterial("B_HanoiCreamWall", new Color(0.88f, 0.85f, 0.79f), 0.0f, 0.12f);
+                case "Mat_HanoiYellowWall":
+                    return GetMaterial("B_HanoiYellowWall", new Color(0.86f, 0.73f, 0.42f), 0.0f, 0.12f);
+                case "Mat_SteelBlack":
+                    return GetMaterial("B_SteelBlack", new Color(0.12f, 0.13f, 0.15f), 0.68f, 0.45f);
+                case "Mat_InoxSteel":
+                    return GetMaterial("B_InoxSteel", new Color(0.75f, 0.78f, 0.81f), 0.88f, 0.70f);
+                case "Mat_PlasticBlue":
+                    return GetMaterial("B_PlasticBlue", new Color(0.10f, 0.36f, 0.80f), 0.0f, 0.42f);
+                case "Mat_PlasticRed":
+                    return GetMaterial("B_PlasticRed", new Color(0.78f, 0.16f, 0.15f), 0.0f, 0.42f);
+                case "Mat_HanoiRedSign":
+                    return GetMaterial("B_HanoiRedSign", new Color(0.68f, 0.10f, 0.10f), 0.02f, 0.32f, new Color(0.24f, 0.03f, 0.03f));
+                case "Mat_HanoiBlueSign":
+                    return GetMaterial("B_HanoiBlueSign", new Color(0.10f, 0.24f, 0.56f), 0.02f, 0.32f, new Color(0.03f, 0.08f, 0.22f));
+                case "Mat_TreeBark":
+                    return GetTexturedMaterial("B_TreeBark", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.46f, 0.36f, 0.28f), 0.0f, 0.10f, 0.90f);
+                case "Mat_TreeFoliage":
+                    return GetMaterial("B_TreeFoliage", new Color(0.15f, 0.38f, 0.11f), 0.0f, 0.12f);
+                case "Mat_SteamMist":
+                    return GetSteamMistMaterial();
                 case "Mat_WeatheredPlaster":
-                    return GetTexturedMaterial("B_Plaster", "T_WeatheredPlaster_Albedo", "T_WeatheredPlaster_Normal", Color.white, 0.0f, 0.18f, 0.65f);
+                    return GetTexturedMaterial("B_Plaster", "T_WeatheredPlaster_Albedo", "T_WeatheredPlaster_Normal", Color.white, 0.0f, 0.14f, 0.65f);
                 case "Mat_PlasterAlt":
-                    return GetTexturedMaterial("B_PlasterAlt", "T_WeatheredPlaster_Albedo", "T_WeatheredPlaster_Normal", new Color(0.84f, 0.80f, 0.74f), 0.0f, 0.18f, 0.65f);
+                    return GetTexturedMaterial("B_PlasterAlt", "T_WeatheredPlaster_Albedo", "T_WeatheredPlaster_Normal", new Color(0.84f, 0.80f, 0.74f), 0.0f, 0.14f, 0.65f);
                 case "Mat_ExposedBrick":
-                    return GetTexturedMaterial("B_ExposedBrick", "T_ExposedBrick_Albedo", "T_ExposedBrick_Normal", Color.white, 0.0f, 0.22f, 0.95f);
+                    return GetTexturedMaterial("B_ExposedBrick", "T_ExposedBrick_Albedo", "T_ExposedBrick_Normal", Color.white, 0.0f, 0.16f, 0.90f);
                 case "Mat_GlazedBrick_Teal":
-                    return GetTexturedMaterial("B_GlazedBrickTeal", "T_GlazedBrickTeal_Albedo", "T_GlazedBrickTeal_Normal", Color.white, 0.08f, 0.84f, 0.80f);
+                    return GetTexturedMaterial("B_GlazedBrickTeal", "T_GlazedBrickTeal_Albedo", "T_GlazedBrickTeal_Normal", Color.white, 0.05f, 0.58f, 0.75f);
                 case "Mat_WhitewashedBrick":
-                    return GetTexturedMaterial("B_WhitewashBrick", "T_WhitewashedBrick_Albedo", "T_WhitewashedBrick_Normal", Color.white, 0.0f, 0.20f, 0.70f);
+                    return GetTexturedMaterial("B_WhitewashBrick", "T_WhitewashedBrick_Albedo", "T_WhitewashedBrick_Normal", Color.white, 0.0f, 0.15f, 0.70f);
                 case "Mat_AshlarStone":
-                    return GetTexturedMaterial("B_AshlarStone", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", Color.white, 0.0f, 0.26f, 0.85f);
+                    return GetTexturedMaterial("B_AshlarStone", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", Color.white, 0.0f, 0.16f, 0.80f);
                 case "Mat_Stone":
-                    return GetTexturedMaterial("B_Stone", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", new Color(0.92f, 0.90f, 0.86f), 0.0f, 0.24f, 0.75f);
+                    return GetTexturedMaterial("B_Stone", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", new Color(0.90f, 0.88f, 0.84f), 0.0f, 0.14f, 0.75f);
                 case "Mat_StoneDark":
-                    return GetTexturedMaterial("B_StoneDark", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", new Color(0.56f, 0.54f, 0.50f), 0.0f, 0.28f, 0.75f);
+                    return GetTexturedMaterial("B_StoneDark", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", new Color(0.54f, 0.52f, 0.48f), 0.0f, 0.16f, 0.75f);
                 case "Mat_WetStone":
-                    return GetTexturedMaterial("B_WetStone", "T_Cobble_Albedo", "T_Cobble_Normal", new Color(0.55f, 0.57f, 0.56f), 0.02f, 0.74f, 0.80f);
+                    return GetTexturedMaterial("B_WetStone", "T_Cobble_Albedo", "T_Cobble_Normal", new Color(0.55f, 0.57f, 0.56f), 0.02f, 0.45f, 0.80f);
                 case "Mat_AgedWood_Floor":
-                    return GetTexturedMaterial("B_AgedWoodFloor", "T_AgedWood_Albedo", "T_AgedWood_Normal", Color.white, 0.02f, 0.42f, 0.75f);
+                    return GetTexturedMaterial("B_AgedWoodFloor", "T_AgedWood_Albedo", "T_AgedWood_Normal", Color.white, 0.02f, 0.22f, 0.75f);
                 case "Mat_WoodLight_PBR":
-                    return GetTexturedMaterial("B_WoodLight", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(1.0f, 0.94f, 0.85f), 0.02f, 0.44f, 0.55f);
+                    return GetTexturedMaterial("B_WoodLight", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.96f, 0.90f, 0.82f), 0.02f, 0.22f, 0.55f);
                 case "Mat_WoodDark_PBR":
-                    return GetTexturedMaterial("B_WoodDark", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.55f, 0.42f, 0.34f), 0.04f, 0.46f, 0.55f);
+                    return GetTexturedMaterial("B_WoodDark", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.54f, 0.41f, 0.33f), 0.02f, 0.22f, 0.55f);
                 case "Mat_WorkshopSlab_Floor":
-                    return GetTexturedMaterial("B_WorkshopFloor", "T_WorkshopFloor_Albedo", "T_WorkshopFloor_Normal", Color.white, 0.04f, 0.58f, 0.85f);
+                    return GetTexturedMaterial("B_WorkshopFloor", "T_WorkshopFloor_Albedo", "T_WorkshopFloor_Normal", Color.white, 0.02f, 0.24f, 0.80f);
                 case "Mat_RoofTile":
-                    return GetTexturedMaterial("B_RoofTile", "T_RoofTile_Albedo", null, Color.white, 0.0f, 0.30f);
+                    return GetTexturedMaterial("B_RoofTile", "T_RoofTile_Albedo", null, Color.white, 0.0f, 0.18f);
                 case "Mat_RoofSlate":
-                    return GetTexturedMaterial("B_RoofSlate", "T_RoofSlate_Albedo", null, Color.white, 0.04f, 0.46f);
+                    return GetTexturedMaterial("B_RoofSlate", "T_RoofSlate_Albedo", null, Color.white, 0.02f, 0.25f);
                 case "Mat_MossClump":
-                    return GetMaterial("B_Moss", new Color(0.16f, 0.28f, 0.09f), 0.0f, 0.12f);
+                    return GetMaterial("B_Moss", new Color(0.16f, 0.28f, 0.09f), 0.0f, 0.10f);
                 case "Mat_Brass":
                     return MatBrass;
                 case "Mat_Gold":
                     return MatGold;
                 case "Mat_SignGold":
-                    return GetMaterial("B_SignGold", new Color(0.96f, 0.78f, 0.28f), 0.85f, 0.75f, new Color(0.55f, 0.42f, 0.12f));
+                    return GetMaterial("B_SignGold", new Color(0.95f, 0.79f, 0.30f), 0.35f, 0.45f, new Color(0.32f, 0.25f, 0.08f));
                 case "Mat_SignSub":
-                    return GetMaterial("B_SignSub", new Color(0.94f, 0.88f, 0.74f), 0.0f, 0.35f, new Color(0.32f, 0.28f, 0.20f));
+                    return GetMaterial("B_SignSub", new Color(0.92f, 0.88f, 0.78f), 0.0f, 0.22f, new Color(0.18f, 0.16f, 0.12f));
                 case "Mat_Iron":
                     return MatIron;
                 case "Mat_Velvet":

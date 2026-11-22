@@ -43,9 +43,8 @@ namespace ChoDoLa.Sprint1.Editor
             GameObject sprint0Hud = GameObject.Find("HUD_Canvas");
             if (sprint0Hud != null) sprint0Hud.SetActive(false);
 
-            HideDebugMarkers();
+            HideOldGreyboxArchitecture();
             ApplyGroundCobbleMaterial();
-            UpgradeTownBackgroundMaterials();
 
             GameObject root = new GameObject(RootName);
 
@@ -59,11 +58,11 @@ namespace ChoDoLa.Sprint1.Editor
             FirstPersonController fpc = player != null ? player.GetComponent<FirstPersonController>() : null;
             PlayerInteractor interactor = player != null ? player.GetComponent<PlayerInteractor>() : null;
 
-            BuildCentralFountain(root.transform, new Vector3(0f, 0f, 22.0f));
+            BuildHanoiCenterIsland(root.transform, new Vector3(0f, 0f, 22.0f));
             BuildPlazaStreetAndLanterns(root.transform);
-            DressArcaneWell(root.transform);
             BuildBlindBoxWalkInHouse(root.transform, new Vector3(-7.2f, 0f, 22.0f), service, hud);
             BuildOpenBoxWalkInHouse(root.transform, new Vector3(7.2f, 0f, 22.0f), out Transform[] boxSlots, out Transform inspectAnchor);
+            BuildHanoiStreetHighlightsAndTrees(root.transform);
             BuildInnLedgerDesk(root.transform, new Vector3(1.85f, 0f, 4.8f), hud);
 
             inspector.Configure(inspectAnchor, fpc, interactor, hud);
@@ -80,6 +79,49 @@ namespace ChoDoLa.Sprint1.Editor
             }
         }
 
+        private static void HideOldGreyboxArchitecture()
+        {
+            HideDebugMarkers();
+
+            GameObject townRoot = GameObject.Find("MarketTown");
+            if (townRoot == null) return;
+
+            foreach (Transform child in townRoot.GetComponentsInChildren<Transform>(true))
+            {
+                if (child == townRoot.transform) continue;
+                string n = child.name;
+
+                // Keep Ground_Town active and visible (paved with matte Vietnamese street material)
+                if (n == "Ground_Town") continue;
+
+                // Keep outer perimeter boundary walls as invisible physics fences so player cannot fall off map
+                bool isOuterBoundaryFence =
+                    n == "Wall_North" || n == "Wall_West_Edge" || n == "Wall_East_Edge" ||
+                    n == "Wall_South_W" || n == "Wall_South_E";
+
+                foreach (Renderer r in child.GetComponents<Renderer>())
+                {
+                    r.enabled = false;
+                }
+
+                if (!isOuterBoundaryFence)
+                {
+                    foreach (Collider c in child.GetComponents<Collider>())
+                    {
+                        if (!c.isTrigger)
+                        {
+                            c.enabled = false;
+                        }
+                    }
+                }
+
+                foreach (Light l in child.GetComponents<Light>())
+                {
+                    l.enabled = false;
+                }
+            }
+        }
+
         private static void HideDebugMarkers()
         {
             foreach (string markerName in new[] { "OpenTable_Zone", "Inn_Spawn" })
@@ -92,7 +134,7 @@ namespace ChoDoLa.Sprint1.Editor
                 }
             }
 
-            foreach (ChoDoLa.Town.ShopSlotMarker slot in Object.FindObjectsByType<ChoDoLa.Town.ShopSlotMarker>(FindObjectsSortMode.None))
+            foreach (ChoDoLa.Town.ShopSlotMarker slot in Object.FindObjectsByType<ChoDoLa.Town.ShopSlotMarker>())
             {
                 foreach (Renderer r in slot.GetComponentsInChildren<Renderer>(true))
                 {
@@ -103,10 +145,10 @@ namespace ChoDoLa.Sprint1.Editor
 
         private static void UpgradeTownBackgroundMaterials()
         {
-            ApplyMaterialTex("Assets/_Project/Art/Greybox/Materials/GB_Stone.mat", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", new Color(0.88f, 0.85f, 0.80f), new Vector2(3.5f, 3.5f), 0.0f, 0.22f);
-            ApplyMaterialTex("Assets/_Project/Art/Greybox/Materials/GB_Moss.mat", "T_WeatheredPlaster_Albedo", "T_WeatheredPlaster_Normal", new Color(0.86f, 0.88f, 0.80f), new Vector2(3.0f, 2.5f), 0.0f, 0.20f);
-            ApplyMaterialTex("Assets/_Project/Art/Greybox/Materials/GB_Wood.mat", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.92f, 0.86f, 0.80f), new Vector2(2.5f, 2.5f), 0.02f, 0.35f);
-            ApplyMaterialTex("Assets/_Project/Art/Greybox/Materials/GB_Roof.mat", "T_RoofTile_Albedo", null, Color.white, new Vector2(3.0f, 3.0f), 0.0f, 0.28f);
+            ApplyMaterialTex("Assets/_Project/Art/Greybox/Materials/GB_Stone.mat", "T_HanoiTerrazzo_Albedo", "T_HanoiTerrazzo_Normal", new Color(0.95f, 0.93f, 0.88f), new Vector2(4.0f, 4.0f), 0.0f, 0.30f);
+            ApplyMaterialTex("Assets/_Project/Art/Greybox/Materials/GB_Moss.mat", null, null, new Color(0.92f, 0.89f, 0.80f), new Vector2(2.0f, 2.0f), 0.0f, 0.25f);
+            ApplyMaterialTex("Assets/_Project/Art/Greybox/Materials/GB_Wood.mat", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.76f, 0.64f, 0.50f), new Vector2(2.5f, 2.5f), 0.02f, 0.40f);
+            ApplyMaterialTex("Assets/_Project/Art/Greybox/Materials/GB_Roof.mat", "T_RoofSlate_Albedo", null, new Color(0.32f, 0.35f, 0.40f), new Vector2(3.0f, 3.0f), 0.08f, 0.42f);
             ApplyMaterialGlow("Assets/_Project/Art/Greybox/Materials/GB_Brass.mat", new Color(0.78f, 0.57f, 0.20f), 0.85f, 0.72f, null);
             ApplyMaterialGlow("Assets/_Project/Art/Greybox/Materials/GB_SciFi.mat", new Color(0.20f, 0.78f, 0.96f), 0.35f, 0.85f, new Color(0.18f, 0.85f, 1.1f));
             ApplyMaterialGlow("Assets/_Project/Art/Greybox/Materials/GB_Arcane.mat", new Color(0.54f, 0.28f, 0.92f), 0.20f, 0.72f, new Color(0.55f, 0.20f, 0.95f));
@@ -199,7 +241,7 @@ namespace ChoDoLa.Sprint1.Editor
             Renderer r = ground.GetComponent<Renderer>();
             if (r != null)
             {
-                r.sharedMaterial = MarketVisualFactory.GetCobbleMaterial(new Vector2(24f, 27f));
+                r.sharedMaterial = MarketVisualFactory.GetHanoiPavingMaterial(new Vector2(36f, 38f));
             }
         }
 
@@ -254,21 +296,23 @@ namespace ChoDoLa.Sprint1.Editor
             return l;
         }
 
-        private static void BuildCentralFountain(Transform parent, Vector3 pos)
+        private static void BuildHanoiCenterIsland(Transform parent, Vector3 pos)
         {
-            GameObject root = new GameObject("Fountain_Central_Plaza");
+            GameObject root = new GameObject("Hanoi_Center_Park_Island");
             root.transform.SetParent(parent, false);
             root.transform.position = pos;
 
-            InstantiateModel("SM_Fountain_Central.fbx", root.transform, Vector3.zero);
-            root.AddComponent<FountainWaterController>();
-            AddBoxColliderChild(root.transform, "Collider_Basin", new Vector3(0f, 0.70f, 0f), new Vector3(3.6f, 1.4f, 3.6f));
-            AddPointLight(root.transform, "Fountain_AquaLight", new Vector3(0f, 1.35f, 0f), new Color(0.35f, 0.90f, 1.0f), 2.4f, 7.5f);
+            InstantiateModel("SM_Hanoi_CenterIsland.fbx", root.transform, Vector3.zero);
+            AddBoxColliderChild(root.transform, "Col_PlanterBed", new Vector3(0f, 0.22f, 0f), new Vector3(2.8f, 0.44f, 4.6f));
+            AddBoxColliderChild(root.transform, "Col_TreeTrunk", new Vector3(0f, 1.6f, 0.15f), new Vector3(0.55f, 3.2f, 0.55f));
+            AddBoxColliderChild(root.transform, "Col_NoticeBoard", new Vector3(0f, 1.1f, -1.78f), new Vector3(1.55f, 2.2f, 0.35f));
+            AddBoxColliderChild(root.transform, "Col_Bench_W", new Vector3(-1.45f, 0.45f, -0.35f), new Vector3(0.55f, 0.9f, 1.55f));
+            AddBoxColliderChild(root.transform, "Col_Bench_E", new Vector3(1.45f, 0.45f, 0.35f), new Vector3(0.55f, 0.9f, 1.55f));
         }
 
         private static void BuildPlazaStreetAndLanterns(Transform parent)
         {
-            // Raised ashlar sidewalks, beveled curbstones, moss clumps & scattered stepping flagstones
+            // Raised Vietnamese red-and-grey terrazzo sidewalks, curbstones & cast-iron storm drains
             GameObject streetDetails = new GameObject("Plaza_Street_Details");
             streetDetails.transform.SetParent(parent, false);
             streetDetails.transform.position = new Vector3(0f, 0f, 22.0f);
@@ -276,38 +320,23 @@ namespace ChoDoLa.Sprint1.Editor
             AddBoxColliderChild(streetDetails.transform, "Col_Sidewalk_West", new Vector3(-7.2f, 0.045f, 0f), new Vector3(5.6f, 0.09f, 10.6f));
             AddBoxColliderChild(streetDetails.transform, "Col_Sidewalk_East", new Vector3(7.2f, 0.045f, 0f), new Vector3(5.6f, 0.09f, 10.6f));
 
-            // Replace greybox wooden blockout streetlights with Blender wrought-iron street lanterns
-            GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-            foreach (GameObject obj in allObjects)
+            // Neat Modern Hanoi Avenue Street Lamps lining both sidewalks cleanly
+            Vector3[] lampPositions =
             {
-                if (!obj.name.StartsWith("Light_")) continue;
-                // Avoid re-replacing if already converted
-                if (obj.transform.Find("SM_StreetLantern") != null) continue;
-
-                foreach (Renderer r in obj.GetComponentsInChildren<Renderer>(true))
-                {
-                    r.enabled = false;
-                }
-                foreach (Light l in obj.GetComponentsInChildren<Light>(true))
-                {
-                    l.enabled = false;
-                }
-
-                Vector3 groundPos = new Vector3(obj.transform.position.x, 0f, obj.transform.position.z);
-                SpawnBlenderStreetLantern(parent, $"Lantern_{obj.name}", groundPos);
-            }
-
-            // Also place the 4 signature Plaza Corner Lanterns around the Fountain Plaza
-            Vector3[] plazaCorners =
-            {
-                new Vector3(-3.8f, 0f, 22.0f + 5.2f),
-                new Vector3(3.8f, 0f, 22.0f + 5.2f),
-                new Vector3(-3.8f, 0f, 22.0f - 5.2f),
-                new Vector3(3.8f, 0f, 22.0f - 5.2f),
+                new Vector3(-3.8f, 0f, 12.2f),
+                new Vector3(3.8f, 0f, 12.2f),
+                new Vector3(-3.8f, 0f, 17.0f),
+                new Vector3(3.8f, 0f, 17.0f),
+                new Vector3(-3.8f, 0f, 27.2f),
+                new Vector3(3.8f, 0f, 27.2f),
+                new Vector3(-3.8f, 0f, 36.0f),
+                new Vector3(3.8f, 0f, 36.0f),
+                new Vector3(-3.8f, 0f, 48.0f),
+                new Vector3(3.8f, 0f, 48.0f),
             };
-            for (int i = 0; i < plazaCorners.Length; i++)
+            for (int i = 0; i < lampPositions.Length; i++)
             {
-                SpawnBlenderStreetLantern(parent, $"Plaza_Lantern_{i + 1}", plazaCorners[i]);
+                SpawnBlenderStreetLantern(parent, $"Hanoi_StreetLamp_{i + 1}", lampPositions[i]);
             }
         }
 
@@ -320,10 +349,10 @@ namespace ChoDoLa.Sprint1.Editor
             InstantiateModel("SM_StreetLantern.fbx", go.transform, Vector3.zero);
             CapsuleCollider col = go.AddComponent<CapsuleCollider>();
             col.center = new Vector3(0f, 1.5f, 0f);
-            col.radius = 0.14f;
+            col.radius = 0.12f;
             col.height = 3.0f;
 
-            AddPointLight(go.transform, "Lantern_WarmLight", new Vector3(0f, 2.95f, 0f), new Color(1.0f, 0.82f, 0.52f), 2.4f, 10.5f);
+            AddPointLight(go.transform, "Lantern_WarmLight", new Vector3(0f, 2.95f, 0f), new Color(1.0f, 0.88f, 0.68f), 0.95f, 9.5f);
         }
 
         private static void BuildBlindBoxWalkInHouse(Transform parent, Vector3 pos, Sprint1MarketService service, Sprint1HudController hud)
@@ -341,7 +370,6 @@ namespace ChoDoLa.Sprint1.Editor
             AddBoxColliderChild(house.transform, "Col_FrontPier_S", new Vector3(2.42f, 1.8f, -2.10f), new Vector3(0.28f, 3.6f, 1.80f));
             AddBoxColliderChild(house.transform, "Col_FrontPier_N", new Vector3(2.42f, 1.8f, 2.10f), new Vector3(0.28f, 3.6f, 1.80f));
             AddBoxColliderChild(house.transform, "Col_DoorLintel", new Vector3(2.42f, 3.30f, 0f), new Vector3(0.28f, 1.0f, 2.40f));
-            AddBoxColliderChild(house.transform, "Col_Turret", new Vector3(1.15f, 2.2f, -3.15f), new Vector3(2.0f, 4.4f, 2.0f));
 
             GameObject counterCol = new GameObject("Counter_InteractZone");
             counterCol.transform.SetParent(house.transform, false);
@@ -371,9 +399,8 @@ namespace ChoDoLa.Sprint1.Editor
                 prop.ConfigureCounterDisplay(offer.OfferId, offer.DisplayName, offer.Price, service, hud);
             }
 
-            AddPointLight(house.transform, "Interior_LanternLight", new Vector3(0.2f, 2.55f, 0f), new Color(1.0f, 0.82f, 0.55f), 2.3f, 7.5f, softShadows: true);
-            AddPointLight(house.transform, "Porch_LanternLight", new Vector3(3.05f, 2.48f, 0f), new Color(1.0f, 0.78f, 0.45f), 1.8f, 5.5f);
-            AddPointLight(house.transform, "Turret_ArcaneLight", new Vector3(1.15f, 3.6f, -3.15f), new Color(0.65f, 0.32f, 1.0f), 1.8f, 5.5f);
+            AddPointLight(house.transform, "Interior_LanternLight", new Vector3(0.2f, 2.55f, 0f), new Color(1.0f, 0.90f, 0.74f), 1.15f, 7.5f, softShadows: true);
+            AddPointLight(house.transform, "Porch_LanternLight", new Vector3(3.05f, 2.48f, 0f), new Color(1.0f, 0.88f, 0.68f), 0.75f, 5.5f);
         }
 
         private static void BuildOpenBoxWalkInHouse(Transform parent, Vector3 pos, out Transform[] boxSlots, out Transform inspectAnchor)
@@ -395,38 +422,158 @@ namespace ChoDoLa.Sprint1.Editor
             AddBoxColliderChild(house.transform, "Col_Workbench", new Vector3(0.55f, 0.56f, 0f), new Vector3(1.12f, 1.12f, 2.65f));
 
             boxSlots = new Transform[3];
-            float[] slotZ = { 0.92f, 0.50f, -0.54f };
+            float[] slotZ = { 0.12f, 0.56f, 1.00f };
             for (int i = 0; i < 3; i++)
             {
                 GameObject s = new GameObject($"BoxSlot_{i + 1}");
                 s.transform.SetParent(house.transform, false);
                 s.transform.localPosition = new Vector3(0.52f, 1.125f, slotZ[i]);
-                s.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+                s.transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
                 boxSlots[i] = s.transform;
             }
 
             GameObject anchor = new GameObject("InspectAnchor");
             anchor.transform.SetParent(house.transform, false);
-            anchor.transform.localPosition = new Vector3(0.48f, 1.14f, -0.10f);
-            anchor.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            anchor.transform.localPosition = new Vector3(0.48f, 1.14f, -0.52f);
+            anchor.transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
             inspectAnchor = anchor.transform;
 
             GameObject spotGo = new GameObject("Workbench_SpotLight");
             spotGo.transform.SetParent(house.transform, false);
-            spotGo.transform.localPosition = new Vector3(0.62f, 1.52f, -0.62f);
+            spotGo.transform.localPosition = new Vector3(0.62f, 1.55f, -0.92f);
             spotGo.transform.LookAt(anchor.transform.position);
             Light spot = spotGo.AddComponent<Light>();
             spot.type = LightType.Spot;
             spot.color = new Color(1.0f, 0.90f, 0.72f);
             spot.range = 4.5f;
             spot.spotAngle = 60f;
-            spot.intensity = 3.2f;
+            spot.intensity = 1.65f;
             spot.shadows = LightShadows.Soft;
-            spot.shadowStrength = 0.75f;
+            spot.shadowStrength = 0.58f;
 
-            AddPointLight(house.transform, "Interior_LanternLight", new Vector3(-0.2f, 2.55f, 0f), new Color(1.0f, 0.82f, 0.55f), 2.2f, 7.5f, softShadows: true);
-            AddPointLight(house.transform, "SubFloor_CyanLight", new Vector3(-0.95f, 0.45f, 0f), new Color(0.25f, 0.85f, 1.0f), 1.6f, 3.5f);
-            AddPointLight(house.transform, "Porch_LanternLight", new Vector3(-3.05f, 2.48f, 0f), new Color(1.0f, 0.78f, 0.45f), 1.8f, 5.5f);
+            AddPointLight(house.transform, "Interior_LanternLight", new Vector3(-0.2f, 2.55f, 0f), new Color(1.0f, 0.90f, 0.74f), 1.15f, 7.5f, softShadows: true);
+            AddPointLight(house.transform, "Porch_LanternLight", new Vector3(-3.05f, 2.48f, 0f), new Color(1.0f, 0.88f, 0.68f), 0.75f, 5.5f);
+        }
+
+        private static void BuildHanoiStreetHighlightsAndTrees(Transform parent)
+        {
+            GameObject hanoiRoot = new GameObject("Hanoi_Modern_Neighborhood");
+            hanoiRoot.transform.SetParent(parent, false);
+
+            // 1. Highlight: Quán Phở Bò Hà Nội Hiện Đại (West avenue overlooking Main Street & North Park)
+            SpawnHanoiPhoShop(hanoiRoot.transform, "Shop_Hanoi_Pho_South", new Vector3(-6.6f, 0f, 9.6f), 0f);
+            SpawnHanoiPhoShop(hanoiRoot.transform, "Shop_Hanoi_Pho_EastMid", new Vector3(7.4f, 0f, 13.5f), 180f);
+            SpawnHanoiPhoShop(hanoiRoot.transform, "Shop_Hanoi_Pho_North", new Vector3(22.0f, 0f, 78.0f), 180f);
+
+            // 2. Highlight: Quầy Trà Đá & Vé Số Vỉa Hè (East avenue near spawn + North Park under shade trees)
+            SpawnHanoiTraDaVeSo(hanoiRoot.transform, "Stall_TraDa_VeSo_South", new Vector3(5.4f, 0f, 5.5f), 180f);
+            SpawnHanoiTraDaVeSo(hanoiRoot.transform, "Stall_TraDa_VeSo_North", new Vector3(-16.0f, 0f, 75.5f), 0f);
+
+            // 3. Pure Modern 3-4 Story Hanoi Tube-House Shophouse Blocks framing BOTH inner street & outer district (replacing all old greybox architecture!)
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_SpawnBack_W", new Vector3(-6.2f, 0f, -0.5f), -90f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_SpawnBack_E", new Vector3(6.2f, 0f, -0.5f), -90f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_InnerW_North1", new Vector3(-7.6f, 0f, 32.5f), 0f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_InnerW_North2", new Vector3(-7.6f, 0f, 45.5f), 0f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_InnerE_North1", new Vector3(7.6f, 0f, 32.5f), 180f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_InnerE_North2", new Vector3(7.6f, 0f, 45.5f), 180f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_MidGate_W", new Vector3(-10.5f, 0f, 56.5f), 90f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_MidGate_E", new Vector3(10.5f, 0f, 56.5f), 90f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_NorthWalk_W", new Vector3(-7.6f, 0f, 65.0f), 0f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_NorthWalk_E", new Vector3(7.6f, 0f, 65.0f), 180f);
+
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_SideW_1", new Vector3(-18.5f, 0f, 12.0f), 180f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_SideW_2", new Vector3(-18.5f, 0f, 36.0f), 180f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_SideE_1", new Vector3(18.5f, 0f, 12.0f), 0f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_SideE_2", new Vector3(18.5f, 0f, 36.0f), 0f);
+
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_OuterW_1", new Vector3(-31.2f, 0f, 22.0f), 180f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_OuterW_2", new Vector3(-31.2f, 0f, 48.0f), 180f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_OuterE_1", new Vector3(31.2f, 0f, 22.0f), 0f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_OuterE_2", new Vector3(31.2f, 0f, 48.0f), 0f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_NorthAvenue_W", new Vector3(-16.0f, 0f, 90.0f), 90f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_NorthAvenue_C", new Vector3(0.0f, 0f, 90.0f), 90f);
+            SpawnHanoiShophouseBlock(hanoiRoot.transform, "Hanoi_Block_NorthAvenue_E", new Vector3(16.0f, 0f, 90.0f), 90f);
+
+            // 4. Lush Hanoi Street Trees (Cây Sấu / Xà Cừ) with stone planters across streets & North Park
+            (Vector3 pos, float scale)[] treePlacements =
+            {
+                (new Vector3(-4.0f, 0f, 5.0f), 1.05f),
+                (new Vector3(3.9f, 0f, 3.6f), 1.02f),
+                (new Vector3(8.2f, 0f, 5.4f), 1.15f),
+                (new Vector3(-6.2f, 0f, 15.8f), 1.10f),
+                (new Vector3(-8.5f, 0f, 4.8f), 1.02f),
+                (new Vector3(11.6f, 0f, 4.8f), 1.08f),
+                (new Vector3(14.5f, 0f, 22.0f), 1.04f),
+                (new Vector3(-39.2f, 0f, 18.0f), 1.08f),
+                (new Vector3(-39.2f, 0f, 36.0f), 1.12f),
+                (new Vector3(-39.2f, 0f, 54.0f), 1.05f),
+                (new Vector3(39.2f, 0f, 18.0f), 1.08f),
+                (new Vector3(39.2f, 0f, 36.0f), 1.12f),
+                (new Vector3(39.2f, 0f, 54.0f), 1.05f),
+                (new Vector3(-24.0f, 0f, 72.5f), 1.12f),
+                (new Vector3(-12.0f, 0f, 72.5f), 1.15f),
+                (new Vector3(-5.2f, 0f, 72.5f), 1.10f),
+                (new Vector3(5.2f, 0f, 72.5f), 1.10f),
+                (new Vector3(12.0f, 0f, 72.5f), 1.15f),
+                (new Vector3(24.0f, 0f, 72.5f), 1.12f),
+                (new Vector3(-24.0f, 0f, 83.5f), 1.08f),
+                (new Vector3(-8.0f, 0f, 83.5f), 1.12f),
+                (new Vector3(8.0f, 0f, 83.5f), 1.12f),
+                (new Vector3(24.0f, 0f, 83.5f), 1.08f),
+            };
+            for (int i = 0; i < treePlacements.Length; i++)
+            {
+                GameObject tree = new GameObject($"Hanoi_StreetTree_{i + 1}");
+                tree.transform.SetParent(hanoiRoot.transform, false);
+                tree.transform.position = treePlacements[i].pos;
+                tree.transform.rotation = Quaternion.Euler(0f, (i * 53f) % 360f, 0f);
+                tree.transform.localScale = Vector3.one * treePlacements[i].scale;
+
+                InstantiateModel("SM_Hanoi_StreetTree.fbx", tree.transform, Vector3.zero);
+                AddBoxColliderChild(tree.transform, "Col_Planter", new Vector3(0f, 0.20f, 0f), new Vector3(1.45f, 0.40f, 1.45f));
+                AddBoxColliderChild(tree.transform, "Col_Trunk", new Vector3(0f, 1.4f, 0f), new Vector3(0.45f, 2.8f, 0.45f));
+            }
+        }
+
+        private static void SpawnHanoiPhoShop(Transform parent, string name, Vector3 pos, float rotY)
+        {
+            GameObject go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            go.transform.position = pos;
+            go.transform.rotation = Quaternion.Euler(0f, rotY, 0f);
+            InstantiateModel("SM_Hanoi_PhoShop.fbx", go.transform, Vector3.zero);
+
+            AddBoxColliderChild(go.transform, "Col_Floor", new Vector3(0f, 0.12f, 0f), new Vector3(5.2f, 0.24f, 5.4f));
+            AddBoxColliderChild(go.transform, "Col_BackWall", new Vector3(-2.42f, 1.85f, 0f), new Vector3(0.24f, 3.3f, 5.2f));
+            AddBoxColliderChild(go.transform, "Col_SideL", new Vector3(0f, 1.85f, -2.55f), new Vector3(5.0f, 3.3f, 0.24f));
+            AddBoxColliderChild(go.transform, "Col_SideR", new Vector3(0f, 1.85f, 2.55f), new Vector3(5.0f, 3.3f, 0.24f));
+            AddBoxColliderChild(go.transform, "Col_InoxCounter", new Vector3(1.15f, 0.68f, 1.05f), new Vector3(0.92f, 1.35f, 2.35f));
+
+            AddPointLight(go.transform, "Pho_InteriorLight", new Vector3(0.6f, 2.55f, 0f), new Color(1.0f, 0.92f, 0.78f), 1.1f, 7.5f);
+            AddPointLight(go.transform, "Pho_SignLight", new Vector3(2.95f, 2.75f, 0f), new Color(1.0f, 0.88f, 0.68f), 0.7f, 5.5f);
+        }
+
+        private static void SpawnHanoiTraDaVeSo(Transform parent, string name, Vector3 pos, float rotY)
+        {
+            GameObject go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            go.transform.position = pos;
+            go.transform.rotation = Quaternion.Euler(0f, rotY, 0f);
+            InstantiateModel("SM_Hanoi_TraDaVeSo.fbx", go.transform, Vector3.zero);
+
+            AddBoxColliderChild(go.transform, "Col_VeSoDesk", new Vector3(-0.45f, 0.55f, 0.55f), new Vector3(0.76f, 1.1f, 1.44f));
+            AddBoxColliderChild(go.transform, "Col_PlasticTable", new Vector3(0.58f, 0.25f, -0.58f), new Vector3(0.62f, 0.5f, 0.62f));
+            AddPointLight(go.transform, "TraDa_WarmLight", new Vector3(0.15f, 2.25f, -0.25f), new Color(1.0f, 0.90f, 0.72f), 0.85f, 5.5f);
+        }
+
+        private static void SpawnHanoiShophouseBlock(Transform parent, string name, Vector3 pos, float rotY)
+        {
+            GameObject go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+            go.transform.position = pos;
+            go.transform.rotation = Quaternion.Euler(0f, rotY, 0f);
+            InstantiateModel("SM_Hanoi_ShophouseBlock.fbx", go.transform, Vector3.zero);
+            AddBoxColliderChild(go.transform, "Col_Block", new Vector3(0f, 5.5f, 0f), new Vector3(5.4f, 11.0f, 11.8f));
         }
 
         private static void BuildInnLedgerDesk(Transform parent, Vector3 pos, Sprint1HudController hud)
@@ -457,23 +604,23 @@ namespace ChoDoLa.Sprint1.Editor
                 if (sun != null)
                 {
                     sun.type = LightType.Directional;
-                    sun.color = new Color(1.0f, 0.93f, 0.80f);
-                    sun.intensity = 1.45f;
+                    sun.color = new Color(1.0f, 0.95f, 0.88f);
+                    sun.intensity = 1.0f;
                     sun.shadows = LightShadows.Soft;
-                    sun.shadowStrength = 0.82f;
-                    sunGo.transform.rotation = Quaternion.Euler(48f, -32f, 0f);
+                    sun.shadowStrength = 0.58f;
+                    sunGo.transform.rotation = Quaternion.Euler(42f, -35f, 0f);
                 }
             }
 
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.54f, 0.66f, 0.82f);
-            RenderSettings.ambientEquatorColor = new Color(0.78f, 0.70f, 0.60f);
-            RenderSettings.ambientGroundColor = new Color(0.28f, 0.25f, 0.22f);
+            RenderSettings.ambientSkyColor = new Color(0.58f, 0.64f, 0.72f);
+            RenderSettings.ambientEquatorColor = new Color(0.66f, 0.62f, 0.58f);
+            RenderSettings.ambientGroundColor = new Color(0.36f, 0.34f, 0.32f);
 
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
-            RenderSettings.fogColor = new Color(0.76f, 0.80f, 0.86f);
-            RenderSettings.fogDensity = 0.0055f;
+            RenderSettings.fogColor = new Color(0.76f, 0.80f, 0.84f);
+            RenderSettings.fogDensity = 0.0032f;
 
             Camera mainCam = Camera.main;
             if (mainCam != null)
@@ -486,13 +633,103 @@ namespace ChoDoLa.Sprint1.Editor
                     {
                         prop.SetValue(urpCamData, true);
                     }
+                    PropertyInfo aaProp = urpCamData.GetType().GetProperty("antialiasing", BindingFlags.Public | BindingFlags.Instance);
+                    if (aaProp != null && aaProp.CanWrite)
+                    {
+                        aaProp.SetValue(urpCamData, System.Enum.ToObject(aaProp.PropertyType, 2)); // SMAA for clean modern building edges
+                    }
                 }
+            }
+
+            EnsureGlobalPostProcessVolume();
+            EnsureSSAOOnRenderer();
+        }
+
+        private static void EnsureGlobalPostProcessVolume()
+        {
+            GameObject oldVol = GameObject.Find("Global_PostProcess_Volume");
+            if (oldVol != null) Object.DestroyImmediate(oldVol);
+
+            System.Type volType = System.Type.GetType("UnityEngine.Rendering.Volume, Unity.RenderPipelines.Core.Runtime");
+            System.Type profType = System.Type.GetType("UnityEngine.Rendering.VolumeProfile, Unity.RenderPipelines.Core.Runtime");
+            if (volType == null || profType == null) return;
+
+            Object profile = AssetDatabase.LoadAssetAtPath("Assets/DefaultVolumeProfile.asset", profType);
+            if (profile == null) return;
+
+            GameObject volGo = new GameObject("Global_PostProcess_Volume");
+            Component vol = volGo.AddComponent(volType);
+            PropertyInfo isGlobalProp = volType.GetProperty("isGlobal", BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo prioProp = volType.GetProperty("priority", BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo profProp = volType.GetProperty("sharedProfile", BindingFlags.Public | BindingFlags.Instance);
+            if (isGlobalProp != null && isGlobalProp.CanWrite) isGlobalProp.SetValue(vol, true);
+            if (prioProp != null && prioProp.CanWrite) prioProp.SetValue(vol, 1f);
+            if (profProp != null && profProp.CanWrite) profProp.SetValue(vol, profile);
+        }
+
+        private static void EnsureSSAOOnRenderer()
+        {
+            try
+            {
+                ScriptableObject rendererData = AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/_Project/ChoDoLa_URP.asset");
+                if (rendererData == null) return;
+
+                System.Type ssaoType = System.Type.GetType("UnityEngine.Rendering.Universal.ScreenSpaceAmbientOcclusion, Unity.RenderPipelines.Universal.Runtime");
+                if (ssaoType == null) return;
+
+                SerializedObject so = new SerializedObject(rendererData);
+                SerializedProperty featuresProp = so.FindProperty("m_RendererFeatures");
+                if (featuresProp == null) return;
+
+                for (int i = 0; i < featuresProp.arraySize; i++)
+                {
+                    Object existing = featuresProp.GetArrayElementAtIndex(i).objectReferenceValue;
+                    if (existing != null && existing.GetType() == ssaoType) return;
+                }
+
+                ScriptableObject ssao = ScriptableObject.CreateInstance(ssaoType);
+                ssao.name = "ScreenSpaceAmbientOcclusion";
+                FieldInfo settingsField = ssaoType.GetField("m_Settings", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (settingsField != null)
+                {
+                    object settings = settingsField.GetValue(ssao);
+                    if (settings != null)
+                    {
+                        BindingFlags bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+                        settings.GetType().GetField("Intensity", bf)?.SetValue(settings, 0.55f);
+                        settings.GetType().GetField("Radius", bf)?.SetValue(settings, 0.45f);
+                        settings.GetType().GetField("Downsample", bf)?.SetValue(settings, false);
+                        settingsField.SetValue(ssao, settings);
+                    }
+                }
+
+                AssetDatabase.AddObjectToAsset(ssao, rendererData);
+                int idx = featuresProp.arraySize;
+                featuresProp.InsertArrayElementAtIndex(idx);
+                featuresProp.GetArrayElementAtIndex(idx).objectReferenceValue = ssao;
+
+                SerializedProperty mapProp = so.FindProperty("m_RendererFeatureMap");
+                if (mapProp != null)
+                {
+                    mapProp.InsertArrayElementAtIndex(idx);
+                    mapProp.GetArrayElementAtIndex(idx).longValue = AssetDatabase.TryGetGUIDAndLocalFileIdentifier(ssao, out string _, out long localId) ? localId : 0L;
+                }
+
+                so.ApplyModifiedPropertiesWithoutUndo();
+                MethodInfo dirtyMethod = rendererData.GetType().GetMethod("SetDirty", BindingFlags.Public | BindingFlags.Instance);
+                dirtyMethod?.Invoke(rendererData, null);
+                EditorUtility.SetDirty(rendererData);
+                AssetDatabase.SaveAssets();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[ChoDoLa] Optional SSAO setup skipped: {ex.Message}");
             }
         }
 
         private static void EnsureEventSystem()
         {
-            EventSystem es = Object.FindFirstObjectByType<EventSystem>();
+            EventSystem es = Object.FindAnyObjectByType<EventSystem>();
             if (es == null)
             {
                 GameObject esGo = new GameObject("EventSystem");
