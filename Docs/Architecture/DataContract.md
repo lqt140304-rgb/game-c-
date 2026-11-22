@@ -33,14 +33,7 @@ Tài liệu này xác định giao diện dữ liệu giữa **Antigravity** (c�
 
 ## 2. Hành động Antigravity GHI / GỬI LÊN (Commands tới Codex)
 
-Mọi thao tác 3D/UI của người chơi chỉ gửi yêu cầu (không tự trừ tiền hay tự đổi trạng thái):
-- `RequestBuyBox(string offerId)`
-- `RequestOpenBox(string boxInstanceId)`
-- `RequestSellArtifact(string artifactInstanceId)`
-- `RequestKeepArtifact(string artifactInstanceId)`
-- `RequestPayDebt()`
-- `RequestEndDay()`
-- `RequestBuyTactArtifact(string tactArtifactId)` / `RequestEquipTactArtifact(int slotIndex, string tactArtifactId)`
+Scene và UI gọi các lệnh của `MarketRun` trong [mục 4](#4-giao-diện-c-sprint-1-cho-scene). Gameplay xử lý tiền và trạng thái ván. Tạo tác sẽ có giao diện riêng khi triển khai Sprint 2.
 
 ---
 
@@ -62,25 +55,27 @@ Gắn một `MarketRunHost` vào GameObject ở gốc của scene gameplay. Comp
 | Scene đọc từ `Run` | Dùng để hiển thị |
 | --- | --- |
 | `Day`, `Cash`, `BoughtToday`, `DailyLimit` | Ngày, tiền và lượt mua |
-| `Shelf`, `ExtraCluePrice` | ID offer, ID loại hộp, giá theo manh mối đầu, tỷ lệ giả của loại và các manh mối đã mở |
+| `Shelf`, `ExtraCluePrice` | ID offer, ID loại hộp, giá theo manh mối đầu, tỷ lệ giả của loại và manh mối miễn phí. `CertainOrigin` là ID nhóm nguồn gốc thật, chỉ có giá trị sau khi mua lời mách |
 | `Table`, `TableCapacity` | ID và loại hộp chưa mở, giữ qua ngày |
 | `Inventory`, `InventoryCapacity`, `Inspect(itemId)` | Hiện vật đã mở, mã mẫu để chọn prefab, chất lượng, dấu hiệu soi và `ListedPrice` tính như hàng thật khi chưa giám định |
 | `DueToday`, `Arrears`, `Status`, `EndReason` | Kỳ thu hiện tại gồm nợ tồn và lý do kết thúc ván |
 
 | Lệnh Sprint 1 | Kết quả thành công |
 | --- | --- |
-| `BuyClue(transactionId, offerId)` | Trừ phí và lộ thêm một manh mối. Giá hộp giữ nguyên. |
+| `BuyClue(transactionId, offerId)` | Trừ 15 xu và mở `CertainOrigin` trên offer. Chỉ mua một lần mỗi hộp, giá hộp giữ nguyên. |
 | `BuyBox(transactionId, offerId)` | Trừ giá, thêm hộp lên bàn, tăng lượt và bày kệ mới. |
 | `StopBuying(transactionId, expectedDay)` | Dừng mua đến ngày kế tiếp. |
 | `OpenBox(transactionId, boxId)` | Chuyển hộp trên bàn thành một hiện vật trong kho. `EntityId` là ID hiện vật. |
 | `Sell(transactionId, itemId)` | Xóa hiện vật khỏi kho và cộng tiền thực nhận. `Amount` là số xu thực nhận và `WasFake` cho biết món đã bán có phải hàng giả. |
 | `EndDay(transactionId, expectedDay)` | Thu nợ, tính phạt, rồi sang ngày hoặc kết thúc ván. `Amount` là tiền đã thu, `Penalty` là tiền phạt mới. |
 
-Các chữ ký này thay phần lệnh hộp, bán và nợ được đề xuất ở mục 2 cho Sprint 1. `EndDay` là lệnh duy nhất thu nợ. Truyền ngày đang hiển thị tại thời điểm người chơi xác nhận, để xác nhận lặp của ngày cũ nhận `STALE_DAY`. Một ID giao dịch dùng cho đúng một ý định, giữ nguyên ID khi gửi lại. Gọi từ luồng chính của Unity, đọc `Result.Code` để hiện lỗi và dùng `Result.EntityId` cho hiệu ứng theo cá thể.
+`EndDay` là lệnh duy nhất thu nợ. Truyền ngày đang hiển thị tại thời điểm người chơi xác nhận, để xác nhận lặp của ngày cũ nhận `STALE_DAY`. Một ID giao dịch dùng cho đúng một ý định, giữ nguyên ID khi gửi lại. Gọi từ luồng chính của Unity, đọc `Result.Code` để hiện lỗi và dùng `Result.EntityId` cho hiệu ứng theo cá thể.
 
 Giá hiển thị và số xu thực nhận đều làm tròn xuống sau khi áp dụng các hệ số. Món chưa giám định chỉ lộ thật hay giả trong kết quả bán.
 
 Đăng ký `Changed` để đọc lại trạng thái sau khi lưu thành công. Lệnh bị từ chối giữ nguyên tiền, lượt mua, bàn, kho và nợ. Gameplay lưu cả kết quả hộp và ID giao dịch. Tiền đã trả trừ vào tổng nợ. Phạt mới tính trên toàn bộ số còn lại, gồm cả phần phạt cũ còn thiếu.
+
+Nếu bản lưu hỏng hoặc dùng schema không hỗ trợ, `MarketRunHost` giữ bản cũ cạnh ô lưu dưới tên `market-run.json.invalid-…`, ghi cảnh báo và bắt đầu ván mới. Một hộp đã mua manh mối trong bản lưu cũ được nhận lời mách chắc đúng khi tải lại, không thu thêm phí.
 
 Chạy kiểm thử C# ở thư mục gốc repo:
 

@@ -26,7 +26,8 @@ namespace ChoDoLa.Gameplay
 #endif
             content = File.ReadAllText(contentPath);
             save = new MarketSaveFile(Path.Combine(Application.persistentDataPath, "market-run.json"));
-            Run = new MarketRun(content, NewSeed(), save.Read(), save.Write);
+            Run = save.LoadOrStart(content, NewSeed(), backupPath =>
+                Debug.LogWarning($"Started a fresh market run. Invalid save kept at {backupPath}.", this));
         }
 
         public bool StartNextRun()

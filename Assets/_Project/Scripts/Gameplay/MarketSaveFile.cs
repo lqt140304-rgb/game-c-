@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 
@@ -13,6 +14,20 @@ namespace ChoDoLa.Gameplay
         }
 
         public string Read() => File.Exists(path) ? File.ReadAllText(path) : null;
+
+        public MarketRun LoadOrStart(string content, int seed, Action<string> onRecovered = null)
+        {
+            string backupPath = null;
+            var run = new MarketRun(content, seed, Read(), Write, () =>
+            {
+                backupPath = path + ".invalid-" + Guid.NewGuid().ToString("N");
+                File.Copy(path, backupPath);
+            });
+
+            if (backupPath != null)
+                onRecovered?.Invoke(backupPath);
+            return run;
+        }
 
         public void Write(string json)
         {

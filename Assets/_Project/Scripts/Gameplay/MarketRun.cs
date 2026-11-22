@@ -19,6 +19,7 @@ namespace ChoDoLa.Gameplay
             public int Price { get; internal set; }
             public decimal FakeRate { get; internal set; }
             public string[] Clues { get; internal set; }
+            public string CertainOrigin { get; internal set; }
         }
 
         public sealed class BoxView
@@ -118,6 +119,12 @@ namespace ChoDoLa.Gameplay
             AvailableBoxes().Select(box => MakeOffer(box).offer).ToArray();
 
         public MarketRun(string contentJson, int seed, string savedState = null, Action<string> persist = null)
+            : this(contentJson, seed, savedState, persist, null)
+        {
+        }
+
+        internal MarketRun(string contentJson, int seed, string savedState, Action<string> persist,
+            Action recoverInvalidSave)
         {
             content = JObject.Parse(contentJson);
             rules = content["rules"];
@@ -126,25 +133,53 @@ namespace ChoDoLa.Gameplay
             items = content["items"].ToDictionary(item => (string)item["id"]);
             qualities = rules["quality"].ToDictionary(quality => (string)quality["id"]);
             this.persist = persist;
-            state = savedState == null
-                ? new State { Seed = seed, Cash = (int)rules["start_cash"] }
-                : JsonConvert.DeserializeObject<State>(savedState);
-            if (state == null || state.Schema != 1 || state.Day < 1 || state.Day > (int)rules["days"])
-                throw new InvalidOperationException("Unsupported market run save.");
-            if (savedState == null)
-                persist?.Invoke(JsonConvert.SerializeObject(state));
+            if (savedState != null)
+            {
+                try
+                {
+                    state = LoadState(savedState);
+                    return;
+                }
+                catch (JsonException) when (recoverInvalidSave != null)
+                {
+                    recoverInvalidSave();
+                }
+            }
+
+            state = new State { Seed = seed, Cash = (int)rules["start_cash"] };
+            persist?.Invoke(JsonConvert.SerializeObject(state));
+        }
+
+        private State LoadState(string json)
+        {
+            var saved = JObject.Parse(json);
+            if (saved["Schema"]?.Type != JTokenType.Integer || (long)saved["Schema"] != 1)
+                throw new JsonSerializationException("Unsupported market run save schema.");
+
+            var loaded = saved.ToObject<State>();
+            if (saved["Day"]?.Type != JTokenType.Integer || saved["Cash"]?.Type != JTokenType.Integer ||
+                saved["Seed"]?.Type != JTokenType.Integer ||
+                saved["Table"]?.Type != JTokenType.Array || saved["Inventory"]?.Type != JTokenType.Array ||
+                saved["AppliedTransactions"]?.Type != JTokenType.Array || saved["ExtraClues"]?.Type != JTokenType.Object ||
+                loaded.Day < 1 || loaded.Day > (int)rules["days"] || loaded.Cash < 0 || loaded.Arrears < 0 ||
+                loaded.Bought < 0 || loaded.Bought > DailyLimit ||
+                (loaded.Status != "active" && loaded.Status != "won" && loaded.Status != "lost") ||
+                loaded.Table.Concat(loaded.Inventory).Any(box => box == null || string.IsNullOrWhiteSpace(box.Id) ||
+                    box.ItemId == null || !items.ContainsKey(box.ItemId) ||
+                    box.Quality == null || !qualities.ContainsKey(box.Quality)))
+                throw new JsonSerializationException("Invalid market run save.");
+
+            return loaded;
         }
 
         public Result BuyClue(string transactionId, string offerId) => Apply(transactionId, next =>
         {
             var box = FindOffer(offerId);
             if (box == null) return new Result("OFFER_UNAVAILABLE");
-            var offer = MakeOffer(box).offer;
-            if (offer.Clues.Length >= (int)rules["max_clues_per_box"]) return new Result("CLUE_LIMIT");
+            if (next.ExtraClues.ContainsKey(offerId)) return new Result("CLUE_LIMIT");
             if (next.Cash < ExtraCluePrice) return new Result("NOT_ENOUGH_CASH");
             next.Cash -= ExtraCluePrice;
-            next.ExtraClues.TryGetValue(offerId, out var count);
-            next.ExtraClues[offerId] = count + 1;
+            next.ExtraClues.Add(offerId, 1);
             return new Result(entityId: offerId, amount: ExtraCluePrice);
         });
 
@@ -306,7 +341,6 @@ namespace ChoDoLa.Gameplay
                 return text;
             }).ToArray();
 
-            state.ExtraClues.TryGetValue(id, out var extraClues);
             var price = shelfRules["price_follows_clue"]["tag_price"][typeId][Array.IndexOf(origins, clueOrigins[0])];
             var offer = new Offer
             {
@@ -315,7 +349,8 @@ namespace ChoDoLa.Gameplay
                 Name = (string)definition["name"],
                 FakeRate = fakeRate,
                 Price = (int)price,
-                Clues = clues.Take((int)shelfRules["free_clues_base"] + extraClues).ToArray()
+                Clues = clues.Take((int)shelfRules["free_clues_base"]).ToArray(),
+                CertainOrigin = state.ExtraClues.ContainsKey(id) ? origin : null
             };
             return (offer, box);
         }

@@ -15,7 +15,11 @@ void Check(bool condition, string label)
 var first = run.Shelf.Single(box => box.TypeId == "H1");
 Check(first.Price == 100 && first.Clues.Length == 1, "initial offer");
 Check(run.BuyClue("clue-1", first.Id).Success, "buy clue");
-Check(run.Cash == 985 && run.Shelf[0].Clues.Length == 2, "clue purchase");
+Check(run.Cash == 985 && run.Shelf[0].Clues.SequenceEqual(first.Clues), "paid tip leaves free clues unchanged");
+Check(run.BuyClue("clue-again", first.Id).Code == "CLUE_LIMIT" && run.Cash == 985, "one paid tip per box");
+run = new MarketRun(json, 999, save, data => save = data);
+var tipped = run.Shelf.Single(box => box.Id == first.Id);
+Check(tipped.CertainOrigin == "qua_khu" && tipped.Price == first.Price, "paid tip survives reload without repricing");
 var boxId = run.BuyBox("buy-1", first.Id).EntityId;
 Check(run.Cash == 885 && run.Table.Count == 1, "buy");
 Check(!run.BuyBox("buy-1", run.Shelf[0].Id).Success && run.Cash == 885, "replay");
@@ -24,7 +28,7 @@ Check(run.Table.Single().Id == boxId, "load bought box");
 var item = run.OpenBox("open-1", boxId).EntityId;
 Check(run.Table.Count == 0 && run.Inventory.Single().Id == item, "open transfers to inventory");
 Check(!run.OpenBox("open-2", boxId).Success, "duplicate open");
-Check(run.Inspect(item).Signs.Length > 0, "inspect");
+Check(run.Inspect(item).Signs.Length > 0 && run.Inspect(item).Origin == tipped.CertainOrigin, "paid tip matches revealed origin");
 var sale = run.Sell("sell-1", item);
 Check(sale.Success && run.Cash == 885 + sale.Amount && run.Inventory.Count == 0, "sell");
 Check(!run.Sell("sell-2", item).Success, "duplicate sale");
@@ -35,6 +39,21 @@ Check(run.EndDay("day-1", 1).Success && run.Day == 2 && run.BoughtToday == 0, "d
 Check(!run.EndDay("day-1-double", 1).Success && run.Day == 2, "double click with new token");
 Check(run.BuyBox("buy-day2", run.Shelf[0].Id).Success && run.Table.Count == 3, "table persists");
 Check(run.BuyBox("buy-full", run.Shelf[0].Id).Code == "TABLE_FULL", "table capacity");
+
+var tippedOrigins = new System.Collections.Generic.HashSet<string>();
+for (var seed = 0; seed < 20; seed++)
+{
+    var market = new MarketRun(json, seed);
+    var offer = market.Shelf.Single(box => box.TypeId == "H2");
+    Check(offer.CertainOrigin == null, "unpaid offer hides the certain origin");
+    Check(market.BuyClue("tip", offer.Id).Success, "buy a tip for a mixed-origin box");
+    var tip = market.Shelf.Single(box => box.Id == offer.Id).CertainOrigin;
+    var bought = market.BuyBox("buy", offer.Id);
+    var opened = market.OpenBox("open", bought.EntityId);
+    Check(market.Inspect(opened.EntityId).Origin == tip, "mixed-origin tip matches the actual item");
+    tippedOrigins.Add(tip);
+}
+Check(tippedOrigins.Count > 1, "mixed-origin test covers distinct origins");
 
 var debtData = JObject.Parse(json);
 debtData["rules"]["start_cash"] = 150;
@@ -109,6 +128,15 @@ try
     var loaded = new MarketRun(json, 999, file.Read(), file.Write);
     Check(loaded.Cash == 900 && loaded.Table.Single().Id == offer.Id, "atomic save reload");
     Check(loaded.BuyBox("persist-buy", loaded.Shelf[0].Id).Code == "DUPLICATE_TRANSACTION", "duplicate after reload");
+    foreach (var badSave in new[] { "{", "{}", "{\"Schema\":99}", file.Read().Replace("\"Table\":[", "\"Table\":null,\"Ignored\":[") })
+    {
+        file.Write(badSave);
+        string backup = null;
+        var recovered = file.LoadOrStart(json, 42, path => backup = path);
+        Check(recovered.Day == 1 && recovered.Cash == 1000 && recovered.Table.Count == 0, "fresh run after bad save");
+        Check(File.ReadAllText(backup) == badSave, "bad save preserved");
+        Check(file.LoadOrStart(json, 12).Cash == 1000, "replacement save reloads");
+    }
 }
 finally
 {
