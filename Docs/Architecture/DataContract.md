@@ -55,7 +55,8 @@ Gắn một `MarketRunHost` vào GameObject ở gốc của scene gameplay. Comp
 | Scene đọc từ `Run` | Dùng để hiển thị |
 | --- | --- |
 | `Day`, `Cash`, `BoughtToday`, `DailyLimit` | Ngày, tiền và lượt mua |
-| `Shelf`, `ExtraCluePrice` | ID offer, ID loại hộp, giá theo manh mối đầu, tỷ lệ giả của loại và manh mối miễn phí. `CertainOrigin` là ID nhóm nguồn gốc thật, chỉ có giá trị sau khi mua lời mách |
+| `TodayPrices` | Bảng giá theo loại hộp, đọc ngay đầu ngày và cả khi đã hết lượt mua |
+| `Shelf`, `ExtraCluePrice` | ID offer, ID loại hộp, `TodayPrice` của loại hộp, `Price` là giá niêm yết theo manh mối đầu, tỷ lệ giả của loại và manh mối miễn phí. `CertainOrigin` là ID nhóm nguồn gốc thật, chỉ có giá trị sau khi mua lời mách |
 | `Table`, `TableCapacity` | ID và loại hộp chưa mở, giữ qua ngày |
 | `Inventory`, `InventoryCapacity`, `Inspect(itemId)` | Hiện vật đã mở, mã mẫu để chọn prefab, chất lượng, dấu hiệu soi và `ListedPrice` tính như hàng thật khi chưa giám định |
 | `DueToday`, `Arrears`, `Status`, `EndReason` | Kỳ thu hiện tại gồm nợ tồn và lý do kết thúc ván |
@@ -70,6 +71,8 @@ Gắn một `MarketRunHost` vào GameObject ở gốc của scene gameplay. Comp
 | `EndDay(transactionId, expectedDay)` | Thu nợ, tính phạt, rồi sang ngày hoặc kết thúc ván. `Amount` là tiền đã thu, `Penalty` là tiền phạt mới. |
 
 `EndDay` là lệnh duy nhất thu nợ. Truyền ngày đang hiển thị tại thời điểm người chơi xác nhận, để xác nhận lặp của ngày cũ nhận `STALE_DAY`. Một ID giao dịch dùng cho đúng một ý định, giữ nguyên ID khi gửi lại. Gọi từ luồng chính của Unity, đọc `Result.Code` để hiện lỗi và dùng `Result.EntityId` cho hiệu ứng theo cá thể.
+
+Giá hôm nay dao động theo seed, ngày và loại hộp. E3 giảm giá sau khi tính dao động. Làm tròn đến xu gần nhất, rồi nhân giá hôm nay với hệ số của manh mối miễn phí đầu tiên và làm tròn lần nữa để được giá niêm yết. Lệnh mua hộp trừ đúng giá niêm yết.
 
 Giá hiển thị và số xu thực nhận đều làm tròn xuống sau khi áp dụng các hệ số. Món chưa giám định chỉ lộ thật hay giả trong kết quả bán.
 

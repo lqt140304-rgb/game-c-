@@ -13,16 +13,17 @@ void Check(bool condition, string label)
 }
 
 var first = run.Shelf.Single(box => box.TypeId == "H1");
-Check(first.Price == 100 && first.Clues.Length == 1, "initial offer");
+Check(first.Price == first.TodayPrice && first.TodayPrice >= 80 && first.TodayPrice <= 120 && first.Clues.Length == 1, "initial offer");
 Check(run.BuyClue("clue-1", first.Id).Success, "buy clue");
 Check(run.Cash == 985 && run.Shelf[0].Clues.SequenceEqual(first.Clues), "paid tip leaves free clues unchanged");
 Check(run.BuyClue("clue-again", first.Id).Code == "CLUE_LIMIT" && run.Cash == 985, "one paid tip per box");
 run = new MarketRun(json, 999, save, data => save = data);
 var tipped = run.Shelf.Single(box => box.Id == first.Id);
 Check(tipped.CertainOrigin == "qua_khu" && tipped.Price == first.Price, "paid tip survives reload without repricing");
+Check(run.TodayPrices["H1"] == first.TodayPrice, "today price reloads unchanged");
 var boxId = run.BuyBox("buy-1", first.Id).EntityId;
-Check(run.Cash == 885 && run.Table.Count == 1, "buy");
-Check(!run.BuyBox("buy-1", run.Shelf[0].Id).Success && run.Cash == 885, "replay");
+Check(run.Cash == 985 - first.Price && run.Table.Count == 1, "buy");
+Check(!run.BuyBox("buy-1", run.Shelf[0].Id).Success && run.Cash == 985 - first.Price, "replay");
 run = new MarketRun(json, 999, save, data => save = data);
 Check(run.Table.Single().Id == boxId, "load bought box");
 var item = run.OpenBox("open-1", boxId).EntityId;
@@ -30,7 +31,7 @@ Check(run.Table.Count == 0 && run.Inventory.Single().Id == item, "open transfers
 Check(!run.OpenBox("open-2", boxId).Success, "duplicate open");
 Check(run.Inspect(item).Signs.Length > 0 && run.Inspect(item).Origin == tipped.CertainOrigin, "paid tip matches revealed origin");
 var sale = run.Sell("sell-1", item);
-Check(sale.Success && run.Cash == 885 + sale.Amount && run.Inventory.Count == 0, "sell");
+Check(sale.Success && run.Cash == 985 - first.Price + sale.Amount && run.Inventory.Count == 0, "sell");
 Check(!run.Sell("sell-2", item).Success, "duplicate sale");
 for (var i = 2; i <= 3; i++)
     Check(run.BuyBox("buy-" + i, run.Shelf[0].Id).Success, "buy remaining offer");
@@ -54,6 +55,33 @@ for (var seed = 0; seed < 20; seed++)
     tippedOrigins.Add(tip);
 }
 Check(tippedOrigins.Count > 1, "mixed-origin test covers distinct origins");
+
+var data = JObject.Parse(json);
+var testedMultiplier = false;
+for (var seed = 0; seed < 20; seed++)
+{
+    var market = new MarketRun(json, seed);
+    var offer = market.Shelf.Single(box => box.TypeId == "H2");
+    var clueOrigin = ((JObject)data["clue_vocabulary"]).Properties()
+        .Single(group => group.Value.Values<string>().Contains(offer.Clues[0])).Name;
+    var priceRules = data["shelf"]["price_follows_clue"];
+    var index = Array.IndexOf(priceRules["origins_order"].ToObject<string[]>(), clueOrigin);
+    var multiplier = (decimal)priceRules["multiplier"]["H2"][index];
+    testedMultiplier |= multiplier != 1;
+    Check(offer.Price == (int)Math.Round(offer.TodayPrice * multiplier), "tag price uses multiplier");
+    Check(market.StopBuying("stop", 1).Success && market.Shelf.Count == 0 &&
+        market.TodayPrices["H2"] == offer.TodayPrice, "today prices remain available after stopping");
+}
+Check(testedMultiplier, "test covers a non-unit clue multiplier");
+
+var e3Data = JObject.Parse(json);
+e3Data["events"] = new JArray(e3Data["events"].Single(item => (string)item["id"] == "E3").DeepClone());
+e3Data["event_schedule"]["probability"] = 1;
+e3Data["shelf"]["day_price"]["swing_amplitude"] = 0;
+var discounted = new MarketRun(e3Data.ToString(), 123);
+Check(discounted.TodayPrices["H2"] == 350, "E3 cannot activate on day one");
+Check(discounted.EndDay("day", 1).Success && discounted.TodayPrices["H2"] == 280 &&
+    discounted.TodayPrices["H1"] == 100, "E3 applies to the H2 day price before clues");
 
 var debtData = JObject.Parse(json);
 debtData["rules"]["start_cash"] = 150;
@@ -99,7 +127,7 @@ foreach (var fake in new[] { false, true })
     var sold = pricing.Sell("price-sell", opened.EntityId);
     var payout = fake ? 53 : 269;
     Check(sold.Amount == payout && sold.WasFake == fake, "sale floors actual price and reveals authenticity");
-    Check(pricing.Cash == 900 + payout, "cash receives the actual payout");
+    Check(pricing.Cash == 1000 - bought.Amount + payout, "cash receives the actual payout");
 }
 
 var temporaryDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
@@ -126,7 +154,7 @@ try
     failWrites = false;
     Check(persisted.BuyBox("persist-buy", offer.Id).Success, "retry save without duplicate debit");
     var loaded = new MarketRun(json, 999, file.Read(), file.Write);
-    Check(loaded.Cash == 900 && loaded.Table.Single().Id == offer.Id, "atomic save reload");
+    Check(loaded.Cash == 1000 - offer.Price && loaded.Table.Single().Id == offer.Id, "atomic save reload");
     Check(loaded.BuyBox("persist-buy", loaded.Shelf[0].Id).Code == "DUPLICATE_TRANSACTION", "duplicate after reload");
     foreach (var badSave in new[] { "{", "{}", "{\"Schema\":99}", file.Read().Replace("\"Table\":[", "\"Table\":null,\"Ignored\":[") })
     {

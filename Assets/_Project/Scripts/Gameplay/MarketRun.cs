@@ -16,6 +16,7 @@ namespace ChoDoLa.Gameplay
             public string Id { get; internal set; }
             public string TypeId { get; internal set; }
             public string Name { get; internal set; }
+            public int TodayPrice { get; internal set; }
             public int Price { get; internal set; }
             public decimal FakeRate { get; internal set; }
             public string[] Clues { get; internal set; }
@@ -115,6 +116,8 @@ namespace ChoDoLa.Gameplay
             TypeId = box.TypeId
         }).ToArray();
         public IReadOnlyList<ItemView> Inventory => state.Inventory.Select(ViewItem).ToArray();
+        public IReadOnlyDictionary<string, int> TodayPrices => BoxTypesForToday()
+            .ToDictionary(box => (string)box["id"], GetTodayPrice);
         public IReadOnlyList<Offer> Shelf =>
             AvailableBoxes().Select(box => MakeOffer(box).offer).ToArray();
 
@@ -292,7 +295,33 @@ namespace ChoDoLa.Gameplay
         {
             if (Status != "active" || BoughtToday >= DailyLimit || state.StoppedBuying)
                 return Enumerable.Empty<JToken>();
-            return content["boxes"].Where(box => (string)box["id"] != "RD" || Day >= (int)rules["red_chest_from_day"]);
+            return BoxTypesForToday();
+        }
+
+        private IEnumerable<JToken> BoxTypesForToday() => content["boxes"]
+            .Where(box => (string)box["id"] != "RD" || Day >= (int)rules["red_chest_from_day"]);
+
+        private int GetTodayPrice(JToken definition)
+        {
+            var typeId = (string)definition["id"];
+            var daily = shelfRules["day_price"];
+            using var rng = new OfferRandom(state.Seed, FormattableString.Invariant($"day-price:{Day}:{typeId}"));
+            var amplitude = Day >= (int)daily["applies_from_day"] ? (decimal)daily["swing_amplitude"] : 0m;
+            var price = (int)definition["price"] * (1m + (2m * rng.Next() - 1m) * amplitude);
+            var effect = GetDailyEvent()?["effect"];
+            if ((string)effect?["type"] == "box_price_discount" && (string)effect["box"] == typeId)
+                price *= 1m - (decimal)effect["value"];
+            return (int)Math.Round(price, MidpointRounding.ToEven);
+        }
+
+        private JToken GetDailyEvent()
+        {
+            var schedule = content["event_schedule"];
+            if (Day < (int)schedule["from_day"]) return null;
+            using var rng = new OfferRandom(state.Seed, FormattableString.Invariant($"day-event:{Day}"));
+            var events = (JArray)content["events"];
+            if (events.Count == 0 || rng.Next() >= (decimal)schedule["probability"]) return null;
+            return events[rng.Index(events.Count)];
         }
 
         private string OfferId(string typeId) => FormattableString.Invariant($"{Day}:{BoughtToday + 1}:{typeId}");
@@ -341,14 +370,16 @@ namespace ChoDoLa.Gameplay
                 return text;
             }).ToArray();
 
-            var price = shelfRules["price_follows_clue"]["tag_price"][typeId][Array.IndexOf(origins, clueOrigins[0])];
+            var todayPrice = GetTodayPrice(definition);
+            var multiplier = (decimal)shelfRules["price_follows_clue"]["multiplier"][typeId][Array.IndexOf(origins, clueOrigins[0])];
             var offer = new Offer
             {
                 Id = id,
                 TypeId = typeId,
                 Name = (string)definition["name"],
                 FakeRate = fakeRate,
-                Price = (int)price,
+                TodayPrice = todayPrice,
+                Price = (int)Math.Round(todayPrice * multiplier, MidpointRounding.ToEven),
                 Clues = clues.Take((int)shelfRules["free_clues_base"]).ToArray(),
                 CertainOrigin = state.ExtraClues.ContainsKey(id) ? origin : null
             };
