@@ -10,7 +10,6 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/README.md](Docs/Balance/README.md) có bảng giả định (mục 1–2), mô phỏng khả thi (mục 3) và 16 ca biên BT-01–BT-16 (mục 4).
   - **Cần Claude 1 chốt** (mục 5 của tài liệu): hậu quả thiếu tiền, điều kiện thắng/thua, sức chứa kho, phí giám định/phục chế, bán tức thì hay không. Codex dùng bảng ở mục 2 làm dữ liệu mẫu.
 - [ ] **Codex** — Thống nhất hợp đồng dữ liệu hộp, hiện vật, kho, ngày, nợ và thông báo thay đổi với Antigravity. Nghiệm thu khi mỗi bên xác định được dữ liệu đọc và hành động ghi.
-- [ ] **Antigravity** — Khởi tạo Unity 6 (6000.6.9f1) URP và scene thử. Nghiệm thu khi mở đúng phiên bản và chạy Play Mode với cảnh tối thiểu.
 
 ## Sprint 1 — Một ngày chơi First-Person
 
@@ -45,6 +44,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
   - **Cập nhật sau gói đã chốt (commit d21818e của Claude 1):** GT1 ba điểm khớp giả định đã đo, không cần đo lại. Đã đo phạt rủi ro O-01 bằng đủ chín chiến thuật: G1 đạt mục đích (liều có giám định chỉ hơn thận trọng có giám định 1,9 điểm, trước đó 8,0) nhưng đẩy hướng đầu tư lên 31% đến 38% và trần lên 38,5%. Khuyến nghị duyệt G1 và nâng trần test lên 41. Số liệu: mục 10 của [Docs/Balance/DoLaiDeXuat.md](Docs/Balance/DoLaiDeXuat.md). **Chờ chủ dự án duyệt mục G**, rồi bật `RISK_PENALTY_APPROVED` trong `QA/test_risk_penalty.py`.
   - **Claude 1 báo:** chủ dự án đã duyệt mục G (phạt rủi ro) và cả gói. Việc còn lại của Claude 2: bật `RISK_PENALTY_APPROVED`, nâng trần lên 41, rồi nghiệm thu mục này.
   - **Đã đo kỹ năng đọc manh mối** ([Docs/Balance/KyNangManhMoi.md](Docs/Balance/KyNangManhMoi.md), `QA/clue_sim.py`): bot đọc đúng và chỉ mua hộp lời thắng 57% đến 62% so với 23% đến 38% khi không đọc, quá mạnh so với mục tiêu ván khó. Đòn bẩy hiệu quả nhất là giá hộp đi theo manh mối (λ khoảng 0,75 đến 0,9); bắt buộc mua mỗi ngày và mua thêm manh mối 30 xu không có tác dụng. **Cần Claude 1:** chốt cách manh mối gắn với hiện vật (D-26) và cách thể hiện giá theo manh mối, rồi Claude 2 đo lại.
+  - **Claude 1 trả lời D-26, D-27, D-28 và T-04 (chờ chủ dự án duyệt mục J của [DieuChinhSauCanBang.md](Docs/Content/DieuChinhSauCanBang.md)):** manh mối gắn với hiện vật bên trong (H1 và H2 có 2 đúng 1 sai, H3 và Rương Đen 1 đúng 2 sai), kệ hộp M = 1 (mỗi lượt mua bày 1 hộp mỗi loại, chọn 1 hoặc dừng), giá niêm yết đi theo manh mối miễn phí đầu tiên với λ = 0,75, mua thêm manh mối 15 xu. Đo bằng `QA/clue_rules.py` trên `clue_sim.py`: bot đọc tối ưu 33,9 / 38,3 / 43,5% (so với 57–62% trước đó). Dữ liệu nguồn: `Docs/Content/data/content.json`. **Cần Claude 2** đo lại với đúng luật kệ hộp và đưa vào test. Ngoài ra `QA/economy_model.py` còn `INVENTORY_CAPACITY = 10`, gói đã duyệt là kho 8 ô và bàn mở 3 hộp.
 - [ ] **Codex** — Sửa lỗi cốt lõi, chạy hồi quy và đóng gói bản PC. Nghiệm thu khi bản chạy chơi được từ đầu đến kết quả ngày 7 với các ca biên đã kiểm.
 - [ ] **Antigravity** — Hoàn thiện tương tác, âm thanh, ánh sáng, phản hồi mở hộp và khả năng đọc UI. Nghiệm thu qua một ván chơi trên bản PC.
 

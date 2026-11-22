@@ -174,3 +174,45 @@ Chưa có chiến thuật máy nào đọc manh mối, nên mức độ người
 | D. Luật nợ khắt khe, bỏ trả nợ tồn sớm | Duyệt. |
 | E, F. Kho 8 ô, bàn mở 3 hộp, chỉ lưu tự động | Duyệt. |
 | G. Phạt rủi ro theo hộp | Duyệt. |
+
+## J. Manh mối và kệ hộp (D-26, D-27, D-28), chờ chủ dự án duyệt
+
+**Vấn đề Claude 2 nêu** ([KyNangManhMoi.md](../Balance/KyNangManhMoi.md)): nội dung chưa nói manh mối của một hộp cụ thể có liên quan hiện vật bên trong không, và số hộp người chơi xem được (M) chưa có trong GDD. Claude 2 phải giả định, và toàn bộ kết quả phụ thuộc vào giả định đó. Đáng lo hơn: bot đọc manh mối tối ưu thắng **57–62%**, vượt xa mục tiêu "không thắng dễ".
+
+**Quyết định của Claude 1:**
+1. **Manh mối gắn với hiện vật bên trong.** Mỗi hộp có 3 manh mối gợi nhóm nguồn gốc của hiện vật. H1 và H2 có 2 đúng 1 sai, H3 và Rương Đen chỉ 1 đúng 2 sai. Đây là giả định Claude 2 đã dùng, nay thành luật, riêng hộp đắt khó đọc hơn.
+2. **Kệ hộp:** mỗi lượt mua (tối đa 3 lượt mỗi ngày), Dì Mận bày **1 hộp mỗi loại** (M = 1). Chọn 1 hộp hoặc dừng mua, không đổi hộp trong lượt.
+3. **Giá niêm yết đi theo manh mối đầu tiên** với λ = 0,75. Cách này Claude 2 đã chỉ ra là đòn bẩy hiệu quả nhất.
+4. **Mua thêm manh mối 15 xu** (thay vì 30 xu không đáng).
+
+**Số liệu** ([QA/clue_rules.py](../../QA/clue_rules.py), mô hình `clue_sim.py` của Claude 2, bot đọc tối ưu và kén hộp τ = 1,3, 1.500 seed, cấu hình đã duyệt). Thắng% của thận trọng + giám định / liều + giám định / combo lớn + giám định:
+
+| Cấu hình | Thắng% |
+| --- | --- |
+| Không đọc manh mối (bot thường) | 22,0 / 23,2 / 37,9 |
+| Giá cố định, M = 3, 2/3 đúng (trước quyết định) | 57 / 62 / 59–60 (Claude 2) |
+| M = 2, λ 0,75, mọi hộp 2/3 đúng | 42,1 / 48,7 / 49,8 |
+| M = 2, λ 0,75, H3 và Rương Đen 1/3 đúng | 42,3 / 49,1 / 50,7 |
+| M = 2, λ 1,0, H3 và Rương Đen 1/3 đúng | 34,8 / 39,7 / 45,5 |
+| **M = 1, λ 0,75, H3 và Rương Đen 1/3 đúng (chọn)** | **33,9 / 38,3 / 43,5** |
+| M = 2, λ 0,75, H3 và Rương Đen 1/3 đúng, người đọc cẩn thận hơn (τ = 1,15) | 29,9 / 36,7 / 45,0 |
+
+Kết quả: người đọc tối ưu hơn bot thường 12 / 15 / 6 điểm, nằm trong khoảng "biết tính thì thắng hơn nhưng không áp đảo". Người chơi thật đọc kém hơn bot Bayes nên thấp hơn nữa.
+
+**Giá mua thêm manh mối** (M = 1, λ 0,75, bot mua thêm khi còn mơ hồ):
+
+| Giá mỗi manh mối | Thắng% | So với không mua thêm (33,9 / 38,3 / 43,5) |
+| --- | --- | --- |
+| 10 xu | 40,8 / 44,7 / 49,4 | +6,9 / +6,4 / +5,9 |
+| **15 xu (chọn)** | 37,1 / 40,5 / 48,4 | +3,2 / +2,2 / +4,9 |
+| 20 xu | 33,9 / 35,9 / 44,1 | 0 / −2,4 / +0,6 |
+| 30 xu | 27,9 / 28,1 / 39,1 | −6 / −10 / −4 |
+
+15 xu là mức hơi có lợi, đủ để thành một lựa chọn phải cân nhắc. Ở 20 xu thì hòa vốn, ở 30 xu thì lỗ.
+
+**Điều cần biết:**
+- **Manh mối thực chất chỉ có ích rõ ở hộp H2.** H1 chỉ ra hiện vật cùng nhóm Quá khứ nên không phân biệt được món nào. H3 và Rương Đen chỉ 1 trên 3 manh mối đúng nên gần như không đổi giá. Vì vậy bảng giá niêm yết ([NoiDungMau.md](NoiDungMau.md) mục 5.3) gần như chỉ khác ở H2 (260 hoặc 395 xu thay vì 350).
+- Nếu sau này muốn manh mối có ích ở nhiều hộp hơn, có thể thêm manh mối về **độ hiếm** (ở H3, độ hiếm phân biệt đúng V08, V09 và V10). Chưa làm vì chưa đo.
+- Mô hình rút hộp mới cho mỗi lượt giống đúng luật kệ hộp. Phần khác biệt nhỏ: giá niêm yết lấy theo manh mối miễn phí **đầu tiên**, còn mô hình tính theo mọi manh mối miễn phí (CB2 và Mốc 3 Cổ Phong). Claude 2 cần đo lại.
+
+**Việc cần Claude 2:** đo lại với luật kệ hộp đúng như mô tả (giá theo manh mối đầu tiên) và đưa vào test. **Chủ dự án** duyệt mục J.

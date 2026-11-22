@@ -1,0 +1,803 @@
+{
+  "_note": "Dữ liệu nguồn của gói nội dung đã duyệt (2026-11-22). Codex nạp file này làm dữ liệu chỉnh được, không gán cứng số trong mã. Tên trường là gợi ý, Codex và Antigravity chốt schema thật. Số liệu phải khớp với tài liệu trong Docs/Content và mô hình QA, kiểm tra bằng QA/test_content_data.py.",
+  "version": "2026-11-22",
+  "rules": {
+    "start_cash": 1000,
+    "days": 7,
+    "debt": [
+      200,
+      350,
+      500,
+      750,
+      1050,
+      1500,
+      2200
+    ],
+    "max_boxes_per_day": 3,
+    "penalty_rate": 0.2,
+    "lose_arrears_over": 1000,
+    "inventory_slots": 8,
+    "table_slots": 3,
+    "equip_slots": 3,
+    "equip_slots_with_bk1": 4,
+    "max_clues_per_box": 3,
+    "red_chest_from_day": 4,
+    "appraise_fee_rate": 0.15,
+    "appraise_fee_min": 20,
+    "restore_fee_rate": 0.25,
+    "certificate_bonus": 0.25,
+    "fake_price_factor": 0.2,
+    "quality": [
+      {
+        "id": "nguyen",
+        "name": "Nguyên",
+        "p": 0.5,
+        "price_mult": 1.0
+      },
+      {
+        "id": "xuoc",
+        "name": "Xước",
+        "p": 0.35,
+        "price_mult": 0.7
+      },
+      {
+        "id": "hong",
+        "name": "Hỏng",
+        "p": 0.15,
+        "price_mult": 0.3
+      }
+    ]
+  },
+  "origins": [
+    {
+      "id": "qua_khu",
+      "name": "Quá khứ"
+    },
+    {
+      "id": "hien_dai",
+      "name": "Hiện đại"
+    },
+    {
+      "id": "tuong_lai",
+      "name": "Tương lai"
+    },
+    {
+      "id": "ngoai_hanh_tinh",
+      "name": "Ngoài hành tinh"
+    },
+    {
+      "id": "co_tich",
+      "name": "Cổ tích"
+    },
+    {
+      "id": "than_thoai",
+      "name": "Thần thoại"
+    }
+  ],
+  "items": [
+    {
+      "id": "V01",
+      "name": "Bình sứ men xanh",
+      "origin": "qua_khu",
+      "rarity": "thuong",
+      "base_price": 230,
+      "inspect_signs": [
+        "Vết rạn men gần miệng",
+        "Dấu triện dưới đáy"
+      ]
+    },
+    {
+      "id": "V02",
+      "name": "Sách cổ bìa da",
+      "origin": "qua_khu",
+      "rarity": "thuong",
+      "base_price": 385,
+      "inspect_signs": [
+        "Chữ mờ nhưng còn mục lục",
+        "Gáy sách có vết sửa"
+      ]
+    },
+    {
+      "id": "V03",
+      "name": "Đồng hồ quả lắc cũ",
+      "origin": "qua_khu",
+      "rarity": "thuong",
+      "base_price": 495,
+      "inspect_signs": [
+        "Kim bị gãy hoặc vẫn chạy",
+        "Mặt kính có vết mờ"
+      ]
+    },
+    {
+      "id": "V04",
+      "name": "Mảnh kính đồng hồ thiên văn",
+      "origin": "hien_dai",
+      "rarity": "thuong",
+      "base_price": 415,
+      "inspect_signs": [
+        "Khung kim loại in số",
+        "Mép kính có vết cắt thô"
+      ]
+    },
+    {
+      "id": "V05",
+      "name": "Thiết bị liên lạc hỏng",
+      "origin": "tuong_lai",
+      "rarity": "thuong",
+      "base_price": 310,
+      "inspect_signs": [
+        "Màn hình vỡ",
+        "Mã máy còn đọc được"
+      ]
+    },
+    {
+      "id": "V06",
+      "name": "Bộ pin lượng tử",
+      "origin": "tuong_lai",
+      "rarity": "hiem",
+      "base_price": 1845,
+      "inspect_signs": [
+        "Nhãn in mờ",
+        "Linh kiện bạc còn sáng"
+      ]
+    },
+    {
+      "id": "V07",
+      "name": "Tinh thể lam cầm tay",
+      "origin": "ngoai_hanh_tinh",
+      "rarity": "rat_hiem",
+      "base_price": 2695,
+      "inspect_signs": [
+        "Phát sáng yếu khi xoay",
+        "Bề mặt có vân"
+      ]
+    },
+    {
+      "id": "V08",
+      "name": "Gương thủy tinh cổ tích",
+      "origin": "co_tich",
+      "rarity": "hiem",
+      "base_price": 1590,
+      "inspect_signs": [
+        "Ảnh phản chiếu lệch góc so với người soi"
+      ]
+    },
+    {
+      "id": "V09",
+      "name": "Lá bùa giấy vàng",
+      "origin": "than_thoai",
+      "rarity": "thuong",
+      "base_price": 895,
+      "inspect_signs": [
+        "Mực đỏ dễ phai",
+        "Có thể là đồ giả"
+      ]
+    },
+    {
+      "id": "V10",
+      "name": "Mảnh vảy long",
+      "origin": "than_thoai",
+      "rarity": "rat_hiem",
+      "base_price": 2860,
+      "inspect_signs": [
+        "Vết cắt sắc",
+        "Ánh kim đổi màu theo góc nhìn"
+      ]
+    }
+  ],
+  "item_fake_rate_floor": {
+    "V09": 0.35
+  },
+  "boxes": [
+    {
+      "id": "H1",
+      "name": "Hộp Gỗ Nhỏ",
+      "price": 100,
+      "fake_rate": 0.12,
+      "origins": [
+        "qua_khu"
+      ],
+      "drops": [
+        {
+          "item": "V01",
+          "weight": 40
+        },
+        {
+          "item": "V02",
+          "weight": 35
+        },
+        {
+          "item": "V03",
+          "weight": 25
+        }
+      ],
+      "clue_true_count": 2
+    },
+    {
+      "id": "H2",
+      "name": "Hộp Kim Loại Mờ",
+      "price": 350,
+      "fake_rate": 0.15,
+      "origins": [
+        "hien_dai",
+        "tuong_lai"
+      ],
+      "drops": [
+        {
+          "item": "V04",
+          "weight": 30
+        },
+        {
+          "item": "V06",
+          "weight": 30
+        },
+        {
+          "item": "V05",
+          "weight": 40
+        }
+      ],
+      "clue_true_count": 2
+    },
+    {
+      "id": "H3",
+      "name": "Hộp Vải Dày",
+      "price": 800,
+      "fake_rate": 0.22,
+      "origins": [
+        "than_thoai",
+        "co_tich"
+      ],
+      "drops": [
+        {
+          "item": "V08",
+          "weight": 40
+        },
+        {
+          "item": "V09",
+          "weight": 40
+        },
+        {
+          "item": "V10",
+          "weight": 20
+        }
+      ],
+      "clue_true_count": 1
+    },
+    {
+      "id": "RD",
+      "name": "Rương Đen",
+      "price": 1500,
+      "fake_rate": 0.3,
+      "origins": [
+        "qua_khu",
+        "hien_dai",
+        "tuong_lai",
+        "ngoai_hanh_tinh",
+        "co_tich",
+        "than_thoai"
+      ],
+      "drops": [
+        {
+          "item": "V07",
+          "weight": 50
+        },
+        {
+          "item": "V10",
+          "weight": 30
+        },
+        {
+          "item": "V08",
+          "weight": 20
+        }
+      ],
+      "clue_true_count": 1
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "CP1",
+      "name": "Phiến khắc tre",
+      "set": "co_phong",
+      "tier": 1,
+      "price": 150,
+      "effects": [
+        {
+          "type": "sell_bonus",
+          "value": 0.05,
+          "scope": "all"
+        }
+      ]
+    },
+    {
+      "id": "CP2",
+      "name": "Hũ đựng đồ",
+      "set": "co_phong",
+      "tier": 2,
+      "price": 400,
+      "effects": [
+        {
+          "type": "appraise_fee_discount",
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "id": "CP3",
+      "name": "Ấn triện đồng",
+      "set": "co_phong",
+      "tier": 3,
+      "price": 500,
+      "effects": [
+        {
+          "type": "sell_bonus",
+          "value": 0.1,
+          "origins": [
+            "than_thoai"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TC1",
+      "name": "Ốc vít dự phòng",
+      "set": "thien_co",
+      "tier": 1,
+      "price": 120,
+      "effects": [
+        {
+          "type": "restore_fee_discount",
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "id": "TC2",
+      "name": "Mắt máy soi",
+      "set": "thien_co",
+      "tier": 2,
+      "price": 450,
+      "effects": [
+        {
+          "type": "extra_inspect_sign",
+          "origins": [
+            "hien_dai",
+            "tuong_lai"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TC3",
+      "name": "Lõi năng lượng",
+      "set": "thien_co",
+      "tier": 3,
+      "price": 500,
+      "effects": [
+        {
+          "type": "sell_bonus",
+          "value": 0.1,
+          "origins": [
+            "hien_dai",
+            "tuong_lai",
+            "ngoai_hanh_tinh"
+          ]
+        }
+      ]
+    }
+  ],
+  "resonance": {
+    "two_of_a_set": {
+      "co_phong": [
+        {
+          "type": "sell_bonus",
+          "value": 0.05,
+          "origins": [
+            "qua_khu",
+            "than_thoai"
+          ]
+        }
+      ],
+      "thien_co": [
+        {
+          "type": "sell_bonus",
+          "value": 0.05,
+          "origins": [
+            "hien_dai",
+            "tuong_lai"
+          ]
+        }
+      ]
+    },
+    "three_of_a_set": {
+      "co_phong": [
+        {
+          "type": "extra_free_clue",
+          "count": 1
+        }
+      ],
+      "thien_co": [
+        {
+          "type": "sell_bonus",
+          "value": 0.1,
+          "restored_only": true
+        }
+      ]
+    },
+    "note": "Mốc 3 thay thế Mốc 2 của cùng hệ, không cộng dồn."
+  },
+  "combos": [
+    {
+      "id": "CB1",
+      "name": "Bộ Trà Cổ",
+      "size": "small",
+      "requires": [
+        "CP1",
+        "CP2"
+      ],
+      "effects": [
+        {
+          "type": "sell_bonus",
+          "value": 0.1,
+          "scope": "all"
+        }
+      ]
+    },
+    {
+      "id": "CB2",
+      "name": "Tuần Tra Giới",
+      "size": "small",
+      "requires": [
+        "TC1",
+        "TC2"
+      ],
+      "effects": [
+        {
+          "type": "extra_free_clue",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "CB3",
+      "name": "Chợ Đa Giới",
+      "size": "big",
+      "requires": [
+        "CP3",
+        "TC3"
+      ],
+      "effects": [
+        {
+          "type": "free_appraisal",
+          "unlimited": true
+        },
+        {
+          "type": "sell_bonus",
+          "value": 0.15,
+          "scope": "all"
+        }
+      ]
+    }
+  ],
+  "stacking": {
+    "sell_bonus": "add",
+    "fee_discount": "best_only",
+    "extra_free_clue": "add_capped_by_max_clues_per_box"
+  },
+  "heirlooms": [
+    {
+      "id": "GT1",
+      "name": "Sổ Ghi Nợ Cũ",
+      "effects": [
+        {
+          "type": "postpone_debt",
+          "uses_per_run": 1,
+          "carry_multiplier": 1.15,
+          "round": "up",
+          "penalty_on_carry": false,
+          "counts_toward_lose_threshold": false,
+          "only_current_day_installment": true,
+          "not_on_day": 7
+        }
+      ]
+    },
+    {
+      "id": "GT2",
+      "name": "Đèn Dầu Thờ",
+      "effects": [
+        {
+          "type": "extra_free_clue",
+          "box": "H1",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "bikhe": [
+    {
+      "id": "BK1",
+      "name": "Lời Thề Bảy Ngày",
+      "condition": {
+        "type": "complete_small_combo",
+        "before_day": 5
+      },
+      "reward": {
+        "type": "equip_slot_bonus",
+        "value": 1
+      }
+    },
+    {
+      "id": "BK2",
+      "name": "Mắt Người Sành",
+      "condition": {
+        "type": "appraise_origin",
+        "origin": "than_thoai",
+        "count": 2
+      },
+      "reward": {
+        "type": "appraise_fee_discount",
+        "value": 0.5
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "name": "Chợ Phiên Cổ Vật",
+      "effect": {
+        "type": "sell_bonus",
+        "value": 0.15,
+        "origins": [
+          "qua_khu"
+        ]
+      }
+    },
+    {
+      "id": "E2",
+      "name": "Mất Điện Khu Công Nghệ",
+      "effect": {
+        "type": "sell_bonus",
+        "value": -0.15,
+        "origins": [
+          "hien_dai",
+          "tuong_lai"
+        ]
+      }
+    },
+    {
+      "id": "E3",
+      "name": "Thuyền Hàng Ngoài Giới",
+      "effect": {
+        "type": "box_price_discount",
+        "box": "H2",
+        "value": 0.2
+      }
+    },
+    {
+      "id": "E4",
+      "name": "Giáo Sư Đi Vắng",
+      "effect": {
+        "type": "disable",
+        "service": "appraisal"
+      }
+    },
+    {
+      "id": "E5",
+      "name": "Chú Rỉ Nghỉ Lễ",
+      "effect": {
+        "type": "disable",
+        "service": "restoration"
+      }
+    },
+    {
+      "id": "E6",
+      "name": "Khách Sộp Đến Chợ",
+      "effect": {
+        "type": "sell_bonus",
+        "value": 0.1,
+        "rarity": [
+          "rat_hiem"
+        ]
+      }
+    }
+  ],
+  "event_schedule": {
+    "from_day": 2,
+    "probability": 0.5,
+    "max_per_day": 1,
+    "announce": "before_buying_boxes"
+  },
+  "services": {
+    "auction": {
+      "fee_rate": 0.05,
+      "fee_round": "up",
+      "min_sell_price": 1300,
+      "k": [
+        {
+          "p": 0.2,
+          "k": 0.9
+        },
+        {
+          "p": 0.4,
+          "k": 1.1
+        },
+        {
+          "p": 0.3,
+          "k": 1.3
+        },
+        {
+          "p": 0.1,
+          "k": 1.5
+        }
+      ],
+      "floor_options": [
+        null,
+        1.0,
+        1.3
+      ],
+      "per_day": 1,
+      "not_on_day": 7,
+      "payout": "start_of_next_day"
+    },
+    "casino": {
+      "stakes": [
+        100,
+        250,
+        500
+      ],
+      "p_win": 0.45,
+      "per_day": 2,
+      "from_day": 2
+    },
+    "pawn": {
+      "loan_ratio": 0.6,
+      "loan_round": "down",
+      "redeem_multiplier": 1.15,
+      "redeem_round": "up",
+      "days_to_redeem": 2,
+      "max_active": 2,
+      "allowed": [
+        "item",
+        "artifact"
+      ],
+      "artifact_basis": "buy_price",
+      "redeemed_artifact_goes_to": "artifact_bag"
+    }
+  },
+  "meta_unlocks": [
+    {
+      "id": "M1",
+      "name": "Chọn Gia Truyền",
+      "source": {
+        "type": "collect_distinct_items",
+        "count": 5
+      },
+      "effect": {
+        "type": "choose_heirloom"
+      }
+    },
+    {
+      "id": "M2",
+      "name": "Vốn Khởi Nghiệp Nhỏ",
+      "source": {
+        "type": "collect_distinct_items",
+        "count": 10
+      },
+      "effect": {
+        "type": "start_cash_bonus",
+        "value": 100
+      }
+    },
+    {
+      "id": "M3",
+      "name": "Thử Thách Rương Đen",
+      "source": {
+        "type": "win_runs",
+        "count": 1
+      },
+      "effect": {
+        "type": "red_chest_from_day",
+        "value": 1
+      }
+    },
+    {
+      "id": "M4",
+      "name": "Bí Khế Quen Mặt",
+      "source": {
+        "type": "each_bikhe_once"
+      },
+      "effect": {
+        "type": "show_bikhe_conditions_at_start"
+      }
+    }
+  ],
+  "meta_start_cash_bonus_cap": 100,
+  "clue_vocabulary": {
+    "qua_khu": [
+      "Sáp đỏ đã sậm màu",
+      "Tem giấy in chữ mờ"
+    ],
+    "hien_dai": [
+      "Mã vạch bong một góc",
+      "Hộp rỗng có tiếng kêu kim loại"
+    ],
+    "tuong_lai": [
+      "Tem điện tử nhấp nháy yếu",
+      "Vỏ hộp ấm khi chạm"
+    ],
+    "ngoai_hanh_tinh": [
+      "Ánh sáng lam lọt qua khe",
+      "Có tiếng vọng nhiều lớp"
+    ],
+    "co_tich": [
+      "Dây buộc có mùi thuốc bắc",
+      "Lớp vải có hơi ẩm"
+    ],
+    "than_thoai": [
+      "Chỉ thêu vàng",
+      "Ký hiệu khắc nghiêng",
+      "Dấu móng vuốt nhỏ"
+    ]
+  },
+  "clues": {
+    "per_box": 3,
+    "wrong_clue_origin": "uniform_over_other_origins",
+    "note": "Hộp H1 chỉ có hiện vật Quá khứ nên manh mối không phân biệt được hiện vật, chỉ tạo bầu không khí."
+  },
+  "shelf": {
+    "boxes_per_type_per_turn": 1,
+    "turns_per_day": 3,
+    "pick_per_turn": 1,
+    "may_stop_buying_for_the_day": true,
+    "reroll_within_turn": false,
+    "rng_key": "seed, ngày, lượt, loại hộp",
+    "free_clues_base": 1,
+    "extra_clue_price": 15,
+    "price_follows_clue": {
+      "lambda": 0.75,
+      "round_to": 5,
+      "based_on": "manh mối miễn phí đầu tiên",
+      "origins_order": [
+        "qua_khu",
+        "hien_dai",
+        "tuong_lai",
+        "ngoai_hanh_tinh",
+        "co_tich",
+        "than_thoai"
+      ],
+      "tag_price": {
+        "H1": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "H2": [
+          350,
+          260,
+          395,
+          350,
+          350,
+          350
+        ],
+        "H3": [
+          800,
+          800,
+          800,
+          800,
+          810,
+          790
+        ],
+        "RD": [
+          1500,
+          1500,
+          1500,
+          1535,
+          1405,
+          1545
+        ]
+      }
+    }
+  }
+}

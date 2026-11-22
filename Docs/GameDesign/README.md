@@ -58,6 +58,12 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 - Hiện vật đang cầm hoặc đang đấu giá không chiếm kho vì đang ở nơi khác. Mỗi món chỉ ở đúng một nơi.
 - Hết ván, hiện vật còn lại không tính vào kết quả.
 
+**[ĐỀ XUẤT] Kệ hộp và manh mối.** Chi tiết và bảng giá ở [Docs/Content/NoiDungMau.md](../Content/NoiDungMau.md) mục 5.
+- Mỗi **lượt mua** (tối đa 3 lượt mỗi ngày), Dì Mận bày **1 hộp mỗi loại**. Người chơi chọn mua **1 hộp** hoặc **dừng mua** trong ngày. Không đổi hộp trong cùng lượt, hộp bị bỏ qua không quay lại.
+- Mỗi hộp là vật thể riêng, hiện vật bên trong định sẵn theo seed. Hộp có **3 manh mối** gợi nhóm nguồn gốc: H1 và H2 có 2 đúng 1 sai, H3 và Rương Đen chỉ 1 đúng 2 sai.
+- Người chơi thấy **1 manh mối miễn phí** mỗi hộp, mua thêm **15 xu** mỗi manh mối, tối đa 3.
+- **Giá niêm yết đi theo manh mối đầu tiên** (hệ số 0,75): Dì Mận cũng đọc manh mối nên hộp được cho là tốt bị nâng giá.
+
 ## 4. Gia truyền, tạo tác và Bí Khế
 
 - **[ĐÃ CHỐT] Cổ vật gia truyền.** Có từ đầu ván và đem lại nội tại bị động. **[ĐỀ XUẤT]** Mỗi ván rút ngẫu nhiên 1 trong 2 món mẫu, danh sách nội tại nằm trong [Docs/Content/GiaTruyenTaoTacBiKhe.md](../Content/GiaTruyenTaoTacBiKhe.md). Gia truyền GT1 cho hoãn một kỳ nợ, là ngoại lệ duy nhất của luật thiếu tiền ở mục 2.
