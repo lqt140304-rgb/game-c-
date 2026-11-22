@@ -3,7 +3,8 @@
   "rootNamespace": "ChoDoLa",
   "references": [
     "ChoDoLa.Town.Layout",
-    "Unity.InputSystem"
+    "Unity.InputSystem",
+    "UnityEngine.UI"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

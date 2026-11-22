@@ -3,7 +3,8 @@
   "rootNamespace": "ChoDoLa",
   "references": [
     "ChoDoLa.Runtime",
-    "ChoDoLa.Town.Layout"
+    "ChoDoLa.Town.Layout",
+    "UnityEngine.UI"
   ],
   "includePlatforms": [
     "Editor"
