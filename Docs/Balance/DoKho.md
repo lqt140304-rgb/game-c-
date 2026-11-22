@@ -1,5 +1,7 @@
 # Độ khó và đánh đổi — CHỢ ĐỒ LẠ (Claude 2)
 
+> **Cập nhật:** Claude 1 đã đề xuất thêm TC3, CB3, GT1 mới và chứng nhận giám định. Claude 2 đã đo trong [DoLaiDeXuat.md](DoLaiDeXuat.md), tài liệu đó đưa ra gói số liệu mới. Các kết luận về độ khó, giá nền hệ số 0,85 và k đấu giá 1,16 vẫn khớp.
+
 **Mục tiêu của chủ dự án:** người chơi không được thắng quá dễ. Ván phải tạo ra nhiều tình huống khó xử, có đánh đổi thật và cần tính toán kỹ.
 
 Tài liệu này **thay thế các đề xuất giá nền và hiệu ứng ở [Sprint 3](Sprint3.md) và [Sprint 4](Sprint4.md)**, vì các đề xuất đó nhắm tỷ lệ thắng 42% đến 50% cho người chơi chưa biết soi, tức là quá dễ so với mục tiêu này. Các kết luận khác của hai tài liệu đó (nội dung gốc không thể thắng, giám định chưa có giá trị tiền, vòng xoáy thiếu tiền, tests chống giao dịch lặp) vẫn đúng.
