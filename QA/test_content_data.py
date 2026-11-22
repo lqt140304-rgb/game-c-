@@ -229,6 +229,26 @@ def recompute_tag_prices():
     return out
 
 
+class DebtRule(unittest.TestCase):
+    """Luật nợ ở GDD mục 2: phạt 20% tính trên TOÀN BỘ nợ còn lại, nợ tồn là một con số duy nhất."""
+
+    def test_penalty_base_is_total_remaining(self):
+        self.assertEqual("total_remaining", D["rules"]["penalty_base"])
+
+    def test_gdd_cases_2_3_and_8(self):
+        g = em.Game(seed=1, cash=150)
+        g.end_day()
+        self.assertEqual(60, g.arrears)           # ca 2: trả 150, còn 50, phạt 10
+        g.cash = 100
+        g.end_day()
+        self.assertEqual(372, g.arrears)          # ca 3: 410 trừ 100 còn 310, phạt 62
+        g = em.Game(seed=1, cash=150)
+        g.end_day()
+        g.cash = 5
+        g.end_day()
+        self.assertEqual(486, g.arrears)          # ca 8: 410 trừ 5 còn 405, phạt 81 (tính cả phần phạt cũ)
+
+
 class ClueRules(unittest.TestCase):
     def test_every_origin_has_enough_distinct_clues(self):
         vocab = D["clue_vocabulary"]

@@ -21,7 +21,7 @@
 
 **[ĐỀ XUẤT] Thiếu tiền khi đến hạn.** Cuối mỗi ngày, Anh Bảy thu đúng khoản của kỳ đó. Nếu tiền mặt không đủ:
 - Người chơi trả bao nhiêu thì trả bấy nhiêu. Phần còn thiếu thành **nợ tồn**.
-- Sau mỗi lần thu nợ, nếu còn nợ tồn thì cộng thêm **phạt 20%** của phần nợ tồn đó (làm tròn lên). Phạt không tính trên phần phạt cũ.
+- Sau mỗi lần thu nợ, nếu còn nợ tồn thì cộng thêm **phạt 20%** của **toàn bộ nợ còn lại** (làm tròn lên). Tức là nợ tồn mới bằng nợ còn lại nhân 1,2. Nợ tồn là **một con số duy nhất**, không tách phần gốc và phần phạt. Tiền trả luôn trừ vào tổng nợ, nên phần phạt cũ cũng chịu phạt ở lần thu sau.
 - Kỳ mới vẫn đến đúng hạn. Nợ tồn cộng dồn vào kỳ mới và phải trả cùng lúc.
 - Không trả trước kỳ chưa đến hạn. Khoản đã thu không hoàn lại.
 - **Ngoại lệ duy nhất:** gia truyền GT1 (Sổ Ghi Nợ Cũ) cho hoãn kỳ nợ của một ngày, một lần mỗi ván, theo luật riêng ở [Docs/Content/GiaTruyenTaoTacBiKhe.md](../Content/GiaTruyenTaoTacBiKhe.md). Kỳ hoãn không bị phạt 20%.
@@ -43,6 +43,7 @@
 | 5 | Ngày 7 tổng phải trả 2.250 xu (kỳ 2.200 cộng nợ tồn 50), người chơi chỉ có 2.200 xu | Còn nợ tồn 50 sau khi thu. Thua cuối ngày 7. |
 | 6 | Ngày 7 trả đủ kỳ và không còn nợ tồn | Thắng. |
 | 7 | Hiện vật trị giá 3.000 xu nhưng tiền mặt 0, chưa bán trước khi thu nợ | Không tính để trả. Ngày 1 thiếu cả 200 xu, nợ tồn thành 240 (200 cộng phạt 40). |
+| 8 | Ngày 2 phải trả 410 (kỳ 350 cộng nợ tồn 60, trong đó 10 là phạt cũ), người chơi chỉ trả 5 xu | Còn 405, phạt 81, nợ tồn 486. Phạt tính trên tổng còn lại, kể cả phần phạt cũ. |
 
 Các con số phạt 20% và ngưỡng 1.000 xu là giá trị thử nghiệm. Claude 2 sẽ kiểm tra lại khi cân bằng.
 

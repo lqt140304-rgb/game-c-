@@ -15,6 +15,7 @@
     ],
     "max_boxes_per_day": 3,
     "penalty_rate": 0.2,
+    "penalty_base": "total_remaining",
     "lose_arrears_over": 1000,
     "inventory_slots": 8,
     "table_slots": 3,
