@@ -235,6 +235,10 @@ class DebtRule(unittest.TestCase):
     def test_penalty_base_is_total_remaining(self):
         self.assertEqual("total_remaining", D["rules"]["penalty_base"])
 
+    def test_price_rules_do_not_leak_fakes_and_round_down(self):
+        self.assertEqual("floor", D["rules"]["price_round"])
+        self.assertEqual("as_genuine", D["rules"]["unappraised_display_price"])
+
     def test_gdd_cases_2_3_and_8(self):
         g = em.Game(seed=1, cash=150)
         g.end_day()

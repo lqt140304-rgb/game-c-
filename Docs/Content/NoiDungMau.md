@@ -72,6 +72,15 @@ Hộp càng đắt thì tỷ lệ lời càng thấp. Rương Đen gần như h�
 
 Hiệu ứng tăng giá bán gồm tạo tác, combo, biến cố và chứng nhận giám định, cộng với nhau theo phép cộng (xem [GiaTruyenTaoTacBiKhe.md](GiaTruyenTaoTacBiKhe.md)).
 
+**Làm tròn:** mọi giá bán **làm tròn xuống đến xu**. Ví dụ V02 (giá nền 385) chất lượng Xước: 385 × 0,7 = 269,5 nên bán 269 xu. Mô hình tham chiếu của Claude 2 dùng cách làm tròn này.
+
+**Giá hiển thị và giá thực nhận.** Hai giá này khác nhau với hiện vật chưa giám định:
+- **Giá hiển thị** (`ListedPrice`) tính như hàng **thật**, theo chất lượng đã thấy khi soi. Giá này **không bao giờ làm lộ hàng giả**.
+- **Giá thực nhận** khi bán tính theo G thật. Nếu là hàng giả thì chỉ bằng 20%, và người chơi chỉ biết điều đó sau khi bán hoặc sau giám định.
+- Sau giám định, món giả hiển thị giá thật (20%) và món thật hiển thị giá cộng 25% chứng nhận.
+
+Nếu giao diện hiển thị trực tiếp giá thực nhận thì người chơi nhìn giá là biết hàng giả, và phạt rủi ro theo hộp (hộp đắt nhiều hàng giả hơn) mất tác dụng.
+
 **Giám định (Giáo Sư Lẫm).**
 - Phí **15% giá nền**, tối thiểu 20 xu.
 - Cho biết món thật hay giả.
