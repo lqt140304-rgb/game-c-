@@ -48,10 +48,10 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 **Vai trò.** Cách bán hiện vật giá trị cao với giá kỳ vọng tốt hơn, đổi lại tiền về chậm một ngày và có rủi ro. Người chơi phải cân nhắc với kỳ nợ sắp đến.
 
 **Luồng.**
-1. Trong ngày, gửi 1 hiện vật có G từ **1.300 xu** trở lên vào phiên đấu giá chiều và chọn giá sàn: không sàn, hoặc 1,2 G, hoặc 1,6 G. Món rẻ hơn không được đấu giá.
+1. Trong ngày, gửi 1 hiện vật có G từ **1.300 xu** trở lên vào phiên đấu giá chiều và chọn giá sàn: không sàn, hoặc 1,0 G, hoặc 1,3 G. Món rẻ hơn không được đấu giá.
 2. Trả ngay phí đăng ký 5% G (làm tròn lên). Phí không hoàn.
 3. Hiện vật bị khóa ở trạng thái "Chờ kết quả".
-4. Đầu ngày kế tiếp, kết quả công bố: giá chốt = G × k, trong đó k = 0,8 / 1,2 / 1,6 / 2,0 với xác suất 15% / 35% / 35% / 15%. Giá trị kỳ vọng của k là 1,40. Claude 2 đo ở [Sprint 4](../Balance/Sprint4.md) rằng đấu giá chỉ có lời khi kỳ vọng khoảng +40%, vì tiền về chậm một ngày làm kẹt vốn. Với kỳ vọng thấp hơn, đấu giá là cái bẫy.
+4. Đầu ngày kế tiếp, kết quả công bố: giá chốt = G × k, trong đó k = 0,9 / 1,1 / 1,3 / 1,5 với xác suất 20% / 40% / 30% / 10%. Giá trị kỳ vọng của k là 1,16. Theo [DoKho.md](../Balance/DoKho.md) của Claude 2, ở ván khó nâng k lên 1,33 làm tỷ lệ thắng tăng 8 đến 13 điểm, quá dễ so với mục tiêu. Với k 1,16, đấu giá chỉ lời với món đắt và giá sàn thấp, còn lại là cái bẫy, đúng là một đánh đổi thật.
 5. Nếu giá chốt không thấp hơn giá sàn thì bán thành công và tiền vào ngay đầu ngày. Nếu thấp hơn, hiện vật được trả lại và phí không hoàn.
 
 **Quy tắc.**
@@ -65,8 +65,9 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 
 | Ca | Tình huống | Kết quả |
 | --- | --- | --- |
-| 1 | Ngày 3 gửi V10 (G = 2.600 xu), không giá sàn. | Trả phí 130 xu. Đầu ngày 4 nếu k = 1,6 thì nhận 4.160 xu. |
-| 2 | Gửi V10, sàn 1,6 G (4.160 xu), kết quả k = 1,2 (3.120 xu, thấp hơn sàn). | Không bán, hiện vật trả về, mất phí 130 xu. |
+| 1 | Ngày 3 gửi V10 (G = 2.600 xu), không giá sàn. | Trả phí 130 xu. Đầu ngày 4 nếu k = 1,3 thì nhận 3.380 xu. |
+| 2 | Gửi V10, sàn 1,3 G (3.380 xu), kết quả k = 1,1 (2.860 xu, thấp hơn sàn). | Không bán, hiện vật trả về, mất phí 130 xu. |
+| 2b | Gửi V10, không giá sàn, kết quả k = 0,9. | Nhận 2.340 xu, thấp hơn giá bán thường 2.600 xu và còn mất phí 130 xu. |
 | 3 | Gửi vào ngày 7. | Bị từ chối. |
 | 3b | Gửi V09 (G = 815 xu). | Bị từ chối vì G dưới 1.300 xu. |
 | 4 | Thiếu 300 xu khi thu nợ cuối ngày, hiện vật đang chờ kết quả. | Không dùng được. Nợ tồn tính theo luật nợ. |
@@ -171,7 +172,7 @@ Claude 2 đã đo các dịch vụ trong [Sprint 4](../Balance/Sprint4.md) bằn
 
 | Hệ | Khuyến nghị của Claude 2 | Cách bản này đáp ứng |
 | --- | --- | --- |
-| Đấu giá | Kỳ vọng khoảng +40%, nhắm món đắt | k kỳ vọng 1,40, chỉ món từ 1.300 xu |
+| Đấu giá | Kỳ vọng khoảng +40% ở bảng giá dễ cũ, nhưng ở ván khó (DoKho.md) giữ 1,16 | k kỳ vọng 1,16, chỉ món từ 1.300 xu |
 | Sòng bạc | Không đổi cân bằng, lợi thế nhà cái 5–10% an toàn | Giữ lợi thế nhà cái 10%, mức cược 100/250/500, 2 lượt mỗi ngày |
 | Cầm cố | Tác động nhỏ, phí 15% là đủ | Giữ 60%, phí 15%, thêm cầm tạo tác để có đánh đổi |
 | Biến cố | Biên độ tối đa ±20% | Biến cố giá bán là ±15%, ±15%, +10%, thấp hơn mức này |
@@ -183,4 +184,4 @@ Claude 2 đã đo các dịch vụ trong [Sprint 4](../Balance/Sprint4.md) bằn
 - Sòng bạc: kỳ vọng âm, chỉ hợp khi đã tính kỹ.
 - Biến cố: buộc chọn giữa bán ngay và chờ giá.
 
-**Cần Claude 2 chạy lại** khi chủ dự án duyệt giá nền hệ số 0,85: chuyển luật này vào `QA/services_model.py` và `QA/sprint4_sim.py`, rồi xác nhận khoảng an toàn vẫn đúng, nhất là đấu giá với k kỳ vọng 1,40.
+**Cần Claude 2 chạy lại** khi chủ dự án duyệt giá nền hệ số 0,85: chuyển luật này vào `QA/services_model.py` và `QA/sprint4_sim.py`, rồi xác nhận khoảng an toàn vẫn đúng, nhất là đấu giá với k kỳ vọng 1,16 và ngưỡng món từ 1.300 xu.
