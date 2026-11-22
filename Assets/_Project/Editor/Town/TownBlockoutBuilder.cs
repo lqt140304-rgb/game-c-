@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
+using ChoDoLa.Editor;
 using ChoDoLa.Interaction;
 using ChoDoLa.Town.Layout;
 using ChoDoLa.UI;
