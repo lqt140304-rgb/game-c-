@@ -162,21 +162,21 @@ namespace ChoDoLa.Town.Editor
             GameObject group = new GameObject("OpenTable_Props");
             group.transform.SetParent(parent, false);
 
-            GameObject counter = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject woodPrefab = TownPrefabFactory.GetOrCreate(TownPieceKind.Wall, TownPalette.Wood);
+            GameObject brassPrefab = TownPrefabFactory.GetOrCreate(TownPieceKind.AccentSteam, TownPalette.Brass);
+
+            GameObject counter = (GameObject)PrefabUtility.InstantiatePrefab(woodPrefab, group.transform);
             counter.name = "Counter_NiemPhong_Placeholder";
-            counter.transform.SetParent(group.transform, false);
             counter.transform.position = new Vector3(-1.2f, 0.5f, 22.0f);
             counter.transform.localScale = new Vector3(2.2f, 1.0f, 0.9f);
 
-            GameObject table = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject table = (GameObject)PrefabUtility.InstantiatePrefab(woodPrefab, group.transform);
             table.name = "Table_OpenBox_Placeholder";
-            table.transform.SetParent(group.transform, false);
             table.transform.position = new Vector3(1.0f, 0.45f, 22.0f);
             table.transform.localScale = new Vector3(1.6f, 0.9f, 1.0f);
 
-            GameObject testBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject testBox = (GameObject)PrefabUtility.InstantiatePrefab(brassPrefab, group.transform);
             testBox.name = "TestBox_Placeholder";
-            testBox.transform.SetParent(group.transform, false);
             testBox.transform.position = new Vector3(1.0f, 1.08f, 22.0f);
             testBox.transform.localScale = new Vector3(0.35f, 0.35f, 0.35f);
             testBox.AddComponent<TestBoxInteractable>();
