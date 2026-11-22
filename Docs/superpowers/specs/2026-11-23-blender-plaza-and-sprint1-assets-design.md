@@ -10,27 +10,28 @@
 1. Chuyển toàn bộ tài sản trung tâm của Sprint 1 từ khối primitive Unity sang **mô hình Blender chi tiết cao** (vát cạnh/bevel, tiện tròn, mái ngói xếp lớp, smooth shading, nhiều material slot).
 2. Biến khu vực `OpenTable_Zone` (`X=0, Z=22`) thành **Đài phun nước trung tâm** của quảng trường.
 3. Tách hoạt động mua và mở hộp thành **2 ngôi nhà riêng biệt đối diện nhau** qua quảng trường đài phun nước — người chơi **phải đi vào bên trong nhà** mới tương tác mua hộp hoặc mở/soi hiện vật.
-4. Gắn **tấm biển chỉ dẫn mua sắm cỡ lớn** (khung gỗ viền đồng + chữ rõ nét) phía trên cửa chính và biển vẫy bên hông để từ xa người chơi nhận biết ngay chức năng từng nhà.
-5. Nới rộng không gian quảng trường và sắp xếp **các tòa kiến trúc phụ xen kẽ** giữa các tòa nhà chính để thị trấn có chiều sâu.
+4. Gắn **tấm biển chỉ dẫn mua sắm vừa vặn, rõ nét** (khung gỗ viền đồng kích thước hợp lý `~2.2m × 0.55m` trên cửa chính + biển treo nhỏ bên hông) để người chơi nhận biết ngay từng nhà mà không bị thô.
+5. **Nới rộng toàn bộ không gian map** (từ `45m × 55m` lên `60m × 68m`, `X ∈ [-30, 30]`, `Z ∈ [0, 68]`) để có chỗ bố trí thêm **các tòa kiến trúc phụ xen kẽ** giữa các tòa nhà chính, tạo nhịp điệu thị trấn có chiều sâu.
 
 ---
 
-## 2. Quy hoạch Quảng trường & Không gian (`TownLayout.cs`)
+## 2. Quy hoạch Map Mở Rộng, Quảng trường & 2 Nhà Đối Diện (`TownSpec.cs` & `TownLayout.cs`)
 
-- **Quảng trường trung tâm:** Nới rộng quanh `Z ∈ [13, 31]`, `X ∈ [-10.5, 10.5]` (lối đi rộng rãi quanh đài phun nước, không cản trở trục Bắc-Nam).
+- **Giới hạn thị trấn mở rộng:** `X ∈ [-30, 30]`, `Z ∈ [0, 68]` (`60m × 68m`).
+- **Quảng trường trung tâm:** Mở rộng quanh `Z ∈ [13, 31]`, `X ∈ [-11.5, 11.5]` (lối đi rộng rãi quanh đài phun nước).
 - **Đài phun nước trung tâm (`Fountain_Central`):** Đặt tại `(0, 0, 22)`, đường kính ~`3.8m`.
 - **Nhà 1 — Quán Bán Hộp Mù (`Shop_BlindBox_House`, Dì Mận):**
-  - Vị trí: `(-6.8, 0, 22)`, quay mặt hướng Đông (`+X`) nhìn thẳng sang đài phun nước.
+  - Vị trí: `(-7.2, 0, 22)`, quay mặt hướng Đông (`+X`) nhìn thẳng sang đài phun nước.
   - Kích thước ngoài: rộng mặt tiền `6.0m` (`Z`), sâu `5.0m` (`X`), cao tường `3.4m` + mái dốc lên `5.2m`.
   - Cửa chính rộng `2.4m × 2.8m` (không đặt collider chắn ngang lối đi), bên trong đặt **Quầy Niêm Phong**, 4 hộp mẫu trưng bày, đèn lồng ấm và kệ hàng.
-  - Biển hiệu lớn: **`QUẦY NIÊM PHONG · BÁN HỘP MÙ`** (`~3.4m × 0.95m`) gắn trên mặt tiền + biển treo vươn ra quảng trường.
-- **Nhà 2 — Tiệm Mở & Soi Hiện Vật (`Shop_OpenBox_House`):**
-  - Vị trí: `(+6.8, 0, 22)`, quay mặt hướng Tây (`-X`), **đối diện trực tiếp** Quán Bán Hộp Mù qua đài phun nước.
+  - Biển hiệu vừa vặn: **`QUẦY NIÊM PHONG · BÁN HỘP MÙ`** (`~2.2m × 0.55m`) gắn cân đối trên cửa chính + biển treo nhỏ `~0.9m × 0.45m`.
+- **Nhà 2 — Tiệm Mở & Soi Hộp (`Shop_OpenBox_House`):**
+  - Vị trí: `(+7.2, 0, 22)`, quay mặt hướng Tây (`-X`), **đối diện trực tiếp** Quán Bán Hộp Mù qua đài phun nước.
   - Kích thước tương đương (`6.0m × 5.0m`), cửa chính rộng `2.4m × 2.8m`.
   - Bên trong đặt **Bàn Mở & Soi Hiện Vật** (thảm nhung đỏ, đèn bàn đồng `SpotLight`, kính lúp, 3 ô đặt hộp), giá gỗ trưng bày và đèn trần ấm.
-  - Biển hiệu lớn: **`TIỆM MỞ & SOI HIỆN VẬT`** (`~3.4m × 0.95m`) gắn trên mặt tiền + biển treo vươn ra quảng trường.
+  - Biển hiệu vừa vặn: **`TIỆM MỞ & SOI HIỆN VẬT`** (`~2.2m × 0.55m`) gắn cân đối trên cửa chính + biển treo nhỏ `~0.9m × 0.45m`.
 - **Tòa kiến trúc xen kẽ & Luật kiểm tra:**
-  - Điều chỉnh các khối `Building` / `CoverBuilding` quanh `Z ∈ [14, 30]` lùi ra biên phù hợp và bổ sung các khối nhà phụ thấp tầng/mái hiên xen kẽ giữa các tòa nhà chính.
+  - Nới các dãy nhà biên ra theo giới hạn `60m × 68m` mới, bổ sung các tòa kiến trúc phụ (nhà đá/gỗ/mái ngói thấp tầng, hiên phụ) xen kẽ giữa các tòa nhà chính dọc phố chính và các ngõ.
   - Giữ nguyên 8 `ShopSlotMarker` (`ShopSlot_01`…`ShopSlot_08`) và đảm bảo toàn bộ test của `TownLayoutValidator` tiếp tục PASS.
 
 ---
