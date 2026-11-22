@@ -4,6 +4,7 @@
   "references": [
     "ChoDoLa.Runtime",
     "ChoDoLa.Town.Layout",
+    "Unity.InputSystem",
     "UnityEngine.UI"
   ],
   "includePlatforms": [

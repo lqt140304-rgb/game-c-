@@ -50,6 +50,7 @@ namespace ChoDoLa.Town.Editor
             }
 
             CreateOpenTableProps(townRoot.transform);
+            ChoDoLa.Sprint1.Editor.Sprint1SceneSetup.BuildInCurrentScene(saveScene: false);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddSceneToBuildSettings(ScenePath);
@@ -187,10 +188,12 @@ namespace ChoDoLa.Town.Editor
             GameObject lightGo = new GameObject("Directional Light");
             Light light = lightGo.AddComponent<Light>();
             light.type = LightType.Directional;
-            ColorUtility.TryParseHtmlString("#FFE2B8", out Color warm);
+            ColorUtility.TryParseHtmlString("#FFEED0", out Color warm);
             light.color = warm;
-            light.intensity = 1.2f;
-            lightGo.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+            light.intensity = 1.45f;
+            light.shadows = LightShadows.Soft;
+            light.shadowStrength = 0.82f;
+            lightGo.transform.rotation = Quaternion.Euler(48f, -32f, 0f);
         }
 
         private static string GetGroupName(TownPieceKind kind)

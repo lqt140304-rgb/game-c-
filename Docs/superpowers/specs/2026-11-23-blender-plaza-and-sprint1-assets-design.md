@@ -20,25 +20,35 @@
 - **Giới hạn thị trấn mở rộng:** `X ∈ [-30, 30]`, `Z ∈ [0, 68]` (`60m × 68m`).
 - **Quảng trường trung tâm:** Mở rộng quanh `Z ∈ [13, 31]`, `X ∈ [-11.5, 11.5]` (lối đi rộng rãi quanh đài phun nước).
 - **Đài phun nước trung tâm (`Fountain_Central`):** Đặt tại `(0, 0, 22)`, đường kính ~`3.8m`.
-- **Nhà 1 — Quán Bán Hộp Mù (`Shop_BlindBox_House`, Dì Mận):**
+- **Nhà 1 — Quán Bán Hộp Mù (`Shop_BlindBox_House`, Dì Mận — Cổ Vật & Bí Ẩn):**
   - Vị trí: `(-7.2, 0, 22)`, quay mặt hướng Đông (`+X`) nhìn thẳng sang đài phun nước.
   - Kích thước ngoài: rộng mặt tiền `6.0m` (`Z`), sâu `5.0m` (`X`), cao tường `3.4m` + mái dốc lên `5.2m`.
-  - Cửa chính rộng `2.4m × 2.8m` (không đặt collider chắn ngang lối đi), bên trong đặt **Quầy Niêm Phong**, 4 hộp mẫu trưng bày, đèn lồng ấm và kệ hàng.
+  - **Ngoại thất riêng biệt:** Tường vữa cổ có vết ố ẩm & rêu loang chân tường, mảng gạch nung đỏ lộ vữa, đá góc tường (quoins), mái ngói đất nung có ống khói gạch & cửa sổ mái (dormer), trước hiên bày thùng gỗ/kiện hàng/bình gốm.
+  - **Nội thất riêng biệt:** Cửa chính rộng `2.4m × 2.8m`, bên trong ốp lamri gỗ sẫm chân tường, tường trên lộ gạch & khung bản đồ cổ, dầm xà trần gỗ, sàn gỗ trải thảm dệt đỏ viền vàng trước **Quầy Niêm Phong**, 4 hộp mẫu trưng bày và kệ gốm/cổ thư.
   - Biển hiệu vừa vặn: **`QUẦY NIÊM PHONG · BÁN HỘP MÙ`** (`~2.2m × 0.55m`) gắn cân đối trên cửa chính + biển treo nhỏ `~0.9m × 0.45m`.
-- **Nhà 2 — Tiệm Mở & Soi Hộp (`Shop_OpenBox_House`):**
+- **Nhà 2 — Tiệm Mở & Soi Hộp (`Shop_OpenBox_House` — Xưởng Giám Định Cơ Khí):**
   - Vị trí: `(+7.2, 0, 22)`, quay mặt hướng Tây (`-X`), **đối diện trực tiếp** Quán Bán Hộp Mù qua đài phun nước.
   - Kích thước tương đương (`6.0m × 5.0m`), cửa chính rộng `2.4m × 2.8m`.
-  - Bên trong đặt **Bàn Mở & Soi Hiện Vật** (thảm nhung đỏ, đèn bàn đồng `SpotLight`, kính lúp, 3 ô đặt hộp), giá gỗ trưng bày và đèn trần ấm.
+  - **Ngoại thất riêng biệt:** Chân tường ốp gạch men xanh cổ vịt bóng nhẹ, tường trên bằng đá cắt (ashlar stone), đường ống đồng hơi nước & đồng hồ áp suất chạy dọc mặt tiền, mái đá phiến có ô kính lấy sáng (skylight) và mái hiên kính-đồng trên cửa chính.
+  - **Nội thất riêng biệt:** Tường gạch xưởng quét vôi có vết ám khói nhẹ & viền gạch men, sàn đá caro xưởng, bảng treo dụng cụ & bản vẽ cơ khí, tủ kính trưng bày hiện vật, và **Bàn Mở & Soi Hiện Vật** (thảm nhung đỏ, đèn bàn đồng `SpotLight`, kính lúp, 3 ô đặt hộp).
   - Biển hiệu vừa vặn: **`TIỆM MỞ & SOI HIỆN VẬT`** (`~2.2m × 0.55m`) gắn cân đối trên cửa chính + biển treo nhỏ `~0.9m × 0.45m`.
-- **Tòa kiến trúc xen kẽ & Luật kiểm tra:**
-  - Nới các dãy nhà biên ra theo giới hạn `60m × 68m` mới, bổ sung các tòa kiến trúc phụ (nhà đá/gỗ/mái ngói thấp tầng, hiên phụ) xen kẽ giữa các tòa nhà chính dọc phố chính và các ngõ.
+- **Mặt đường, Vỉa hè & Tòa kiến trúc xen kẽ:**
+  - Làm lại mặt đường đá cuội lát nổi (`Cobblestone PBR`), **vỉa hè nâng cao (`+0.12m`)** có hàng đá bó vỉa (curbstones) dọc hai bên dãy nhà, và **vòng đá đồng tâm** quanh Đài phun nước trung tâm.
+  - Nới các dãy nhà biên ra theo giới hạn `60m × 68m` mới, bổ sung các tòa kiến trúc phụ đa dạng chất liệu (gạch trần, đá cắt, vữa cổ, gạch men) xen kẽ giữa các tòa nhà chính.
   - Giữ nguyên 8 `ShopSlotMarker` (`ShopSlot_01`…`ShopSlot_08`) và đảm bảo toàn bộ test của `TownLayoutValidator` tiếp tục PASS.
 
 ---
 
 ## 3. Pipeline Blender 5.2.3 LTS → Unity URP
 
-### 3.1. Sinh `.fbx` tự động (`Tools/Blender/`)
+### 3.1. Sinh `.fbx` & Chất liệu PBR (`Tools/Blender/`)
+- Dùng hệ Shader Nodes thủ tục (`TexCoord.Object` đồng bộ tỷ lệ mét) tạo bề mặt chân thực có `Roughness` & `Bump/Normal`:
+  - `Mat_Cobble_PBR`: đá lát Voronoi + rãnh rêu ẩm + Bump.
+  - `Mat_WeatheredPlaster`: vữa vàng cổ có vết ố ẩm/rêu loang theo chiều cao `Z`.
+  - `Mat_ExposedBrick` & `Mat_WhitewashedBrick`: gạch nung lộ vữa và gạch xưởng quét vôi.
+  - `Mat_GlazedBrick_Teal`: gạch men xanh cổ vịt bóng nhẹ (`Roughness ~0.16` trên mặt men, `0.85` ở mạch vữa).
+  - `Mat_AshlarStone`, `Mat_WoodLight_PBR`, `Mat_WoodDark_PBR`, `Mat_CheckerFloor`.
+- Khi xuất sang Unity URP, hỗ trợ bake texture (`Diffuse`, `Roughness`, `Normal`) từ các node PBR trên để Unity giữ nguyên độ chi tiết vết ố và mạch gạch.
 - Viết các script Python `bpy` chạy headless qua:
   `"D:\blender\blender.exe" --background --python Tools/Blender/generate_all.py`
 - Xuất file `.fbx` vào `Assets/_Project/Art/Blender/` với chuẩn:

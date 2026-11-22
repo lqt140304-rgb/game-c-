@@ -2,10 +2,10 @@ namespace ChoDoLa.Town.Layout
 {
     public static class TownSpec
     {
-        public const float BoundsMinX = -22.5f;
-        public const float BoundsMaxX = 22.5f;
+        public const float BoundsMinX = -30f;
+        public const float BoundsMaxX = 30f;
         public const float BoundsMinZ = 0f;
-        public const float BoundsMaxZ = 55f;
+        public const float BoundsMaxZ = 68f;
 
         public static readonly Rect2 TownBounds = new Rect2(BoundsMinX, BoundsMinZ, BoundsMaxX, BoundsMaxZ);
 

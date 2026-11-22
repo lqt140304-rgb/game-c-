@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using ChoDoLa.UI;
 #if ENABLE_INPUT_SYSTEM
@@ -20,6 +21,19 @@ namespace ChoDoLa.Interaction
         [SerializeField] private Sprint0HudView hudView;
 
         private IInteractable _currentTarget;
+        private bool _isInteractionLocked;
+
+        public event Action<string> OnPromptChanged;
+
+        public void SetInteractionLocked(bool locked)
+        {
+            _isInteractionLocked = locked;
+            if (locked)
+            {
+                _currentTarget = null;
+                PublishPrompt(string.Empty);
+            }
+        }
 
         private void Reset()
         {
@@ -28,6 +42,8 @@ namespace ChoDoLa.Interaction
 
         private void Update()
         {
+            if (_isInteractionLocked) return;
+
             if (playerCamera == null)
             {
                 playerCamera = Camera.main;
@@ -51,19 +67,19 @@ namespace ChoDoLa.Interaction
                 if (interactable != null)
                 {
                     _currentTarget = interactable;
-                    if (hudView != null)
-                    {
-                        hudView.SetInteractPrompt(interactable.CanInteract ? $"[E] {interactable.PromptText}" : string.Empty);
-                    }
+                    PublishPrompt(interactable.CanInteract ? $"[E] {interactable.PromptText}" : string.Empty);
                     return;
                 }
             }
 
             _currentTarget = null;
-            if (hudView != null)
-            {
-                hudView.SetInteractPrompt(string.Empty);
-            }
+            PublishPrompt(string.Empty);
+        }
+
+        private void PublishPrompt(string prompt)
+        {
+            if (hudView != null) hudView.SetInteractPrompt(prompt);
+            OnPromptChanged?.Invoke(prompt);
         }
 
         private static bool IsInteractPressed()
