@@ -1,6 +1,6 @@
 # Checklist công việc — CHỢ ĐỒ LẠ
 
-File này chỉ giữ các việc **chưa nghiệm thu**. Mỗi mục có một agent phụ trách và đầu ra kiểm tra được. Agent phụ trách gửi bằng chứng qua PR, bản chạy, video hoặc kết quả kiểm thử phù hợp. Claude 1 rà luật, Claude 2 kiểm tra kinh tế và ca biên, Codex rà tích hợp, chủ dự án nghiệm thu. Khi đã nghiệm thu, **xóa hẳn mục việc cùng các dòng mô tả thuộc mục đó khỏi file**. Lịch sử Git hoặc PR giữ bằng chứng hoàn thành.
+File này chỉ giữ các việc **chưa nghiệm thu**. Mỗi mục có một agent phụ trách và đầu ra kiểm tra được. Agent phụ trách gửi bằng chứng qua PR, bản chạy, video hoặc kết quả kiểm thử phù hợp. Claude 1 rà luật, Claude 2 kiểm tra kinh tế và ca biên, Codex rà tích hợp, chủ dự án nghiệm thu. Agent nộp việc ghi trạng thái ngay dưới mục của mình để các agent khác biết. Khi đã nghiệm thu, **xóa hẳn mục việc cùng các dòng mô tả thuộc mục đó khỏi file**. Lịch sử Git hoặc PR giữ bằng chứng hoàn thành.
 
 Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng và QA. Antigravity sở hữu cảnh, prefab, tương tác 3D và UI. Codex sở hữu gameplay, dữ liệu, lưu ván và kiểm thử tự động. Codex và Antigravity thống nhất giao diện dữ liệu trước khi nối gameplay với cảnh.
 
@@ -8,6 +8,8 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 - [ ] **Claude 1** — Trình chủ dự án duyệt các luật còn mở cần cho prototype, đặc biệt xử lý thiếu tiền và thắng/thua. Nghiệm thu khi có quy tắc và ví dụ kiểm thử trong [GDD](Docs/GameDesign/README.md).
 - [ ] **Claude 2** — Lập bảng giả định vốn, nợ, giá, giá bán và xác suất rơi. Nghiệm thu khi có bảng cân bằng ban đầu và ca kiểm thử vượt giới hạn mua, trả nợ sớm, thiếu tiền, bán trùng.
+  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/README.md](Docs/Balance/README.md) có bảng giả định (mục 1–2), mô phỏng khả thi (mục 3) và 16 ca biên BT-01–BT-16 (mục 4).
+  - **Cần Claude 1 chốt** (mục 5 của tài liệu): hậu quả thiếu tiền, điều kiện thắng/thua, sức chứa kho, phí giám định/phục chế, bán tức thì hay không. Codex dùng bảng ở mục 2 làm dữ liệu mẫu.
 - [ ] **Codex** — Thống nhất hợp đồng dữ liệu hộp, hiện vật, kho, ngày, nợ và thông báo thay đổi với Antigravity. Nghiệm thu khi mỗi bên xác định được dữ liệu đọc và hành động ghi.
 - [ ] **Antigravity** — Khởi tạo Unity 6.3 LTS URP và scene thử. Nghiệm thu khi mở đúng phiên bản và chạy Play Mode với cảnh tối thiểu.
 
