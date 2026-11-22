@@ -19,7 +19,7 @@ from sprint3_sim import BOXES, ITEMS, ART, FAKE_P, FAKE_P_V09, FAKE_X, DEBT, QK,
 
 GROUPS = [QK, HD, TL, NHT, CT, TT]
 CLUE_PRICE = 30
-SKILL = dict(M=3, tau=1.0, extra=0, n_true=2, must_buy=False, lam=0.0, clue_price=30)
+SKILL = dict(M=3, tau=1.0, extra=0, n_true=2, must_buy=False, lam=0.0, clue_price=30, read=True)
 NTRUE = {"H1": 2, "H2": 2, "H3": 1, "RD": 1}   # luật Claude 1: hộp đắt hay bị đánh lạc hướng
 
 
@@ -279,7 +279,7 @@ def turn_choose(run, reserve_cash, tiers):
     for box in tiers:
         tier_price = run.c.box_price[box]
         c = make_candidate(run, box)
-        c["seen"] = free_clues(run)
+        c["seen"] = free_clues(run) if SKILL["read"] else 0
         e = posterior_ev(run, box, c["clues"][:c["seen"]])
         prior = posterior_ev(run, box, [])
         c["mult"] = 1 + SKILL["lam"] * (e / prior - 1)
@@ -376,3 +376,21 @@ def sweep_rules():
                       ("lam 0,9, tau 1,15", dict(lam=.9, tau=1.15))):
         r = measure_turns(c, 2000, **kw)
         print("%-48s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
+
+
+def sweep_isolate():
+    """Tách riêng giá trị của manh mối khỏi giá trị của việc chọn loại hộp (mỗi lượt có 4 loại để chọn)."""
+    c = setup(True)
+    base = measure_plain(c, 2000)
+    ks = list(TURN_NAMES)
+    print("bậc thang cũ (hộp đắt nhất mua được)       " + " ".join("%5.1f" % base[k] for k in ks), flush=True)
+    for label, kw in (("chọn loại hộp, KHÔNG đọc manh mối", dict(read=False, lam=0.0, tau=1.0)),
+                      ("chọn loại hộp, đọc manh mối, giá cố định", dict(read=True, lam=0.0, tau=1.0)),
+                      ("đọc manh mối, giá theo manh mối lam 0,5", dict(read=True, lam=.5, tau=1.0)),
+                      ("đọc manh mối, giá theo manh mối lam 0,75", dict(read=True, lam=.75, tau=1.0)),
+                      ("đọc manh mối, giá theo manh mối lam 1,0", dict(read=True, lam=1.0, tau=1.0)),
+                      ("lam 0,75, thêm 2 manh mối 30 xu", dict(read=True, lam=.75, tau=1.0, extra=2, clue_price=30)),
+                      ("lam 0,75, thêm 2 manh mối 15 xu", dict(read=True, lam=.75, tau=1.0, extra=2, clue_price=15)),
+                      ("lam 0, thêm 2 manh mối 15 xu", dict(read=True, lam=0.0, tau=1.0, extra=2, clue_price=15))):
+        r = measure_turns(c, 2000, **kw)
+        print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
