@@ -58,7 +58,7 @@ def posterior_ev(run, box, obs):
         origin, base = run.c.items[iid]
         l = likelihood(obs, origin, n_true(box)) if obs else 1.0
         fp = fake_rate(box, iid)
-        val = base * qm * (1 - fp + fp * FAKE_X)
+        val = base * qm * (1 - fp + fp * FAKE_X) * getattr(run, "item_mult", lambda i: 1.0)(iid)
         num += wgt * l * val
         den += wgt * l
     return (num / den) / price if den else 0.0
@@ -304,15 +304,16 @@ def turn_choose(run, reserve_cash, tiers):
     g = run.g
     cands = []
     for box in tiers:
-        tier_price = run.c.box_price[box]
+        base_price = run.c.box_price[box]
+        tier_price = getattr(run, "box_price_today", lambda b: run.c.box_price[b])(box)
         c = make_candidate(run, box)
         c["seen"] = free_clues(run) if SKILL["read"] else 0
         e = posterior_ev(run, box, c["clues"][:c["seen"]])
         prior = posterior_ev(run, box, [])
         c["mult"] = 1 + SKILL["lam"] * (e / prior - 1)
         c["price"] = max(1, round(tier_price * c["mult"]))
-        c["tier_price"] = tier_price
-        c["value"] = e * tier_price
+        c["tier_price"] = base_price
+        c["value"] = e * base_price
         cands.append(c)
     ok = [c for c in cands if g.cash - c["price"] >= reserve_cash]
     if not ok:
