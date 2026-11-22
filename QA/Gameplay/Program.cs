@@ -65,6 +65,24 @@ Check(full.Shelf.Any(offer => offer.TypeId == "RD"), "black chest unlocks day fo
 Check(full.Sell("full-sell", full.Inventory[0].Id).Success, "make inventory space");
 Check(full.OpenBox("full-open-3-3", full.Table[0].Id).Success, "retry previously rejected open");
 
+var priceData = JObject.Parse(json);
+priceData["boxes"][0]["drops"] = JArray.Parse("[{\"item\":\"V02\",\"weight\":100}]");
+priceData["rules"]["quality"] = new JArray(priceData["rules"]["quality"][1].DeepClone());
+foreach (var fake in new[] { false, true })
+{
+    priceData["boxes"][0]["fake_rate"] = fake ? 1 : 0;
+    var pricing = new MarketRun(priceData.ToString(), 123);
+    var bought = pricing.BuyBox("price-buy", pricing.Shelf[0].Id);
+    var opened = pricing.OpenBox("price-open", bought.EntityId);
+    Check(opened.WasFake == null, "opening does not reveal authenticity");
+    Check(pricing.Inventory.Single().ListedPrice == 269, "listed price floors and never reveals a fake");
+    Check(pricing.Inspect(opened.EntityId).ListedPrice == 269, "inspection keeps the same listed price");
+    var sold = pricing.Sell("price-sell", opened.EntityId);
+    var payout = fake ? 53 : 269;
+    Check(sold.Amount == payout && sold.WasFake == fake, "sale floors actual price and reveals authenticity");
+    Check(pricing.Cash == 900 + payout, "cash receives the actual payout");
+}
+
 var temporaryDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
 try
 {

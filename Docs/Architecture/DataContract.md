@@ -15,7 +15,7 @@ Tài liệu này xác định giao diện dữ liệu giữa **Antigravity** (c�
 
 ### 1.2. Hộp mù & Hiện vật (`BoxOfferView`, `ArtifactInstanceView`)
 - **Hộp mù:** `OfferId`, `BoxTypeId`, `DisplayName`, `Price`, `PotentialCategory`, `ClueText`, `VisualVariantKey` (để Antigravity gắn đúng prefab/tem niêm phong 3D).
-- **Hiện vật:** `InstanceId`, `ItemId`, `DisplayName`, `Quality` (tình trạng), `Authenticity` (xác thực), `Rarity` (độ hiếm), `BaseValue`, `CurrentSellPrice`, `AppraisalState`, `VisualPrefabKey`.
+- **Hiện vật:** `InstanceId`, `ItemId`, `DisplayName`, `Quality` (tình trạng), `Authenticity` (xác thực), `Rarity` (độ hiếm), `BaseValue`, `ListedPrice`, `AppraisalState`, `VisualPrefabKey`.
 
 ### 1.3. Kho, Tạo tác & Bí Khế
 - `InventoryItems`: danh sách hiện vật đang giữ.
@@ -64,7 +64,7 @@ Gắn một `MarketRunHost` vào GameObject ở gốc của scene gameplay. Comp
 | `Day`, `Cash`, `BoughtToday`, `DailyLimit` | Ngày, tiền và lượt mua |
 | `Shelf`, `ExtraCluePrice` | ID offer, ID loại hộp, giá theo manh mối đầu, tỷ lệ giả của loại và các manh mối đã mở |
 | `Table`, `TableCapacity` | ID và loại hộp chưa mở, giữ qua ngày |
-| `Inventory`, `InventoryCapacity`, `Inspect(itemId)` | Hiện vật đã mở, mã mẫu để chọn prefab, chất lượng, dấu hiệu soi và giá bán |
+| `Inventory`, `InventoryCapacity`, `Inspect(itemId)` | Hiện vật đã mở, mã mẫu để chọn prefab, chất lượng, dấu hiệu soi và `ListedPrice` tính như hàng thật khi chưa giám định |
 | `DueToday`, `Arrears`, `Status`, `EndReason` | Kỳ thu hiện tại gồm nợ tồn và lý do kết thúc ván |
 
 | Lệnh Sprint 1 | Kết quả thành công |
@@ -73,10 +73,12 @@ Gắn một `MarketRunHost` vào GameObject ở gốc của scene gameplay. Comp
 | `BuyBox(transactionId, offerId)` | Trừ giá, thêm hộp lên bàn, tăng lượt và bày kệ mới. |
 | `StopBuying(transactionId, expectedDay)` | Dừng mua đến ngày kế tiếp. |
 | `OpenBox(transactionId, boxId)` | Chuyển hộp trên bàn thành một hiện vật trong kho. `EntityId` là ID hiện vật. |
-| `Sell(transactionId, itemId)` | Xóa hiện vật khỏi kho và cộng giá bán. |
+| `Sell(transactionId, itemId)` | Xóa hiện vật khỏi kho và cộng tiền thực nhận. `Amount` là số xu thực nhận và `WasFake` cho biết món đã bán có phải hàng giả. |
 | `EndDay(transactionId, expectedDay)` | Thu nợ, tính phạt, rồi sang ngày hoặc kết thúc ván. `Amount` là tiền đã thu, `Penalty` là tiền phạt mới. |
 
 Các chữ ký này thay phần lệnh hộp, bán và nợ được đề xuất ở mục 2 cho Sprint 1. `EndDay` là lệnh duy nhất thu nợ. Truyền ngày đang hiển thị tại thời điểm người chơi xác nhận, để xác nhận lặp của ngày cũ nhận `STALE_DAY`. Một ID giao dịch dùng cho đúng một ý định, giữ nguyên ID khi gửi lại. Gọi từ luồng chính của Unity, đọc `Result.Code` để hiện lỗi và dùng `Result.EntityId` cho hiệu ứng theo cá thể.
+
+Giá hiển thị và số xu thực nhận đều làm tròn xuống sau khi áp dụng các hệ số. Món chưa giám định chỉ lộ thật hay giả trong kết quả bán.
 
 Đăng ký `Changed` để đọc lại trạng thái sau khi lưu thành công. Lệnh bị từ chối giữ nguyên tiền, lượt mua, bàn, kho và nợ. Gameplay lưu cả kết quả hộp và ID giao dịch. Tiền đã trả trừ vào tổng nợ. Phạt mới tính trên toàn bộ số còn lại, gồm cả phần phạt cũ còn thiếu.
 

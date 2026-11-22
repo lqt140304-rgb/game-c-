@@ -36,7 +36,7 @@ namespace ChoDoLa.Gameplay
             public string Rarity { get; internal set; }
             public string Origin { get; internal set; }
             public int BasePrice { get; internal set; }
-            public int SellPrice { get; internal set; }
+            public int ListedPrice { get; internal set; }
             public string[] Signs { get; internal set; }
         }
 
@@ -47,13 +47,16 @@ namespace ChoDoLa.Gameplay
             public string EntityId { get; }
             public int Amount { get; }
             public int Penalty { get; }
+            public bool? WasFake { get; }
 
-            internal Result(string code = "OK", string entityId = null, int amount = 0, int penalty = 0)
+            internal Result(string code = "OK", string entityId = null, int amount = 0, int penalty = 0,
+                bool? wasFake = null)
             {
                 Code = code;
                 EntityId = entityId;
                 Amount = amount;
                 Penalty = penalty;
+                WasFake = wasFake;
             }
         }
 
@@ -190,10 +193,11 @@ namespace ChoDoLa.Gameplay
         {
             var item = next.Inventory.Find(entry => entry.Id == itemId);
             if (item == null) return new Result("ITEM_UNAVAILABLE");
-            var price = ViewItem(item).SellPrice;
+            var fakeFactor = item.Fake ? (decimal)rules["fake_price_factor"] : 1m;
+            var price = (int)Math.Floor(PriceBeforeAuthenticity(item) * fakeFactor);
             next.Inventory.Remove(item);
             next.Cash += price;
-            return new Result(entityId: itemId, amount: price);
+            return new Result(entityId: itemId, amount: price, wasFake: item.Fake);
         });
 
         public Result EndDay(string transactionId, int expectedDay) => Apply(transactionId, next =>
@@ -321,8 +325,6 @@ namespace ChoDoLa.Gameplay
             var item = items[entry.ItemId];
             var quality = qualities[entry.Quality];
             var basePrice = (int)item["base_price"];
-            var price = basePrice * (decimal)quality["price_mult"] *
-                (entry.Fake ? (decimal)rules["fake_price_factor"] : 1m);
             return new ItemView
             {
                 Id = entry.Id,
@@ -332,10 +334,13 @@ namespace ChoDoLa.Gameplay
                 Rarity = (string)item["rarity"],
                 Origin = (string)item["origin"],
                 BasePrice = basePrice,
-                SellPrice = (int)Math.Round(price, MidpointRounding.ToEven),
+                ListedPrice = (int)Math.Floor(PriceBeforeAuthenticity(entry)),
                 Signs = item["inspect_signs"].ToObject<string[]>()
             };
         }
+
+        private decimal PriceBeforeAuthenticity(Box entry) =>
+            (int)items[entry.ItemId]["base_price"] * (decimal)qualities[entry.Quality]["price_mult"];
 
         private static JToken PickWeighted(JToken entries, string field, OfferRandom rng)
         {
