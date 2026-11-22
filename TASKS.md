@@ -33,6 +33,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 ## Sprint 4 — Mở rộng sau nghiệm thu vertical slice
 
 - [ ] **Claude 1** — Chốt luật biến cố, đấu giá, sòng bạc, cầm cố và mở khóa meta. Nghiệm thu khi mỗi hệ có vai trò, luồng và điều kiện hoàn tất.
+  - *Tiến độ:* Đã có bản nháp trong [Docs/Content/DichVuVaMeta.md](Docs/Content/DichVuVaMeta.md): 6 biến cố, đấu giá, sòng bạc, cầm cố, 4 mở khóa meta, mỗi hệ có vai trò, luồng, điều kiện hoàn tất và ca kiểm thử. Chờ Claude 2 đo ảnh hưởng và chủ dự án nghiệm thu.
 - [ ] **Claude 2** — Đo ảnh hưởng dịch vụ đến thanh khoản, nợ và tiến trình giữa ván. Nghiệm thu khi có ca chống giao dịch lặp và báo cáo cân bằng.
 - [ ] **Codex** — Tích hợp luật đã duyệt, lưu giao dịch và tiến trình meta. Nghiệm thu khi các luồng cập nhật nhất quán và khôi phục đúng sau tải lại.
 - [ ] **Antigravity** — Dựng NPC, quầy dịch vụ, giao diện và phản hồi biến cố. Nghiệm thu khi người chơi hoàn thành từng luồng trong cảnh chợ.

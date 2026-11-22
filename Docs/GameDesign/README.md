@@ -69,13 +69,13 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 | Sòng bạc | Lựa chọn rủi ro trong nền kinh tế xu của ván. Cần chốt luật cược, giới hạn và tác động đến khả năng trả nợ. |
 | Cầm cố | Đổi hiện vật lấy thanh khoản. Cần chốt giá cầm, phí, hạn chuộc và điều kiện mất món. |
 
-**[ĐÃ CHỐT]** NPC, biến cố, đấu giá, sòng bạc và cầm cố thuộc thiết kế. **[ĐỀ XUẤT]** Biến cố làm thay đổi nguồn cung, nhu cầu hoặc khả năng tiếp cận dịch vụ trong một khoảng thời gian và được báo qua sổ. Chốt điều kiện phát sinh, thời lượng và tác động trước khi đưa vào bảng cân bằng.
+**[ĐÃ CHỐT]** NPC, biến cố, đấu giá, sòng bạc và cầm cố thuộc thiết kế. **[ĐỀ XUẤT]** Biến cố làm thay đổi nguồn cung, nhu cầu hoặc khả năng tiếp cận dịch vụ trong một khoảng thời gian và được báo qua sổ. Chốt điều kiện phát sinh, thời lượng và tác động trước khi đưa vào bảng cân bằng. Luật đề xuất cho biến cố, đấu giá, sòng bạc và cầm cố nằm trong [Docs/Content/DichVuVaMeta.md](../Content/DichVuVaMeta.md).
 
 ## 6. Sổ tay, lưu ván và meta progression
 
 - **Sổ tay trong ván.** Theo dõi ngày, tiền, các kỳ nợ, lượt mua hộp, giao dịch, hiện vật đã xem, combo, Bí Khế và biến cố.
 - **Lưu ván.** **[ĐỀ XUẤT]** Khi tải lại, khôi phục tiền, ngày, số lượt hộp, kho, kết quả hộp đã xác định, trạng thái nợ, trang bị và Bí Khế. Kiểm thử tình huống tải lại sau khi mở hộp, bán món hoặc trả nợ để tránh lặp giao dịch. **[MỞ]** Thời điểm lưu và chính sách khôi phục khi thoát giữa thao tác.
-- **Meta progression.** **[ĐÃ CHỐT]** Có tiến trình giữa các ván. **[ĐỀ XUẤT]** Ghi nhận bộ sưu tập và mở thêm lựa chọn cho ván sau. **[MỞ]** Danh sách mở khóa, nguồn phần thưởng và mức ảnh hưởng đến kinh tế đầu ván.
+- **Meta progression.** **[ĐÃ CHỐT]** Có tiến trình giữa các ván. **[ĐỀ XUẤT]** Ghi nhận bộ sưu tập và mở thêm lựa chọn cho ván sau. Danh sách mở khóa, nguồn phần thưởng và mức ảnh hưởng đến kinh tế đầu ván được đề xuất trong [Docs/Content/DichVuVaMeta.md](../Content/DichVuVaMeta.md).
 
 ## 7. Phạm vi chơi thử và cân bằng
 
