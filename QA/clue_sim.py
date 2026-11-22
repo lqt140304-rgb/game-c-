@@ -19,7 +19,12 @@ from sprint3_sim import BOXES, ITEMS, ART, FAKE_P, FAKE_P_V09, FAKE_X, DEBT, QK,
 
 GROUPS = [QK, HD, TL, NHT, CT, TT]
 CLUE_PRICE = 30
-SKILL = dict(M=3, tau=1.0, extra=0, n_true=2, must_buy=False, lam=0.0)   # tham số kỹ năng, đổi khi quét
+SKILL = dict(M=3, tau=1.0, extra=0, n_true=2, must_buy=False, lam=0.0, clue_price=30)
+NTRUE = {"H1": 2, "H2": 2, "H3": 1, "RD": 1}   # luật Claude 1: hộp đắt hay bị đánh lạc hướng
+
+
+def n_true(box):
+    return SKILL["n_true"] if SKILL["n_true"] is not None and not SKILL.get("per_box") else NTRUE[box]   # tham số kỹ năng, đổi khi quét
 FAKE_BY_BOX = R.FAKE_BY_BOX                          # dùng chung với risk_penalty (G)
 
 
@@ -27,14 +32,15 @@ def fake_rate(box, iid):
     return R.fake_rate(box, iid)
 
 
-def likelihood(obs, origin):
+def likelihood(obs, origin, nt=None):
     """P(tập manh mối quan sát | hiện vật có nguồn gốc `origin`). Cấu trúc 3 manh mối:
     n_true=2: [origin, origin, sai]; n_true=1: [origin, sai, sai]. Nhóm sai đồng đều trong 5 nhóm khác."""
     others = [g for g in GROUPS if g != origin]
     total, cnt = 0.0, 0
-    wrongs = [(w,) for w in others] if SKILL["n_true"] == 2 else [(a, b) for a in others for b in others]
+    nt = SKILL["n_true"] if nt is None else nt
+    wrongs = [(w,) for w in others] if nt == 2 else [(a, b) for a in others for b in others]
     for ws in wrongs:
-        L = [origin] * SKILL["n_true"] + list(ws)
+        L = [origin] * nt + list(ws)
         k = len(obs)
         combos = list(itertools.combinations(range(3), k))
         match = sum(1 for c in combos if sorted(L[i] for i in c) == sorted(obs))
@@ -50,7 +56,7 @@ def posterior_ev(run, box, obs):
     num = den = 0.0
     for iid, wgt in weights.items():
         origin, base = run.c.items[iid]
-        l = likelihood(obs, origin) if obs else 1.0
+        l = likelihood(obs, origin, n_true(box)) if obs else 1.0
         fp = fake_rate(box, iid)
         val = base * qm * (1 - fp + fp * FAKE_X)
         num += wgt * l * val
@@ -70,8 +76,9 @@ def make_candidate(run, box):
     fake = run.rng.random() < fake_rate(box, iid)
     origin = run.c.items[iid][0]
     wrong = run.rng.choice([g for g in GROUPS if g != origin])
-    clues = [origin] * SKILL["n_true"] + [wrong] * (3 - SKILL["n_true"])
-    if SKILL["n_true"] == 1:
+    nt = n_true(box)
+    clues = [origin] * nt + [wrong] * (3 - nt)
+    if nt == 1:
         clues[2] = run.rng.choice([g for g in GROUPS if g != origin])
     run.rng.shuffle(clues)
     return {"id": iid, "q": qf, "ql": ql, "fake": fake, "appraised": False, "box": box,
@@ -110,9 +117,9 @@ def choose_and_buy(run, box, reserve_cash):
     extra = SKILL["extra"]
     while extra > 0 and cands[best]["seen"] < 3:
         e = ev[best]
-        if not (0.8 * SKILL["tau"] <= e <= 1.3 * SKILL["tau"]) or g.cash - price - CLUE_PRICE < reserve_cash:
+        if not (0.8 * SKILL["tau"] <= e <= 1.3 * SKILL["tau"]) or g.cash - price - SKILL["clue_price"] < reserve_cash:
             break
-        g.cash -= CLUE_PRICE
+        g.cash -= SKILL["clue_price"]
         cands[best]["seen"] += 1
         ev[best] = posterior_ev(run, box, cands[best]["clues"][:cands[best]["seen"]]) / mult[best]
         order = sorted(range(len(cands)), key=lambda i: -ev[i])
@@ -263,3 +270,109 @@ def sweep_pricing():
                       ("lam 0,5, tau 1,3, manh mối đúng 1/3", dict(M=3, tau=1.3, lam=.5, n_true=1))):
         r = measure_skill(c, n=2000, **kw)
         print("%-44s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
+
+
+# ---- Luật của Claude 1 (trả lời D-26): mỗi lượt Dì Mận bày 1 hộp mỗi loại, mua 1 hoặc dừng ----
+def turn_choose(run, reserve_cash, tiers):
+    g = run.g
+    cands = []
+    for box in tiers:
+        tier_price = run.c.box_price[box]
+        c = make_candidate(run, box)
+        c["seen"] = free_clues(run)
+        e = posterior_ev(run, box, c["clues"][:c["seen"]])
+        prior = posterior_ev(run, box, [])
+        c["mult"] = 1 + SKILL["lam"] * (e / prior - 1)
+        c["price"] = max(1, round(tier_price * c["mult"]))
+        c["tier_price"] = tier_price
+        c["value"] = e * tier_price
+        cands.append(c)
+    ok = [c for c in cands if g.cash - c["price"] >= reserve_cash]
+    if not ok:
+        return None
+    best = max(ok, key=lambda c: c["value"] - c["price"])
+    # mua thêm manh mối cho hộp tốt nhất nếu còn mơ hồ quanh ngưỡng
+    tau = SKILL["tau"]
+    extra = SKILL["extra"]
+    while extra > 0 and best["seen"] < 3 and SKILL["clue_price"] is not None:
+        ratio = best["value"] / best["price"]
+        if not (0.85 * tau <= ratio <= 1.25 * tau) or g.cash - best["price"] - SKILL["clue_price"] < reserve_cash:
+            break
+        g.cash -= SKILL["clue_price"]
+        best["seen"] += 1
+        best["value"] = posterior_ev(run, best["box"], best["clues"][:best["seen"]]) * best["tier_price"]
+        extra -= 1
+    if best["value"] / best["price"] < tau or g.cash < best["price"]:
+        return None
+    g.cash -= best["price"]
+    g.bought_today += 1
+    return best
+
+
+def ladder_turns(run, keep_reserve, smart):
+    g = run.g
+    for _ in range(3):
+        r = P.reserve5(run) if keep_reserve else 0
+        if g.cash < r:
+            r = 0
+        tiers = (("RD",) if g.day >= sm.RD_FROM_DAY else ()) + ("H3", "H2", "H1")
+        it = turn_choose(run, r, tiers)
+        if not it:
+            break
+        P.handle5(run, it, r, smart)
+
+
+def make_turn_strategy(kind, smart=False):
+    plans = {"none": [], "small": ["CP1", "CP2"], "big": ["CP1", "CP2", "TC3", "CP3"]}
+
+    def strat(run):
+        g = run.g
+        if kind == "bold":
+            return ladder_turns(run, False, smart)
+        if g.day <= 5:
+            for aid in plans[kind]:
+                if aid in run.owned:
+                    continue
+                if g.cash - ART[aid][1] >= P.reserve5(run) + 100:
+                    run.buy_artifact(aid)
+                break
+        ladder_turns(run, True, smart)
+    return strat
+
+
+TURN_NAMES = {
+    "thận trọng + giám định": make_turn_strategy("none", True),
+    "liều + giám định": make_turn_strategy("bold", True),
+    "combo nhỏ + giám định": make_turn_strategy("small", True),
+    "combo lớn + giám định": make_turn_strategy("big", True),
+}
+
+
+def measure_turns(content, n=2000, **skill):
+    old = dict(SKILL)
+    SKILL.update(skill); SKILL["per_box"] = True
+    res = {}
+    for k, st in TURN_NAMES.items():
+        w = sum(P.play5(s, content, st).g.status == "won" for s in range(n))
+        res[k] = round(100 * w / n, 1)
+    SKILL.clear(); SKILL.update(old)
+    return res
+
+
+def sweep_rules():
+    """Luật Claude 1: H1/H2 2 đúng 1 sai, H3/RD 1 đúng 2 sai, M=1 mỗi hộp mỗi loại, giá theo manh mối đầu."""
+    c = setup(True)
+    base = measure_plain(c, 2000)
+    ks = list(TURN_NAMES)
+    print("không đọc manh mối" + " " * 30 + " ".join("%5.1f" % base[k] for k in ks), flush=True)
+    for label, kw in (("lam 0, tau 1,3 (giá cố định)", dict(lam=0.0, tau=1.3)),
+                      ("lam 0,75, tau 1,0", dict(lam=.75, tau=1.0)),
+                      ("lam 0,75, tau 1,15", dict(lam=.75, tau=1.15)),
+                      ("lam 0,75, tau 1,3", dict(lam=.75, tau=1.3)),
+                      ("lam 0,75, tau 1,15, +2 manh mối 30 xu", dict(lam=.75, tau=1.15, extra=2, clue_price=30)),
+                      ("lam 0,75, tau 1,15, +2 manh mối 20 xu", dict(lam=.75, tau=1.15, extra=2, clue_price=20)),
+                      ("lam 0,75, tau 1,15, +2 manh mối 15 xu", dict(lam=.75, tau=1.15, extra=2, clue_price=15)),
+                      ("lam 0,75, tau 1,3, +2 manh mối 15 xu", dict(lam=.75, tau=1.3, extra=2, clue_price=15)),
+                      ("lam 0,9, tau 1,15", dict(lam=.9, tau=1.15))):
+        r = measure_turns(c, 2000, **kw)
+        print("%-48s" % label + " ".join("%5.1f" % r[k] for k in ks), flush=True)
