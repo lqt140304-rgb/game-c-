@@ -201,3 +201,41 @@ Các tiêu chí này được khóa trong `QA/test_proposal.py`.
 1. **Chủ dự án** duyệt gói ở mục 7, đặc biệt phí giám định 15% và hạ giá tier 3.
 2. **Claude 1** cập nhật nội dung theo gói và chốt ba điểm GT1, rồi báo Claude 2 chạy lại.
 3. **Sau khi có bản chơi thật,** đo lại bằng người thử vì bot không đọc manh mối, không canh biến cố và không thích nghi.
+
+## 10. Đo phạt rủi ro O-01 (mục G của Claude 1)
+
+Claude 1 đã chốt gói theo lựa chọn của chủ dự án và thêm một đề xuất mới chờ duyệt: **tỷ lệ hàng giả theo hộp** (H1 12%, H2 15%, H3 22%, Rương Đen 30%, riêng V09 giữ 35%) kèm giá nền nhân 1,10, để chiến thuật liều không còn thắng áp đảo khi có giám định (commit `d21818e`). Claude 2 đo bằng đủ chín chiến thuật, 4.000 seed (`QA/risk_full.py`, dùng `QA/risk_penalty.py` của Claude 1).
+
+| Thắng% | Gói đã chốt (giả 15% mọi hộp) | **G1 của Claude 1** (12/15/22/30%, giá x1,10) | G2 nhẹ hơn (12/15/20/25%, giá x1,08) | G3 mạnh hơn (10/15/25/35%, giá x1,15) |
+| --- | --- | --- | --- | --- |
+| Thận trọng | 15,2 | 16,7 | 17,9 | 18,4 |
+| Thận trọng + giám định | 24,4 | 22,9 | 25,0 | 24,6 |
+| Liều | 17,4 | 15,6 | 18,1 | 16,3 |
+| Liều + giám định | 32,4 | **24,8** | 30,5 | 25,1 |
+| Combo nhỏ | 26,2 | 30,9 | 31,6 | 33,5 |
+| Combo nhỏ + giám định | 32,1 | 35,7 | 36,0 | 38,0 |
+| CB1 + TC3 | 25,5 | 30,0 | 30,6 | 33,0 |
+| Combo lớn | 26,9 | 31,9 | 31,8 | 35,1 |
+| Combo lớn + giám định | 32,4 | **38,5** | 37,9 | 41,2 |
+| **Chênh liều và thận trọng, cùng giám định** | **+8,0** | **+1,9** | +5,5 | +0,5 |
+| Lần giá hộp H1 / H2 / H3 / RD | 2,22 / 1,44 / 1,19 / 1,06 | 2,50 / 1,59 / 1,24 / 1,01 | 2,46 / 1,56 / 1,23 / 1,04 | 2,66 / 1,66 / 1,26 / 1,00 |
+
+Kết quả:
+
+1. **G1 đạt mục đích:** liều có giám định chỉ còn hơn thận trọng có giám định 1,9 điểm (trước đó 8,0). Dồn tiền vào hộp đắt giờ có giá phải trả. Bot thường vẫn 16,7% và 15,6%.
+2. **Tác dụng phụ:** giá nền nhân 1,10 làm hướng đầu tư tạo tác lên 31% đến 38%. Combo nhỏ thắng hơn thận trọng 14,2 điểm (trước đó 11,0), combo lớn + giám định hơn thận trọng + giám định 15,6 điểm (trước đó 8,0). Vẫn nằm trong mức "đáng tiền nhưng không bắt buộc" (không quá 16) nhưng sát giới hạn. Đây là cái giá của việc phạt rủi ro.
+3. **Trần cao nhất 38,5%** vượt trần 38% cũ trong test nhẹ. Đề xuất **nâng trần lên 41** cho G1.
+4. **Rương Đen hòa vốn (1,01 lần giá hộp)** và trở thành canh bạc thuần: chỉ đáng mua để lấy hiện vật hiếm nhất. Với M3 (Rương Đen từ ngày 1) nó dễ thành bẫy cho người chơi non. Đúng ý "canh bạc cần tính kỹ" nhưng nên cho người chơi thấy tỷ lệ hàng giả của từng hộp.
+5. **Nếu chủ dự án thấy đầu tư thành gần bắt buộc,** dùng G2: liều + giám định hơn thận trọng + giám định 5,5 điểm, đầu tư thấp hơn G1 chút, trần 37,9%.
+
+**Khuyến nghị:** duyệt G1, nâng trần test lên 41. Test đã viết sẵn ở `QA/test_risk_penalty.py` nhưng **tắt cho đến khi duyệt** (đổi `RISK_PENALTY_APPROVED = True`). Đã chạy thử với cờ bật: cả 5 kiểm tra đạt.
+
+## 11. Xác nhận và cập nhật mô hình theo gói đã chốt
+
+**GT1:** ba điểm Claude 1 chốt (kỳ hoãn thành kỳ x 1,15 trả cùng kỳ sau, không bị phạt 20% và không tính ngưỡng thua 1.000 xu, chỉ hoãn kỳ của ngày đó và không hoãn kỳ 7) **khớp đúng giả định mô phỏng đã đo** ở mục 4. Không cần đo lại. Mô hình `QA/economy_model.py` có thêm `use_gt1()` và `carry`, 10 test trong `QA/test_gt1.py` cho các ca 8 đến 11 của Claude 1 cùng các ca biên (hoãn nợ tồn không được, carry bỏ qua thì bị phạt kỳ sau, thắng ngày 7 cần trả hết carry, lưu và tải).
+
+**Luật dịch vụ bản chốt** đã chuyển vào `QA/services_model.py`: đấu giá chỉ món từ 1.300 xu, sòng bạc cược 100/250/500 và 2 lượt mỗi ngày, cầm được cả tạo tác (60% giá mua, tạo tác bị tháo khỏi ô nên mất combo, chuộc về kho phải trang bị lại). Ca số trong tài liệu của Claude 1 (V10 G 2.600) đều là test. Thêm 7 test cầm tạo tác và test từ chối đấu giá món dưới 1.300 xu.
+
+**Tổng số test:** 129, trong đó 5 test phạt rủi ro đang tắt chờ duyệt, còn lại đều đạt.
+
+**Phát hiện nhỏ cho Claude 1 (D-25):** ca 7 của mục Cầm cố trong `DichVuVaMeta.md` còn ghi "CP3 giá mua 900 xu, nhận 540 xu". Giá CP3 đã chốt là 500 nên tiền cầm là **300 xu**. Mục 4 cũng đã nêu lại mức giá CP3 và TC3 cũ ở nhiều chỗ, cần rà theo gói mới.
