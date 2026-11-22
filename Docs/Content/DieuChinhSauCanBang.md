@@ -244,3 +244,29 @@ Vì vậy luật chốt là: **trả 15 xu hỏi lời mách của Dì Mận đ�
 **O-04 đã chốt (2026-11-22): để người chơi tự tính.** Giao diện không hiển thị giá trị kỳ vọng của từng loại hộp, chỉ hiển thị giá niêm yết, tỷ lệ hàng giả của loại hộp và manh mối. Theo đo của Claude 2, phần lớn kỹ năng của người chơi giỏi nằm ở việc chọn loại hộp (+5 đến +17 điểm), nên quyết định này giữ đúng mục tiêu "cần tính toán kỹ". `content.json` ghi `shelf.show_expected_value = false`.
 
 **Câu hỏi thiết kế còn lại:** để tự tính được, người chơi cần biết hộp nào có thể ra những món nào. Hiện chỉ có nhóm nguồn gốc tiềm năng của hộp. Cần quyết định sổ tay có ghi các hiện vật đã gặp theo từng loại hộp (và giữ qua các ván nhờ Sổ Sưu Tầm) hay không, để người chơi tích lũy hiểu biết thay vì đoán.
+
+## K. Cân bằng loại hộp (D-29, D-30, D-31, D-32), chờ chủ dự án chọn
+
+**Vấn đề** ([BienCoE3.md](../Balance/BienCoE3.md)): với giá hiện tại, lời tuyệt đối mỗi hộp là H1 150, H2 208, H3 190, Rương Đen 15. Người chơi chọn theo lời nên **luôn chọn H2** (66–71% lượt mua) và **không bao giờ mua Rương Đen** (0%). "Hộp rẻ hay đắt" không còn là quyết định, và Rương Đen là nội dung chết.
+
+**Phát hiện chung của Claude 2 và tôi:** nâng lời của hộp đắt theo giá hộp làm đáp án đổi theo vốn (nghèo chọn hộp rẻ, giàu chọn hộp đắt), nhưng biến "mua hộp đắt nhất mua được" thành mẹo tốt. Bot thường thắng gấp đôi và khoảng cách giữa người tính giỏi với bot thường thu hẹp lại (D-31). Tôi đo độc lập ([QA/box_tiers.py](../../QA/box_tiers.py)) với giá hộp 120 / 400 / 700 / 1.200: bot thường thắng 32–39% (trước đó 16%), người tính giỏi 37–46%. Đề xuất ban đầu của Claude 2 (lời 120 / 200 / 320 / 450) còn dễ hơn.
+
+**Ba phương án:**
+
+| | Hộp được chọn | Thắng% người chơi tối ưu (thận trọng / liều / combo nhỏ / combo lớn) | Thắng% bot thường (thận trọng / liều) |
+| --- | --- | --- | --- |
+| **A. Giữ hiện tại** | H1 15%, H2 67%, H3 17%, Rương Đen 0% | 36 / 43 / 44 / 45 | 17 / 16 |
+| **B. Cấu hình C3 của Claude 2** (lời 100 / 160 / 220 / 260, đổi giá nền 10 hiện vật) | Theo vốn: dưới 600 xu chọn H1 (67%) và H2; 600–1.500 xu chia H1, H2, H3; trên 1.500 xu chia H3 (40%), Rương Đen (30%), H2 (28%) | 22 / 29 / 29 / 31 | 19 / 24 |
+| **C. Giá hộp dao động theo ngày ±20%** (giá nền giữ nguyên) | H1 21%, H2 48%, H3 27%, Rương Đen 4% (8% từ ngày 4) | 40 / 46 / 46 / 47 | 20 / 16 |
+
+Số của phương án C đo bằng [QA/box_price_swing.py](../../QA/box_price_swing.py): mỗi ngày giá mỗi loại hộp lệch ngẫu nhiên trong ±20% (công bố đầu ngày như biến cố E3, xác định theo seed, ngày, loại hộp). Biên độ ±30% làm game dễ hơn (người tối ưu thắng 44–52%, quá mức). Số liệu 1.200 seed, sai số khoảng ±1,4 điểm.
+
+**So sánh:**
+- **A** giữ khoảng cách kỹ năng lớn nhất (người tính giỏi hơn bot thường khoảng 20 điểm) và độ khó đã duyệt, nhưng không có đánh đổi giữa các loại hộp. Kỹ năng ở đây là **phát hiện ra H2 là tốt nhất và Rương Đen là bẫy**, mà theo quyết định O-04 người chơi tự tính nên đó là thứ họ phải tự khám phá. Hết lần khám phá thì không còn gì để chọn.
+- **B** tạo đánh đổi theo vốn rõ nhất và dùng được Rương Đen, nhưng **khoảng cách kỹ năng gần như mất** (người tính giỏi chỉ hơn bot thường 3–5 điểm) và game rất khó (người tối ưu chỉ 22–31%). Phải đổi giá nền 10 hiện vật (V09 từ 895 xuống 460) và đo lại nhiều thứ.
+- **C** giữ độ khó và khoảng cách kỹ năng (người tính giỏi hơn bot thường khoảng 20 điểm), không đổi giá hiện vật, chỉ thêm một thông báo mỗi ngày giống biến cố. Đáp án "chọn loại hộp nào" đổi theo ngày nên phải tính lại mỗi ngày. **Nhược điểm:** H2 vẫn chiếm gần một nửa và Rương Đen chỉ được chọn 4–8%, nên chưa giải hẳn D-30.
+
+**Khuyến nghị của Claude 1: phương án C**, vì hợp mục tiêu "ván khó, cần tính toán kỹ" nhất mà không làm mất khoảng cách kỹ năng, và rẻ nhất để làm. Nếu muốn Rương Đen có chỗ đứng thì thử **C kết hợp hạ nhẹ giá Rương Đen** (ví dụ 1.250), chưa đo. B là phương án dùng khi chủ dự án ưu tiên đánh đổi theo vốn hơn khoảng cách kỹ năng, và nên chơi thử thật trước khi chọn vì mức khó của nó rất cao.
+
+**Việc cần Claude 2 nếu chọn C:** đo lại bằng bộ chiến thuật đầy đủ và các luật dịch vụ, đo biên độ ±15% và ±20%, đo kết hợp hạ giá Rương Đen. **Việc của tôi:** viết luật vào GDD, `NoiDungMau.md`, `content.json` và hợp đồng dữ liệu. **D-32** (giá nền V09) chỉ áp dụng nếu chọn B.
+
