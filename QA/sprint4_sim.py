@@ -1,14 +1,13 @@
 """Sprint 4: ảnh hưởng của dịch vụ theo ĐÚNG luật Claude 1 (Docs/Content/DichVuVaMeta.md, d6b597e).
 
-Cơ sở: cấu hình Sprint 3 do Claude 2 đề xuất (giá nền mới, CP1/CB1 áp dụng mọi hiện vật, x2),
-chưa được chủ dự án duyệt. Hiệu ứng giá bán cộng theo phép cộng như quy tắc mới của Claude 1.
+Cơ sở: cấu hình ván khó do Claude 2 đề xuất (QA/profiles.py), chưa được chủ dự án duyệt. Hiệu ứng giá bán cộng theo phép cộng như quy tắc mới của Claude 1.
 Chạy: python3 sprint4_sim.py   (khoảng 4 phút)
 """
 import math
 import random
 import sprint3_sim as sm
 from sprint3_sim import *
-from sprint3_report import PROPOSED
+from profiles import HARD as PROPOSED, use_hard
 from economy_model import DEBT
 
 N = 4000
@@ -21,6 +20,7 @@ class Cfg:
     def __init__(self, **kw):
         self.events = False
         self.auction = None       # dict(min_g, floor)
+        self.pawn_art = False
         self.hold = None          # dict(min_g, mode='sell'|'pawn')
         self.casino = None        # dict(p, stakes)
         self.meta_cash = 0
@@ -31,7 +31,7 @@ class Run4(Run):
     def __init__(self, seed, content, strategy, cfg):
         super().__init__(seed, content, strategy)
         self.cfg, self.seed = cfg, seed
-        self.pending, self.held, self.tickets = [], [], []
+        self.pending, self.held, self.tickets, self.tickets_art = [], [], [], []
         self.auctions_today = 0
         self.g.cash += cfg.meta_cash
         self.stats = dict(auction=0, returned=0, bets=0, wins=0, pawned=0, redeemed=0, forfeited=0)
@@ -104,6 +104,8 @@ class Run4(Run):
 
 def end_of_day(run):
     g, cfg = run.g, run.cfg
+    if cfg.pawn_art:
+        pawn_art_hook_end(run)
     need = DEBT[g.day - 1] + g.arrears
     c = cfg.casino
     h = cfg.hold
@@ -136,9 +138,36 @@ def end_of_day(run):
                 g.cash -= stake
 
 
+def pawn_art_hook_end(run):
+    g = run.g
+    need = DEBT[g.day - 1] + g.arrears
+    for aid in sorted(run.equipped, key=lambda a: -ART[a][1]):
+        if g.cash >= need or len(run.tickets_art) >= 2:
+            break
+        loan = math.floor(ART[aid][1] * .6)
+        g.cash += loan
+        run.equipped.remove(aid); run.owned.remove(aid)
+        run.tickets_art.append(dict(aid=aid, cost=math.ceil(loan * 1.15), due=g.day + 2))
+        run.stats["pawned"] += 1
+
+
+def pawn_art_hook_start(run):
+    g = run.g
+    for t in list(run.tickets_art):
+        if g.day > t["due"]:
+            run.tickets_art.remove(t); run.stats["forfeited"] += 1
+        elif g.cash - t["cost"] >= DEBT[g.day - 1] + g.arrears and len(run.equipped) < run.slots():
+            g.cash -= t["cost"]
+            run.owned.append(t["aid"]); run.equipped.append(t["aid"]); run.tickets_art.remove(t)
+            run.stats["redeemed"] += 1
+            run.refresh()
+
+
 def start_of_day(run):
     g = run.g
     run.auctions_today = 0
+    if run.cfg.pawn_art:
+        pawn_art_hook_start(run)
     for l in list(run.pending):
         if l["due"] <= g.day:
             run.pending.remove(l)
@@ -196,7 +225,7 @@ def row(label, cfg, base=None):
 
 
 if __name__ == "__main__":
-    sm.ALL_ORIGIN_BONUS, sm.BONUS_SCALE, sm.ART_PRICE_SCALE = True, 2, 1
+    use_hard()
     print("%-44s %s" % ("(thắng%, ngày hụt TB)", " | ".join(STRATS)))
     base = row("Cơ sở (không dịch vụ)", Cfg())
 
@@ -224,6 +253,9 @@ if __name__ == "__main__":
     print("\n== Cầm cố so với bán (giữ 1 món từ 600 xu làm đệm mỗi ngày)")
     row("giữ đệm, thiếu thì BÁN", Cfg(hold=dict(min_g=600, mode="sell")), base)
     row("giữ đệm, thiếu thì CẦM 60%", Cfg(hold=dict(min_g=600, mode="pawn")), base)
+
+    print("\n== Cầm cố tạo tác (60% giá mua, phí chuộc 15%, hạn 2 ngày)")
+    row("cầm tạo tác khi thiếu tiền", Cfg(pawn_art=True), base)
 
     print("\n== Meta")
     row("M2 +100 xu vốn", Cfg(meta_cash=100), base)

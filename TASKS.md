@@ -40,7 +40,8 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 - [ ] **Claude 2** — So sánh chiến thuật thận trọng, săn combo và liều lĩnh trên seed tái lập. Nghiệm thu khi có tỷ lệ thắng, ngày hụt tiền, tần suất combo và đề xuất có số liệu.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint3.md](Docs/Balance/Sprint3.md). Chạy `cd QA && python3 sprint3_report.py`. 10.000 seed, dùng nội dung thật của Claude 1 (nhánh `claude/relaxed-cerf-wgnu7l`).
   - **Kết quả chính:** nội dung gốc thắng 0% ở cả ba chiến thuật (H2, H3, Rương Đen lỗ kỳ vọng). Với giá nền đề xuất: thận trọng 41,9%, săn combo 19,3%, liều 48,9%. Tạo tác hiện net âm (chi 996 xu, thu thêm 170 xu).
-  - **Cần chủ dự án chọn:** áp dụng bảng giá nền mới và chốt hệ số bán món chưa giám định. **Cần Claude 1:** cho CP1 và CB1 áp dụng mọi hiện vật và nhân 2 (săn combo lên 50,3%), cập nhật nội dung theo giá mới, tìm đường gỡ lại sau khi thiếu tiền.
+  - **Cập nhật theo mục tiêu "ván khó, nhiều đánh đổi" của chủ dự án:** đề xuất giá nền ở Sprint 3 quá dễ, đã thay bằng [Docs/Balance/DoKho.md](Docs/Balance/DoKho.md) (ba chiến thuật thắng 21,8% / 21,8% / 24,3%, chênh 2,5 điểm; mục tiêu mã hóa trong `QA/test_difficulty.py`).
+  - **Cần chủ dự án duyệt:** bảng giá nền ván khó và hệ số bán món chưa giám định. **Cần Claude 1:** cho CP1 và CB1 áp dụng mọi hiện vật (nhân 1,25), cập nhật nội dung theo giá mới, làm sống lại các lựa chọn đang chết (giám định, cầm cố, giảm phạt nợ, lối ra sau khi thiếu tiền) theo mục 5 của DoKho.md.
 - [ ] **Codex** — Sửa lỗi cốt lõi, chạy hồi quy và đóng gói bản PC. Nghiệm thu khi bản chạy chơi được từ đầu đến kết quả ngày 7 với các ca biên đã kiểm.
 - [ ] **Antigravity** — Hoàn thiện tương tác, âm thanh, ánh sáng, phản hồi mở hộp và khả năng đọc UI. Nghiệm thu qua một ván chơi trên bản PC.
 
@@ -49,7 +50,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 - [ ] **Claude 1** — Chốt luật biến cố, đấu giá, sòng bạc, cầm cố và mở khóa meta. Nghiệm thu khi mỗi hệ có vai trò, luồng và điều kiện hoàn tất.
 - [ ] **Claude 2** — Đo ảnh hưởng dịch vụ đến thanh khoản, nợ và tiến trình giữa ván. Nghiệm thu khi có ca chống giao dịch lặp và báo cáo cân bằng.
   - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint4.md](Docs/Balance/Sprint4.md). Chạy `cd QA && python3 -m unittest discover -s .` (97 test đạt) và `python3 sprint4_sim.py`. Dựa trên luật dịch vụ của Claude 1 (commit `d6b597e`, nhánh `claude/relaxed-cerf-wgnu7l`), 45 test bám sát các ca của Claude 1 kèm fuzz chống giao dịch lặp.
-  - **Kết quả chính:** đấu giá k = 1,16 trung tính đến lỗ, cần k kỳ vọng ≈ 1,33. Cầm cố bị bán ngay át hoàn toàn (thua 3 đến 13 điểm). Sòng bạc dưới 1,5 điểm. Biến cố E1 đến E6 trung tính (< 1 điểm). M2 +100 xu ≈ +2,4 đến +4,0 điểm.
-  - **Cần Claude 1:** sửa bảng k đấu giá và cách dùng cầm cố (xem mục 3 của tài liệu), thiết kế đường gỡ lại sau thiếu tiền. **Codex:** kết quả ngẫu nhiên xác định theo seed, mọi thao tác tiền có mã giao dịch lưu cùng bản lưu.
+  - **Kết quả chính:** đấu giá k = 1,16 trung tính (giữ nguyên ở ván khó, đừng nâng 1,33). Cầm cố bị bán ngay át hoàn toàn (thua 3 đến 13 điểm). Sòng bạc dưới 1,5 điểm. Biến cố E1 đến E6 trung tính (< 1 điểm). M2 +100 xu ≈ +2,4 đến +4,0 điểm.
+  - **Cần Claude 1:** sửa cách dùng cầm cố (xem mục 3 Sprint4.md và mục 5 DoKho.md), thiết kế lối ra sau thiếu tiền. **Codex:** kết quả ngẫu nhiên xác định theo seed, mọi thao tác tiền có mã giao dịch lưu cùng bản lưu.
 - [ ] **Codex** — Tích hợp luật đã duyệt, lưu giao dịch và tiến trình meta. Nghiệm thu khi các luồng cập nhật nhất quán và khôi phục đúng sau tải lại.
 - [ ] **Antigravity** — Dựng NPC, quầy dịch vụ, giao diện và phản hồi biến cố. Nghiệm thu khi người chơi hoàn thành từng luồng trong cảnh chợ.

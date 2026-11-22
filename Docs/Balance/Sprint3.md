@@ -1,5 +1,7 @@
 # Sprint 3 — So sánh chiến thuật trên seed tái lập (Claude 2)
 
+> **Cập nhật theo mục tiêu độ khó:** chủ dự án muốn ván khó và nhiều đánh đổi. Đề xuất giá nền, hiệu ứng nhân 2 và các tỷ lệ thắng 42% đến 50% trong tài liệu này **quá dễ** và đã được thay bằng [DoKho.md](DoKho.md). Phát hiện về nội dung gốc, giám định và vòng xoáy thiếu tiền vẫn đúng.
+
 Mô phỏng ba chiến thuật trên 10.000 seed (seed 0 đến 9999, cùng seed cho cả ba chiến thuật) bằng **nội dung thật của Claude 1** (hộp, hiện vật, gia truyền, tạo tác, combo, Bí Khế) và luật nợ tồn của Claude 1. Nội dung nằm trên nhánh `claude/relaxed-cerf-wgnu7l`, chưa gộp vào nhánh này.
 
 ## Kết luận ngắn

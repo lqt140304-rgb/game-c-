@@ -1,5 +1,7 @@
 # Sprint 4 — Ảnh hưởng của dịch vụ và chống giao dịch lặp (Claude 2)
 
+> **Cập nhật theo mục tiêu độ khó:** số liệu dưới đây đo trên cấu hình dễ của Sprint 3. Với ván khó ở [DoKho.md](DoKho.md), **đừng nâng k đấu giá lên 1,33** (đề xuất ở mục 3 sẽ làm tỷ lệ thắng tăng 8 đến 13 điểm). Giữ k = 1,16. Các kết luận về cầm cố bị át, sòng bạc ít ảnh hưởng và biến cố trung tính vẫn đúng, và DoKho.md đo lại chúng ở ván khó.
+
 Đo biến cố, đấu giá, sòng bạc, cầm cố và mở khóa meta theo **đúng luật Claude 1 đã soạn** trong [DichVuVaMeta.md](https://github.com/lqt140304-rgb/game-c-/blob/claude/relaxed-cerf-wgnu7l/Docs/Content/DichVuVaMeta.md) (commit `d6b597e`, nhánh `claude/relaxed-cerf-wgnu7l`, chưa gộp vào nhánh này). Mỗi "Ca" trong tài liệu của Claude 1 thành một test. Mục 7 của tài liệu đó đặt năm câu hỏi cho Claude 2, được trả lời ở mục 3.
 
 Bản đầu của tài liệu này dùng luật giả định của Claude 2 khi Claude 1 chưa soạn. Bản này **thay thế** bản đó.
