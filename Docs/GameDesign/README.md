@@ -9,7 +9,7 @@
 ## 1. Nhân vật và thế giới
 
 **[ĐÃ CHỐT]** Người chơi là người mua và săn đồ. Bối cảnh là khu chợ giao thương cổ vật và hàng hóa đa vũ trụ, từ quá khứ, hiện đại, tương lai đến ngoài hành tinh, thần thoại, cổ tích và các thực tại khác. Một ván xoay quanh áp lực tiền mặt của 7 ngày nợ giang hồ và những cơ hội bất ngờ từ hộp mù.
-**[ĐÃ CHỐT]** Unity 6.3 LTS (6000.3.x), URP, Blender và 3D First-Person. **[ĐỀ XUẤT]** Bản đầu chơi đơn trên Windows PC, dùng C# và Unity Input System. Khu chợ stylized có ánh đèn ấm, quầy sát nhau và đường đi ngắn. Vật phẩm được ưu tiên chi tiết ở khoảng cách gần để đọc vết nứt, dấu ấn và linh kiện.
+**[ĐÃ CHỐT]** Unity 6 (6000.6.9f1), URP, Blender và 3D First-Person. **[ĐỀ XUẤT]** Bản đầu chơi đơn trên Windows PC, dùng C# và Unity Input System. Khu chợ stylized có ánh đèn ấm, quầy sát nhau và đường đi ngắn. Vật phẩm được ưu tiên chi tiết ở khoảng cách gần để đọc vết nứt, dấu ấn và linh kiện.
 
 ## 2. Một ngày và một ván
 

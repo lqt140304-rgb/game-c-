@@ -9,7 +9,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 - [ ] **Claude 1** — Trình chủ dự án duyệt các luật còn mở cần cho prototype, đặc biệt xử lý thiếu tiền và thắng/thua. Nghiệm thu khi có quy tắc và ví dụ kiểm thử trong [GDD](Docs/GameDesign/README.md).
 - [ ] **Claude 2** — Lập bảng giả định vốn, nợ, giá, giá bán và xác suất rơi. Nghiệm thu khi có bảng cân bằng ban đầu và ca kiểm thử vượt giới hạn mua, trả nợ sớm, thiếu tiền, bán trùng.
 - [ ] **Codex** — Thống nhất hợp đồng dữ liệu hộp, hiện vật, kho, ngày, nợ và thông báo thay đổi với Antigravity. Nghiệm thu khi mỗi bên xác định được dữ liệu đọc và hành động ghi.
-- [ ] **Antigravity** — Khởi tạo Unity 6.3 LTS URP và scene thử. Nghiệm thu khi mở đúng phiên bản và chạy Play Mode với cảnh tối thiểu.
+- [ ] **Antigravity** — Khởi tạo Unity 6 (6000.6.9f1) URP và scene thử. Nghiệm thu khi mở đúng phiên bản và chạy Play Mode với cảnh tối thiểu.
 
 ## Sprint 1 — Một ngày chơi First-Person
 

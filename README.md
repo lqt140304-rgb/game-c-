@@ -7,7 +7,7 @@
 - **Quản lý tiền mặt.** Giữ tiền cho kỳ nợ cuối ngày vì Anh Bảy chỉ thu khi đến hạn, trong suốt 7 ngày. NPC và biến cố thay đổi cơ hội giao dịch. Đấu giá, sòng bạc và cầm cố mở rộng lựa chọn kinh tế.
 - **Theo dõi tiến trình.** Sổ tay ghi nợ, giao dịch và khám phá. Lưu game giữ tiến độ ván, còn meta progression theo dõi mở khóa giữa các ván.
 
-Dự án chọn **Unity 6.3 LTS + URP** và **Blender**, với mỹ thuật stylized 3D. Bản chơi thử tập trung vào một khu chợ nhỏ, vòng mua–mở–soi–bán hộp, combo tạo tác và đủ 7 ngày trả nợ. Các mốc tiền, giá, xác suất và số lượng nội dung mẫu là thông số thử nghiệm.
+Dự án chọn **Unity 6 (6000.6.9f1) + URP** và **Blender**, với mỹ thuật stylized 3D. Bản chơi thử tập trung vào một khu chợ nhỏ, vòng mua–mở–soi–bán hộp, combo tạo tác và đủ 7 ngày trả nợ. Các mốc tiền, giá, xác suất và số lượng nội dung mẫu là thông số thử nghiệm.
 
 - [Game Design](Docs/GameDesign/README.md) — Luật chơi, phạm vi và các câu hỏi thiết kế còn mở.
 - [Thiết kế Thị trấn Chợ (Blockout)](docs/superpowers/specs/2026-11-22-market-town-design.md) — Quy hoạch thị trấn phố đá châu Âu, tầng cao, điểm nhấn và 8 ô cửa hàng.
