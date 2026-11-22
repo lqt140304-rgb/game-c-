@@ -48,6 +48,25 @@ Tách các tác động (so với cùng luật không đọc, 35,0 / 40,8 / 42,6
 
 Giá trị tối đa của việc xem đủ 3 manh mối chỉ +1,4 đến +1,8 điểm ở λ = 0,75 (+3,9 đến +5,9 ở λ = 0). Một lần mua 2 manh mối 15 xu tốn 30 xu mỗi hộp, lớn hơn mức lợi. Nếu muốn mua thêm manh mối thành quyết định thật, có hai hướng chưa đo: giảm giá xuống khoảng 5 xu, hoặc làm manh mối trả phí **chắc đúng** (trong khi manh mối miễn phí có thể sai) để người chơi trả tiền mua sự chắc chắn.
 
+### Hai hướng cho manh mối trả phí
+
+Claude 1 cần chọn giữa: **A** hạ giá manh mối thêm (vẫn có thể sai) và **B** manh mối trả phí **chắc đúng** (tiết lộ nhóm nguồn gốc thật). Đo ở luật chốt, G1, λ = 0,75, 2.000 seed. Với hướng B, bot dùng **giá trị thông tin** để quyết định: chỉ mua manh mối khi mức lợi kỳ vọng thêm lớn hơn giá. Ô ghi "thắng% | số manh mối mua mỗi ván".
+
+| Phương án | Thận trọng | Liều | Combo nhỏ | Combo lớn |
+| --- | --- | --- | --- | --- |
+| Chỉ manh mối miễn phí | 38,5 | 45,2 | 45,8 | 46,4 |
+| A. thêm có thể sai, 10 xu | 37,5 \| 3,9 | 44,4 \| 5,6 | 45,6 \| 3,9 | 46,4 \| 3,0 |
+| A. thêm có thể sai, 5 xu | 37,9 \| 4,0 | 44,9 \| 5,7 | 45,9 \| 3,9 | 46,8 \| 3,0 |
+| B. chắc đúng, 30 xu | 39,0 \| 3,6 | 47,1 \| 4,2 | 47,6 \| 3,6 | 48,2 \| 2,9 |
+| **B. chắc đúng, 15 xu** | **40,8 \| 3,7** | **47,9 \| 4,2** | **48,5 \| 3,7** | **48,9 \| 3,0** |
+| B. chắc đúng, 10 xu | 39,5 \| 10,1 | 47,8 \| 11,8 | 48,8 \| 10,2 | 49,4 \| 7,1 |
+| B. chắc đúng, 5 xu | 41,5 \| 10,3 | 49,4 \| 11,9 | 49,5 \| 10,4 | 50,2 \| 7,2 |
+
+- **Hướng A không đáng ở mọi mức giá:** dù 5 xu, kết quả hòa vốn (−0,6 đến +0,4 điểm) vì manh mối thêm có thể sai nên thông tin ít. Thêm manh mối kiểu này không thành quyết định.
+- **Hướng B có lợi ở mọi mức giá đã thử** (+0,5 đến +4,2 điểm) và là **quyết định thật**: ở 15 đến 30 xu bot chỉ mua khoảng 3 đến 4 lần mỗi ván trong khoảng 16 lượt, tức là chỉ khi hộp nằm sát ngưỡng và thông tin sẽ đổi quyết định. Ở 10 xu trở xuống bot mua khoảng 10 đến 12 lần mỗi ván, gần như mua mọi lượt, nên không còn là cân nhắc.
+- **Đề xuất: hướng B, giá 15 đến 20 xu.** Lợi cho người dùng (+2,3 đến +2,7 điểm ở 15 xu), đủ rẻ để dám mua, đủ đắt để phải chọn lúc mua. Trần thắng vẫn quanh 49%, chưa tăng đáng kể so với 46% khi chỉ dùng manh mối miễn phí.
+- Đề xuất này thay nhận xét "15 xu hơi có lợi" của Claude 1: đúng với manh mối chắc đúng, sai với manh mối thêm có thể sai.
+
 ### Kết luận về mục tiêu ván khó
 
 - Bot thường (mua hộp đắt nhất) vẫn 15% đến 24% như đã đo.
@@ -61,7 +80,7 @@ Giá trị tối đa của việc xem đủ 3 manh mối chỉ +1,4 đến +1,8 
 | --- | --- | --- | --- |
 | D-26 | Đã đóng | Manh mối gắn hiện vật, H1 và H2 2 đúng 1 sai, H3 và Rương Đen 1 đúng 2 sai, M = 1, giá theo manh mối đầu | Claude 1 đã chốt |
 | D-27 | Đã giải | Bot đọc tối ưu thắng 57% đến 62% với M = 3, giá cố định. Với luật chốt còn 38% đến 46% | Luật chốt đủ |
-| D-28 | Trung bình | Mua thêm manh mối 15 xu không có lời (−0,6 đến −1,5 điểm), trái nhận xét ban đầu | Claude 1 chọn: giá khoảng 5 xu hoặc manh mối trả phí chắc đúng |
+| D-28 | Đã giải | Mua thêm manh mối có thể sai không đáng ở mọi giá (hướng A). Manh mối trả phí chắc đúng (hướng B) có lời và là quyết định thật ở 15 đến 30 xu | Đề xuất hướng B, 15 đến 20 xu. Claude 1 chốt |
 | O-04 | Cân bằng | Phần lớn lợi thế của "người biết tính" đến từ chọn loại hộp (+5 đến +17 điểm) chứ không từ đọc manh mối (+2 đến +4) | Quyết định có thể hiện giá trị kỳ vọng hộp trên UI không |
 
 ---
