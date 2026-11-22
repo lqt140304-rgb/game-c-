@@ -44,7 +44,7 @@ Mọi thao tác 3D/UI của người chơi chỉ gửi yêu cầu (không tự t
 
 ---
 
-## 3. Hướng dẫn mở Sprint 0 trong Unity 6.3 LTS URP
+## 3. Hướng dẫn mở Sprint 0 trong Unity 6 (6000.6.9f1) URP
 
 1. Mở **Unity Hub** → Add project from disk → chọn thư mục repo `game-c-` (phiên bản mục tiêu: **Unity 6 / 6000.6.9f1**, URP).
 2. Trên thanh menu Unity, chọn **`Tools → Cho Do La → Create Sprint 0 Test Scene`**.

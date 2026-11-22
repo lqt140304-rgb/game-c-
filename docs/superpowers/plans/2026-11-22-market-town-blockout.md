@@ -2,17 +2,17 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Sinh tự động scene `Market_Town.unity` — thị trấn phố đá châu Âu dạng greybox, có che khuất, tầng 2, cầu vượt, 4 điểm nhấn và 8 ô cửa hàng — bằng một menu Editor trong Unity 6.3 LTS URP.
+**Goal:** Sinh tự động scene `Market_Town.unity` — thị trấn phố đá châu Âu dạng greybox, có che khuất, tầng 2, cầu vượt, 4 điểm nhấn và 8 ô cửa hàng — bằng một menu Editor trong Unity 6 (6000.6.9f1) URP.
 
 **Architecture:** Toàn bộ bố cục là **dữ liệu C# thuần** (không phụ thuộc `UnityEngine`) gồm danh sách khối (`TownPiece`) và các lối đi (`Walkway`), kèm bộ kiểm tra luật (`TownLayoutValidator`) chạy được bằng `dotnet test` ngay trong VM không có Unity. Phía Unity chỉ có một lớp mỏng: chuyển dữ liệu thành Prefab greybox theo loại khối, đặt vào scene, gắn ánh sáng và tái sử dụng Player/HUD của Sprint 0.
 
-**Tech Stack:** Unity 6.3 LTS (`6000.3.x`), URP, C# 9 (Unity) / .NET 8 + NUnit 3 (test ngoài Unity), Unity Editor API (`PrefabUtility`, `EditorSceneManager`).
+**Tech Stack:** Unity 6 (`6000.6.9f1`), URP, C# 9 (Unity) / .NET 8 + NUnit 3 (test ngoài Unity), Unity Editor API (`PrefabUtility`, `EditorSceneManager`).
 
 **Spec:** [docs/superpowers/specs/2026-11-22-market-town-design.md](../specs/2026-11-22-market-town-design.md)
 
 ## Global Constraints
 
-- Unity `6000.3.x`, URP; không thêm package ngoài [manifest.json](../../../Packages/manifest.json) hiện có.
+- Unity `6000.6.9f1`, URP; không thêm package ngoài [manifest.json](../../../Packages/manifest.json) hiện có.
 - Code layout thuần nằm trong asmdef `ChoDoLa.Town.Layout` với `"noEngineReferences": true`, chỉ dùng C# 9 (không `record struct`, không file-scoped namespace) để Unity biên dịch được.
 - Hệ trục: `+X` = Đông, `+Z` = Bắc, `+Y` = lên, đơn vị mét. Gốc `(0,0,0)` ở mép Nam giữa trục phố.
 - Giới hạn thị trấn: `X ∈ [-22.5, 22.5]`, `Z ∈ [0, 55]` (45m × 55m).
@@ -299,7 +299,7 @@ Quy tắc dựng: mỗi `TownPiece` → instance Prefab, `localScale = Size`, `r
 }
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận lỗi** — *cần máy có Unity 6.3*.
+- [ ] **Step 2: Chạy test, xác nhận lỗi** — *cần máy có Unity 6000.6.9f1*.
 
 Run: `<Unity> -batchmode -projectPath . -runTests -testPlatform EditMode -testResults Logs/town-editmode.xml`
 Expected: FAIL — `TownBlockoutBuilder` không tồn tại. Trong VM không có Unity: bỏ qua bước chạy, ghi rõ trong báo cáo task rằng test Editor chưa chạy.
