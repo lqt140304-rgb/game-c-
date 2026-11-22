@@ -40,3 +40,7 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
+
+# Python
+__pycache__/
+*.pyc
