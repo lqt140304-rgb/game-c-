@@ -48,5 +48,8 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 - [ ] **Claude 1** — Chốt luật biến cố, đấu giá, sòng bạc, cầm cố và mở khóa meta. Nghiệm thu khi mỗi hệ có vai trò, luồng và điều kiện hoàn tất.
 - [ ] **Claude 2** — Đo ảnh hưởng dịch vụ đến thanh khoản, nợ và tiến trình giữa ván. Nghiệm thu khi có ca chống giao dịch lặp và báo cáo cân bằng.
+  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint4.md](Docs/Balance/Sprint4.md). Chạy `cd QA && python3 -m unittest discover -s .` (81 test đạt) và `python3 sprint4_sim.py`. **Luật dịch vụ là giả định của Claude 2** vì Claude 1 chưa chốt, nên báo cáo chỉ ra khoảng tham số an toàn.
+  - **Kết quả chính:** đấu giá cần kỳ vọng khoảng +40% vì tiền về chậm một ngày. Sòng bạc và cầm cố gần như không đổi cân bằng (≤ 1,5 điểm) và không giải được vòng xoáy thiếu tiền. Biến cố nên ≤ ±20%. Mỗi 100 xu vốn meta ≈ +2,5 điểm, ngân sách meta ≈ +400 xu.
+  - **Cần Claude 1:** chốt luật dịch vụ trong khoảng đã đo, thiết kế đường gỡ lại sau thiếu tiền. **Codex:** kết quả ngẫu nhiên xác định theo (seed, ngày, lượt), mọi thao tác tiền có mã giao dịch lưu cùng bản lưu.
 - [ ] **Codex** — Tích hợp luật đã duyệt, lưu giao dịch và tiến trình meta. Nghiệm thu khi các luồng cập nhật nhất quán và khôi phục đúng sau tải lại.
 - [ ] **Antigravity** — Dựng NPC, quầy dịch vụ, giao diện và phản hồi biến cố. Nghiệm thu khi người chơi hoàn thành từng luồng trong cảnh chợ.
