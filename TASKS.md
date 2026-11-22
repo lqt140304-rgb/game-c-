@@ -17,6 +17,9 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 - [ ] **Claude 1** — Soạn danh mục hộp, hiện vật mẫu, manh mối niêm phong và hướng dẫn soi. Nghiệm thu khi dữ liệu đủ để dựng vòng mua–mở–soi–bán.
 - [ ] **Claude 2** — Kiểm thử dòng tiền mẫu và các ca mua hộp thứ tư, hết tiền, kho đầy, bán trùng. Nghiệm thu khi có kết quả tái hiện và lỗi được ghi nhận.
+  - **Trạng thái: đã nộp, chờ chủ dự án nghiệm thu.** Bằng chứng: [Docs/Balance/Sprint1.md](Docs/Balance/Sprint1.md). Chạy `cd QA && python3 -m unittest -v test_economy` (17 test đạt) và `python3 scenario_cashflow.py`.
+  - **Lỗi ghi nhận:** D-01 `kết thúc ngày` bấm đúp thu nợ hai ngày (Codex, Antigravity chặn ở UI). D-02 hộp chưa mở có chiếm kho không, D-03 hậu quả thiếu tiền (Claude 1 chốt). Chi tiết trong tài liệu.
+  - **Codex:** `QA/test_economy.py` là đặc tả hành vi, có thể chuyển sang kiểm thử C#.
 - [ ] **Codex** — Triển khai tiền, hộp, kho, định giá mẫu, bán hàng, kết thúc ngày và kỳ thu nợ. Nghiệm thu khi giao dịch hợp lệ cập nhật một lần và lượt mua đặt lại đúng ngày.
 - [ ] **Antigravity** — Dựng quầy, bàn mở, cầm xoay hiện vật và UI giao dịch. Nghiệm thu khi người chơi tự đi hết vòng từ chọn hộp đến nhận tiền bán trong Play Mode.
 
