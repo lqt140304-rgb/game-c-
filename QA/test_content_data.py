@@ -201,15 +201,14 @@ class MatchesSimulation(unittest.TestCase):
             self.assertIn("{:,}".format(number).replace(",", "."), text, number)
 
 
-def recompute_tag_prices():
-    """Tính lại giá niêm yết theo manh mối bằng mô hình Bayes của Claude 2 (clue_sim.py)."""
+def recompute_multipliers():
+    """Tính lại hệ số giá niêm yết theo manh mối bằng mô hình Bayes của Claude 2 (clue_sim.py)."""
     import clue_sim as C
 
     class Run:
         c = risk_full.content(risk_full.X110)
 
     lam = D["shelf"]["price_follows_clue"]["lambda"]
-    step = D["shelf"]["price_follows_clue"]["round_to"]
     saved_skill, saved_fake = dict(C.SKILL), dict(C.R.FAKE_BY_BOX)
     out = {}
     try:
@@ -221,7 +220,7 @@ def recompute_tag_prices():
             row = []
             for oid in D["shelf"]["price_follows_clue"]["origins_order"]:
                 ratio = C.posterior_ev(Run, box, [ORIGIN_NAME[oid]]) / prior
-                row.append(int(round(b["price"] * (1 + lam * (ratio - 1)) / step) * step))
+                row.append(round(1 + lam * (ratio - 1), 3))
             out[box] = row
     finally:
         C.SKILL.clear(); C.SKILL.update(saved_skill)
@@ -281,20 +280,38 @@ class ClueRules(unittest.TestCase):
         self.assertEqual(1, sh["extra_clue_per_box"])
         self.assertFalse(sh["show_expected_value"])   # O-04: người chơi tự tính, UI không hiển thị giá trị kỳ vọng
 
-    def test_tag_prices_follow_the_bayes_model(self):
-        self.assertEqual(recompute_tag_prices(), D["shelf"]["price_follows_clue"]["tag_price"])
+    def test_multipliers_follow_the_bayes_model(self):
+        self.assertEqual(recompute_multipliers(), D["shelf"]["price_follows_clue"]["multiplier"])
 
-    def test_tag_price_table_in_content_doc(self):
+    def test_multiplier_table_in_content_doc(self):
         rows = [r for r in table_rows("NoiDungMau.md", r"H[123]|RD")
-                if len(r) == 7 and all(c.endswith("xu") for c in r[1:])]
+                if len(r) == 7 and all(re.fullmatch(r"\d,\d{3}", c) for c in r[1:])]
         self.assertEqual(4, len(rows))
         for r in rows:
-            self.assertEqual(D["shelf"]["price_follows_clue"]["tag_price"][r[0]], [xu(c) for c in r[1:]], r[0])
+            self.assertEqual(D["shelf"]["price_follows_clue"]["multiplier"][r[0]],
+                             [float(c.replace(",", ".")) for c in r[1:]], r[0])
 
     def test_informative_box_is_h2_and_h1_is_flat(self):
-        tag = D["shelf"]["price_follows_clue"]["tag_price"]
-        self.assertEqual({100}, set(tag["H1"]))
-        self.assertGreater(max(tag["H2"]) - min(tag["H2"]), max(tag["H3"]) - min(tag["H3"]))
+        m = D["shelf"]["price_follows_clue"]["multiplier"]
+        self.assertEqual({1.0}, set(m["H1"]))
+        self.assertGreater(max(m["H2"]) - min(m["H2"]), max(m["H3"]) - min(m["H3"]))
+
+    def test_daily_box_price_swing_rule(self):
+        dp = D["shelf"]["day_price"]
+        self.assertEqual(0.20, dp["swing_amplitude"])           # phương án C của mục K
+        self.assertEqual("uniform", dp["distribution"])
+        self.assertEqual(1, dp["applies_from_day"])
+        self.assertEqual("after_swing", dp["event_e3_applies"])  # E3 tính sau dao động giá
+        self.assertNotIn("tag_price", D["shelf"]["price_follows_clue"])   # giá niêm yết là hệ số nhân giá hôm nay
+
+    def test_swing_range_keeps_every_box_price_positive_and_ordered_by_base(self):
+        a = D["shelf"]["day_price"]["swing_amplitude"]
+        prices = {b: (round(v["price"] * (1 - a)), round(v["price"] * (1 + a))) for b, v in BOXES.items()}
+        for b, (lo, hi) in prices.items():
+            self.assertGreater(lo, 0, b)
+        self.assertLess(prices["H1"][1], prices["H2"][0])     # H1 luôn rẻ hơn H2
+        self.assertLess(prices["H2"][1], prices["H3"][0])     # H2 luôn rẻ hơn H3
+        self.assertLess(prices["H3"][1], prices["RD"][0])     # H3 luôn rẻ hơn Rương Đen
 
 
 class KnownDrift(unittest.TestCase):

@@ -211,7 +211,7 @@ Kết quả: người đọc tối ưu hơn bot thường 12 / 15 / 6 điểm, n
 Phép đo sơ bộ này cho rằng 15 xu hơi có lợi, nhưng Claude 2 đo lại bằng mô hình sát luật hơn thì **không đúng** (xem phần D-28 bên dưới).
 
 **Điều cần biết:**
-- **Manh mối thực chất chỉ có ích rõ ở hộp H2.** H1 chỉ ra hiện vật cùng nhóm Quá khứ nên không phân biệt được món nào. H3 và Rương Đen chỉ 1 trên 3 manh mối đúng nên gần như không đổi giá. Vì vậy bảng giá niêm yết ([NoiDungMau.md](NoiDungMau.md) mục 5.3) gần như chỉ khác ở H2 (260 hoặc 395 xu thay vì 350).
+- **Manh mối thực chất chỉ có ích rõ ở hộp H2.** H1 chỉ ra hiện vật cùng nhóm Quá khứ nên không phân biệt được món nào. H3 và Rương Đen chỉ 1 trên 3 manh mối đúng nên gần như không đổi giá. Vì vậy bảng giá niêm yết ([NoiDungMau.md](NoiDungMau.md) mục 5.4) gần như chỉ khác ở H2 (260 hoặc 395 xu thay vì 350).
 - Nếu sau này muốn manh mối có ích ở nhiều hộp hơn, có thể thêm manh mối về **độ hiếm** (ở H3, độ hiếm phân biệt đúng V08, V09 và V10). Chưa làm vì chưa đo.
 - Mô hình rút hộp mới cho mỗi lượt giống đúng luật kệ hộp. Phần khác biệt nhỏ: giá niêm yết lấy theo manh mối miễn phí **đầu tiên**, còn mô hình tính theo mọi manh mối miễn phí (CB2 và Mốc 3 Cổ Phong). Claude 2 cần đo lại.
 
@@ -245,7 +245,7 @@ Vì vậy luật chốt là: **trả 15 xu hỏi lời mách của Dì Mận đ�
 
 **Câu hỏi thiết kế còn lại:** để tự tính được, người chơi cần biết hộp nào có thể ra những món nào. Hiện chỉ có nhóm nguồn gốc tiềm năng của hộp. Cần quyết định sổ tay có ghi các hiện vật đã gặp theo từng loại hộp (và giữ qua các ván nhờ Sổ Sưu Tầm) hay không, để người chơi tích lũy hiểu biết thay vì đoán.
 
-## K. Cân bằng loại hộp (D-29, D-30, D-31, D-32), chờ chủ dự án chọn
+## K. Cân bằng loại hộp (D-29, D-30, D-31, D-32), đã chọn phương án C
 
 **Vấn đề** ([BienCoE3.md](../Balance/BienCoE3.md)): với giá hiện tại, lời tuyệt đối mỗi hộp là H1 150, H2 208, H3 190, Rương Đen 15. Người chơi chọn theo lời nên **luôn chọn H2** (66–71% lượt mua) và **không bao giờ mua Rương Đen** (0%). "Hộp rẻ hay đắt" không còn là quyết định, và Rương Đen là nội dung chết.
 
@@ -269,4 +269,16 @@ Số của phương án C đo bằng [QA/box_price_swing.py](../../QA/box_price_
 **Khuyến nghị của Claude 1: phương án C**, vì hợp mục tiêu "ván khó, cần tính toán kỹ" nhất mà không làm mất khoảng cách kỹ năng, và rẻ nhất để làm. Nếu muốn Rương Đen có chỗ đứng thì thử **C kết hợp hạ nhẹ giá Rương Đen** (ví dụ 1.250), chưa đo. B là phương án dùng khi chủ dự án ưu tiên đánh đổi theo vốn hơn khoảng cách kỹ năng, và nên chơi thử thật trước khi chọn vì mức khó của nó rất cao.
 
 **Việc cần Claude 2 nếu chọn C:** đo lại bằng bộ chiến thuật đầy đủ và các luật dịch vụ, đo biên độ ±15% và ±20%, đo kết hợp hạ giá Rương Đen. **Việc của tôi:** viết luật vào GDD, `NoiDungMau.md`, `content.json` và hợp đồng dữ liệu. **D-32** (giá nền V09) chỉ áp dụng nếu chọn B.
+
+**Quyết định (2026-11-22): chủ dự án chọn phương án C, giá hộp dao động ±20% theo ngày.** Luật chi tiết ở [NoiDungMau.md](NoiDungMau.md) mục 5.3 và 5.4, dữ liệu ở `content.json` (`shelf.day_price` và `shelf.price_follows_clue.multiplier`):
+- Giá hôm nay của mỗi loại hộp bằng giá gốc nhân (1 + u), u ngẫu nhiên đều trong khoảng −0,2 đến +0,2, xác định theo (seed, ngày, loại hộp), công bố đầu ngày. Áp dụng từ ngày 1.
+- E3 giảm thêm 20% giá H2, tính sau dao động.
+- Giá niêm yết của hộp bằng giá hôm nay nhân hệ số theo manh mối đầu tiên. Bảng giá niêm yết tuyệt đối cũ (260, 395 xu...) được thay bằng bảng hệ số, vì giá hôm nay đổi mỗi ngày.
+- Giao diện hiển thị bảng giá hôm nay và không hiển thị giá trị kỳ vọng (theo O-04).
+
+**Phương án A và B không áp dụng.** C3 của Claude 2 (B) giữ làm dự phòng nếu chơi thử thật cho thấy cần đánh đổi theo vốn rõ hơn, khi đó khóa `QA/test_tier_profit.py` (đang tắt) dùng được. D-32 (giá nền V09) không áp dụng.
+
+**Điều còn mở:** Rương Đen mới được chọn 4–8% ở phương án C. Có thể thử hạ giá gốc Rương Đen (ví dụ 1.250), chưa đo.
+
+**Việc của Claude 2:** đo lại bằng bộ chiến thuật đầy đủ và các luật dịch vụ (đấu giá, cầm cố tính từ giá bán hiện vật nên không đổi), đo biên độ ±15% và ±20%, đo kết hợp hạ giá Rương Đen, rồi khóa vào test. **Việc của Codex:** thêm giá hôm nay và hệ số giá niêm yết vào lõi gameplay, đổi cách tính giá niêm yết ở pull request #2.
 
