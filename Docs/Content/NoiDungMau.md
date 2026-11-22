@@ -4,7 +4,7 @@ Danh mục hộp, hiện vật mẫu, manh mối niêm phong và hướng dẫn 
 
 ## 1. Danh mục hộp
 
-| Mã | Tên hộp | Giá | Nhóm nguồn gốc tiềm năng | Hàng giả | Manh mối đúng | Ghi chú |
+| Mã | Tên hộp | Giá gốc | Nhóm nguồn gốc tiềm năng | Hàng giả | Manh mối đúng | Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- |
 | H1 | Hộp Gỗ Nhỏ | 100 xu | Quá khứ | 12% | 2 trên 3 | Hộp thường, dễ mua vào đầu ván. |
 | H2 | Hộp Kim Loại Mờ | 350 xu | Hiện đại, Tương lai | 15% | 2 trên 3 | Hộp thường, có thể ra thiết bị hỏng. Manh mối đọc được nhiều nhất. |
@@ -129,27 +129,45 @@ Mỗi hộp là một vật thể riêng. Hiện vật, chất lượng và tín
 - Người chơi chọn mua **1 hộp** trong lượt, hoặc **dừng mua** trong ngày. Không đổi hộp trong cùng lượt. Hộp bị bỏ qua không quay lại, lượt sau bày hộp mới.
 - Hộp của mỗi lượt xác định theo (seed, ngày, lượt, loại hộp), nên tải lại không đổi hộp.
 - Mỗi hộp hiển thị: loại, tỷ lệ hàng giả của loại, giá niêm yết và **1 manh mối miễn phí**. CB2 và Mốc 3 Cổ Phong thêm manh mối miễn phí, tối đa 3 manh mối mỗi hộp.
+- Giá mỗi loại hộp là **giá hôm nay**, dao động theo ngày (mục 5.3).
 - **Lời mách của Dì Mận:** trả **15 xu** để biết **nhóm nguồn gốc thật** của hiện vật trong hộp đó. Lời mách **chắc đúng**, khác với manh mối miễn phí có thể sai. Mỗi hộp mua được một lần. Lời mách không cho biết chất lượng hay hàng giả. Giá niêm yết **không đổi** khi mua lời mách.
 
-### 5.3 Giá niêm yết đi theo manh mối
+### 5.3 Giá hộp mỗi ngày dao động
 
-Dì Mận cũng đọc manh mối. Giá niêm yết của hộp thay đổi theo **manh mối miễn phí đầu tiên**, kể cả khi manh mối đó là sai:
+Giá ghi ở bảng hộp (mục 1) là **giá gốc**. Mỗi ngày, giá **hôm nay** của từng loại hộp lệch khỏi giá gốc ngẫu nhiên đều trong khoảng **cộng trừ 20%**:
 
-> giá niêm yết = giá loại hộp × (1 + 0,75 × (giá trị kỳ vọng sau manh mối ÷ giá trị kỳ vọng trước manh mối − 1)), làm tròn đến 5 xu
+> giá hôm nay = giá gốc × (1 + u), u ngẫu nhiên đều trong khoảng từ −0,2 đến +0,2, làm tròn đến xu gần nhất
 
-Bảng đã tính sẵn, theo độ tin cậy manh mối của từng loại hộp (nhóm của manh mối miễn phí đầu tiên):
+- Giá hôm nay xác định theo (seed, ngày, loại hộp) nên tải lại không đổi. Mỗi loại hộp có độ lệch riêng, độc lập nhau. Áp dụng từ ngày 1.
+- **Công bố đầu ngày, trước khi mua hộp**, như biến cố. Giao diện hiển thị bảng giá hôm nay của các loại hộp (Rương Đen từ ngày 4), và **không** hiển thị giá trị kỳ vọng vì người chơi tự tính.
+- Biến cố E3 giảm thêm 20% giá H2, tính **sau** dao động: giá H2 hôm nay = giá gốc × (1 + u) × 0,8.
+- Giá hôm nay chưa phải giá niêm yết cuối cùng: mỗi hộp còn được điều chỉnh theo manh mối (mục 5.4).
+
+**Vì sao có luật này.** Lời tuyệt đối của một hộp là giá trị kỳ vọng trừ giá hộp, nên giá dao động làm loại hộp tốt nhất đổi theo ngày. Ví dụ H3 có giá trị kỳ vọng khoảng 990 xu: giá hôm nay 640 thì lời khoảng 350, giá 960 thì lời khoảng 30. Rương Đen có giá trị kỳ vọng khoảng 1.515 xu: giá 1.200 thì lời khoảng 315, giá 1.800 thì lỗ khoảng 285. Người chơi phải tính lại mỗi ngày thay vì có một đáp án cố định, và Rương Đen có những ngày đáng mua.
+
+**Số liệu đo ban đầu** ([QA/box_price_swing.py](../../QA/box_price_swing.py), Claude 2 sẽ đo lại): với biên độ 20%, người chơi tối ưu thắng 40% / 46% / 46% / 47% (thận trọng, liều, combo nhỏ, combo lớn), bot thường 20% / 16%. Biên độ 30% làm game dễ hơn. Xem [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md) mục K.
+
+### 5.4 Giá niêm yết đi theo manh mối
+
+Dì Mận cũng đọc manh mối. Giá niêm yết của hộp là giá hôm nay nhân một hệ số theo **manh mối miễn phí đầu tiên**, kể cả khi manh mối đó là sai:
+
+> giá niêm yết = giá hôm nay × hệ số, làm tròn đến xu gần nhất
+>
+> hệ số = 1 + 0,75 × (giá trị kỳ vọng sau manh mối ÷ giá trị kỳ vọng trước manh mối − 1)
+
+Bảng hệ số, theo độ tin cậy manh mối của từng loại hộp (nhóm của manh mối miễn phí đầu tiên):
 
 | Hộp | Quá khứ | Hiện đại | Tương lai | Ngoài hành tinh | Cổ tích | Thần thoại |
 | --- | --- | --- | --- | --- | --- | --- |
-| H1 | 100 xu | 100 xu | 100 xu | 100 xu | 100 xu | 100 xu |
-| H2 | 350 xu | 260 xu | 395 xu | 350 xu | 350 xu | 350 xu |
-| H3 | 800 xu | 800 xu | 800 xu | 800 xu | 810 xu | 790 xu |
-| RD | 1.500 xu | 1.500 xu | 1.500 xu | 1.535 xu | 1.405 xu | 1.545 xu |
+| H1 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 | 1,000 |
+| H2 | 1,000 | 0,736 | 1,134 | 1,000 | 1,000 | 1,000 |
+| H3 | 1,000 | 1,000 | 1,000 | 1,000 | 1,013 | 0,989 |
+| RD | 1,000 | 1,000 | 1,000 | 1,022 | 0,936 | 1,031 |
 
 - H1 không đổi giá vì manh mối không phân biệt được hiện vật.
-- **H2 là hộp đọc manh mối rõ nhất:** nhóm Hiện đại chỉ ra V04 giá thấp (260 xu), nhóm Tương lai chỉ ra V05 hoặc V06 (395 xu).
+- **H2 là hộp đọc manh mối rõ nhất.** Ở giá gốc 350 xu, nhóm Hiện đại chỉ ra V04 giá thấp (khoảng 258 xu), nhóm Tương lai chỉ ra V05 hoặc V06 (khoảng 397 xu).
 - H3 và Rương Đen gần như không đổi giá vì chỉ 1 trên 3 manh mối đúng. Hai hộp đắt này là canh bạc, ít thông tin.
-- Giá niêm yết là một thông tin: nếu giá thấp hơn giá loại hộp thì Dì Mận cho rằng hộp xấu. Người chơi tự cân xem có tin Dì Mận hay không.
+- Giá niêm yết là một thông tin: nếu thấp hơn giá hôm nay thì Dì Mận cho rằng hộp xấu. Người chơi tự cân xem có tin Dì Mận hay không.
 
 **Số liệu đo (cận trên, bot đọc manh mối tối ưu):** thắng 34% / 38% / 44% (thận trọng cộng giám định, liều cộng giám định, combo lớn cộng giám định), so với 22% / 23% / 38% khi không đọc manh mối. Xem [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md) mục J.
 
