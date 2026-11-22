@@ -23,6 +23,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 ## Sprint 2 — Tạo tác và ván 7 ngày
 
 - [ ] **Claude 1** — Soạn nội tại gia truyền, hai hệ tạo tác, combo và hai Bí Khế mẫu. Nghiệm thu khi mỗi hiệu ứng có điều kiện kích hoạt, hiệu lực và ví dụ.
+  - *Tiến độ:* Đã có bản nháp trong [Docs/Content/GiaTruyenTaoTacBiKhe.md](Docs/Content/GiaTruyenTaoTacBiKhe.md): 2 cổ vật gia truyền, 6 tạo tác thuộc 2 hệ, mốc cộng hưởng, 3 combo, 2 Bí Khế và 6 ca kiểm thử. Chờ Claude 2 kiểm tra cân bằng.
 - [ ] **Claude 2** — Kiểm thử lịch nợ, combo, tiến độ Bí Khế và tải lại ván. Nghiệm thu khi có ca trả đúng hạn, chặn trả trước, thiếu tiền, đạt và chưa đạt điều kiện.
 - [ ] **Codex** — Nối gia truyền, tier, trang bị, combo, Bí Khế, tiến trình 7 ngày và lưu ván. Nghiệm thu khi có thể chơi tới kết quả và tải lại đúng trạng thái mà không lặp giao dịch.
 - [ ] **Antigravity** — Dựng Kho Tạo Tác, UI sổ và trang bị, cảnh thu nợ cùng màn kết quả. Nghiệm thu khi người thử đọc được nợ, combo, tiến độ Bí Khế và lý do kết thúc ván.
