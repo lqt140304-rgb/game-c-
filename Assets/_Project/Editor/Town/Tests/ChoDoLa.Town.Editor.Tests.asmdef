@@ -2,6 +2,8 @@
   "name": "ChoDoLa.Town.Editor.Tests",
   "rootNamespace": "ChoDoLa.Town.Editor.Tests",
   "references": [
+    "ChoDoLa.Runtime",
+    "ChoDoLa.Editor",
     "ChoDoLa.Town.Layout",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"

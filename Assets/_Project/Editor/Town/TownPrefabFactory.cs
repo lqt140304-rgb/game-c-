@@ -85,6 +85,10 @@ namespace ChoDoLa.Town.Editor
             {
                 if (mat.HasProperty("_Surface")) mat.SetFloat("_Surface", 1f);
                 if (mat.HasProperty("_Blend")) mat.SetFloat("_Blend", 0f);
+                if (mat.HasProperty("_SrcBlend")) mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                if (mat.HasProperty("_DstBlend")) mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                if (mat.HasProperty("_ZWrite")) mat.SetFloat("_ZWrite", 0f);
+                mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
                 mat.SetOverrideTag("RenderType", "Transparent");
                 mat.renderQueue = 3000;
             }

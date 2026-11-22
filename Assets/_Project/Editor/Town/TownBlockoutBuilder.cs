@@ -80,6 +80,7 @@ namespace ChoDoLa.Town.Editor
                 go.transform.position = new Vector3(piece.Center.X, piece.Center.Y, piece.Center.Z);
                 go.transform.rotation = Quaternion.Euler(-piece.RampDegrees, piece.YawDegrees, 0f);
                 go.transform.localScale = new Vector3(piece.Size.X, 0.2f, slopeLen);
+                go.transform.position -= go.transform.up * 0.1f;
                 return;
             }
 

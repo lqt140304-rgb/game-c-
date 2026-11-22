@@ -1,0 +1,19 @@
+{
+  "name": "ChoDoLa.Editor",
+  "rootNamespace": "ChoDoLa",
+  "references": [
+    "ChoDoLa.Runtime",
+    "ChoDoLa.Town.Layout"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

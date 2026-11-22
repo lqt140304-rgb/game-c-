@@ -94,6 +94,38 @@ namespace ChoDoLa.Town.Layout
                 {
                     errors.Add($"[SLOT_ACCESS] '{id}' front edge does not touch any walkway at elevation {slot.Center.Y}.");
                 }
+
+                if (slot.Center.Y > TownSpec.GapTolerance)
+                {
+                    bool supported = walkways.Any(w =>
+                        Math.Abs(w.Elevation - slot.Center.Y) <= TownSpec.GapTolerance &&
+                        w.Area.Contains(slot.Footprint));
+                    if (!supported)
+                    {
+                        errors.Add($"[SLOT_SUPPORT] Upper-floor '{id}' footprint overhangs supporting deck.");
+                    }
+                }
+            }
+
+            var markers = pieces.Where(p => p.IsMarker).ToList();
+            var solids = pieces.Where(p =>
+                p.Kind == TownPieceKind.Building ||
+                p.Kind == TownPieceKind.CoverBuilding ||
+                p.Kind == TownPieceKind.Wall).ToList();
+
+            foreach (var m in markers)
+            {
+                foreach (var s in solids)
+                {
+                    float solidBottom = s.Center.Y - s.Size.Y * 0.5f;
+                    float solidTop = s.Center.Y + s.Size.Y * 0.5f;
+                    if (m.Center.Y >= solidBottom - TownSpec.GapTolerance &&
+                        m.Center.Y < solidTop - TownSpec.GapTolerance &&
+                        m.Footprint.Overlaps(s.Footprint))
+                    {
+                        errors.Add($"[SLOT_CLEAR] Marker '{m.Id}' overlaps solid '{s.Id}'.");
+                    }
+                }
             }
         }
 
@@ -123,15 +155,34 @@ namespace ChoDoLa.Town.Layout
                     p.Kind == TownPieceKind.Deck ||
                     p.Kind == TownPieceKind.Ramp ||
                     p.Kind == TownPieceKind.Bridge ||
-                    p.Kind == TownPieceKind.StreetLight ||
                     p.Kind == TownPieceKind.AccentSteam ||
                     p.Kind == TownPieceKind.AccentSciFi ||
                     p.Kind == TownPieceKind.AccentArcane)
                 {
                     continue;
                 }
-                if (p.ClearanceHeight >= TownSpec.MinClearance) continue;
-                float bottomY = p.Center.Y - p.Size.Y * 0.5f;
+
+                if (p.ClearanceHeight >= TownSpec.MinClearance &&
+                    (p.Kind == TownPieceKind.Arch ||
+                     p.Kind == TownPieceKind.LandmarkTower ||
+                     p.Kind == TownPieceKind.LandmarkHoloArch))
+                {
+                    foreach (var pillar in GetArchPillarFootprints(p))
+                    {
+                        foreach (var w in groundWalkways)
+                        {
+                            if (pillar.Overlaps(w.Area))
+                            {
+                                errors.Add($"[WALK_CLEAR] Pillar of '{p.Id}' overlaps ground walkway '{w.Id}'.");
+                            }
+                        }
+                    }
+                    continue;
+                }
+
+                float bottomY = p.Kind == TownPieceKind.LandmarkWell
+                    ? p.Center.Y
+                    : p.Center.Y - p.Size.Y * 0.5f;
                 if (bottomY >= TownSpec.MinClearance) continue;
 
                 foreach (var w in groundWalkways)
@@ -141,6 +192,26 @@ namespace ChoDoLa.Town.Layout
                         errors.Add($"[WALK_CLEAR] Solid piece '{p.Id}' overlaps ground walkway '{w.Id}'.");
                     }
                 }
+            }
+        }
+
+        private static IEnumerable<Rect2> GetArchPillarFootprints(TownPiece p)
+        {
+            float openingWidth = Math.Min(4.0f, p.Size.X * 0.55f);
+            float pillarWidth = (p.Size.X - openingWidth) * 0.5f;
+            float offset = openingWidth * 0.5f + pillarWidth * 0.5f;
+            int yaw = (((int)Math.Round(p.YawDegrees) % 360) + 360) % 360;
+            bool swap = yaw == 90 || yaw == 270;
+
+            if (!swap)
+            {
+                yield return Rect2.FromCenter(p.Center.X - offset, p.Center.Z, pillarWidth, p.Size.Z);
+                yield return Rect2.FromCenter(p.Center.X + offset, p.Center.Z, pillarWidth, p.Size.Z);
+            }
+            else
+            {
+                yield return Rect2.FromCenter(p.Center.X, p.Center.Z - offset, p.Size.Z, pillarWidth);
+                yield return Rect2.FromCenter(p.Center.X, p.Center.Z + offset, p.Size.Z, pillarWidth);
             }
         }
 
@@ -185,6 +256,22 @@ namespace ChoDoLa.Town.Layout
                 if (p.ClearanceHeight > 0f && p.ClearanceHeight < TownSpec.MinClearance)
                 {
                     errors.Add($"[CLEARANCE] '{p.Id}' clearance {p.ClearanceHeight} < {TownSpec.MinClearance}.");
+                }
+                if (p.Kind == TownPieceKind.Bridge)
+                {
+                    float bottomY = p.Center.Y - p.Size.Y;
+                    if (bottomY < TownSpec.MinClearance)
+                    {
+                        errors.Add($"[CLEARANCE] Bridge '{p.Id}' underside {bottomY:F2} < {TownSpec.MinClearance}.");
+                    }
+                }
+                else if (p.Kind == TownPieceKind.Deck)
+                {
+                    float bottomY = p.Center.Y - p.Size.Y * 0.5f;
+                    if (bottomY < TownSpec.MinClearance)
+                    {
+                        errors.Add($"[CLEARANCE] Deck '{p.Id}' underside {bottomY:F2} < {TownSpec.MinClearance}.");
+                    }
                 }
             }
         }

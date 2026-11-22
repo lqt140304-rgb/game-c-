@@ -44,9 +44,9 @@ namespace ChoDoLa.Town.Layout.Tests
             data.Pieces.Add(new TownPiece("ShopSlot_03", TownPieceKind.ShopSlot, new Float3(-14f, 0f, 16f), new Float3(4f, 0.1f, 3f), 90f, TownPalette.Marker));
             data.Pieces.Add(new TownPiece("ShopSlot_04", TownPieceKind.ShopSlot, new Float3(14.5f, 0f, 16f), new Float3(5f, 0.1f, 4f), 270f, TownPalette.Marker));
             data.Pieces.Add(new TownPiece("ShopSlot_05", TownPieceKind.ShopSlot, new Float3(-7.5f, 0f, 31f), new Float3(4f, 0.1f, 3f), 270f, TownPalette.Marker));
-            data.Pieces.Add(new TownPiece("ShopSlot_06", TownPieceKind.ShopSlot, new Float3(9.5f, 3.8f, 37f), new Float3(5f, 0.1f, 4f), 270f, TownPalette.Marker));
+            data.Pieces.Add(new TownPiece("ShopSlot_06", TownPieceKind.ShopSlot, new Float3(9.5f, 3.8f, 36f), new Float3(5f, 0.1f, 4f), 270f, TownPalette.Marker));
             data.Pieces.Add(new TownPiece("ShopSlot_07", TownPieceKind.ShopSlot, new Float3(-7.5f, 0f, 48f), new Float3(4f, 0.1f, 3f), 270f, TownPalette.Marker));
-            data.Pieces.Add(new TownPiece("ShopSlot_08", TownPieceKind.ShopSlot, new Float3(-9.5f, 3.8f, 37f), new Float3(5f, 0.1f, 4f), 90f, TownPalette.Marker));
+            data.Pieces.Add(new TownPiece("ShopSlot_08", TownPieceKind.ShopSlot, new Float3(-9.5f, 3.8f, 36f), new Float3(5f, 0.1f, 4f), 90f, TownPalette.Marker));
 
             return data;
         }
@@ -166,6 +166,52 @@ namespace ChoDoLa.Town.Layout.Tests
             {
                 d.Walkways.Add(new Walkway("Alley_Narrow", new Rect2(-12.5f, 20f, -9f, 23f), 0f));
             }, "[WIDTH]");
+        }
+    }
+}
+
+namespace ChoDoLa.Town.Layout.Tests
+{
+    public class TownLayoutValidatorReviewTests
+    {
+        [Test]
+        public void SolidBuilding_OverlappingSlot_Reported()
+        {
+            var pieces = new System.Collections.Generic.List<TownPiece>(TownLayout.Pieces);
+            pieces.Add(new TownPiece("BadBuilding", TownPieceKind.Building, new Float3(-4.5f, 4f, 9f), new Float3(3f, 8f, 3f), 0f, TownPalette.Stone));
+            var errors = TownLayoutValidator.Validate(pieces, TownLayout.Walkways);
+            Assert.That(errors.Any(e => e.StartsWith("[SLOT_CLEAR]")), Is.True, string.Join("; ", errors));
+        }
+
+        [Test]
+        public void Arch_PillarsBlockWalkway_Reported()
+        {
+            var pieces = new System.Collections.Generic.List<TownPiece>(TownLayout.Pieces);
+            int idx = pieces.FindIndex(p => p.Id == "HoloArch_SE");
+            var old = pieces[idx];
+            pieces[idx] = new TownPiece(old.Id, old.Kind, old.Center, new Float3(6f, 4.5f, 3.5f), 0f, old.Palette, old.FacadeId, old.ClearanceHeight);
+            var errors = TownLayoutValidator.Validate(pieces, TownLayout.Walkways);
+            Assert.That(errors.Any(e => e.StartsWith("[WALK_CLEAR]") && e.Contains("HoloArch_SE")), Is.True, string.Join("; ", errors));
+        }
+
+        [Test]
+        public void UpperSlot_OverhangingDeck_Reported()
+        {
+            var pieces = new System.Collections.Generic.List<TownPiece>(TownLayout.Pieces);
+            int idx = pieces.FindIndex(p => p.Id == "ShopSlot_06");
+            var old = pieces[idx];
+            pieces[idx] = new TownPiece(old.Id, old.Kind, new Float3(old.Center.X, old.Center.Y, 37.5f), old.Size, old.YawDegrees, old.Palette);
+            var errors = TownLayoutValidator.Validate(pieces, TownLayout.Walkways);
+            Assert.That(errors.Any(e => e.StartsWith("[SLOT_SUPPORT]")), Is.True, string.Join("; ", errors));
+        }
+
+        [Test]
+        public void LowBridge_Reported()
+        {
+            var pieces = new System.Collections.Generic.List<TownPiece>(TownLayout.Pieces);
+            pieces.Add(new TownPiece("LowBridge", TownPieceKind.Bridge, new Float3(0f, 3.8f, 10f), new Float3(6f, 1.0f, 3f), 0f, TownPalette.Stone));
+            var errors = TownLayoutValidator.Validate(pieces, TownLayout.Walkways);
+            Assert.That(errors.Any(e => e.StartsWith("[CLEARANCE]") && e.Contains("LowBridge")), Is.True, string.Join("; ", errors));
         }
     }
 }
