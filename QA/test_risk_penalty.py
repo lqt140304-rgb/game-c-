@@ -7,7 +7,7 @@ import risk_penalty as R
 import risk_full as F
 from sprint3_sim import ART
 
-RISK_PENALTY_APPROVED = False
+RISK_PENALTY_APPROVED = True
 N = 1500
 
 
