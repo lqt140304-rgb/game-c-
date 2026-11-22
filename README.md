@@ -10,4 +10,5 @@
 Dự án chọn **Unity 6.3 LTS + URP** và **Blender**, với mỹ thuật stylized 3D. Bản chơi thử tập trung vào một khu chợ nhỏ, vòng mua–mở–soi–bán hộp, combo tạo tác và đủ 7 ngày trả nợ. Các mốc tiền, giá, xác suất và số lượng nội dung mẫu là thông số thử nghiệm.
 
 - [Game Design](Docs/GameDesign/README.md) — Luật chơi, phạm vi và các câu hỏi thiết kế còn mở.
+- [Cân bằng và kiểm thử](Docs/Balance/README.md) — Giả định tiền, nợ, giá hộp, xác suất rơi và ca kiểm thử biên.
 - [Checklist sprint](TASKS.md) — Claude 1 phụ trách thiết kế, Claude 2 phụ trách kinh tế và QA, Antigravity phụ trách 3D và tích hợp, Codex phụ trách hệ thống và kiểm thử.
