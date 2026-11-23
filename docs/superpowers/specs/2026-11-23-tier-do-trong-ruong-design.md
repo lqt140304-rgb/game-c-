@@ -39,17 +39,19 @@ Chốt rương ra **loại đồ nào** và **cụ thể là món gì**, để n
 
 ## 2. Danh sách 35 món
 
-QK = Quá khứ, HĐ = Hiện đại, TL = Tương lai, NHT = Ngoài hành tinh, CT = Cổ tích, TT = Thần thoại. **V** = hiện vật đã có.
+Nguyên tắc nội dung: **gần gũi, người chơi nhận ra ngay**. Pha **cân bằng hai bên**: đồ Việt Nam và truyền thuyết (VN) với đồ **nhại** phim, anime, văn hóa đại chúng (NH). Món nhại phải **gợi nhắc đủ để nhận ra nhưng không dùng tên hay hình ảnh thật** có bản quyền (giống đội "Quỷ Đỏ United" ở phần 2). Món dựa trên truyền thuyết và văn hóa dân gian Việt Nam thì dùng thẳng được.
 
-| Bậc | Món (nhóm) |
+**V** = hiện vật đã có (10 món, giữ nguyên). Các món còn lại là **25 món mới, tên chỉ là đề xuất**.
+
+| Bậc | Món |
 |---|---|
-| **Rác (8)** | Giày cũ, tất thối, trứng thối, xương cá, lon bia bẹp, áo đấu cũ của đội nhại, vé cược nhàu, dép tổ ong cụt quai (đều HĐ) |
-| **Thường (8)** | **V01** Bình sứ men xanh (QK), **V02** Sách cổ bìa da (QK), **V03** Đồng hồ quả lắc cũ (QK), **V04** Mảnh kính đồng hồ thiên văn (HĐ), **V05** Thiết bị liên lạc hỏng (TL), **V09** Lá bùa giấy vàng (TT), Radio đèn điện tử (HĐ), Đũa phép gãy (CT) |
-| **Hiếm (7)** | **V06** Bộ pin lượng tử (TL), **V08** Gương thủy tinh cổ tích (CT), Mặt nạ gỗ nghi lễ (QK), Máy ảnh phim đời đầu (HĐ), Nam châm lạ (NHT), Chuông đồng tự kêu (TT), Kính VR thế hệ cuối (TL) |
-| **Rất hiếm (6)** | **V07** Tinh thể lam cầm tay (NHT), **V10** Mảnh vảy long (TT), Kiếm gỉ hiệp sĩ (QK), Hạt giống cây thần (CT), Bộ não nhân tạo hỏng (TL), Bản đồ sao (NHT) |
-| **Huyền thoại (6)** | Ấn Ngọc Tỷ (QK), Trái tim robot cuối cùng (TL), Quả táo vàng (TT), Giày thủy tinh nguyên bản (CT), Phi thuyền mini của phi hành gia (NHT), Tấm vé số độc đắc "chưa đổi" (HĐ) |
+| **Rác (8)** | Dép tổ ong cụt quai (VN), Vỏ bao thuốc lá cũ, Lon nước ngọt bẹp, Vé số lẻ (VN), Áo đấu cũ của đội nhại (NH), Vé cược nhàu, Tất thối, Trứng thối |
+| **Thường (8)** | **V01** Bình sứ men xanh, **V02** Sách cổ bìa da, **V03** Đồng hồ quả lắc cũ, **V04** Mảnh kính đồng hồ thiên văn, **V05** Thiết bị liên lạc hỏng, **V09** Lá bùa giấy vàng, Quạt nan cũ (VN), Máy game cầm tay 8-bit (NH) |
+| **Hiếm (7)** | **V06** Bộ pin lượng tử, **V08** Gương thủy tinh cổ tích, Băng cassette và máy phát (VN), Nón lá thêu hoa (VN), Cái túi thần kỳ 4 chiều (NH), Cục sạc hình chuột vàng (NH), Mũ phù thủy học việc (NH) |
+| **Rất hiếm (6)** | **V07** Tinh thể lam cầm tay, **V10** Mảnh vảy long, Đàn thần (VN, truyền thuyết Thạch Sanh), Trống đồng nhỏ (VN), Kiếm sáng ba màu (NH), Quả cầu ngọc 7 sao (NH) |
+| **Huyền thoại (6)** | Nỏ thần (VN, An Dương Vương), Roi sắt của vị anh hùng làng Gióng (VN), Ấn Ngọc Tỷ (VN), Chiếc nhẫn duy nhất (NH), Quyển sổ định mệnh (NH), Tấm vé số độc đắc "chưa đổi" (VN, hài) |
 
-Tên chỉ là gợi ý. Mỗi nhóm nguồn gốc cần ít nhất vài món ở mỗi bậc để rương Vải Niêm (ra theo bộ) và manh mối nhóm nguồn gốc vẫn có nghĩa.
+Trong 25 món mới có khoảng nửa VN, nửa NH. **Nhóm nguồn gốc** (Quá khứ, Hiện đại, Tương lai, Ngoài hành tinh, Cổ tích, Thần thoại) của từng món mới sẽ gán lại khi chốt danh sách, để rương Vải Niêm (ra theo bộ) vẫn có nghĩa.
 
 ## 3. Rương ra bậc nào (đề xuất)
 
@@ -79,7 +81,7 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 ## Câu hỏi còn mở
 
 1. Giá nền, tỉ lệ giả, hồ sơ chuẩn và danh sách lỗi cho 25 món mới: cần viết, mỗi món một mục.
-2. Tên 25 món mới có đúng ý bạn không (đặc biệt Huyền thoại)? Bạn có muốn thêm hoặc đổi món nào?
+2. Tên 25 món mới có đúng ý bạn không (đặc biệt Huyền thoại)? Món nhại cần kiểm tra kỹ để **không dùng tên hay hình ảnh thật** có bản quyền.
 3. Số món mỗi nhóm nguồn gốc ở mỗi bậc có cân đối cho rương Vải Niêm (theo bộ) không: cần kiểm tra.
 4. Tỉ lệ ra ở mục 3 và 8–10% Huyền thoại ở Rương Tổng Hợp: **chờ Claude 2**.
 5. Kim Khí có nên ra tạo tác đã có (trùng) hay chỉ ra tạo tác chưa sở hữu.
