@@ -65,17 +65,23 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 **Cuốn Sổ Sưu Tập** ghi mọi thứ người chơi từng sở hữu: hiện vật, tạo tác và cả rác.
 
 - **Lớp 1, trong ván:** gom đủ một bộ trong cùng ván (ví dụ 3 món cùng nhóm nguồn gốc) thì nhận hiệu ứng nhỏ đến hết ván, gần cơ chế Bí Khế.
-- **Lớp 2, giữa các ván (meta, vĩnh viễn):** mở thưởng lớn. Giữ 4 mở khóa M1–M4 hiện có và thêm:
+- **Lớp 2, giữa các ván (meta, vĩnh viễn): cây phát triển (skill tree).** Giữ 4 mở khóa M1–M4 hiện có làm các nút đầu cây.
 
-| Điều kiện | Phần thưởng (ví dụ) |
-|---|---|
-| Có đủ 6 nhóm nguồn gốc | Rương Tổng Hợp (ra đồ của mọi nhóm) |
-| Gom đủ 1 hệ tạo tác | Rương Cổ Phong hoặc Rương Thiên Cơ |
-| Sưu tập đủ 5 loại rác | Rương Rác Quý (đổi rác lấy đồ) |
-| Sưu tập đủ một bộ đồ cổ | Cutscene và khoảnh khắc thần lực mới |
+**Cây có 4 nhánh**
 
-- Rương mở khóa nằm **ngoài 4 rương cơ bản**, là rương cấp cao chỉ có sau khi mở khóa, nên không làm lệch cân bằng 4 rương đầu.
-- Phần thưởng meta **không có buff chơi**: chỉ là rương mới, bộ cốt truyện, cảnh mới và phản ứng thần lực mới.
+| Nhánh | Mở ra | Ví dụ nút |
+|---|---|---|
+| Rương | Rương mới, rương xuất hiện sớm hơn | Rương Tổng Hợp (đủ 6 nhóm nguồn gốc), Rương Cổ Phong / Thiên Cơ (đủ 1 hệ tạo tác), Rương Rác Quý (đủ 5 loại rác), M3 Rương Đen sớm |
+| Sưu tập | Trang Sổ Sưu Tập, bộ sưu tập mới | M1 chọn gia truyền, M2 vốn đầu ván, thưởng khi gom đủ một bộ |
+| Thần lực | Thêm phản ứng dí dỏm của đồ cổ (khi cầm và ngoài đời thật) | Món thần thoại mở thêm lời thì thầm, đồ cổ tích phản ứng với mèo chợ |
+| Câu chuyện | Cutscene, cảnh, NPC mới | Mở khóa chương mới khi sưu tập đủ một bộ đồ cổ |
+
+**Luật mở nút**
+- Nút cần **nút cha đã mở**, nên người chơi đi sâu một nhánh hoặc trải đều.
+- Mở một nút cần **cả hai**: (1) đủ điều kiện sưu tập của nút đó, và (2) tốn **điểm phát triển**.
+- Điểm phát triển kiếm được cuối mỗi ván (thắng hay thua đều có, thắng được nhiều hơn), và từ việc ghi thêm vào Sổ Sưu Tập lần đầu.
+- Phần thưởng meta **không có buff chơi**: chỉ là rương mới, bộ cốt truyện, cảnh mới và phản ứng thần lực mới. (Riêng M2 vốn đầu ván và M4 hiện có là ngoại lệ đã có sẵn, Claude 2 xét có giữ không.)
+- Đóng góp mới cho dữ liệu: nút cây gồm `id`, `branch`, `parent`, `cost`, `condition`, `reward`.
 
 ## 5. Thần lực
 
@@ -91,4 +97,5 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 2. Rác cần mô hình 3D hoặc icon: bao nhiêu món, làm bằng Meshy (gộp một ảnh như các lần trước)?
 3. Rương mở khóa (Tổng Hợp, Cổ Phong, Thiên Cơ, Rác Quý) cần mô hình 3D riêng không, hay dùng lại 4 mô hình hiện có đổi màu?
 4. Khoảnh khắc thần lực "ngoài đời thật" cần cảnh chợ có NPC và mèo, đang chờ Antigravity dựng cảnh.
-5. Dữ liệu và hợp đồng: Codex cần thêm loại vật phẩm `junk`, trường `use`, và loại rương mới vào `Docs/Content/YeuCauDuLieu.md`.
+5. Giá điểm phát triển của từng nút và cách chia điểm cuối ván: **chờ Claude 2**; giao diện cây (màn hình) do Antigravity dựng.
+6. Dữ liệu và hợp đồng: Codex cần thêm loại vật phẩm `junk`, trường `use`, loại rương mới và nút cây phát triển vào `Docs/Content/YeuCauDuLieu.md`.
