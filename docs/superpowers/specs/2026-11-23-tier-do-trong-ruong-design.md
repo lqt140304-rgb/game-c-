@@ -45,7 +45,7 @@ Nguyên tắc nội dung: **gần gũi, người chơi nhận ra ngay**. Pha **c
 
 | Bậc | Món |
 |---|---|
-| **Rác (8)** | Dép tổ ong cụt quai (VN), Vỏ bao thuốc lá cũ, Lon nước ngọt bẹp, Vé số lẻ (VN), Áo đấu cũ của đội nhại (NH), Vé cược nhàu, Tất thối, Trứng thối |
+| **Rác (8)** | Giày cũ, Tất thối, Trứng thối, Xương cá (4 món bạn nêu từ đầu), Dép tổ ong cụt quai (VN), Lon nước ngọt bẹp, Áo đấu cũ của đội nhại (NH), Vé cược nhàu |
 | **Thường (8)** | **V01** Bình sứ men xanh, **V02** Sách cổ bìa da, **V03** Đồng hồ quả lắc cũ, **V04** Mảnh kính đồng hồ thiên văn, **V05** Thiết bị liên lạc hỏng, **V09** Lá bùa giấy vàng, Quạt nan cũ (VN), Máy game cầm tay 8-bit (NH) |
 | **Hiếm (7)** | **V06** Bộ pin lượng tử, **V08** Gương thủy tinh cổ tích, Băng cassette và máy phát (VN), Nón lá thêu hoa (VN), Cái túi thần kỳ 4 chiều (NH), Cục sạc hình chuột vàng (NH), Mũ phù thủy học việc (NH) |
 | **Rất hiếm (6)** | **V07** Tinh thể lam cầm tay, **V10** Mảnh vảy long, Đàn thần (VN, truyền thuyết Thạch Sanh), Trống đồng nhỏ (VN), Kiếm sáng ba màu (NH), Quả cầu ngọc 7 sao (NH) |
@@ -86,3 +86,15 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 4. Tỉ lệ ra ở mục 3 và 8–10% Huyền thoại ở Rương Tổng Hợp: **chờ Claude 2**.
 5. Kim Khí có nên ra tạo tác đã có (trùng) hay chỉ ra tạo tác chưa sở hữu.
 6. 25 món mới cần mô hình 3D low-poly; tổng cộng 35 hiện vật, ưu tiên theo bậc.
+
+## Cập nhật: cách làm mô hình theo bậc (chốt)
+
+Độ hiếm càng cao thì càng đầu tư chi tiết (ít món hơn nên đỡ tốn, và chất lượng đồng đều hơn giữa các bậc):
+
+| Bậc | Cách làm | Mức chi tiết |
+|---|---|---|
+| Rác, Thường | Blender (code), miễn phí | Đơn giản, 150–750 tam giác |
+| Hiếm | Blender chi tiết hơn hoặc Meshy | Làm sau |
+| Rất hiếm, Huyền thoại | Meshy | Chi tiết nhất, làm sau |
+
+Đã làm: Rác (8) và Thường (V01–V05, V09, quạt nan V11, máy game 8-bit V12) trong `Assets/_Project/Art/Items/LowPoly/Junk` và `Common`, dựng bằng `Tools/Blender/make_items_lowpoly.py`.
