@@ -11,4 +11,5 @@ Dự án chọn **Unity 6 (6000.6.9f1) + URP** và **Blender**, với mỹ thu�
 
 - [Game Design](Docs/GameDesign/README.md) — Luật chơi, phạm vi và các câu hỏi thiết kế còn mở.
 - [Thiết kế Thị trấn Chợ (Blockout)](docs/superpowers/specs/2026-11-22-market-town-design.md) — Quy hoạch thị trấn phố đá châu Âu, tầng cao, điểm nhấn và 8 ô cửa hàng.
+- [Cân bằng và kiểm thử](Docs/Balance/README.md) — Giả định tiền, nợ, giá hộp, xác suất rơi và ca kiểm thử biên.
 - [Checklist sprint](TASKS.md) — Claude 1 phụ trách thiết kế, Claude 2 phụ trách kinh tế và QA, Antigravity phụ trách 3D và tích hợp, Codex phụ trách hệ thống và kiểm thử.
