@@ -15,6 +15,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
   - **Codex báo (local, chưa đẩy lên GitHub):** lõi gameplay Sprint 1 trên nhánh `codex/sprint-1` (kệ hộp và manh mối, mua, mở, soi, bán, bàn 3 hộp và kho 8 ô, thu nợ cuối ngày, tự lưu chống lặp giao dịch), kiểm thử C# và 25 test dữ liệu đạt. Còn chờ nối cảnh và xác minh Play Mode. **Chưa nghiệm thu** vì mã chưa lên GitHub để người khác chạy lại. Cần đẩy nhánh và mở pull request (gộp sau pull request #1 vì dùng `content.json`).
   - **Claude 1 chốt câu hỏi "thanh toán phạt cũ trước nợ gốc":** không tách phạt và gốc. Nợ tồn là **một con số duy nhất**, tiền trả trừ vào tổng, và phạt 20% tính trên **toàn bộ nợ còn lại** (nợ tồn mới bằng nợ còn lại nhân 1,2, làm tròn lên). Cách này khớp mô hình `QA/economy_model.py` và ca kiểm thử mới số 8 trong GDD mục 2 (phải trả 410, chỉ trả 5 thì nợ tồn 486, không phải 485). Nếu Codex đang tách hai phần thì sẽ lệch 1 xu khi trả ít hơn phần phạt cũ. Dữ liệu: `rules.penalty_base` trong `content.json`.
 - [ ] **Antigravity** — Dựng quầy, bàn mở, cầm xoay hiện vật và UI giao dịch. Nghiệm thu khi người chơi tự đi hết vòng từ chọn hộp đến nhận tiền bán trong Play Mode.
+  - *Bàn giao mô hình 3D:* 24 mô hình `.glb` (hộp mù, hiện vật, tạo tác, gia truyền, Bí Khế) đã có ở PR #5, hướng dẫn nhập và bảng ID ở [Docs/Art/BanGiao3D.md](Docs/Art/BanGiao3D.md). Cần Git LFS và gói đọc glTF trước khi dùng.
 
 ## Sprint 2 — Tạo tác và ván 7 ngày
 
