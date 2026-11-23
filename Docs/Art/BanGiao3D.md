@@ -141,6 +141,8 @@ Lưu ý: tất thối và trứng thối có vạch mùi xanh nổi trên đầu
 
 `Assets/_Project/Art/Items/LowPoly/VeryRare/`, tạo bằng Meshy từ **một ảnh gộp 6 món** (`Art/Source/ref_rat_hiem.png`), chi tiết hơn bậc Hiếm (4–23 nghìn tam giác mỗi món): `V07_tinh_the_lam`, `V10_manh_vay_long`, `X01_dan_than`, `X02_trong_dong`, `X03_kiem_sang`, `X04_qua_cau_ngoc`. Mã `X01`–`X04` là tạm. **X04 (quả cầu ngọc) và X03 (kiếm sáng) gợi nhắc rất rõ nhân vật và tác phẩm nổi tiếng, cần chủ dự án duyệt về bản quyền trước khi phát hành.** Cỡ thật (mét), đáy y=0.
 
-## Hiện vật Huyền thoại low-poly (mới 3/6, chưa hoàn tất)
+## Hiện vật Huyền thoại low-poly (6 món)
 
-`Assets/_Project/Art/Items/LowPoly/Legendary/`: `L01_trai_tim_robot` (**bị dẹt thành phù điêu, cần làm lại**), `L05_phi_thuyen_mini`, `L06_ve_so_doc_dac`. Meshy bỏ sót 3 món trong ảnh gộp (`Art/Source/ref_huyen_thoai.png`): ấn Ngọc Tỷ, quả táo vàng, giày thủy tinh. Chưa làm lại, chờ chủ dự án cho phép dùng credit.
+`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly cao nhất (khoảng 3,6–50 nghìn tam giác) và texture PBR: `L01_trai_tim_robot`, `L02_an_ngoc_ty`, `L03_qua_tao_vang`, `L04_giay_thuy_tinh`, `L05_phi_thuyen_mini`, `L06_ve_so_doc_dac`. Mã `L01`–`L06` là tạm. Ảnh nguồn: `Art/Source/ref_huyen_thoai.png` (phi thuyền, vé số) và `ref_huyen_thoai2.png` (4 món còn lại).
+
+Lưu ý: **Meshy không giữ vật trong suốt**, nên chuông thủy tinh của trái tim robot (L01) không có, chỉ còn trái tim trên đế đồng; thêm chuông kính bằng một mặt cầu thủy tinh trong Unity nếu muốn. Giày thủy tinh (L04) là khối pha lê đặc màu xanh nhạt, đệm có một vệt đỏ do texture, có thể chỉnh. Lượt đầu gộp 6 món chỉ ra 3 món, lượt hai gộp 4 món ra đủ.
