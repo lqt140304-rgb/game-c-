@@ -5,6 +5,7 @@ Each box is exported as one GLB with separate layers so it can be animated:
   <ID> (root) -> Body, Lid (origin on the hinge), Seal, Binding (cord / latch / lock), Glow (light inside the box)
 Bottom centre of the box is at the origin, metres, Blender Z up (glTF export converts to Y up).
 """
+import math, random, sys, os
 import bpy, mathutils
 
 OUT = sys.argv[sys.argv.index("--") + 1] if "--" in sys.argv else "."
