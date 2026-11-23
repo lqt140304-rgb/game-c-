@@ -40,6 +40,7 @@ namespace ChoDoLa.Interaction
         private HeldItemProfile _profile;
         private Quaternion _baseRotation;
         private Action _onPutAway;
+        private ScrollUnroll _scroll;   // set when the held item is a scroll: F opens or closes it instead of the flourish
 
         private float _stateTime;
         private readonly List<Pose> _inspectPoses = new List<Pose>();
@@ -77,7 +78,11 @@ namespace ChoDoLa.Interaction
             model.transform.localRotation = Quaternion.identity;
             model.transform.localScale = Vector3.one;
             StripForHolding(model);
+
+            _scroll = model.GetComponentInChildren<ScrollUnroll>();
+            if (_scroll != null) _scroll.SetOpenImmediate(1f);   // size the item by its open shape
             FitToSize(model.transform, _profile.targetSize, _pivot);
+            if (_scroll != null) _scroll.SetOpenImmediate(0f);
 
             _pivot.localPosition = restPosition + new Vector3(0f, -0.35f, -0.1f);
             _pivot.localRotation = Quaternion.Euler(45f, -25f, 0f);
@@ -150,7 +155,8 @@ namespace ChoDoLa.Interaction
                 fontSize = 14,
                 normal = { textColor = new Color(1f, 1f, 1f, 0.8f) }
             };
-            GUI.Label(new Rect(0f, Screen.height - 36f, Screen.width, 28f), "[F] Soi   [Q] Cất", hint);
+            string hintText = _scroll != null ? "[F] Mở / đóng cuộn   [Q] Cất" : "[F] Soi   [Q] Cất";
+            GUI.Label(new Rect(0f, Screen.height - 36f, Screen.width, 28f), hintText, hint);
 
             if (!string.IsNullOrEmpty(_currentLabel))
             {
@@ -179,7 +185,12 @@ namespace ChoDoLa.Interaction
 
         private void UpdateIdle()
         {
-            if (WasInspectPressed()) { Inspect(); return; }
+            if (WasInspectPressed())
+            {
+                if (_scroll != null) _scroll.Toggle();
+                else Inspect();
+                return;
+            }
             if (WasPutAwayPressed()) { PutAway(); return; }
 
             ApplyRestPose(1f);
@@ -244,6 +255,7 @@ namespace ChoDoLa.Interaction
             {
                 Destroy(_pivot.gameObject);
                 _pivot = null;
+                _scroll = null;
                 Action callback = _onPutAway;
                 _onPutAway = null;
                 SetState(State.Empty);

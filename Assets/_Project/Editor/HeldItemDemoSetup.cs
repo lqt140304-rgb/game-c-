@@ -13,7 +13,7 @@ namespace ChoDoLa.Editor
     /// </summary>
     public static class HeldItemDemoSetup
     {
-        private static readonly string[] DemoItemIds = { "V01", "V02", "V03", "V07", "V08", "V10", "H1", "CP3" };
+        private static readonly string[] DemoItemIds = { "V01", "V02", "V03", "V07", "V08", "V10", "H1", "BK1" };
 
         [MenuItem("Tools/Cho Do La/Add Held Item Demo")]
         public static void AddHeldItemDemo()
@@ -59,6 +59,12 @@ namespace ChoDoLa.Editor
             root.transform.SetParent(parent, false);
             root.transform.position = position;
 
+            if (id == "BK1")
+            {
+                CreateScrollPickup(root, id, viewmodel);
+                return;
+            }
+
             GameObject visual = null;
             string path = ModelPath(id);
             GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -92,6 +98,26 @@ namespace ChoDoLa.Editor
             SerializedObject serialized = new SerializedObject(pickup);
             serialized.FindProperty("itemId").stringValue = id;
             serialized.FindProperty("displayName").stringValue = id;
+            serialized.FindProperty("viewmodel").objectReferenceValue = viewmodel;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        // The oath scroll is built at runtime by ScrollUnroll (no .glb), so only a collider is placed here.
+        private static void CreateScrollPickup(GameObject root, string id, HeldItemViewmodel viewmodel)
+        {
+            BoxCollider box = root.AddComponent<BoxCollider>();
+            box.size = new Vector3(0.12f, 0.22f, 0.12f);
+
+            ScrollUnroll scroll = root.AddComponent<ScrollUnroll>();
+            Texture2D parchment = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/_Project/Art/Textures/scroll_parchment.png");
+            SerializedObject serializedScroll = new SerializedObject(scroll);
+            serializedScroll.FindProperty("paperTexture").objectReferenceValue = parchment;
+            serializedScroll.ApplyModifiedPropertiesWithoutUndo();
+
+            PickupInteractable pickup = root.AddComponent<PickupInteractable>();
+            SerializedObject serialized = new SerializedObject(pickup);
+            serialized.FindProperty("itemId").stringValue = id;
+            serialized.FindProperty("displayName").stringValue = "Lời Thề Bảy Ngày";
             serialized.FindProperty("viewmodel").objectReferenceValue = viewmodel;
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }

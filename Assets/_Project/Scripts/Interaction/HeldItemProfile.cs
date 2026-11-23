@@ -105,8 +105,11 @@ namespace ChoDoLa.Interaction
                     break;
 
                 // ---- Models that lie flat by nature ----
+                case "BK1": // Oath scroll: procedural ScrollUnroll, F opens and closes it (no inspect stops).
+                    profile.targetSize = 0.36f;
+                    profile.baseEuler = new Vector3(6f, -12f, 0f);
+                    break;
                 case "GT1": // Debt ledger.
-                case "BK1": // Oath scroll.
                     profile.baseEuler = new Vector3(-55f, -20f, 0f);
                     profile.stops.AddRange(GenericStops());
                     break;
