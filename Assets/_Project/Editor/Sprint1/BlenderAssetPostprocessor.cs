@@ -41,6 +41,13 @@ namespace ChoDoLa.Sprint1.Editor
             importer.importLights = false;
             importer.importCameras = false;
             importer.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
+
+            if (assetPath.Contains("/LP_"))
+            {
+                // Enforce 0-degree normal smoothing for crisp Flat-Shaded Stylized Low Poly facets in URP
+                importer.importNormals = ModelImporterNormals.Calculate;
+                importer.normalSmoothingAngle = 0f;
+            }
         }
     }
 }

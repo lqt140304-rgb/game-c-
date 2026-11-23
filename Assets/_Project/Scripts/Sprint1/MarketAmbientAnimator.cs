@@ -35,9 +35,37 @@ namespace ChoDoLa.Sprint1
             public float Seed;
         }
 
+        private struct TrafficVehicle
+        {
+            public Transform Target;
+            public bool IsEastWest;
+            public float Speed;
+            public float MinBound;
+            public float MaxBound;
+        }
+
+        private struct NpcActor
+        {
+            public Transform Root;
+            public Transform Head;
+            public Transform Torso;
+            public Transform ArmL;
+            public Transform ArmR;
+            public Transform LegL;
+            public Transform LegR;
+            public bool IsWalker;
+            public float WalkSpeed;
+            public float MinZ;
+            public float MaxZ;
+            public float BaseY;
+            public float Phase;
+        }
+
         private readonly List<SpinItem> _spinners = new List<SpinItem>();
         private readonly List<FloatItem> _floaters = new List<FloatItem>();
         private readonly List<FlickerLight> _flickers = new List<FlickerLight>();
+        private readonly List<TrafficVehicle> _vehicles = new List<TrafficVehicle>();
+        private readonly List<NpcActor> _npcs = new List<NpcActor>();
         private bool _discovered;
 
         private void Start()
@@ -53,6 +81,8 @@ namespace ChoDoLa.Sprint1
             _spinners.Clear();
             _floaters.Clear();
             _flickers.Clear();
+            _vehicles.Clear();
+            _npcs.Clear();
 
             // Scan Sprint1_Market and MarketTown pieces
             RegisterRecursive(transform);
@@ -157,6 +187,59 @@ namespace ChoDoLa.Sprint1
                 {
                     _floaters.Add(new FloatItem { Target = t, BaseLocalPos = t.localPosition, Amplitude = 0.035f, Speed = 1.15f, Phase = phaseCounter += 0.7f, SpinYDeg = 1.2f });
                 }
+                else if (n.StartsWith("KimKhuy_Display_"))
+                {
+                    _floaters.Add(new FloatItem { Target = t, BaseLocalPos = t.localPosition, Amplitude = 0.03f, Speed = 2.0f, Phase = phaseCounter += 0.9f, SpinYDeg = 32f });
+                }
+                else if (n.StartsWith("HanoiTraffic_EW_Pos_"))
+                {
+                    _vehicles.Add(new TrafficVehicle { Target = t, IsEastWest = true, Speed = n.Contains("_Bike_") ? 6.0f : 7.6f, MinBound = -44f, MaxBound = 44f });
+                }
+                else if (n.StartsWith("HanoiTraffic_EW_Neg_"))
+                {
+                    _vehicles.Add(new TrafficVehicle { Target = t, IsEastWest = true, Speed = n.Contains("_Bike_") ? -5.8f : -7.2f, MinBound = -44f, MaxBound = 44f });
+                }
+                else if (n.StartsWith("HanoiTraffic_NS_Pos_"))
+                {
+                    _vehicles.Add(new TrafficVehicle { Target = t, IsEastWest = false, Speed = n.Contains("_Bike_") ? 5.6f : 6.8f, MinBound = 56f, MaxBound = 94f });
+                }
+                else if (n.StartsWith("HanoiTraffic_NS_Neg_"))
+                {
+                    _vehicles.Add(new TrafficVehicle { Target = t, IsEastWest = false, Speed = n.Contains("_Bike_") ? -5.4f : -6.5f, MinBound = 56f, MaxBound = 94f });
+                }
+                else if (n.StartsWith("NPC_"))
+                {
+                    bool isWalker = n.Contains("Shopper_Walk");
+                    _npcs.Add(new NpcActor
+                    {
+                        Root = t,
+                        Head = t.Find("Head"),
+                        Torso = t.Find("Torso"),
+                        ArmL = t.Find("ArmL"),
+                        ArmR = t.Find("ArmR"),
+                        LegL = t.Find("LegL"),
+                        LegR = t.Find("LegR"),
+                        IsWalker = isWalker,
+                        WalkSpeed = n.Contains("_Rev") ? -1.15f : 1.15f,
+                        MinZ = 10.0f,
+                        MaxZ = 92.0f,
+                        BaseY = t.localPosition.y,
+                        Phase = phaseCounter += 1.3f
+                    });
+                }
+                else if (n == "Hand1" || n == "MainWheel" || n == "SubWheel" || n == "RingH" ||
+                         n == "Hero_OculusGear" || n == "Hero_OculusRingA" ||
+                         n == "Hero_ResRingOuter" || n == "Hero_ResRingInner" ||
+                         n == "Scanner_CyanRing1" || n == "Scanner_CyanRing2" ||
+                         n == "CraftGearA" || n == "CraftGearB" || n == "Bench_GearA" || n == "Bench_GearB")
+                {
+                    Vector3 spd = n == "Hand1"
+                        ? new Vector3(0f, 0f, -24f)
+                        : (n.Contains("Ring") || n.Contains("Oculus")
+                            ? new Vector3(12f, 28f, -10f)
+                            : new Vector3(0f, 36f, 0f));
+                    _spinners.Add(new SpinItem { Target = t, AxisSpeedDeg = spd });
+                }
             }
 
             foreach (Light l in root.GetComponentsInChildren<Light>(true))
@@ -230,6 +313,64 @@ namespace ChoDoLa.Sprint1
                 if (fl.Light == null) continue;
                 float n = Mathf.PerlinNoise(fl.Seed, t * 4.5f) - 0.5f;
                 fl.Light.intensity = fl.BaseIntensity * (1f + n * 0.22f);
+            }
+
+            for (int i = 0; i < _vehicles.Count; i++)
+            {
+                TrafficVehicle v = _vehicles[i];
+                if (v.Target == null) continue;
+                Vector3 pos = v.Target.localPosition;
+                if (v.IsEastWest)
+                {
+                    pos.x += v.Speed * dt;
+                    if (pos.x > v.MaxBound) pos.x = v.MinBound;
+                    else if (pos.x < v.MinBound) pos.x = v.MaxBound;
+                }
+                else
+                {
+                    pos.z += v.Speed * dt;
+                    if (pos.z > v.MaxBound) pos.z = v.MinBound;
+                    else if (pos.z < v.MinBound) pos.z = v.MaxBound;
+                }
+                v.Target.localPosition = pos;
+            }
+
+            for (int i = 0; i < _npcs.Count; i++)
+            {
+                NpcActor npc = _npcs[i];
+                if (npc.Root == null) continue;
+                if (npc.IsWalker)
+                {
+                    Vector3 pos = npc.Root.localPosition;
+                    pos.z += npc.WalkSpeed * dt;
+                    if (pos.z > npc.MaxZ)
+                    {
+                        pos.z = npc.MaxZ;
+                        npc.WalkSpeed = -Mathf.Abs(npc.WalkSpeed);
+                        npc.Root.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                    }
+                    else if (pos.z < npc.MinZ)
+                    {
+                        pos.z = npc.MinZ;
+                        npc.WalkSpeed = Mathf.Abs(npc.WalkSpeed);
+                        npc.Root.localRotation = Quaternion.Euler(0f, 180f, 0f);
+                    }
+                    _npcs[i] = npc;
+                    float swing = Mathf.Sin(t * 5.2f + npc.Phase);
+                    pos.y = npc.BaseY + Mathf.Abs(swing) * 0.025f;
+                    npc.Root.localPosition = pos;
+                    if (npc.LegL != null) npc.LegL.localRotation = Quaternion.Euler(swing * 26f, 0f, 0f);
+                    if (npc.LegR != null) npc.LegR.localRotation = Quaternion.Euler(-swing * 26f, 0f, 0f);
+                    if (npc.ArmL != null) npc.ArmL.localRotation = Quaternion.Euler(-swing * 20f, 0f, 0f);
+                    if (npc.ArmR != null) npc.ArmR.localRotation = Quaternion.Euler(swing * 16f, 0f, 0f);
+                }
+                else
+                {
+                    float idle = Mathf.Sin(t * 1.8f + npc.Phase);
+                    if (npc.Torso != null) npc.Torso.localRotation = Quaternion.Euler(idle * 2.5f, 0f, 0f);
+                    if (npc.Head != null) npc.Head.localRotation = Quaternion.Euler(idle * 3f, Mathf.Sin(t * 0.9f + npc.Phase) * 14f, 0f);
+                    if (npc.ArmR != null) npc.ArmR.localRotation = Quaternion.Euler(-12f + Mathf.Sin(t * 2.4f + npc.Phase) * 8f, 0f, 0f);
+                }
             }
         }
     }

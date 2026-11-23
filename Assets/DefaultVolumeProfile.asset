@@ -312,16 +312,16 @@ MonoBehaviour:
   active: 1
   color:
     m_OverrideState: 1
-    m_Value: {r: 0, g: 0, b: 0, a: 1}
+    m_Value: {r: 0.08, g: 0.06, b: 0.09, a: 1}
   center:
     m_OverrideState: 1
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.2
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.45
   rounded:
     m_OverrideState: 1
     m_Value: 0
@@ -340,13 +340,13 @@ MonoBehaviour:
   active: 1
   shadows:
     m_OverrideState: 1
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    m_Value: {r: 0.43, g: 0.48, b: 0.6, a: 1}
   highlights:
     m_OverrideState: 1
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    m_Value: {r: 0.6, g: 0.54, b: 0.45, a: 1}
   balance:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -10
 --- !u!114 &-3835365049124723011
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -446,10 +446,10 @@ MonoBehaviour:
   active: 1
   temperature:
     m_OverrideState: 1
-    m_Value: 4
+    m_Value: 8
   tint:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 2
 --- !u!114 &-917058737960316009
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -485,7 +485,7 @@ MonoBehaviour:
   active: 1
   mode:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 2
   neutralHDRRangeReductionMode:
     m_OverrideState: 1
     m_Value: 2
@@ -528,13 +528,13 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 1.1
+    m_Value: 0.95
   intensity:
     m_OverrideState: 1
-    m_Value: 0.14
+    m_Value: 0.28
   scatter:
     m_OverrideState: 1
-    m_Value: 0.7
+    m_Value: 0.68
   clamp:
     m_OverrideState: 1
     m_Value: 65472
@@ -654,10 +654,10 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 1
-    m_Value: -0.18
+    m_Value: -0.08
   contrast:
     m_OverrideState: 1
-    m_Value: 6
+    m_Value: 10
   colorFilter:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
@@ -666,7 +666,7 @@ MonoBehaviour:
     m_Value: 0
   saturation:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 8
 --- !u!114 &7506855658676295395
 MonoBehaviour:
   m_ObjectHideFlags: 3

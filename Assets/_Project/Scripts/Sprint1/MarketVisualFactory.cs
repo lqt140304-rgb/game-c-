@@ -11,6 +11,32 @@ namespace ChoDoLa.Sprint1
     public static class MarketVisualFactory
     {
         private static readonly Dictionary<string, Material> MaterialCache = new Dictionary<string, Material>();
+        private static Texture2D _stylizedGradTex;
+
+        public static Texture2D GetStylizedGradientMap()
+        {
+            if (_stylizedGradTex != null) return _stylizedGradTex;
+            Texture2D tex = new Texture2D(4, 64, TextureFormat.RGBA32, false)
+            {
+                name = "T_LP_VerticalAOGradient",
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear
+            };
+            Color bot = new Color(0.76f, 0.77f, 0.81f, 1f);
+            Color mid = new Color(0.94f, 0.93f, 0.91f, 1f);
+            Color top = new Color(1.00f, 0.99f, 0.96f, 1f);
+            for (int y = 0; y < 64; y++)
+            {
+                float t = y / 63f;
+                Color c = t < 0.45f
+                    ? Color.Lerp(bot, mid, t / 0.45f)
+                    : Color.Lerp(mid, top, (t - 0.45f) / 0.55f);
+                for (int x = 0; x < 4; x++) tex.SetPixel(x, y, c);
+            }
+            tex.Apply(false, true);
+            _stylizedGradTex = tex;
+            return _stylizedGradTex;
+        }
 
         public static Material GetMaterial(string key, Color albedo, float metallic = 0.08f, float smoothness = 0.45f, Color? emission = null)
         {
@@ -54,7 +80,7 @@ namespace ChoDoLa.Sprint1
         private static Material MatObsidian => GetMaterial("Obsidian", new Color(0.08f, 0.07f, 0.12f), 0.30f, 0.90f);
         private static Material MatCyanGlow => GetMaterial("CyanGlow", new Color(0.25f, 0.82f, 0.98f), 0.20f, 0.85f, new Color(0.2f, 1.3f, 1.6f));
         private static Material MatArcaneGlow => GetMaterial("ArcaneGlow", new Color(0.58f, 0.32f, 0.95f), 0.20f, 0.75f, new Color(0.75f, 0.25f, 1.4f));
-        private static Material MatWarmGlow => GetMaterial("WarmGlow", new Color(1.0f, 0.80f, 0.44f), 0.0f, 0.4f, new Color(0.95f, 0.65f, 0.25f));
+        private static Material MatWarmGlow => GetMaterial("WarmGlow", new Color(1.0f, 0.80f, 0.44f), 0.0f, 0.4f, new Color(2.4f, 1.55f, 0.65f));
         private static Material MatCrack => GetMaterial("Crack", new Color(0.06f, 0.05f, 0.05f), 0.0f, 0.1f);
 
         public static Material GetTexturedMaterial(
@@ -102,14 +128,12 @@ namespace ChoDoLa.Sprint1
 
         public static Material GetCobbleMaterial(Vector2? tiling = null)
         {
-            string key = tiling.HasValue ? $"Cobble_PBR_{tiling.Value.x}_{tiling.Value.y}" : "Cobble_PBR";
-            return GetTexturedMaterial(key, "T_Cobble_Albedo", "T_Cobble_Normal", Color.white, 0.0f, 0.26f, 0.9f, tiling);
+            return GetMaterial("LP_Cobble", new Color(0.45f, 0.49f, 0.55f), 0.0f, 0.14f);
         }
 
         public static Material GetHanoiPavingMaterial(Vector2? tiling = null)
         {
-            string key = tiling.HasValue ? $"VnStreetMatte_PBR_{tiling.Value.x}_{tiling.Value.y}" : "VnStreetMatte_PBR";
-            return GetTexturedMaterial(key, "T_VnStreetMatte_Albedo", "T_VnStreetMatte_Normal", Color.white, 0.0f, 0.14f, 0.55f, tiling);
+            return GetMaterial("LP_StreetMatte", new Color(0.40f, 0.44f, 0.50f), 0.0f, 0.12f);
         }
 
         private static Material GetSteamMistMaterial()
@@ -150,76 +174,108 @@ namespace ChoDoLa.Sprint1
             return mat;
         }
 
+        private static Material GetGlbItemMaterial(string id)
+        {
+            string key = $"Glb_{id}";
+            if (MaterialCache.TryGetValue(key, out Material cached) && cached != null)
+            {
+                return cached;
+            }
+
+            bool isMetallic = id == "H2" || id == "V05" || id == "V06" || id == "CP3" || id == "TC1" || id == "TC2" || id == "TC3";
+            Color tint = isMetallic ? new Color(1.15f, 1.15f, 1.18f) : Color.white;
+            float metallic = isMetallic ? 0.42f : 0.06f;
+            float smoothness = isMetallic ? 0.68f : 0.42f;
+            Material mat = GetTexturedMaterial(key, $"T_Glb_{id}_Albedo", $"T_Glb_{id}_Normal", tint, metallic, smoothness, 0.70f);
+            if (mat != null && mat.HasProperty("_Cull"))
+            {
+                mat.SetFloat("_Cull", 0f);
+            }
+            return mat;
+        }
+
         private static Material ResolveBlenderMaterial(string blenderMatName)
         {
             string n = string.IsNullOrEmpty(blenderMatName)
                 ? string.Empty
                 : blenderMatName.Replace(" (Instance)", string.Empty).Trim();
 
+            if (n.StartsWith("Mat_Glb_"))
+            {
+                string id = n.Substring(8);
+                int dotIdx = id.IndexOf('.');
+                if (dotIdx > 0) id = id.Substring(0, dotIdx);
+                return GetGlbItemMaterial(id);
+            }
+
             switch (n)
             {
                 case "Mat_Cobble_PBR":
                     return GetCobbleMaterial();
+                case "Mat_EncausticTile":
+                    return GetTexturedMaterial("B_EncausticTile", "T_HanoiEncausticTile_Albedo", null, new Color(1.0f, 0.98f, 0.94f), 0.0f, 0.20f, 0.0f, new Vector2(1.0f, 1.0f));
+                case "Mat_ShuttersGreen":
+                    return GetMaterial("LP_ShuttersGreen", new Color(0.18f, 0.56f, 0.38f), 0.0f, 0.18f);
                 case "Mat_HanoiTerrazzo":
-                    return GetTexturedMaterial("B_HanoiTerrazzo", "T_HanoiTerrazzo_Albedo", "T_HanoiTerrazzo_Normal", Color.white, 0.0f, 0.14f, 0.65f);
+                    return GetMaterial("LP_Sidewalk", new Color(0.84f, 0.82f, 0.76f), 0.0f, 0.14f);
                 case "Mat_VnRedTile":
-                    return GetTexturedMaterial("B_VnRedTile", "T_VnRedTile_Albedo", "T_VnRedTile_Normal", Color.white, 0.0f, 0.16f, 0.65f);
+                    return GetMaterial("LP_RedTile", new Color(0.80f, 0.30f, 0.22f), 0.0f, 0.16f);
                 case "Mat_VnStreetMatte":
-                    return GetTexturedMaterial("B_VnStreetMatte", "T_VnStreetMatte_Albedo", "T_VnStreetMatte_Normal", Color.white, 0.0f, 0.14f, 0.55f);
+                    return GetHanoiPavingMaterial();
                 case "Mat_HanoiCreamWall":
-                    return GetMaterial("B_HanoiCreamWall", new Color(0.88f, 0.85f, 0.79f), 0.0f, 0.12f);
+                    return GetMaterial("LP_CreamWall", new Color(0.96f, 0.94f, 0.88f), 0.0f, 0.14f);
                 case "Mat_HanoiYellowWall":
-                    return GetMaterial("B_HanoiYellowWall", new Color(0.86f, 0.73f, 0.42f), 0.0f, 0.12f);
+                    return GetMaterial("LP_YellowWall", new Color(0.96f, 0.82f, 0.42f), 0.0f, 0.14f);
                 case "Mat_SteelBlack":
-                    return GetMaterial("B_SteelBlack", new Color(0.12f, 0.13f, 0.15f), 0.68f, 0.45f);
+                    return GetMaterial("LP_SteelBlack", new Color(0.20f, 0.22f, 0.26f), 0.35f, 0.32f);
                 case "Mat_InoxSteel":
-                    return GetMaterial("B_InoxSteel", new Color(0.75f, 0.78f, 0.81f), 0.88f, 0.70f);
+                    return GetMaterial("LP_InoxSteel", new Color(0.80f, 0.84f, 0.88f), 0.65f, 0.55f);
                 case "Mat_PlasticBlue":
-                    return GetMaterial("B_PlasticBlue", new Color(0.10f, 0.36f, 0.80f), 0.0f, 0.42f);
+                    return GetMaterial("LP_PlasticBlue", new Color(0.16f, 0.48f, 0.90f), 0.0f, 0.28f);
                 case "Mat_PlasticRed":
-                    return GetMaterial("B_PlasticRed", new Color(0.78f, 0.16f, 0.15f), 0.0f, 0.42f);
+                    return GetMaterial("LP_PlasticRed", new Color(0.88f, 0.22f, 0.20f), 0.0f, 0.28f);
                 case "Mat_HanoiRedSign":
-                    return GetMaterial("B_HanoiRedSign", new Color(0.68f, 0.10f, 0.10f), 0.02f, 0.32f, new Color(0.24f, 0.03f, 0.03f));
+                    return GetMaterial("LP_RedSign", new Color(0.76f, 0.14f, 0.16f), 0.0f, 0.24f, new Color(0.15f, 0.02f, 0.02f));
                 case "Mat_HanoiBlueSign":
-                    return GetMaterial("B_HanoiBlueSign", new Color(0.10f, 0.24f, 0.56f), 0.02f, 0.32f, new Color(0.03f, 0.08f, 0.22f));
+                    return GetMaterial("LP_BlueSign", new Color(0.14f, 0.34f, 0.72f), 0.0f, 0.24f, new Color(0.02f, 0.06f, 0.16f));
                 case "Mat_TreeBark":
-                    return GetTexturedMaterial("B_TreeBark", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.46f, 0.36f, 0.28f), 0.0f, 0.10f, 0.90f);
+                    return GetMaterial("LP_TreeBark", new Color(0.50f, 0.33f, 0.22f), 0.0f, 0.12f);
                 case "Mat_TreeFoliage":
-                    return GetMaterial("B_TreeFoliage", new Color(0.15f, 0.38f, 0.11f), 0.0f, 0.12f);
+                    return GetMaterial("LP_TreeFoliage", new Color(0.32f, 0.72f, 0.24f), 0.0f, 0.14f);
                 case "Mat_SteamMist":
                     return GetSteamMistMaterial();
                 case "Mat_WeatheredPlaster":
-                    return GetTexturedMaterial("B_Plaster", "T_WeatheredPlaster_Albedo", "T_WeatheredPlaster_Normal", Color.white, 0.0f, 0.14f, 0.65f);
+                    return GetMaterial("LP_PlasterYellow", new Color(0.95f, 0.84f, 0.52f), 0.0f, 0.14f);
                 case "Mat_PlasterAlt":
-                    return GetTexturedMaterial("B_PlasterAlt", "T_WeatheredPlaster_Albedo", "T_WeatheredPlaster_Normal", new Color(0.84f, 0.80f, 0.74f), 0.0f, 0.14f, 0.65f);
+                    return GetMaterial("LP_PlasterCream", new Color(0.95f, 0.93f, 0.86f), 0.0f, 0.14f);
                 case "Mat_ExposedBrick":
-                    return GetTexturedMaterial("B_ExposedBrick", "T_ExposedBrick_Albedo", "T_ExposedBrick_Normal", Color.white, 0.0f, 0.16f, 0.90f);
+                    return GetMaterial("LP_BrickRed", new Color(0.76f, 0.24f, 0.20f), 0.0f, 0.16f);
                 case "Mat_GlazedBrick_Teal":
-                    return GetTexturedMaterial("B_GlazedBrickTeal", "T_GlazedBrickTeal_Albedo", "T_GlazedBrickTeal_Normal", Color.white, 0.05f, 0.58f, 0.75f);
+                    return GetMaterial("LP_Teal", new Color(0.18f, 0.62f, 0.58f), 0.0f, 0.26f);
                 case "Mat_WhitewashedBrick":
-                    return GetTexturedMaterial("B_WhitewashBrick", "T_WhitewashedBrick_Albedo", "T_WhitewashedBrick_Normal", Color.white, 0.0f, 0.15f, 0.70f);
+                    return GetMaterial("LP_WhiteBrick", new Color(0.92f, 0.90f, 0.85f), 0.0f, 0.14f);
                 case "Mat_AshlarStone":
-                    return GetTexturedMaterial("B_AshlarStone", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", Color.white, 0.0f, 0.16f, 0.80f);
+                    return GetMaterial("LP_AshlarStone", new Color(0.88f, 0.86f, 0.80f), 0.0f, 0.16f);
                 case "Mat_Stone":
-                    return GetTexturedMaterial("B_Stone", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", new Color(0.90f, 0.88f, 0.84f), 0.0f, 0.14f, 0.75f);
+                    return GetMaterial("LP_Stone", new Color(0.86f, 0.84f, 0.78f), 0.0f, 0.14f);
                 case "Mat_StoneDark":
-                    return GetTexturedMaterial("B_StoneDark", "T_AshlarStone_Albedo", "T_AshlarStone_Normal", new Color(0.54f, 0.52f, 0.48f), 0.0f, 0.16f, 0.75f);
+                    return GetMaterial("LP_StoneDark", new Color(0.46f, 0.46f, 0.48f), 0.0f, 0.16f);
                 case "Mat_WetStone":
-                    return GetTexturedMaterial("B_WetStone", "T_Cobble_Albedo", "T_Cobble_Normal", new Color(0.55f, 0.57f, 0.56f), 0.02f, 0.45f, 0.80f);
+                    return GetMaterial("LP_WetStone", new Color(0.54f, 0.58f, 0.62f), 0.0f, 0.22f);
                 case "Mat_AgedWood_Floor":
-                    return GetTexturedMaterial("B_AgedWoodFloor", "T_AgedWood_Albedo", "T_AgedWood_Normal", Color.white, 0.02f, 0.22f, 0.75f);
+                    return GetMaterial("LP_WoodHoney", new Color(0.78f, 0.56f, 0.34f), 0.0f, 0.20f);
                 case "Mat_WoodLight_PBR":
-                    return GetTexturedMaterial("B_WoodLight", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.96f, 0.90f, 0.82f), 0.02f, 0.22f, 0.55f);
+                    return GetMaterial("LP_WoodLight", new Color(0.84f, 0.64f, 0.40f), 0.0f, 0.18f);
                 case "Mat_WoodDark_PBR":
-                    return GetTexturedMaterial("B_WoodDark", "T_AgedWood_Albedo", "T_AgedWood_Normal", new Color(0.54f, 0.41f, 0.33f), 0.02f, 0.22f, 0.55f);
+                    return GetMaterial("LP_WoodDark", new Color(0.44f, 0.26f, 0.16f), 0.0f, 0.20f);
                 case "Mat_WorkshopSlab_Floor":
-                    return GetTexturedMaterial("B_WorkshopFloor", "T_WorkshopFloor_Albedo", "T_WorkshopFloor_Normal", Color.white, 0.02f, 0.24f, 0.80f);
+                    return GetMaterial("LP_WorkshopFloor", new Color(0.66f, 0.68f, 0.70f), 0.0f, 0.18f);
                 case "Mat_RoofTile":
-                    return GetTexturedMaterial("B_RoofTile", "T_RoofTile_Albedo", null, Color.white, 0.0f, 0.18f);
+                    return GetMaterial("LP_RoofTile", new Color(0.80f, 0.34f, 0.22f), 0.0f, 0.18f);
                 case "Mat_RoofSlate":
-                    return GetTexturedMaterial("B_RoofSlate", "T_RoofSlate_Albedo", null, Color.white, 0.02f, 0.25f);
+                    return GetMaterial("LP_RoofSlate", new Color(0.28f, 0.36f, 0.46f), 0.0f, 0.22f);
                 case "Mat_MossClump":
-                    return GetMaterial("B_Moss", new Color(0.16f, 0.28f, 0.09f), 0.0f, 0.10f);
+                    return GetMaterial("LP_Moss", new Color(0.44f, 0.80f, 0.28f), 0.0f, 0.14f);
                 case "Mat_Brass":
                     return MatBrass;
                 case "Mat_Gold":
@@ -273,6 +329,14 @@ namespace ChoDoLa.Sprint1
                 for (int i = 0; i < mats.Length; i++)
                 {
                     if (mats[i] == null) continue;
+                    string rawName = mats[i].name.Replace(" (Instance)", string.Empty).Trim();
+                    if (rawName.StartsWith("LP_", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        mats[i] = ResolveLowPolyMaterial(mats[i], rawName);
+                        changed = true;
+                        continue;
+                    }
+
                     Material mapped = ResolveBlenderMaterial(mats[i].name);
                     if (mapped != null)
                     {
@@ -284,6 +348,85 @@ namespace ChoDoLa.Sprint1
             }
         }
 
+        private static Material ResolveLowPolyMaterial(Material sourceMat, string rawName)
+        {
+            Color baseCol = Color.white;
+            if (sourceMat.HasProperty("_BaseColor")) baseCol = sourceMat.GetColor("_BaseColor");
+            else if (sourceMat.HasProperty("_Color")) baseCol = sourceMat.color;
+
+            float metallic = 0.0f;
+            float smoothness = 0.10f;
+            Color? emission = null;
+            bool attachGradMap = true;
+
+            if (rawName.StartsWith("LP_BrassGold", System.StringComparison.OrdinalIgnoreCase))
+            {
+                metallic = 0.58f;
+                smoothness = 0.44f;
+                attachGradMap = false;
+            }
+            else if (rawName.StartsWith("LP_CopperTrim", System.StringComparison.OrdinalIgnoreCase))
+            {
+                metallic = 0.58f;
+                smoothness = 0.42f;
+                attachGradMap = false;
+            }
+            else if (rawName.StartsWith("LP_InoxSteel", System.StringComparison.OrdinalIgnoreCase))
+            {
+                metallic = 0.68f;
+                smoothness = 0.48f;
+                attachGradMap = false;
+            }
+            else if (rawName.StartsWith("LP_CharcoalMetal", System.StringComparison.OrdinalIgnoreCase))
+            {
+                metallic = 0.34f;
+                smoothness = 0.24f;
+            }
+            else if (rawName.StartsWith("LP_GlassSky", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return GetGlassMaterial();
+            }
+            else if (rawName.StartsWith("LP_CyanGlow", System.StringComparison.OrdinalIgnoreCase)
+                  || rawName.StartsWith("LP_ArcaneGlow", System.StringComparison.OrdinalIgnoreCase))
+            {
+                smoothness = 0.28f;
+                emission = baseCol * 0.90f;
+                attachGradMap = false;
+            }
+            else if (rawName.StartsWith("LP_AmberGlass", System.StringComparison.OrdinalIgnoreCase)
+                  || rawName.StartsWith("LP_JadeGlass", System.StringComparison.OrdinalIgnoreCase)
+                  || rawName.StartsWith("LP_BankerGreen", System.StringComparison.OrdinalIgnoreCase)
+                  || rawName.StartsWith("LP_SunbeamFloor", System.StringComparison.OrdinalIgnoreCase))
+            {
+                smoothness = 0.24f;
+                emission = baseCol * 0.36f;
+                attachGradMap = false;
+            }
+            else if (rawName.StartsWith("LP_WarmLantern", System.StringComparison.OrdinalIgnoreCase))
+            {
+                smoothness = 0.22f;
+                emission = baseCol * 0.95f;
+                attachGradMap = false;
+            }
+            else if (rawName.StartsWith("LP_Lantern", System.StringComparison.OrdinalIgnoreCase))
+            {
+                smoothness = 0.20f;
+                emission = baseCol * 0.32f;
+                attachGradMap = false;
+            }
+            else if (rawName.StartsWith("LP_CarrySkin", System.StringComparison.OrdinalIgnoreCase))
+            {
+                smoothness = 0.14f;
+            }
+
+            Material mat = GetMaterial($"LPFlat_{rawName}", baseCol, metallic, smoothness, emission);
+            if (attachGradMap && mat.HasProperty("_BaseMap") && mat.GetTexture("_BaseMap") == null)
+            {
+                mat.SetTexture("_BaseMap", GetStylizedGradientMap());
+            }
+            return mat;
+        }
+
         public static GameObject InstantiateBlenderModel(string modelName, Transform parent)
         {
             GameObject prefab = Resources.Load<GameObject>($"Blender/Models/{modelName}");
@@ -291,6 +434,10 @@ namespace ChoDoLa.Sprint1
 
             GameObject instance = Object.Instantiate(prefab, parent, false);
             instance.name = modelName;
+            if (modelName.StartsWith("LP_", System.StringComparison.OrdinalIgnoreCase))
+            {
+                instance.transform.localRotation = Quaternion.identity;
+            }
             ApplyBlenderMaterials(instance);
             return instance;
         }
@@ -335,16 +482,24 @@ namespace ChoDoLa.Sprint1
         {
             string fbxName = visualVariantKey switch
             {
-                "WoodCrate_Old" => "SM_Box_WoodCrate",
-                "BrassChest_Steam" => "SM_Box_BrassChest",
-                "RunicBox_Arcane" => "SM_Box_RunicArcane",
-                "HoloPod_SciFi" => "SM_Box_HoloSciFi",
+                "H1" => "Box_H1",
+                "Box_H1" => "Box_H1",
+                "WoodCrate_Old" => "Box_H1",
+                "H2" => "Box_H2",
+                "Box_H2" => "Box_H2",
+                "HoloPod_SciFi" => "Box_H2",
+                "H3" => "Box_H3",
+                "Box_H3" => "Box_H3",
+                "RunicBox_Arcane" => "Box_H3",
+                "RD" => "Box_RD",
+                "Box_RD" => "Box_RD",
+                "BrassChest_Steam" => "Box_RD",
                 _ => null
             };
 
             if (!string.IsNullOrEmpty(fbxName))
             {
-                GameObject fbx = InstantiateBlenderModel(fbxName, parent);
+                GameObject fbx = InstantiateBlenderModel($"LP_{fbxName}", parent) ?? InstantiateBlenderModel(fbxName, parent);
                 if (fbx != null)
                 {
                     lidPivot = FindChildRecursive(fbx.transform, "LidPivot");
@@ -436,20 +591,62 @@ namespace ChoDoLa.Sprint1
         {
             string fbxName = visualPrefabKey switch
             {
-                "PocketWatch_Brass" => "SM_Art_PocketWatch",
-                "Chalice_Royal" => "SM_Art_Chalice",
-                "HoloCube_SciFi" => "SM_Art_HoloCube",
-                "RunicMask_Arcane" => "SM_Art_RunicMask",
-                "FossilAmber_Ancient" => "SM_Art_AmberFossil",
-                "Compass_Starlight" => "SM_Art_StarlightCompass",
-                "Amulet_Jade" => "SM_Art_JadeAmulet",
-                "GearCore_Steam" => "SM_Art_GearCore",
-                "AutomatonBird_Brass" => "SM_Art_AutomatonBird",
-                "VoidPrism_Alien" => "SM_Art_VoidPrism",
+                "V01" => "Item_V01",
+                "Item_V01" => "Item_V01",
+                "FossilAmber_Ancient" => "Item_V01",
+                "V02" => "Item_V02",
+                "Item_V02" => "Item_V02",
+                "V03" => "Item_V03",
+                "Item_V03" => "Item_V03",
+                "Chalice_Royal" => "Item_V03",
+                "V04" => "Item_V04",
+                "Item_V04" => "Item_V04",
+                "PocketWatch_Brass" => "Item_V04",
+                "V05" => "Item_V05",
+                "Item_V05" => "Item_V05",
+                "GearCore_Steam" => "Item_V05",
+                "V06" => "Item_V06",
+                "Item_V06" => "Item_V06",
+                "AutomatonBird_Brass" => "Item_V06",
+                "V07" => "Item_V07",
+                "Item_V07" => "Item_V07",
+                "HoloCube_SciFi" => "Item_V07",
+                "VoidPrism_Alien" => "Item_V07",
+                "V08" => "Item_V08",
+                "Item_V08" => "Item_V08",
+                "Compass_Starlight" => "Item_V08",
+                "V09" => "Item_V09",
+                "Item_V09" => "Item_V09",
+                "Amulet_Jade" => "Item_V09",
+                "V10" => "Item_V10",
+                "Item_V10" => "Item_V10",
+                "RunicMask_Arcane" => "Item_V10",
+                "CP1" => "Artifact_CP1",
+                "Artifact_CP1" => "Artifact_CP1",
+                "CP2" => "Artifact_CP2",
+                "Artifact_CP2" => "Artifact_CP2",
+                "CP3" => "Artifact_CP3",
+                "Artifact_CP3" => "Artifact_CP3",
+                "TC1" => "Artifact_TC1",
+                "Artifact_TC1" => "Artifact_TC1",
+                "TC2" => "Artifact_TC2",
+                "Artifact_TC2" => "Artifact_TC2",
+                "TC3" => "Artifact_TC3",
+                "Artifact_TC3" => "Artifact_TC3",
+                "GT1" => "Heirloom_GT1",
+                "Heirloom_GT1" => "Heirloom_GT1",
+                "GT2" => "Heirloom_GT2",
+                "Heirloom_GT2" => "Heirloom_GT2",
+                "BK1" => "Heirloom_BK1",
+                "Heirloom_BK1" => "Heirloom_BK1",
+                "BK2" => "Heirloom_BK2",
+                "Heirloom_BK2" => "Heirloom_BK2",
                 _ => null
             };
 
-            GameObject root = !string.IsNullOrEmpty(fbxName) ? InstantiateBlenderModel(fbxName, parent) : null;
+            GameObject root = !string.IsNullOrEmpty(fbxName)
+                ? (InstantiateBlenderModel($"LP_{fbxName}", parent) ?? InstantiateBlenderModel(fbxName, parent))
+                : null;
             if (root == null)
             {
                 root = new GameObject($"Artifact_{visualPrefabKey}");

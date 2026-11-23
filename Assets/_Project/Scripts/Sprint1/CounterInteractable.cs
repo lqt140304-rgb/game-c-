@@ -10,7 +10,7 @@ namespace ChoDoLa.Sprint1
     {
         [SerializeField] private Sprint1HudController hudController;
 
-        public string PromptText => "Quầy Niêm Phong (Dì Mận) — Chọn & Mua Hộp Mù";
+        public string PromptText => "Nói chuyện với Dì Mận — Chốt mua Hộp Mù";
         public bool CanInteract => hudController != null;
 
         public void Configure(Sprint1HudController hud)

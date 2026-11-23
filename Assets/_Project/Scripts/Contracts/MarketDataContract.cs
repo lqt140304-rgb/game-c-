@@ -41,6 +41,63 @@ namespace ChoDoLa.Contracts
         public string Description;
     }
 
+    public enum TactSystemType
+    {
+        ChronoSteam,
+        ArcaneRift
+    }
+
+    [Serializable]
+    public sealed class HeirloomView
+    {
+        public string HeirloomId;
+        public string DisplayName;
+        public string LoreDesc;
+        public string EffectSummary;
+        public TactSystemType PreferredSystem;
+    }
+
+    [Serializable]
+    public sealed class TactArtifactView
+    {
+        public string TactId;
+        public string DisplayName;
+        public TactSystemType SystemType;
+        public int Tier;
+        public int Price;
+        public string IconModelName;
+        public string EffectSummary;
+        public bool IsOwned;
+        public bool IsEquipped;
+        public int EquippedSlotIndex;
+    }
+
+    [Serializable]
+    public sealed class ComboView
+    {
+        public string ComboId;
+        public string DisplayName;
+        public string ConditionSummary;
+        public string EffectSummary;
+        public bool RequiresMixedSystems;
+        public TactSystemType RequiredSystem;
+        public int RequiredCount;
+        public bool IsActive;
+    }
+
+    [Serializable]
+    public sealed class BikheView
+    {
+        public string BikheId;
+        public string Title;
+        public string ConditionSummary;
+        public string RewardSummary;
+        public int CurrentProgress;
+        public int TargetProgress;
+        public bool IsUnlocked;
+        public bool IsRewardClaimed;
+    }
+
     [Serializable]
     public sealed class RunStateSnapshot
     {
@@ -54,7 +111,17 @@ namespace ChoDoLa.Contracts
         public bool IsRunEnded;
         public bool IsVictory;
         public string EndReason;
-        public IReadOnlyList<ActiveEventView> ActiveEvents;
+        [NonSerialized] public IReadOnlyList<ActiveEventView> ActiveEvents;
+
+        public string ActiveHeirloomId;
+        public string ActiveHeirloomName;
+        public int EquippedTactCount;
+        public int MaxEquipSlots;
+        public int ActiveComboCount;
+        public int UnlockedBikheCount;
+        public int TotalBikheCount;
+        public int InventoryTotalValue;
+        public bool HasSavedRun;
     }
 
     [Serializable]
@@ -112,6 +179,14 @@ namespace ChoDoLa.Contracts
         IReadOnlyList<ArtifactInstanceView> InventoryItems { get; }
         int[] DebtSchedule { get; }
 
+        IReadOnlyList<HeirloomView> AvailableHeirlooms { get; }
+        HeirloomView ActiveHeirloom { get; }
+        IReadOnlyList<TactArtifactView> TactCatalog { get; }
+        IReadOnlyList<TactArtifactView> EquippedArtifacts { get; }
+        IReadOnlyList<ComboView> ActiveCombos { get; }
+        IReadOnlyList<BikheView> BikheProgressList { get; }
+        bool HasSavedRun { get; }
+
         event Action<RunStateSnapshot> OnRunStateChanged;
         event Action<BoxInstanceView> OnBoxPurchased;
         event Action<BoxInstanceView, ArtifactInstanceView> OnBoxOpened;
@@ -119,6 +194,8 @@ namespace ChoDoLa.Contracts
         event Action<bool, int> OnDebtSettled;
         event Action<string, string> OnActionRejected;
         event Action<string> OnNotice;
+        event Action OnTactLoadoutChanged;
+        event Action<BikheView> OnBikheUnlocked;
 
         bool RequestBuyBox(string offerId);
         bool RequestOpenBox(string boxInstanceId);
@@ -127,5 +204,12 @@ namespace ChoDoLa.Contracts
         bool RequestPayDebt();
         bool RequestEndDay();
         void ResetRun();
+
+        bool RequestSelectHeirloom(string heirloomId);
+        bool RequestBuyTactArtifact(string tactId);
+        bool RequestEquipTactArtifact(string tactId, int slotIndex = -1);
+        bool RequestUnequipTactArtifact(int slotIndex);
+        bool SaveRun();
+        bool LoadRun();
     }
 }

@@ -42,6 +42,7 @@ namespace ChoDoLa.Sprint1
         [SerializeField] private Sprint1MarketService marketService;
         [SerializeField] private ArtifactInspector3D inspector3D;
         [SerializeField] private Sprint1HudController hudController;
+        [SerializeField] private PlayerBoxCarrier boxCarrier;
         [SerializeField] private Transform[] boxSlots;
         [SerializeField] private Transform artifactRestAnchor;
 
@@ -53,13 +54,25 @@ namespace ChoDoLa.Sprint1
             ArtifactInspector3D inspector,
             Sprint1HudController hud,
             Transform[] slots,
-            Transform restAnchor)
+            Transform restAnchor,
+            PlayerBoxCarrier carrier = null)
         {
             marketService = service;
             inspector3D = inspector;
             hudController = hud;
             boxSlots = slots;
             artifactRestAnchor = restAnchor;
+            if (carrier != null) boxCarrier = carrier;
+        }
+
+        public bool HasFreeSlot()
+        {
+            if (boxSlots == null || boxSlots.Length == 0) return false;
+            foreach (Transform slot in boxSlots)
+            {
+                if (slot != null && slot.childCount == 0) return true;
+            }
+            return false;
         }
 
         private void OnEnable()
@@ -101,9 +114,22 @@ namespace ChoDoLa.Sprint1
 
         private void HandleBoxPurchased(BoxInstanceView box)
         {
+            if (box == null) return;
+
+            if (boxCarrier != null)
+            {
+                boxCarrier.PickupBox(box);
+                return;
+            }
+
+            PlaceCarriedBoxOnTable(box);
+        }
+
+        public void PlaceCarriedBoxOnTable(BoxInstanceView box)
+        {
             if (box == null || boxSlots == null || boxSlots.Length == 0) return;
 
-            Transform targetSlot = boxSlots[0];
+            Transform targetSlot = null;
             foreach (Transform slot in boxSlots)
             {
                 if (slot != null && slot.childCount == 0)
@@ -112,6 +138,7 @@ namespace ChoDoLa.Sprint1
                     break;
                 }
             }
+            if (targetSlot == null) targetSlot = boxSlots[0];
 
             GameObject boxGo = new GameObject($"PurchasedBox_{box.BoxInstanceId}");
             boxGo.transform.SetParent(targetSlot, false);
@@ -137,7 +164,8 @@ namespace ChoDoLa.Sprint1
         {
             if (_spawnedBoxes.TryGetValue(box.BoxInstanceId, out BlindBoxProp prop) && prop != null)
             {
-                yield return prop.PlayUnboxAnimation();
+                RarityTier rarity = artifact != null ? artifact.Rarity : RarityTier.Common;
+                yield return prop.PlayUnboxAnimation(rarity);
                 yield return new WaitForSeconds(0.22f);
                 Destroy(prop.gameObject);
                 _spawnedBoxes.Remove(box.BoxInstanceId);
@@ -163,7 +191,8 @@ namespace ChoDoLa.Sprint1
         {
             if (snapshot != null && snapshot.CurrentDay == 1 && snapshot.DailyBoxesPurchased == 0 && marketService.UnopenedBoxes.Count == 0)
             {
-                // Clean table on fresh run reset
+                // Clean table and hands on fresh run reset
+                if (boxCarrier != null) boxCarrier.ClearCarriedBox();
                 foreach (var kv in _spawnedBoxes)
                 {
                     if (kv.Value != null) Destroy(kv.Value.gameObject);

@@ -35,6 +35,7 @@ namespace ChoDoLa.Sprint1
 
         private GameObject _currentModel;
         private ArtifactInstanceView _currentArtifact;
+        private GameObject _inspectRigLights;
         private float _currentDistance;
         private float _targetYaw = 20f;
         private float _targetPitch = -12f;
@@ -51,6 +52,11 @@ namespace ChoDoLa.Sprint1
             hudController = hud;
         }
 
+        private void OnDisable()
+        {
+            ClearInspectLights();
+        }
+
         public void BeginInspect(ArtifactInstanceView artifact)
         {
             if (artifact == null || inspectAnchor == null) return;
@@ -58,6 +64,7 @@ namespace ChoDoLa.Sprint1
             if (_isInspecting)
             {
                 ClearModel();
+                ClearInspectLights();
             }
 
             _cam = Camera.main;
@@ -84,6 +91,8 @@ namespace ChoDoLa.Sprint1
             _currentModel.transform.localPosition = new Vector3(0f, 0.14f, 0f);
             _currentModel.transform.localRotation = Quaternion.Euler(_targetPitch, _targetYaw, 0f);
 
+            SpawnInspectLights(artifact.Rarity);
+
             if (playerController != null) playerController.SetInputLocked(true);
             if (playerInteractor != null) playerInteractor.SetInteractionLocked(true);
             if (hudController != null) hudController.ShowInspectPanel(artifact);
@@ -95,6 +104,7 @@ namespace ChoDoLa.Sprint1
 
             _isInspecting = false;
             ClearModel();
+            ClearInspectLights();
             _currentArtifact = null;
 
             if (_cam != null && _originalCamParent != null)
@@ -107,6 +117,48 @@ namespace ChoDoLa.Sprint1
             if (playerController != null) playerController.SetInputLocked(false);
             if (playerInteractor != null) playerInteractor.SetInteractionLocked(false);
             if (hidePanel && hudController != null) hudController.CloseAllModals();
+        }
+
+        private void SpawnInspectLights(RarityTier rarity)
+        {
+            ClearInspectLights();
+            if (inspectAnchor == null) return;
+
+            _inspectRigLights = new GameObject("Inspect_KeyRim_Lights");
+            _inspectRigLights.transform.SetParent(inspectAnchor, false);
+
+            GameObject keyGo = new GameObject("Inspect_KeyLight");
+            keyGo.transform.SetParent(_inspectRigLights.transform, false);
+            keyGo.transform.localPosition = new Vector3(0.32f, 0.50f, -0.46f);
+            Light keyL = keyGo.AddComponent<Light>();
+            keyL.type = LightType.Point;
+            keyL.color = new Color(1.0f, 0.94f, 0.84f);
+            keyL.intensity = 0.65f;
+            keyL.range = 1.8f;
+
+            GameObject rimGo = new GameObject("Inspect_RimLight");
+            rimGo.transform.SetParent(_inspectRigLights.transform, false);
+            rimGo.transform.localPosition = new Vector3(-0.34f, 0.42f, 0.42f);
+            Light rimL = rimGo.AddComponent<Light>();
+            rimL.type = LightType.Point;
+            rimL.color = rarity switch
+            {
+                RarityTier.Uncommon => new Color(0.32f, 0.90f, 0.56f),
+                RarityTier.Rare => new Color(0.28f, 0.85f, 1.0f),
+                RarityTier.Mythic => new Color(1.0f, 0.80f, 0.25f),
+                _ => new Color(0.88f, 0.90f, 0.95f)
+            };
+            rimL.intensity = 0.55f;
+            rimL.range = 1.6f;
+        }
+
+        private void ClearInspectLights()
+        {
+            if (_inspectRigLights != null)
+            {
+                Destroy(_inspectRigLights);
+                _inspectRigLights = null;
+            }
         }
 
         private void ClearModel()
@@ -131,6 +183,8 @@ namespace ChoDoLa.Sprint1
         {
             bool dragging = false;
             Vector2 delta = Vector2.zero;
+            Vector2 keyAxis = Vector2.zero;
+            bool resetPressed = false;
 
 #if ENABLE_INPUT_SYSTEM
             if (Mouse.current != null && Mouse.current.leftButton.isPressed)
@@ -138,22 +192,46 @@ namespace ChoDoLa.Sprint1
                 dragging = true;
                 delta = Mouse.current.delta.ReadValue();
             }
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) keyAxis.x -= 1f;
+                if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed) keyAxis.x += 1f;
+                if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) keyAxis.y += 1f;
+                if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) keyAxis.y -= 1f;
+                resetPressed = Keyboard.current.rKey.wasPressedThisFrame;
+            }
 #else
             if (Input.GetMouseButton(0))
             {
                 dragging = true;
                 delta = new Vector2(Input.GetAxis("Mouse X") * 15f, Input.GetAxis("Mouse Y") * 15f);
             }
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) keyAxis.x -= 1f;
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) keyAxis.x += 1f;
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) keyAxis.y += 1f;
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) keyAxis.y -= 1f;
+            resetPressed = Input.GetKeyDown(KeyCode.R);
 #endif
 
-            if (dragging)
+            if (resetPressed)
+            {
+                _targetYaw = 22f;
+                _targetPitch = -10f;
+                _currentDistance = defaultDistance;
+            }
+            else if (dragging)
             {
                 _targetYaw -= delta.x * rotateSpeed;
                 _targetPitch = Mathf.Clamp(_targetPitch + delta.y * rotateSpeed, -75f, 75f);
             }
+            else if (keyAxis.sqrMagnitude > 0.01f)
+            {
+                _targetYaw -= keyAxis.x * 95f * Time.deltaTime;
+                _targetPitch = Mathf.Clamp(_targetPitch + keyAxis.y * 85f * Time.deltaTime, -75f, 75f);
+            }
             else
             {
-                // Gentle idle turntable when not dragging
+                // Gentle idle turntable when idle
                 _targetYaw += Time.deltaTime * 10f;
             }
 

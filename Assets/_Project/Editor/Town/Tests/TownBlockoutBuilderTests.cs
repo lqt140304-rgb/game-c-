@@ -14,14 +14,14 @@ namespace ChoDoLa.Town.Editor.Tests
         public void Build_CreatesSceneWithEightSlotMarkers()
         {
             TownBlockoutBuilder.Build();
-            Assert.That(Object.FindObjectsByType<ShopSlotMarker>(FindObjectsSortMode.None).Length, Is.EqualTo(8));
+            Assert.That(Object.FindObjectsByType<ShopSlotMarker>().Length, Is.EqualTo(8));
         }
 
         [Test]
         public void Markers_HaveNoSolidCollider()
         {
             TownBlockoutBuilder.Build();
-            foreach (var m in Object.FindObjectsByType<ShopSlotMarker>(FindObjectsSortMode.None))
+            foreach (var m in Object.FindObjectsByType<ShopSlotMarker>())
             {
                 Assert.That(m.GetComponentsInChildren<Collider>().All(c => c.isTrigger), Is.True);
             }
@@ -33,7 +33,7 @@ namespace ChoDoLa.Town.Editor.Tests
             TownBlockoutBuilder.Build();
             TownBlockoutBuilder.Build();
             Assert.That(AssetDatabase.FindAssets("t:Prefab (1)", new[] { "Assets/_Project/Prefabs/Town" }), Is.Empty);
-            Assert.That(Object.FindObjectsByType<ShopSlotMarker>(FindObjectsSortMode.None).Length, Is.EqualTo(8));
+            Assert.That(Object.FindObjectsByType<ShopSlotMarker>().Length, Is.EqualTo(8));
         }
 
         [Test]
