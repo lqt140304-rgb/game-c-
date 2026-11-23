@@ -40,6 +40,15 @@ Biến việc mở hòm và kiểm tra đồ thành **trò chơi quan sát**: so
 - **Dấu hiệu xác thực là gợi ý có thể sai.** Món thật cũng có "dấu lạ"; món giả đôi khi trông sạch. Dấu hiệu giả gồm sai màu men, chữ khắc ngược, vật liệu bóng như nhựa, tem hoặc mã sản xuất hàng loạt.
 - **Độ hiếm** thể hiện bằng viền sáng hoặc chi tiết quý, nhưng không quyết định thật giả.
 
+## Cách làm biến thể chất lượng (đã chốt)
+
+**Không** tạo từng bản chất lượng (Nguyên, Xước, Hỏng, giả) bằng Meshy vì tốn (~140 lượt, ~4000 credit), không kiểm soát được chỗ lỗi và hình dáng không nhất quán giữa các bản.
+
+- Mỗi món có **một mô hình gốc** (Meshy, low-poly).
+- Tình trạng Xước và Hỏng, và dấu hiệu hàng giả, là **lớp phủ và biến đổi màu trong Unity** chồng lên mô hình gốc.
+- Điểm soi lỗi đặt ở **vị trí cố định** trên mô hình gốc, nên số lỗi và chỗ lỗi khớp với hồ sơ chữ.
+- Meshy chỉ dùng thêm, nếu cần, cho một số bản **gãy hoặc vỡ** của món Hiếm trở lên (vì lớp phủ không biểu diễn được phần bị mất). Chưa quyết, sẽ thử sau.
+
 ## 2. Mini-game soi lỗi
 
 1. **Hồ sơ vật (bằng chữ):** tên, màu sắc, hoa văn, chi tiết **chuẩn** của loại đồ đó.
@@ -91,6 +100,6 @@ Người chơi mang đồ đến **cửa hàng đồ cổ**, thẩm định viê
 
 1. Thẩm định viên ở cửa hàng đồ cổ là ai: nhân vật mới hay Giáo Sư Lẫm? Có cần thêm cửa hàng mới, hay dùng quầy giám định hiện có?
 2. Giá trị cụ thể: số lượt soi, phí soi thêm, mức phạt giả-thành-thật, mức lỗ thật-thành-giả, mức ép giá: **chờ Claude 2**. Cần mô phỏng để game không quá bấp bênh.
-3. Thẻ hiệu ứng "lớp phủ tình trạng" trên mô hình low-poly: cách làm cụ thể (shader hay texture) do Antigravity quyết.
+3. Lớp phủ tình trạng và biến đổi bản giả trên mô hình low-poly: cách làm cụ thể (shader hay texture) do Antigravity quyết.
 4. Có tùy chọn bỏ qua hoàn toàn soi lỗi (chọn nhanh, chấp nhận rủi ro) hay không.
 5. Cách lưu bằng chứng và kết quả soi trong dữ liệu ván: trao đổi với Codex trong `Docs/Content/YeuCauDuLieu.md`.
