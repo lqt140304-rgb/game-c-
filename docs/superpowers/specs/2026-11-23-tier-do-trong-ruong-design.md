@@ -45,7 +45,7 @@ Nguyên tắc nội dung: **gần gũi, người chơi nhận ra ngay**. Pha **c
 
 | Bậc | Món |
 |---|---|
-| **Rác (8)** | Giày cũ, Tất thối, Trứng thối, Xương cá (4 món bạn nêu từ đầu), Dép tổ ong cụt quai (VN), Lon nước ngọt bẹp, Áo đấu cũ của đội nhại (NH), Vé cược nhàu |
+| **Rác (9)** | Giày cũ, Tất thối, Trứng thối, Xương cá (4 món bạn nêu từ đầu), Đôi dép tổ ong (một chiếc đứt quai), Lon nước ngọt bẹp, Áo đấu cũ đội nhại, Bao thuốc lá hình rồng (nhại kiểu Thăng Long, không dùng tên hay logo hãng), Vé cược nhàu |
 | **Thường (8)** | **V01** Bình sứ men xanh, **V02** Sách cổ bìa da, **V03** Đồng hồ quả lắc cũ, **V04** Mảnh kính đồng hồ thiên văn, **V05** Thiết bị liên lạc hỏng, **V09** Lá bùa giấy vàng, Quạt nan cũ (VN), Máy game cầm tay 8-bit (NH) |
 | **Hiếm (7)** | **V06** Bộ pin lượng tử, **V08** Gương thủy tinh cổ tích, Băng cassette và máy phát (VN), Nón lá thêu hoa (VN), Cái túi thần kỳ 4 chiều (NH), Cục sạc hình chuột vàng (NH), Mũ phù thủy học việc (NH) |
 | **Rất hiếm (6)** | **V07** Tinh thể lam cầm tay, **V10** Mảnh vảy long, Đàn thần (VN, truyền thuyết Thạch Sanh), Trống đồng nhỏ (VN), Kiếm sáng ba màu (NH), Quả cầu ngọc 7 sao (NH) |
@@ -97,4 +97,4 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 | Hiếm | Blender chi tiết hơn hoặc Meshy | Làm sau |
 | Rất hiếm, Huyền thoại | Meshy | Chi tiết nhất, làm sau |
 
-Đã làm: Rác (8) và Thường (V01–V05, V09, quạt nan V11, máy game 8-bit V12) trong `Assets/_Project/Art/Items/LowPoly/Junk` và `Common`, dựng bằng `Tools/Blender/make_items_lowpoly.py`.
+Đã làm: Rác (9) và Thường (V01–V05, V09, quạt nan V11, máy game 8-bit V12) trong `Assets/_Project/Art/Items/LowPoly/Junk` và `Common`. **Bản dùng chính tạo bằng Meshy** (gộp ảnh có bóng đổ), vì bản dựng bằng code (`Junk_Blender`, `Common_Blender`) quá trừu tượng, người chơi không nhận ra món nếu không có chú thích. Nguyên tắc: mỗi món phải nhận ra ngay khi nhìn.
