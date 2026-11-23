@@ -12,7 +12,7 @@ Làm cho đồ quý giá có hồn: mở ra một món đồ cổ là thấy nó
 
 - Một khung chung để mọi món đồ có thần lực theo cùng một cách, dễ thêm món mới.
 - Phản ứng cho **10 hiện vật V01–V10** viết đầy đủ làm mẫu giọng.
-- Phản ứng gồm **lời thoại hiện chữ kèm hiệu ứng và âm thanh**.
+- Phản ứng gồm **chữ chạy kiểu light novel (không có giọng thật) kèm hiệu ứng và âm thanh ngắn**.
 
 ## Không phải mục tiêu
 
@@ -22,7 +22,8 @@ Làm cho đồ quý giá có hồn: mở ra một món đồ cổ là thấy nó
 
 ## Ràng buộc đã có
 
-- Giọng điệu hài hước phóng đại, ngôn ngữ Gen Z, lời thoại nằm trong file dữ liệu riêng (phần 2).
+- Giọng điệu hài hước phóng đại, ngôn ngữ Gen Z, lời thoại nằm trong file dữ liệu riêng (phần 2). Lời thoại hiện bằng chữ chạy kiểu light novel, **không có giọng thật**.
+- **Định hướng nghệ thuật mới:** low-poly, màu tươi sáng. Hiệu ứng và mô tả hiệu ứng trong bản này cần hiểu theo phong cách đó; "ánh sáng ấm, tránh lòe loẹt" nay thành "màu tươi, hiệu ứng gọn".
 - Cầm và soi bằng `HeldItemViewmodel`: F soi, Q cất (đã làm, chưa chạy thử trong Unity).
 - Dấu hiệu soi của V01–V10 nằm trong `Docs/Content/data/content.json`, trường `inspect_signs`.
 
@@ -78,7 +79,7 @@ Lưu ý quan trọng:
 ## Câu hỏi còn mở
 
 1. Hiệu ứng và âm thanh từng món: cần danh sách hiệu ứng thật (Antigravity) và nguồn âm thanh (chưa có).
-2. Có lồng tiếng cho đồ cổ hay chỉ hiện chữ kèm âm thanh ngắn? Đề xuất: chỉ chữ + âm thanh, lồng tiếng để sau.
+2. **Đã chốt:** không lồng tiếng. Thể hiện bằng **chữ chạy kiểu light novel** (từng chữ hiện dần), kèm âm thanh ngắn. Cần Antigravity dựng khung hội thoại và hiệu ứng chữ chạy.
 3. Xác suất chính xác của sự kiện ngoài đời và quy tắc không lặp (đề xuất tối đa một lần mỗi món mỗi ngày): cần chốt cùng Claude 2.
 4. Thần lực cho tạo tác, gia truyền, Bí Khế, hộp và rác: làm ở lượt sau theo khung này.
 5. Định dạng dữ liệu thần lực và cách kích hoạt điều kiện ngoài đời: trao đổi với Codex trong `Docs/Content/YeuCauDuLieu.md`.
