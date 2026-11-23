@@ -123,30 +123,88 @@ def build_cp2():   # Hũ đựng đồ: round glazed storage jar with a cloth-wr
     return "CP2", parts, glow
 
 
-def build_cp3():   # Ấn triện đồng: bronze seal stamp with a guardian lion on a square base
+def skin_creature(verts, edges, radii, material, decimate=0.45):
+    """Organic low-poly shape: a stick skeleton wrapped by the Skin modifier, smoothed once, then decimated into facets."""
+    mesh = bpy.data.meshes.new("skel")
+    mesh.from_pydata(verts, edges, [])
+    obj = bpy.data.objects.new("skel", mesh)
+    bpy.context.scene.collection.objects.link(obj)
+    bpy.context.view_layer.objects.active = obj
+    obj.select_set(True)
+    skin = obj.modifiers.new("skin", "SKIN")
+    for i, r in enumerate(radii):
+        mesh.skin_vertices[0].data[i].radius = r
+    mesh.skin_vertices[0].data[0].use_root = True
+    obj.modifiers.new("sub", "SUBSURF").levels = 1
+    dec = obj.modifiers.new("dec", "DECIMATE")
+    dec.ratio = decimate
+    for m in list(obj.modifiers):
+        bpy.ops.object.modifier_apply(modifier=m.name)
+    return finish(obj, material)
+
+
+def build_cp3():   # Ấn triện đồng: bronze seal stamp topped by a seated guardian lion (like the stone lions at temple gates)
     parts, glow = [], []
-    parts.append(box((0.13, 0.13, 0.08), (0, 0, 0.04), "bronze"))                                     # base
-    parts.append(box((0.14, 0.14, 0.012), (0, 0, 0.006), "bronze_dk"))                                # stamp face
-    parts.append(box((0.135, 0.135, 0.01), (0, 0, 0.085), "bronze_dk"))                               # top rim
-    # blocky guardian lion, sitting, facing -Y
-    parts.append(box((0.07, 0.08, 0.06), (0, 0.01, 0.12), "bronze"))                                  # haunches
-    parts.append(box((0.06, 0.05, 0.08), (0, -0.015, 0.16), "bronze", rot=(math.radians(-12), 0, 0)))  # chest
+    # base: stepped plinth with a carved band
+    parts.append(box((0.14, 0.14, 0.014), (0, 0, 0.007), "bronze_dk"))                                # stamp face
+    parts.append(box((0.13, 0.13, 0.064), (0, 0, 0.046), "bronze"))
+    parts.append(box((0.138, 0.138, 0.01), (0, 0, 0.082), "bronze_dk"))                               # top rim
+    for sy in (-1, 1):
+        for i in range(4):
+            parts.append(box((0.022, 0.004, 0.022), (-0.04 + i * 0.027, sy * 0.066, 0.046), "bronze_hi", rot=(0, math.radians(45), 0)))
     for sx in (-1, 1):
-        parts.append(box((0.018, 0.02, 0.07), (sx * 0.022, -0.04, 0.125), "bronze_dk"))               # front legs
-        parts.append(ico(0.013, (sx * 0.022, -0.05, 0.095), "bronze_hi"))                              # paws
-    parts.append(ico(0.045, (0, -0.02, 0.215), "bronze_dk", sub=1))                                    # mane
-    parts.append(box((0.05, 0.045, 0.045), (0, -0.045, 0.215), "bronze"))                             # face
-    parts.append(box((0.03, 0.02, 0.018), (0, -0.07, 0.205), "bronze_hi"))                            # muzzle
+        for i in range(4):
+            parts.append(box((0.004, 0.022, 0.022), (sx * 0.066, -0.04 + i * 0.027, 0.046), "bronze_hi", rot=(math.radians(45), 0, 0)))
+    z0 = 0.087                                                                                         # lion sits on top of the rim, facing -Y
+    V = [
+        (0, 0.03, z0 + 0.045),      # 0 hip (root)
+        (0, -0.005, z0 + 0.095),    # 1 chest
+        (0, -0.02, z0 + 0.135),     # 2 neck
+        (0, -0.03, z0 + 0.17),      # 3 head
+        (0, -0.07, z0 + 0.163),     # 4 muzzle
+        (0.026, -0.022, z0 + 0.085),   # 5 shoulder L
+        (0.028, -0.04, z0 + 0.045),    # 6 elbow L
+        (0.03, -0.05, z0 + 0.01),      # 7 paw L
+        (-0.026, -0.022, z0 + 0.085),  # 8 shoulder R
+        (-0.028, -0.04, z0 + 0.045),   # 9 elbow R
+        (-0.03, -0.05, z0 + 0.01),     # 10 paw R
+        (0.032, 0.03, z0 + 0.035),     # 11 haunch L
+        (0.042, 0.0, z0 + 0.018),      # 12 knee L
+        (0.036, -0.025, z0 + 0.008),   # 13 hind foot L
+        (-0.032, 0.03, z0 + 0.035),    # 14 haunch R
+        (-0.042, 0.0, z0 + 0.018),     # 15 knee R
+        (-0.036, -0.025, z0 + 0.008),  # 16 hind foot R
+        (0, 0.055, z0 + 0.05),         # 17 tail base
+        (0, 0.07, z0 + 0.09),          # 18 tail mid
+        (0, 0.058, z0 + 0.12),         # 19 tail tip (curled up)
+    ]
+    E = [(0, 1), (1, 2), (2, 3), (3, 4), (1, 5), (5, 6), (6, 7), (1, 8), (8, 9), (9, 10),
+         (0, 11), (11, 12), (12, 13), (0, 14), (14, 15), (15, 16), (0, 17), (17, 18), (18, 19)]
+    Rr = [(0.036, 0.034), (0.032, 0.03), (0.03, 0.028), (0.046, 0.044), (0.026, 0.022),
+          (0.014, 0.014), (0.012, 0.012), (0.014, 0.016), (0.014, 0.014), (0.012, 0.012), (0.014, 0.016),
+          (0.02, 0.02), (0.016, 0.016), (0.014, 0.016), (0.02, 0.02), (0.016, 0.016), (0.014, 0.016),
+          (0.009, 0.009), (0.008, 0.008), (0.012, 0.012)]
+    parts.append(skin_creature(V, E, Rr, "bronze"))
+    # curly mane: two rings of curls hugging the back and sides of the big head, plus a row down the neck
+    hc = (0.0, -0.025, z0 + 0.172)
+    for ring_y, rad in ((-0.012, 0.044), (0.008, 0.04)):
+        for i in range(13):
+            a = math.radians(-210 + i * 20)
+            parts.append(ico(0.016, (hc[0] + math.cos(a) * rad, hc[1] + ring_y + 0.02, hc[2] + math.sin(a) * rad), "bronze_dk"))
+    for i in range(4):
+        parts.append(ico(0.014, ((i - 1.5) * 0.018, 0.0, z0 + 0.125), "bronze_dk"))
+    parts.append(ico(0.013, (0, 0.058, z0 + 0.13), "bronze_dk"))                                       # tail tuft
+    # face: brows, eyes, nose, open mouth, ears
     for sx in (-1, 1):
-        parts.append(ico(0.008, (sx * 0.013, -0.068, 0.228), "bronze_hi"))                            # eyes
-        parts.append(ico(0.012, (sx * 0.025, -0.02, 0.255), "bronze_dk"))                             # ears / curls
-    for i in range(4):                       # curly mane bumps
-        a = i / 4 * math.pi - R90
-        parts.append(ico(0.014, (math.cos(a) * 0.04, 0.0 + math.sin(a) * 0.01, 0.2 + 0.02 * (i % 2)), "bronze_dk"))
-    parts.append(box((0.012, 0.05, 0.012), (0, 0.055, 0.14), "bronze", rot=(math.radians(-40), 0, 0)))  # tail
-    parts.append(ico(0.015, (0, 0.07, 0.165), "bronze_dk"))
-    for i in range(4):                       # engraved pattern on the base sides
-        parts.append(box((0.025, 0.004, 0.025), (-0.04 + i * 0.027, -0.067, 0.045), "bronze_dk", rot=(0, math.radians(45), 0)))
+        parts.append(ico(0.009, (sx * 0.016, -0.054, z0 + 0.184), "bronze_hi"))                        # eyes
+        parts.append(box((0.02, 0.008, 0.008), (sx * 0.016, -0.052, z0 + 0.196), "bronze_dk"))         # brows
+        parts.append(ico(0.013, (sx * 0.03, -0.028, z0 + 0.2), "bronze_dk"))                         # ears
+    parts.append(ico(0.012, (0, -0.07, z0 + 0.168), "bronze_dk"))                                     # nose
+    parts.append(box((0.03, 0.016, 0.009), (0, -0.062, z0 + 0.15), "bronze_dk"))                      # open mouth
+    # embroidered ball under the right front paw
+    parts.append(uvs(0.024, (-0.032, -0.055, z0 + 0.022), "bronze_hi", seg=10, rings=6))
+    for a in (0, 60, 120):
+        parts.append(torus(0.024, 0.0025, (-0.032, -0.055, z0 + 0.022), "bronze_dk", rot=(0, 0, math.radians(a)), seg=10))
     return "CP3", parts, glow
 
 
