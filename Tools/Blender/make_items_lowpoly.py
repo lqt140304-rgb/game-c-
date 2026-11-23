@@ -187,53 +187,62 @@ def build_r04():   # xương cá
     return p
 
 
-def build_r05():   # dép tổ ong cụt quai
+def build_r05():   # dép tổ ong cụt quai: green rubber sandal, V-shaped thong with one strap snapped
     p = [box((0.085, 0.23, 0.02), (0, 0.0, 0.01), "rubber"),
          uvs(0.0425, (0, -0.115, 0.01), "rubber", seg=8, rings=3, scale=(1, 1, 0.5)),
          uvs(0.0425, (0, 0.115, 0.01), "rubber", seg=8, rings=3, scale=(1, 1, 0.5)),
-         cyl(0.009, 0.045, (0, -0.07, 0.04), "rubber_dk", verts=6),                              # toe post
-         box((0.012, 0.012, 0.05), (-0.037, 0.0, 0.045), "rubber_dk"),                           # left strap post
-         box((0.052, 0.012, 0.008), (-0.019, -0.035, 0.066), "rubber_dk", rot=(0, 0, D(-38))),   # left strap
-         box((0.012, 0.012, 0.02), (0.037, 0.0, 0.03), "rubber_dk"),                             # right strap: snapped stub
-         box((0.016, 0.012, 0.004), (0.037, 0.004, 0.042), "rubber_dk", rot=(0, D(25), 0))]
-    for r, y in enumerate((-0.07, -0.035, 0.0, 0.035, 0.07)):                                      # honeycomb dents
-        for x in ((-0.022, 0.0, 0.022) if r % 2 == 0 else (-0.011, 0.011)):
-            p.append(cyl(0.012, 0.004, (x, y + 0.06, 0.02), "rubber_dk", verts=6))
+         cyl(0.01, 0.05, (0, -0.07, 0.04), "rubber_dk", verts=6),                                  # toe post
+         box((0.012, 0.012, 0.05), (-0.037, 0.0, 0.04), "rubber_dk"),                              # left strap anchor
+         box((0.012, 0.012, 0.03), (0.037, 0.0, 0.03), "rubber_dk"),                               # right strap anchor
+         box((0.014, 0.088, 0.008), (-0.0185, -0.035, 0.066), "rubber_dk", rot=(0, 0, D(-25))),    # left strap, intact
+         box((0.014, 0.035, 0.008), (0.012, -0.075, 0.066), "rubber_dk", rot=(0, 0, D(28))),       # right strap, snapped short
+         box((0.014, 0.014, 0.006), (0.027, -0.058, 0.05), "rubber_dk", rot=(0, D(30), D(28)))]   # torn tail
+    for r, y in enumerate((-0.075, -0.04, -0.005, 0.03, 0.065, 0.1)):                              # honeycomb dents
+        for x in ((-0.024, 0.0, 0.024) if r % 2 == 0 else (-0.012, 0.012)):
+            p.append(cyl(0.013, 0.005, (x, y + 0.01, 0.02), "rubber_dk", verts=6))
+    return p
+
+def build_r06():   # lon nước ngọt bẹp: a can lying on its side with a crushed middle
+    p = [cyl(0.033, 0.06, (0, -0.05, 0.035), "can_red", verts=12, rot=(R90, 0, 0)),                      # intact bottom half
+         cyl(0.033, 0.07, (0, 0.0, 0.03), "can_red", verts=12, rot=(R90, 0, 0), scale=(1.25, 1, 0.7)),     # crushed middle (overlaps both halves)
+         cyl(0.033, 0.06, (0, 0.05, 0.035), "can_red", verts=12, rot=(R90, 0, 0)),                        # top half
+         cyl(0.027, 0.012, (0, 0.087, 0.035), "can_sil", verts=12, rot=(R90, 0, 0)),                      # silver neck
+         cyl(0.03, 0.006, (0, 0.096, 0.035), "can_sil", verts=12, rot=(R90, 0, 0)),
+         torus(0.03, 0.003, (0, 0.099, 0.035), "can_sil", rot=(R90, 0, 0), seg=12),
+         box((0.016, 0.012, 0.004), (0.004, 0.102, 0.052), "can_sil"),                                   # pull tab
+         cyl(0.027, 0.01, (0, -0.083, 0.035), "can_sil", verts=12, rot=(R90, 0, 0)),                      # bottom rim
+         box((0.012, 0.03, 0.022), (0.04, 0.0, 0.03), "can_red", rot=(0, 0, D(15))),                      # dent bulge
+         box((0.045, 0.012, 0.003), (0, -0.05, 0.0695), "can_sil"),                                       # white label stripe sits on the can
+         box((0.045, 0.012, 0.003), (0, 0.05, 0.0695), "can_sil")]
     return p
 
 
-def build_r06():   # lon nước ngọt bẹp
-    p = [cyl(0.033, 0.12, (0, 0, 0.06), "can_red", verts=12, scale=(1.05, 0.72, 1)),
-         cyl(0.03, 0.006, (0, 0, 0.123), "can_sil", verts=12, scale=(1.05, 0.72, 1)),
-         torus(0.031, 0.003, (0, 0, 0.124), "can_sil", seg=12),
-         box((0.014, 0.008, 0.004), (0.006, 0, 0.128), "can_sil"),                               # pull tab
-         box((0.03, 0.012, 0.03), (0.026, -0.006, 0.07), "ink", rot=(0, 0, D(20))),              # dent
-         box((0.06, 0.004, 0.04), (0, -0.0245, 0.06), "can_sil")]                                # label
+def build_r07():   # áo đấu cũ của đội nhại: a T-shirt lying flat so it reads as a shirt
+    p = [lumpy((0.17, 0.2, 0.024), (0, 0.0, 0.012), "jersey", 2, 0.003, 5),
+         lumpy((0.07, 0.085, 0.02), (0.115, 0.085, 0.012), "jersey", 1, 0.003, 6, ),
+         lumpy((0.07, 0.085, 0.02), (-0.115, 0.085, 0.012), "jersey", 1, 0.003, 7),
+         box((0.08, 0.03, 0.006), (0, -0.095, 0.026), "jersey_dk"),                                   # hem
+         box((0.07, 0.014, 0.006), (0.115, 0.14, 0.024), "jersey_dk", rot=(0, 0, D(-30))),             # sleeve cuffs
+         box((0.07, 0.014, 0.006), (-0.115, 0.14, 0.024), "jersey_dk", rot=(0, 0, D(30))),
+         box((0.05, 0.016, 0.006), (0, 0.1, 0.026), "jersey_dk"),                                      # collar
+         box((0.03, 0.03, 0.006), (0, 0.098, 0.027), "ink", rot=(0, 0, D(45))),                        # neck opening
+         cyl(0.016, 0.004, (-0.04, 0.045, 0.026), "jersey_dk", verts=10),                              # emblem
+         ico(0.007, (-0.04, 0.045, 0.029), "gold"),
+         box((0.016, 0.004, 0.032), (-0.01, -0.02, 0.026), "gold", rot=(D(0), 0, 0)),                  # number 7
+         box((0.032, 0.004, 0.012), (0.006, -0.002, 0.026), "gold")]
+    p[-2] = box((0.012, 0.034, 0.004), (-0.012, -0.03, 0.026), "gold", rot=(0, 0, D(-18)))
+    p[-1] = box((0.036, 0.012, 0.004), (0.0, -0.01, 0.026), "gold")
+    return p
+
+def build_r08():   # vé cược nhàu: a ticket with a red band, text lines and a torn corner
+    p = [lumpy((0.1, 0.05, 0.006), (0, 0, 0.004), "ticket", 3, 0.0015, 9),
+         box((0.016, 0.052, 0.003), (0.032, 0, 0.0095), "ticket_red"),
+         box((0.05, 0.006, 0.003), (-0.015, 0.014, 0.0095), "ink"), box((0.04, 0.006, 0.003), (-0.02, 0.0, 0.0095), "ink"),
+         box((0.03, 0.006, 0.003), (-0.025, -0.014, 0.0095), "ink"),
+         box((0.014, 0.014, 0.004), (0.054, 0.027, 0.008), "ticket", rot=(0, 0, D(40)))]               # torn-off corner
     return p
 
 
-def build_r07():   # áo đấu cũ của đội nhại
-    p = [lumpy((0.2, 0.15, 0.03), (0, 0, 0.015), "jersey", 2, 0.006, 5),
-         lumpy((0.075, 0.065, 0.026), (0.135, -0.025, 0.013), "jersey", 1, 0.005, 6),
-         lumpy((0.075, 0.065, 0.026), (-0.135, -0.025, 0.013), "jersey", 1, 0.005, 7),
-         box((0.06, 0.05, 0.034), (0, 0.065, 0.017), "jersey_dk"),                              # collar
-         cyl(0.022, 0.004, (0, -0.02, 0.032), "jersey_dk", verts=10),                            # emblem
-         ico(0.009, (0, -0.02, 0.036), "gold"),
-         box((0.012, 0.004, 0.02), (-0.02, 0.025, 0.032), "gold"),                               # number
-         box((0.012, 0.004, 0.02), (0.02, 0.025, 0.032), "gold")]
-    return p
-
-
-def build_r08():   # vé cược nhàu
-    p = [lumpy((0.075, 0.045, 0.014), (0, 0, 0.007), "ticket", 2, 0.004, 9),
-         box((0.016, 0.047, 0.003), (0.02, 0, 0.0155), "ticket_red", rot=(0, 0, D(6))),
-         box((0.03, 0.006, 0.003), (-0.02, 0.01, 0.0155), "ink"),
-         box((0.022, 0.006, 0.003), (-0.025, -0.008, 0.0155), "ink"),
-         box((0.014, 0.014, 0.004), (0.04, 0.025, 0.016), "ticket", rot=(0, 0, D(40)))]       # torn corner
-    return p
-
-
-# ================================================================================================ COMMON (tier 1, simple)
 def build_v01():   # bình sứ men xanh
     p = [cyl(0.04, 0.014, (0, 0, 0.007), "glaze_dk", verts=12),
          uvs(0.07, (0, 0, 0.085), "glaze", seg=14, rings=8, scale=(1, 1, 1.15)),
