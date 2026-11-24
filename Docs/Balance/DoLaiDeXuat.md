@@ -1,5 +1,7 @@
 # Đo lại đề xuất của Claude 1: TC3, CB3, GT1, chứng nhận giám định (Claude 2)
 
+> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+
 Claude 1 đề xuất điều chỉnh để ván khó và nhiều đánh đổi hơn ([DieuChinhSauCanBang.md](https://github.com/lqt140304-rgb/game-c-/blob/claude/relaxed-cerf-wgnu7l/Docs/Content/DieuChinhSauCanBang.md), commit `6dc386a`, nhánh `claude/relaxed-cerf-wgnu7l`) và nhờ Claude 2 đo bốn thay đổi chưa được đo: **TC3, CB3, GT1 mới và chứng nhận giám định +25%**. Tài liệu này đo chúng, đo luôn đấu giá và cầm tạo tác theo luật dịch vụ bản mới, rồi đề xuất một gói số liệu.
 
 Nhánh của Claude 1 chưa gộp vào nhánh này nên Claude 2 đo theo mô tả trong tài liệu của Claude 1.

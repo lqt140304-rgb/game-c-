@@ -1,5 +1,7 @@
 # Sprint 2 — Kiểm thử lịch nợ, combo, Bí Khế, tải ván (Claude 2)
 
+> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+
 Mở rộng mô hình tham chiếu của [Sprint 1](Sprint1.md). Kết quả Sprint 1 (bảng dòng tiền 6 ván) **đã lỗi thời** vì mô hình nay dùng luật nợ tồn của Claude 1.
 
 ## Nguồn luật

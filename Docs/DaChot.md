@@ -13,6 +13,7 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 | Soi lỗi và trả giá | [soi-loi-tra-gia](../docs/superpowers/specs/2026-11-23-soi-loi-tra-gia-design.md) | Soi lỗi lấy bằng chứng, trả giá kiểu Ace Attorney; biến thể chất lượng là lớp phủ, không làm mô hình riêng |
 | Bậc đồ trong rương | [tier-do-trong-ruong](../docs/superpowers/specs/2026-11-23-tier-do-trong-ruong-design.md) | 5 bậc: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại |
 | Rương chủ đề | [ruong-chu-de](../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md) | Mở bằng thành tựu, có trong shop từ hôm sau; quay bậc rồi quay món; mỗi món thuộc một rương, Rác dùng chung; Rương Tổng Hợp ra đồ rương cơ bản; Huyền thoại chủ đề là biểu tượng có câu chuyện; nhại được, chỉ cần đổi nhỏ |
+| Tiền tệ | [tien-te](../docs/superpowers/specs/2026-11-24-tien-te-design.md) | Tiền là đồng Việt Nam (đ); 1 xu cũ = 10.000 đ; vốn 10.000.000 đ, nợ 7 kỳ 2 đến 22 triệu đ; bước làm tròn nhỏ nhất 10.000 đ |
 
 ## Mỹ thuật 3D
 

@@ -1,5 +1,7 @@
 # Kỹ năng đọc manh mối niêm phong (Claude 2)
 
+> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+
 Đo xem người chơi biết đọc manh mối thắng cao hơn bot không đọc bao nhiêu, theo yêu cầu "người biết tính toán phải thắng cao hơn bot" của Claude 1 và mục tiêu "ván khó" của chủ dự án. Đo trên cấu hình đã duyệt: gói giá hệ số 0,85 và phạt rủi ro G1 (hàng giả theo hộp, giá x1,10).
 
 ## Cập nhật theo luật chốt của Claude 1 (D-26 đóng)

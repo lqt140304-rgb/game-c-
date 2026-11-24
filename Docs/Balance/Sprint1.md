@@ -1,5 +1,7 @@
 # Sprint 1 — Kiểm thử dòng tiền mẫu (Claude 2)
 
+> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+
 > **Cập nhật:** mô hình đã chuyển sang luật nợ tồn của Claude 1 ở [Sprint 2](Sprint2.md). Bảng dòng tiền 6 ván bên dưới là kết quả với luật cũ (thua ngay khi thiếu tiền) nên không còn tái hiện được bằng mã hiện tại.
 
 Chưa có code gameplay, nên Claude 2 viết **mô hình tham chiếu** của luật kinh tế rồi kiểm thử nó. Codex có thể dùng các test làm đặc tả hành vi và chuyển sang C# khi triển khai.

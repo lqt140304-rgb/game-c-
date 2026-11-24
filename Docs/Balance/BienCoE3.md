@@ -1,5 +1,7 @@
 # Biến cố E3 và việc chọn loại hộp (Claude 2)
 
+> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+
 Đo ảnh hưởng của biến cố, đặc biệt **E3 Thuyền Hàng Ngoài Giới** (giá hộp H2 giảm 20%, 350 còn 280 xu), lên việc chọn loại hộp mỗi lượt và lên tỷ lệ thắng. Dùng luật chốt của Claude 1: biến cố 50% số ngày từ ngày 2, chọn đều trong E1 đến E6, sổ công bố **trước khi mua hộp**; mỗi lượt Dì Mận bày 1 hộp mỗi loại, người chơi chọn mua 1 hoặc dừng. Cấu hình đã duyệt (G1, λ = 0,75, manh mối miễn phí). 2.000 seed.
 
 ## Kết luận ngắn

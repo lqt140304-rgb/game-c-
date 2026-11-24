@@ -1,5 +1,7 @@
 # Lời tăng theo giá hộp: đo thử cấu hình (Claude 2)
 
+> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+
 Từ phát hiện ở [BienCoE3.md](BienCoE3.md): H2 chi phối việc chọn hộp (66% đến 71% lượt mua) và Rương Đen không bao giờ được mua. Mục tiêu của chủ dự án là ván có nhiều đánh đổi cần tính toán. Tài liệu này đo thử cấu hình **lời tuyệt đối mỗi hộp tăng theo giá hộp**, để người nghèo chọn hộp rẻ và người có vốn chọn hộp đắt.
 
 Chỉ đổi **giá nền hiện vật** (giữ tỷ lệ rơi, hàng giả theo hộp G1, mọi luật khác). Cơ sở là cấu hình đã duyệt. Mô phỏng 1.500 seed, người chơi chọn loại hộp có lời kỳ vọng cao nhất mỗi lượt như luật chốt.

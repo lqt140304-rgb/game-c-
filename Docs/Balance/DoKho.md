@@ -1,5 +1,7 @@
 # Độ khó và đánh đổi — CHỢ ĐỒ LẠ (Claude 2)
 
+> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+
 > **Cập nhật:** Claude 1 đã đề xuất thêm TC3, CB3, GT1 mới và chứng nhận giám định. Claude 2 đã đo trong [DoLaiDeXuat.md](DoLaiDeXuat.md), tài liệu đó đưa ra gói số liệu mới. Các kết luận về độ khó, giá nền hệ số 0,85 và k đấu giá 1,16 vẫn khớp.
 
 **Mục tiêu của chủ dự án:** người chơi không được thắng quá dễ. Ván phải tạo ra nhiều tình huống khó xử, có đánh đổi thật và cần tính toán kỹ.

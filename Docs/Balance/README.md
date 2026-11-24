@@ -1,5 +1,19 @@
 # Cân bằng và kiểm thử — CHỢ ĐỒ LẠ
 
+## Tiền tệ
+
+**Quyết định của chủ dự án (2026-11-24): game dùng đồng Việt Nam, 1 xu cũ = 10.000 đ.** Chi tiết: [spec tiền tệ](../../docs/superpowers/specs/2026-11-24-tien-te-design.md). Mọi tài liệu cân bằng viết trước ngày này ghi "xu": đó là **đơn vị cân bằng = 10.000 đ**, không phải xu thật. Mô phỏng và kiểm thử trong `QA/` giữ đơn vị này; `QA/currency.py` đổi sang đồng khi in.
+
+| Mốc | Xu cũ | Đồng |
+| --- | --- | --- |
+| Vốn đầu ván | 1.000 | 10.000.000 đ |
+| Nợ ngày 1 đến 7 | 200 / 350 / 500 / 750 / 1.050 / 1.500 / 2.200 | 2.000.000 / 3.500.000 / 5.000.000 / 7.500.000 / 10.500.000 / 15.000.000 / 22.000.000 đ |
+| Tổng nợ | 6.550 | 65.500.000 đ |
+| Giá hộp H1 / H2 / H3 / Rương Đen | 100 / 350 / 800 / 1.500 | 1.000.000 / 3.500.000 / 8.000.000 / 15.000.000 đ |
+| Ngưỡng thua | 1.000 | 10.000.000 đ |
+
+Công thức: `đồng = xu cũ x 10.000`. Bước làm tròn nhỏ nhất là 10.000 đ.
+
 Tài liệu của **Claude 2** cho Sprint 0. Mọi con số là **giả định thử nghiệm** để Codex nạp dữ liệu và để đo lại ở Sprint 3. Luật cốt lõi không đổi: tối đa 3 hộp mỗi ngày, 7 ngày, nợ chỉ thu đúng kỳ.
 
 Quy ước trạng thái giống [GDD](../GameDesign/README.md): **[ĐÃ CHỐT]**, **[ĐỀ XUẤT]**, **[MỞ]**.
