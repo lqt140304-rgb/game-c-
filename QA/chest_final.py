@@ -3,7 +3,7 @@ Dùng (chạy song song 4 tiến trình, nên chạy nền với nohup):
   python3 chest_final.py final   # bảng cuối n=2.000 không sắp sẵn + 3 chế độ hộp ngày 1 sắp sẵn n=1.500, kèm số đo ngày 1 (~10 phút)
   python3 chest_final.py sens    # độ nhạy n=1.000: 3/5 ô, tạo tác trùng, giá trị tạo tác, Kim Khí chỉ tạo tác, giá món mới ±15% (~10 phút)
   python3 chest_final.py slots   # tỉ lệ đạt CB1/CB3/BK1 theo 3/4/5 ô, n=800 (~2 phút)
-Bảng "table" trong JSON in theo đơn vị cân bằng (1 = 10.000 đ); đổi sang đồng bằng currency.fmt_vnd."""
+Mọi số tiền in ra đều bằng đồng (currency.fmt_vnd); bên trong mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ."""
 import json
 import multiprocessing as mp
 import sys
@@ -11,6 +11,16 @@ import chest_sim as CS
 import clue_sim as C
 import proposal_sim as P
 from chest_explore import mk
+from currency import fmt_vnd
+
+MONEY = ("price", "ev", "profit", "arrears1_mean", "arrears1_max", "cash1_min")
+
+
+def in_vnd(x):
+    """Đổi mọi trường tiền trong kết quả sang chuỗi đồng để in."""
+    if isinstance(x, dict):
+        return {k: fmt_vnd(round(v)) if k in MONEY else in_vnd(v) for k, v in x.items()}
+    return x
 
 
 def final(**top):
@@ -62,5 +72,5 @@ if __name__ == "__main__":
     with mp.Pool(4) as p:
         for label, r in p.imap(job, J):
             print("==", label)
-            print(json.dumps(r, ensure_ascii=False))
+            print(json.dumps(in_vnd(r), ensure_ascii=False))
             sys.stdout.flush()

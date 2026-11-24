@@ -1,6 +1,6 @@
 """Khóa Sprint 5 phần 1: bảng 4 rương cơ bản ĐỀ XUẤT (chest_sim.FINAL), 5 bậc, rác, 4 ô tạo tác.
 Số liệu đầy đủ (n = 2.000): Docs/Balance/Sprint5Ruong.md. Ở đây n nhỏ để chạy nhanh (khoảng 1 đến 2 phút), biên rộng hơn.
-Hạt giống cố định (0..N-1) nên kết quả lặp lại được. Đơn vị cân bằng 10.000 đ."""
+Hạt giống cố định (0..N-1) nên kết quả lặp lại được. Số tiền trong mã tính theo đơn vị cân bằng 10.000 đ (Gỗ price=140 là 1.400.000 đ)."""
 import unittest
 import chest_sim as CS
 import clue_sim as C
@@ -98,7 +98,7 @@ class ChestBalance(unittest.TestCase):
         for d in [self.day1] + list(self.day1_script.values()):
             self.assertEqual(d["lost_day1"], 0, d)
             self.assertEqual(d["lost_before_day3"], 0, d)
-            self.assertLess(d["arrears1_max"], 1000 * .3, d)   # xa ngưỡng thua 1.000
+            self.assertLess(d["arrears1_max"], 1000 * .3, d)   # dưới 3.000.000 đ, xa ngưỡng thua 10.000.000 đ (số trong mô phỏng tính theo đơn vị 10.000 đ)
 
     def test_scripted_run_still_winnable(self):
         """Lần chơi đầu (hộp sắp sẵn) khó hơn nhưng đường thắng vẫn còn."""
