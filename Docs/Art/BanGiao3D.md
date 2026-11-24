@@ -190,3 +190,19 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Thể thao (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_TheThao.glb`. Ý tưởng ở [spec](../../docs/superpowers/specs/2026-11-24-ruong-the-thao-design.md): quả bóng đá low-poly tách đôi, ngồi trên chân đế phát bóng màu cam. **Chưa gán ID hay chủ đề vào dữ liệu game.**
+
+```
+pip install bpy pillow          # Python 3.13, Blender 5.3 chạy headless
+cd Tools/Blender
+python make_chest_the_thao.py -- ../../Assets/_Project/Art/Chests/Chest_TheThao.glb ../../Assets/_Project/Art/Source/render_chest_the_thao_open.png 48 480
+```
+
+Hai tham số cuối là số mẫu Cycles và độ rộng mỗi ô ảnh. Bỏ đường dẫn ảnh thì chỉ xuất GLB.
+
+- Cấu trúc: root `Chest_TheThao` gồm `Body` (510 tam giác: nửa dưới quả bóng, chân đế, viền chỉ), `Lid` (242 tam giác, **gốc ở bản lề phía sau**, mở bằng cách xoay âm quanh trục X của Blender), `Binding` (184 tam giác: đai thun và khóa), `Seal` (52 tam giác: huy hiệu) và `Glow` (80 tam giác, ẩn bằng scale). Không có `Key`.
+- Tổng 988 tam giác (chưa tính Glow), cao 0,38 m. Vật liệu đơn sắc, không có texture.
+- Ảnh `Art/Source/render_chest_the_thao_open.png`: hàng trên là đóng, hé và mở toang. Hàng dưới là hình bóng nhìn từ trước, từ cạnh và từ 3/4 phía sau. Ảnh dựng ngoại tuyến bằng Cycles, **chưa chạy trong Unity** (nếu nắp mở ngược thì đổi `lidOpenSign`).
