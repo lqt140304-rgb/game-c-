@@ -19,6 +19,7 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 | Chủ đề | File | Điểm chính đã chốt |
 |---|---|---|
 | Bàn giao mô hình | [BanGiao3D](Art/BanGiao3D.md) | Low-poly, màu trung tính; bậc cao chi tiết hơn; Meshy gộp tối đa 8 món một lượt; món lỗi gom làm lại một đợt, không làm riêng lẻ; Gậy sắt làng Gióng để thẳng |
+| Rương Robot (tạm) | [ruong-robot](../docs/superpowers/specs/2026-11-24-ruong-robot-design.md) | Bản thử: robot dây cót ngồi, nắp là đầu vòm; chưa duyệt |
 
 ## Quy tắc làm việc
 

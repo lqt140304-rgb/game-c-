@@ -190,3 +190,16 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Robot (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_Robot.glb`, **bản thử tạm**, chưa gán ID hay chủ đề vào dữ liệu game. Ý tưởng: [ruong-robot](../../docs/superpowers/specs/2026-11-24-ruong-robot-design.md). Robot dây cót thiếc lùn mập ngồi bệt; nắp là cả cái đầu vòm (mắt, ăng-ten lò xo) ngửa ra sau.
+
+```
+pip install bpy pillow
+python Tools/Blender/make_chest_robot.py -- Assets/_Project/Art/Chests
+```
+
+- Cấu trúc: root `Chest_Robot` gồm `Body` (1.340 tam giác), `Lid` (910, **gốc ở bản lề sau**, xoay quanh X, mặt trước -Y), `Glow` (104, quầng xanh lam ở miệng, ẩn bằng scale). Tổng 2.250 tam giác không tính Glow. Không có `Seal`, `Binding`, `Key` (chìa cót sau lưng là một phần của `Body`).
+- Cao khoảng 0,49 m tính cả ăng-ten (thân + đầu khoảng 0,42 m). Vật liệu đơn sắc, không texture.
+- Ảnh xem trước Cycles (đóng, hé, mở toang; trước, cạnh, sau): `Art/Source/render_chest_robot_open.png`. Dựng ngoại tuyến, **chưa chạy trong Unity**.
