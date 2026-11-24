@@ -11,6 +11,7 @@ Run:  python cut_lid_from_meshy_fbx.py -- <dir with fbx + png maps> <out.glb> <r
     --lining r,g,b      lining pad colour, linear 0-1 (default 0.16,0.018,0.03 = burgundy)
     --rim r,g,b         cut-rim colour (default 0.16,0.085,0.04 = dark wood)
     --glow r,g,b        Glow colour (default 1.0,0.82,0.45 = pale gold)
+    --size-xy L,D       target length (X) and depth (Y) in metres; the height still comes from <target height>. Squashes the model non-uniformly (default: uniform scale)
   Source FBX imports Z-up, centred on the origin. The seam is the height (source units) where the lid meets the body;
   find it with a vertex-height histogram or a side render. Front of the chest must face -Y (lock side); the hinge is at +Y.
 Needs Blender (`pip install bpy` works) and Pillow.
@@ -30,6 +31,7 @@ def _rgb(text, default): return tuple(float(c) for c in text.split(",")) if text
 decimate_tris = int(_opt("--decimate-tris", 0))
 lining_rgb = _rgb(_opt("--lining"), (0.16, 0.018, 0.03)); rim_rgb = _rgb(_opt("--rim"), (0.16, 0.085, 0.04))
 glow_rgb = _rgb(_opt("--glow"), (1.0, 0.82, 0.45))
+size_xy = _opt("--size-xy")   # "length,depth" in metres: squash X/Y independently of the height (default: uniform scale)
 
 src_dir, out, name, seam_src, target_h = sys.argv[sys.argv.index("--") + 1:][:5]
 _a = sys.argv[sys.argv.index("--") + 1:] + ["1024", ""]
@@ -56,9 +58,12 @@ zs = [v.co.z for v in obj.data.vertices]
 zmin, zmax = min(zs), max(zs)
 scale = target_h / (zmax - zmin)
 xs = [v.co.x for v in obj.data.vertices]; ys = [v.co.y for v in obj.data.vertices]
-dx = -(min(xs) + max(xs)) / 2 * scale; dy = -(min(ys) + max(ys)) / 2 * scale
+sx = sy = scale
+if size_xy:
+    L, D = [float(c) for c in size_xy.split(",")]; sx = L / (max(xs) - min(xs)); sy = D / (max(ys) - min(ys))
+dx = -(min(xs) + max(xs)) / 2 * sx; dy = -(min(ys) + max(ys)) / 2 * sy
 for v in obj.data.vertices:
-    v.co = mathutils.Vector((v.co.x * scale + dx, v.co.y * scale + dy, (v.co.z - zmin) * scale))
+    v.co = mathutils.Vector((v.co.x * sx + dx, v.co.y * sy + dy, (v.co.z - zmin) * scale))
 seam = (seam_src - zmin) * scale
 print("height", target_h, "seam z", seam)
 
@@ -157,7 +162,7 @@ lid.location = hinge
 # ---- glow (hidden by scale until the lid cracks open) -------------------------
 bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=1.0, location=(0, 0, seam + 0.03))
 glow = bpy.context.active_object; glow.name = "Glow"
-w = (max(xs) - min(xs)) * scale; d = (max(ys) - min(ys)) * scale
+w = (max(xs) - min(xs)) * sx; d = (max(ys) - min(ys)) * sy
 glow.scale = (w * 0.30, d * 0.30, 0.02)
 glow.data.materials.append(glow_mat)
 
@@ -165,7 +170,7 @@ glow.data.materials.append(glow_mat)
 key = None
 if keyhole_arg:
     kx, ky, kz = [float(v) for v in keyhole_arg.split(",")]
-    kpos = mathutils.Vector((kx * scale + dx, ky * scale + dy, (kz - zmin) * scale))
+    kpos = mathutils.Vector((kx * sx + dx, ky * sy + dy, (kz - zmin) * scale))
     gold = flat_mat(name + "_KeySilver", (0.84, 0.88, 0.95, 1), 0.22, 1.0)   # silver, so it stands out against the gold lock
     parts = []
     def prim(op, **kw):
