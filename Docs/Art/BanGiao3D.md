@@ -261,7 +261,7 @@ Găng tay lấp lánh (L19) làm lại vẫn ra trắng trơn: Meshy không gi�
 | H31 | Cờ đầu lâu | Hải tặc | Có, cờ mỏng |
 | H32 | Bàn tính | Trung Hoa cổ | Có, gộp khung và hạt |
 
-Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` chọn mặt tam giác theo màu và hướng rồi tô lại vùng UV của chúng trên texture trong file `.glb`. Dùng cho lỗi màu nhỏ thay vì chạy lại Meshy.
+Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` (món Thường V13, V14, V17, V24–V26: `fix_thuong.py <mã> vào.glb ra.glb`) chọn mặt tam giác theo màu và hướng rồi tô lại vùng UV của chúng trên texture trong file `.glb`. Dùng cho lỗi màu nhỏ thay vì chạy lại Meshy.
 
 ## Hiếm cuối và Thường theo rương, đợt 1 (2026-11-24)
 
@@ -274,11 +274,11 @@ Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` chọn 
 | H33 | Bình gốm Thanh Hoa | Trung Hoa cổ | Có |
 | H34 | Mặt nạ quỷ Oni | Nhật Bản cổ | Có, nằm ngửa |
 | H35 | Búp bê Daruma | Nhật Bản cổ | Có; đã tô lại vệt xanh trắng ở đáy (`retex/fix_daruma.py`) |
-| V13 | Radio bóng đèn | Kim Khí | Có, gộp thân và mặt loa; mặt sau có vệt núm vặn do texture |
-| V14 | Xúc xắc chì | Đen | Có, một cặp, màu xám trắng |
+| V13 | Radio bóng đèn | Kim Khí | Có, gộp thân và mặt loa; mặt sau có gờ nổi hình núm vặn (khối, đã tô màu gỗ) |
+| V14 | Xúc xắc chì | Đen | Có, một cặp; đã tô lại xám chì |
 | V15 | Bộ bài cũ | Đen | Có, xấp bài |
 | V16 | Guốc mộc | Việt Nam | Có, một đôi, gộp hai chiếc |
-| V17 | Bi ve | Tuổi thơ Việt Nam | Có, 5 viên đục (không trong suốt), màu nhạt |
+| V17 | Bi ve | Tuổi thơ Việt Nam | Có, 5 viên đục (không trong suốt); đã tăng độ đậm màu |
 | V18 | Tò he | Tuổi thơ Việt Nam | Có, con gà trên que |
 | V19 | Băng đô làng ninja (nhại) | Wibu | Có, cuộn tròn; biểu tượng lá xoáy giống bản gốc, cần chủ dự án duyệt |
 | V20 | Bát mì ramen (nhại) | Wibu | Có, có đũa |
@@ -296,9 +296,9 @@ Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` chọn 
 |---|---|---|---|
 | V22 | Guồng quay sợi | Truyền thuyết Châu Âu | Có, cao 0,6 m (cỡ thu nhỏ) |
 | V23 | Robot dây cót | Robot | Có, chìa cót sau lưng |
-| V24 | Tay robot thiếc | Robot | Có, nằm ngang, màu trắng bạc (nhạt hơn ảnh nguồn) |
-| V25 | Đá mặt trăng | Không gian | Có, màu xám trắng |
-| V26 | Thức ăn phi hành gia | Không gian | Có, túi trắng (mất ánh bạc giấy bạc) |
+| V24 | Tay robot thiếc | Robot | Có, nằm ngang; đã tô lại xám thiếc |
+| V25 | Đá mặt trăng | Không gian | Có; đã tô lại xám tro |
+| V26 | Thức ăn phi hành gia | Không gian | Có; đã tăng tương phản cho ra túi giấy bạc |
 | V27 | Băng game (nhại) | Game | Có, nằm phẳng, nhãn trống |
 | V28 | Giày bóng đá | Thể thao | Có, một chiếc, không logo |
 | V29 | Huy chương | Thể thao | Có, nằm phẳng, dây đỏ mỏng |
