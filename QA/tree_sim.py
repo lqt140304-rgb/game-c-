@@ -84,8 +84,9 @@ HIGH = ("X", "L")
 
 
 # --- dựng cấu hình một ván -------------------------------------------------------------------------------
-# ĐỀ XUẤT sửa bảng phần 2 khi có soi lỗi (phần 3): Tổng Hợp hàng giả 20% -> 10% (xem báo cáo mục 3).
-UNLOCK_OVER = {"Tổng Hợp": dict(fake=.10)}
+# ĐỀ XUẤT sửa bảng phần 2 khi có soi lỗi (phần 3): Tổng Hợp hàng giả 20% -> 10%, Hiếm 28% -> 25%, Rất hiếm 14% -> 13%,
+# Thường 39% -> 43% (xem báo cáo mục 3).
+UNLOCK_OVER = {"Tổng Hợp": dict(fake=.10, tiers=dict(R=.16, T=.43, H=.25, X=.13, L=.03))}
 
 
 def scenario(chests=(), n_theme=0, rd_early=False, shop_extra=None):
