@@ -57,7 +57,8 @@ CHESTS = {  # tên rương -> mô tả. tiers = tỉ lệ bậc (R,T,H,X,L). poo
     "Đen": dict(price=1200, fake=.30, ntrue=1, tiers=dict(R=.30, T=.20, H=.25, X=.25, L=0),
                 pools=dict(T=["N08", "N09"], H=["N10", "N11"], X=["N12"], L=["N15"])),
 }
-DEFAULT = dict(chests=CHESTS, slots=4, dup_frac=.5, art_value=1.0, script=True, rd_from_day=4, amp=.20)
+DEFAULT = dict(chests=CHESTS, slots=4, dup_frac=.5,   # dup_frac .5: tạo tác trùng đổi 50% giá Kho (chốt 2026-11-24)
+                art_value=1.0, script=True, rd_from_day=4, amp=.20)
 # Bảng 4 rương cơ bản CHỦ DỰ ÁN ĐÃ DUYỆT 2026-11-24 (Docs/Balance/Sprint5Ruong.md): Đen giữ 12.000.000 đ,
 # Gỗ có thêm Rất hiếm nhỏ rồi cân bằng lại, rác Vải Niêm lên 30%, rác Đen lên 30% và Rất hiếm Đen tăng nhẹ.
 FINAL_CHESTS = {

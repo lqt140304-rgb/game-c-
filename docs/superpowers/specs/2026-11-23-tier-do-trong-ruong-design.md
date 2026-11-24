@@ -66,7 +66,8 @@ Bảng của Claude 2 ([Sprint5Ruong.md](../../../Docs/Balance/Sprint5Ruong.md))
 
 - Rác bán 30.000 đ, không giả. Kim Khí ra **cả đồ lẫn tạo tác** (không còn chỉ ra tạo tác).
 - **Huyền thoại có ở 4 rương cơ bản nhưng hiếm** (0,5% đến 5%), theo rương chủ đề; thay cho dòng "không có" bên dưới.
-- Chưa chốt (câu hỏi mở trong Sprint5Ruong.md): tạo tác trùng đổi bao nhiêu (đang đo với 50% giá Kho), giá nền 25 món mới, cách sắp sẵn hộp ở lần chơi đầu.
+- **Tạo tác từ Kim Khí (chốt 2026-11-24):** có thể ra tạo tác đã có. Tạo tác chưa có thì vào ô trống; trùng hoặc hết ô thì **đổi ra tiền bằng 50% giá Kho Tạo Tác** của món đó.
+- Chưa chốt (câu hỏi mở trong Sprint5Ruong.md): giá nền 25 món mới, cách sắp sẵn hộp ở lần chơi đầu.
 
 ### Đề xuất khởi đầu (đã thay bằng bảng trên)
 
@@ -100,7 +101,7 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 2. Tên 25 món mới có đúng ý bạn không (đặc biệt Huyền thoại)? Món nhại cần kiểm tra kỹ để **không dùng tên hay hình ảnh thật** có bản quyền.
 3. Số món mỗi nhóm nguồn gốc ở mỗi bậc có cân đối cho rương Vải Niêm (theo bộ) không: cần kiểm tra.
 4. ~~Tỉ lệ ra ở mục 3~~ **Đã chốt 2026-11-24** (bảng ở mục 3). 8–10% Huyền thoại ở Rương Tổng Hợp: **chờ Claude 2**.
-5. Kim Khí có nên ra tạo tác đã có (trùng) hay chỉ ra tạo tác chưa sở hữu.
+5. ~~Kim Khí có nên ra tạo tác đã có (trùng) hay chỉ ra tạo tác chưa sở hữu.~~ **Đã chốt 2026-11-24:** có ra trùng, trùng đổi 50% giá Kho (mục 3).
 6. ~~Cần mô hình 3D low-poly cho 25 món mới~~ **Đã làm**, xem dưới. **Còn lệch ở bậc Huyền thoại, cần chủ dự án quyết.**
 
 ## Cập nhật: cách làm mô hình theo bậc (chốt)
