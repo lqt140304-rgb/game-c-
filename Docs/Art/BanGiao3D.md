@@ -190,3 +190,13 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Trung Hoa cổ (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_TrungHoa.glb`, **bản tạm, chưa gán ID hay chủ đề**. Ý tưởng: [ruong-trung-hoa](../../docs/superpowers/specs/2026-11-24-ruong-trung-hoa-design.md). Hình dáng là đỉnh đồng ba chân, nắp vòm, núm mái ngói hai tầng, cao khoảng 0,49 m.
+
+- Lớp: root `Chest_TrungHoa` gồm `Body` (1.090 tam giác), `Lid` (342, gốc ở bản lề sau miệng (0; 0,165; 0,30), lật quanh X), `Seal` (nút thắt đỏ có tua, 128), `Binding` (dây gai vắt từ quai này sang quai kia, 128) và `Glow` (đĩa sáng ở miệng, 60). Tổng 1.688 tam giác (không tính Glow). Không có `Key`.
+- Vật liệu đơn sắc: đồng xanh rỉ, vàng đồng, ngói tối, điểm nhấn đỏ. Không dùng texture.
+- Chạy: `pip install bpy pillow`, rồi `python Tools/Blender/make_chest_trung_hoa.py -- Assets/_Project/Art/Chests`.
+- Ảnh xem trước (Cycles, dựng ngoại tuyến): `python Tools/Blender/render_chest_trung_hoa_preview.py -- Assets/_Project/Art/Chests/Chest_TrungHoa.glb Assets/_Project/Art/Source/render_chest_trung_hoa_open.png 32` → `Art/Source/render_chest_trung_hoa_open.png` (đóng, hé, mở, cùng 3 góc hình bóng).
+- Chưa chạy trong Unity, chưa tạo prefab. Nếu nắp mở ngược thì đổi `lidOpenSign`.
