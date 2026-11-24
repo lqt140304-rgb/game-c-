@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -12,6 +13,8 @@ namespace ChoDoLa.Morning
         private enum TableInteraction { None, Reading, Ordering }
 
         private readonly Dictionary<Collider, Action> worldActions = new Dictionary<Collider, Action>();
+        private readonly List<(string text, Vector3 position)> worldLabels =
+            new List<(string text, Vector3 position)>();
         private readonly List<Material> worldMaterials = new List<Material>();
         private GameObject world;
         private Camera worldCamera;
@@ -82,10 +85,10 @@ namespace ChoDoLa.Morning
                     brush = index;
                     feedback = $"Đã lấy bàn chải {Brushes[index].ToLower()}. Chọn kem đánh răng.";
                 };
-                Block("Cán bàn chải", new Vector3(x, .86f, -.44f), new Vector3(.15f, .11f, .62f), color, pick);
+                Block("Cán bàn chải", new Vector3(x, .86f, -.44f), new Vector3(.25f, .15f, .68f), color, pick);
                 Block("Lông bàn chải", new Vector3(x, .90f, -.74f),
-                    new Vector3(.24f + i * .045f, .15f, .25f), Color.white, pick);
-                Label(Brushes[i], new Vector3(x, .77f, -1.03f), .22f);
+                    new Vector3(.32f + i * .04f, .20f, .28f), Color.white, pick);
+                Label(Brushes[i], new Vector3(x, .77f, -1.03f));
             }
 
             for (int i = 0; i < Pastes.Length; i++)
@@ -101,9 +104,9 @@ namespace ChoDoLa.Morning
                     }
                     if (morning.StartBrushing(brush, index)) feedback = "";
                 };
-                Block("Tuýp kem", new Vector3(x, .88f, -.49f), new Vector3(.32f, .15f, .55f), Foam[i], pick);
+                Block("Tuýp kem", new Vector3(x, .88f, -.49f), new Vector3(.42f, .20f, .60f), Foam[i], pick);
                 Block("Nắp kem", new Vector3(x, .88f, -.8f), new Vector3(.19f, .13f, .15f), Color.white, pick);
-                Label(Pastes[i], new Vector3(x, .77f, -1.03f), .22f);
+                Label(Pastes[i], new Vector3(x, .77f, -1.03f));
             }
         }
 
@@ -125,7 +128,7 @@ namespace ChoDoLa.Morning
                     i == 0 ? Green : new Color(.59f, .33f, .21f), enter);
                 Block("Mái", new Vector3(x, 1.72f, -.20f), new Vector3(2.4f, .21f, 1.14f),
                     i == 0 ? new Color(.67f, .36f, .23f) : new Color(.42f, .56f, .46f), enter);
-                Label(Shops[i], new Vector3(x, .95f, -.43f), .37f);
+                Label(Shops[i], new Vector3(x, .95f, -.43f));
             }
         }
 
@@ -136,7 +139,7 @@ namespace ChoDoLa.Morning
             Block("Chân bàn phải", new Vector3(.5f, .32f, .45f), new Vector3(.2f, .7f, .2f), Ink);
             Action read = () => tableInteraction = TableInteraction.Reading;
             Block("Thực đơn giấy", new Vector3(-.9f, .875f, -.4f), new Vector3(.92f, .045f, .62f), Cream, read);
-            Label("Thực đơn", new Vector3(-.9f, .92f, -.75f), .26f);
+            Label("Thực đơn", new Vector3(-.9f, .92f, -.75f));
 
             staffCollider = Block("Nhân viên", new Vector3(1.76f, 1.1f, -.08f),
                 new Vector3(.65f, 1.9f, .64f), Green, shape: PrimitiveType.Capsule);
@@ -144,7 +147,7 @@ namespace ChoDoLa.Morning
             staffHeadCollider = Block("Đầu nhân viên", new Vector3(1.76f, 2.12f, -.08f), new Vector3(.54f, .54f, .54f),
                 new Color(.86f, .62f, .46f), shape: PrimitiveType.Sphere);
             staffHeadCollider.enabled = true;
-            Label("Nhân viên · E", new Vector3(1.76f, 2.55f, -.13f), .26f);
+            Label("Nhân viên · E", new Vector3(1.76f, 2.55f, -.13f));
             if (worldPhase == MorningPhase.Serving)
             {
                 bowlPlaced = false;
@@ -173,24 +176,54 @@ namespace ChoDoLa.Morning
         private void ReadWorldInput()
         {
             if (world == null || worldCamera == null || tableInteraction == TableInteraction.Ordering ||
-                morning.Phase == MorningPhase.Serving) return;
+                morning.Phase != MorningPhase.ChooseMeal) return;
 #if ENABLE_INPUT_SYSTEM
-            if (Mouse.current == null) return;
-            var pointer = Mouse.current.position.ReadValue();
-            bool clicked = Mouse.current.leftButton.wasPressedThisFrame;
-            bool talked = Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame;
+            if (Mouse.current == null || Keyboard.current == null || !Keyboard.current.eKey.wasPressedThisFrame) return;
+            Vector2 pointer = Mouse.current.position.ReadValue();
 #else
-            var pointer = Input.mousePosition;
-            bool clicked = Input.GetMouseButtonDown(0);
-            bool talked = Input.GetKeyDown(KeyCode.E);
+            if (!Input.GetKeyDown(KeyCode.E)) return;
+            Vector2 pointer = Input.mousePosition;
 #endif
-            if ((!clicked && !talked) || !Physics.Raycast(worldCamera.ScreenPointToRay(pointer), out var hit)) return;
-            if (talked && (hit.collider == staffCollider || hit.collider == staffHeadCollider))
-            {
+            if (Physics.Raycast(worldCamera.ScreenPointToRay(pointer), out var hit) &&
+                (hit.collider == staffCollider || hit.collider == staffHeadCollider))
                 tableInteraction = TableInteraction.Ordering;
-                return;
+        }
+
+        private void HandleWorldClick(Vector2 guiPointer)
+        {
+            var input = Event.current;
+            if (input.type != EventType.MouseDown || input.button != 0 || worldCamera == null ||
+                world == null || worldPhase != morning.Phase || !IsWorldPhase(worldPhase) ||
+                ScreenControlsContain(input.mousePosition) || tableInteraction != TableInteraction.None) return;
+
+            var pointer = new Vector2(guiPointer.x, Screen.height - guiPointer.y);
+            if (Physics.Raycast(worldCamera.ScreenPointToRay(pointer), out var hit) &&
+                worldActions.TryGetValue(hit.collider, out var action))
+            {
+                action();
+                input.Use();
             }
-            if (clicked && tableInteraction == TableInteraction.None && worldActions.TryGetValue(hit.collider, out var action)) action();
+        }
+
+        private bool ScreenControlsContain(Vector2 point) =>
+            point.y < 94 || point.y > 454 ||
+            (point.y >= 397 && (morning.Phase == MorningPhase.ChooseMeal && point.x < 216 ||
+                morning.Day > 1 && point.x >= 544));
+
+        private void DrawWorldLabels()
+        {
+            if (world == null || worldCamera == null || tableInteraction != TableInteraction.None) return;
+            var inverse = GUI.matrix.inverse;
+            foreach (var label in worldLabels)
+            {
+                var point = worldCamera.WorldToScreenPoint(world.transform.TransformPoint(label.position));
+                if (point.z <= 0) continue;
+                var position = inverse.MultiplyPoint3x4(new Vector3(point.x, Screen.height - point.y, 0));
+                float width = darkLine.CalcSize(new GUIContent(label.text)).x + 12f;
+                var area = new Rect(position.x - width / 2, position.y + 3, width, 23);
+                Fill(area, Cream);
+                GUI.Label(new Rect(area.x + 6, area.y, width - 12, 23), label.text, darkLine);
+            }
         }
 
         private void DrawTableInteraction()
@@ -239,8 +272,10 @@ namespace ChoDoLa.Morning
             prop.transform.localPosition = position;
             prop.transform.localScale = size;
 
-            var shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color");
-            if (shader != null)
+            var shader = GraphicsSettings.currentRenderPipeline == null
+                ? Shader.Find("Unlit/Color")
+                : Shader.Find("Universal Render Pipeline/Unlit");
+            if (shader != null && shader.isSupported)
             {
                 var material = new Material(shader);
                 material.color = color;
@@ -254,19 +289,7 @@ namespace ChoDoLa.Morning
             return collider;
         }
 
-        private void Label(string text, Vector3 position, float size)
-        {
-            var label = new GameObject(text);
-            label.transform.SetParent(world.transform, false);
-            label.transform.localPosition = position;
-            label.transform.rotation = worldCamera.transform.rotation;
-            var mesh = label.AddComponent<TextMesh>();
-            mesh.text = text;
-            mesh.anchor = TextAnchor.MiddleCenter;
-            mesh.characterSize = size;
-            mesh.fontSize = 64;
-            mesh.color = Color.white;
-        }
+        private void Label(string text, Vector3 position) => worldLabels.Add((text, position));
 
         private void RestoreCamera()
         {
@@ -291,6 +314,7 @@ namespace ChoDoLa.Morning
             foreach (var material in worldMaterials) Destroy(material);
             worldMaterials.Clear();
             worldActions.Clear();
+            worldLabels.Clear();
             staffCollider = null;
             staffHeadCollider = null;
             servedBowl = null;

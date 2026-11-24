@@ -91,12 +91,14 @@ namespace ChoDoLa.Morning
             if (morning == null) return;
             CreateStyles();
             var previous = GUI.matrix;
+            var guiPointer = Event.current.mousePosition;
             float scale = Mathf.Min(Screen.width / 900f, Screen.height / 600f);
             float jolt = shake && Time.unscaledTime < effectUntil ? Mathf.Sin(Time.unscaledTime * 75f) * 3f : 0f;
             GUI.matrix = Matrix4x4.TRS(new Vector3((Screen.width - 860 * scale) / 2 + jolt,
                 (Screen.height - 550 * scale) / 2, 0), Quaternion.identity, Vector3.one * scale);
 
-            if (!IsWorldPhase(morning.Phase)) Fill(new Rect(0, 0, 860, 550), Cream);
+            if (IsWorldPhase(morning.Phase)) DrawWorldLabels();
+            else Fill(new Rect(0, 0, 860, 550), Cream);
             Fill(new Rect(0, 0, 860, 94), Ink);
             GUI.Label(new Rect(26, 12, 790, 40), Heading(), title);
             GUI.Label(new Rect(29, 53, 800, 30), $"Ngày {morning.Day} · {Hint()}", line);
@@ -120,7 +122,9 @@ namespace ChoDoLa.Morning
                 GUI.Label(new Rect(27, 458, 804, 45), feedback, darkLine);
             }
             if (morning.IsSpicy && Time.unscaledTime < effectUntil) DrawSpiceBorder();
-            shake = GUI.Toggle(new Rect(28, 512, 230, 24), shake, "Rung nhẹ khi ăn cay", darkLine);
+            if (!IsWorldPhase(morning.Phase))
+                shake = GUI.Toggle(new Rect(28, 512, 230, 24), shake, "Rung nhẹ khi ăn cay", darkLine);
+            HandleWorldClick(guiPointer);
             GUI.matrix = previous;
         }
 
