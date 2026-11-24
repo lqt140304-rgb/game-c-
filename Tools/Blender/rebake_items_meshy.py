@@ -32,35 +32,51 @@ MIN_COVER = 0.40
 TINY_ISLAND_PX = 6.0  # texel o texture goc (2048/4096)
 BAKE_MARGIN = 32
 
-# Vet ve san trong texture goc cua Meshy (nguyen nhan 4), de bi hieu nham la loi hien vat.
-# Chon mat theo huong phap tuyen + do cao, to lai bang mau nen tron,
-# giu cac texel `keep` (vd. vien vang). Sau do dung lai phan dem quanh dao.
+# Loi ve san trong texture goc cua Meshy (nguyen nhan 4), de bi hieu nham la loi hien vat.
+# Doi chieu voi anh tham chieu Assets/_Project/Art/Source/ref_*.png roi to lai theo tung buoc:
+#   flat: cac mat chon theo phap tuyen + do cao -> mot mau nen tron;
+#   hue : moi texel co sac do (chroma > 12) va goc hue trong [h0, h1] -> keo ve mau nen
+#         (texel trang/xam, va mau dung hue cua mon, giu nguyen).
+# Mau nen = trung vi cac texel cua mon thoa `base`. Sau do dung lai phan dem quanh dao.
 REPAINT = {
-    # L10 mu do: day mu (mat phang ngua xuong) co hinh xoay xanh xam vo nghia -> do tron, giu vien vang
-    "L10_mu_do_chu_m": dict(normal_z=-0.7, max_z=0.01,
-                            base=lambda lab: lab[:, 1] > 32,
-                            keep=lambda lab: (lab[:, 2] > 38) & (lab[:, 1] < 18) & (lab[:, 0] > 55)),
+    # L10 mu do (ref_huyen_thoai_chu_de_1.png: mu do tron, chi co huy hieu trang chu M).
+    # Meshy ve hinh xoay xanh xam o day mu, mang vang/nau o hong mu, vien vang va vet xanh la
+    # duoi luoi trai -> day do tron, moi sac vang/nau/xanh keo ve do than mu.
+    "L10_mu_do_chu_m": dict(
+        base=lambda lab: (lab[:, 1] > 40) & (lab[:, 0] > 30),
+        steps=[dict(mode="flat", normal_z=-0.7, max_z=0.01),
+               dict(mode="hue", h0=36, h1=300, ramp=6)]),
 }
 
 
 def repaint(name, P, T, UV, img):
     cfg = REPAINT[name]
+    h, w = img.shape[:2]
+    flat = img.reshape(-1, 3)
+    allm = uv_mask(UV, h, w)
+    own = np.where(allm.ravel())[0]
+    lab_all = srgb_to_lab(flat[own])
+    base_lab = np.median(lab_all[cfg["base"](lab_all)], 0)
     N = np.cross(P[T][:, 1] - P[T][:, 0], P[T][:, 2] - P[T][:, 0])
     N /= np.linalg.norm(N, axis=1, keepdims=True) + 1e-12
-    sel = (N[:, 2] < cfg["normal_z"]) & (P[T][:, :, 2].max(1) < cfg["max_z"])
-    h, w = img.shape[:2]
-    m = uv_mask(UV[sel], h, w)
-    flat = img.reshape(-1, 3); idx = np.where(m.ravel())[0]
-    lab = srgb_to_lab(flat[idx])
-    keep = cfg["keep"](lab)
-    base_lab = np.median(lab[cfg["base"](lab) & ~keep], 0)
-    new = np.tile(base_lab, (len(idx), 1))
-    out = np.where(keep[:, None], flat[idx], lab_to_srgb(new))
-    flat[idx] = out
-    # dung lai phan dem (dilation) quanh tat ca cac dao tu noi dung moi
-    allm = uv_mask(UV, h, w)
+    count = 0
+    for st in cfg["steps"]:
+        if st["mode"] == "flat":
+            sel = (N[:, 2] < st["normal_z"]) & (P[T][:, :, 2].max(1) < st["max_z"])
+            idx = np.where(uv_mask(UV[sel], h, w).ravel())[0]
+            flat[idx] = lab_to_srgb(np.tile(base_lab, (len(idx), 1)))
+            count += int(sel.sum())
+        else:
+            lab = srgb_to_lab(flat[own])
+            chroma = np.hypot(lab[:, 1], lab[:, 2])
+            hue = np.degrees(np.arctan2(lab[:, 2], lab[:, 1])) % 360
+            wgt = np.clip((hue - st["h0"]) / st["ramp"], 0, 1) * np.clip((st["h1"] - hue) / st["ramp"], 0, 1)
+            wgt *= np.clip((chroma - 12) / 6, 0, 1)
+            new = lab * (1 - wgt[:, None]) + base_lab * wgt[:, None]
+            flat[own] = lab_to_srgb(new)
+            count += int((wgt > 0.5).sum())
     img[:] = dilate(img, allm, BAKE_MARGIN // 2)
-    return int(sel.sum())
+    return count
 
 
 def uv_islands(T, UV, weld, nb_edges):
@@ -264,7 +280,7 @@ def process(path, src_glb, report=None):
     strip = lambda r: {k: v for k, v in r.items() if not k.startswith("_") and not k.endswith("_idx")}
     rep = {"file": path.split("Items/LowPoly/")[-1], "src_tex": list(src.size),
            "pack_margin_px": round(margin_used * OUT), "uv_cover_pct": round(cover * 100, 1),
-           "repainted_faces": repainted, "fixed_uv_faces": fixed, "tiny_island_faces": len(tiny), "unfixed": unfixed, "outlier_kept": kept,
+           "repainted": repainted, "fixed_uv_faces": fixed, "tiny_island_faces": len(tiny), "unfixed": unfixed, "outlier_kept": kept,
            "before_src": strip(before), "after": strip(after),
            "fidelity_dE_p50": round(float(np.median(fid)), 2),
            "fidelity_dE_p99": round(float(np.percentile(fid, 99)), 2),

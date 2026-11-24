@@ -49,7 +49,7 @@ def audit(path, out=None):
     return res
 
 
-def render(path, out, mark=False, size=300, tiles_out=None):
+def render(path, out, mark=False, size=300, tiles_out=None, views=None):
     objs = load(path)
     sc = bpy.context.scene
     flagged = {}
@@ -101,7 +101,7 @@ def render(path, out, mark=False, size=300, tiles_out=None):
     from PIL import Image
     tiles = []
     tmp = out + ".tmp.png"
-    for az, el in VIEWS:
+    for az, el in (views or VIEWS):
         a, e = math.radians(az), math.radians(el)
         d = Vector((math.sin(a) * math.cos(e), -math.cos(a) * math.cos(e), math.sin(e)))
         cam.location = ctr + d * rad * 10
