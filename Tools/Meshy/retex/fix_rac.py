@@ -13,6 +13,39 @@ if code=="R25":   # mu giay bac: xoa dom moc xanh (lem tu banh bao), to mau bac
         g=px[:,1]-np.maximum(px[:,0],px[:,2])  # xanh la troi hon do va lam
         out=px.copy();bad=g>6;out[bad]=silver;print("pixels",bad.sum(),"silver",silver.round());return out
     tex=paint(tex,P,fix)
+def recolor_faces(faces,rgb,keep_dark=None):
+    """To mat chon bang mau rgb, giu sang toi theo do sang cu (de con nep nhan)."""
+    global tex
+    def f(px):
+        l=px.mean(1,keepdims=True)/255.;out=np.array(rgb)*(0.55+0.6*l)
+        if keep_dark is not None: out=np.where(l<keep_dark,px,out)
+        return out
+    tex=paint(tex,[P[i] for i in faces],f)
+def grey_bright(px,rgb,smax=0.25,vmin=0.5):
+    """Diem anh trang bac (it mau, sang) -> mau rgb, giu sang toi."""
+    a=px/255.;mx=a.max(1);s=(mx-a.min(1))/np.maximum(mx,1e-6);sel=(s<smax)&(mx>vmin)
+    out=px.copy();out[sel]=np.array(rgb)*(0.6+0.45*mx[sel,None]);print("pixels",sel.sum());return out
+def parts():
+    t=trimesh.Trimesh(m.vertices,m.faces,process=False);t.merge_vertices(merge_tex=True,merge_norm=True,digits_vertex=5)
+    return sorted(trimesh.graph.connected_components(t.face_adjacency,min_len=1),key=len,reverse=True)
+allf=range(len(P))
+if code=="R14":   # so lien lac: mep giay trang bac -> giay ngà
+    tex=paint(tex,P,lambda px:grey_bright(px,(225,215,190)))
+if code=="R16":   # goi om: vet bong trang bac -> vai kem
+    tex=paint(tex,P,lambda px:grey_bright(px,(225,215,195),0.3,0.4))
+if code=="R29":   # tay cam: than trang bac -> xam
+    tex=paint(tex,P,lambda px:grey_bright(px,(150,150,155),0.2,0.45))
+if code=="R32":   # bang doi truong: mat trong bac -> vang, giu chu C toi
+    tex=paint(tex,P,lambda px:grey_bright(px,(235,205,60),0.35,0.45))
+if code=="R26":   # tam pin: 2 bo day roi -> do va den
+    pp=parts()
+    recolor_faces(pp[1],(170,30,30));recolor_faces(pp[2],(35,35,38))
+if code=="R31":   # coi: day deo con doan trang -> do; than coi (da giac XZ) giu nguyen
+    c=m.triangles_center;lo=c.min(0);s=500/max(m.extents)
+    q=(c[:,[0,2]]-lo[[0,2]])*s+50
+    mk=Image.new("L",(600,600),0);ImageDraw.Draw(mk).polygon([(262,285),(440,45),(560,130),(410,380),(410,480),(300,480),(300,380)],fill=1)
+    mk=np.asarray(mk);inside=mk[np.clip(q[:,1].astype(int),0,599),np.clip(q[:,0].astype(int),0,599)]>0
+    recolor_faces(np.where(~inside)[0],(190,35,40))
 # Chinh mau tung mon: (do sang, do dam mau, tong mau RGB, tuong phan)
 TONE={
  "R27":(0.85,1.2,(1,1,1),1.1),        # the nho
@@ -31,12 +64,10 @@ TONE={
  "R49":(0.95,1.4,(1,1,1),1.1),        # hop bento
  "R50":(0.85,1.7,(1,1,1),1.1),        # o giay do
  # dot 3 (lam lai 13 mon + R26)
- "R13":(0.95,1.2,(1,0.97,0.9),1.1),   # que kem go
  "R14":(0.85,2.0,(0.88,0.95,1.1),1.15),# so lien lac: bia xanh dam hon
  "R15":(0.95,1.3,(1,1,1),1.1),        # vo bim bim
  "R16":(0.9,1.2,(1,0.96,0.86),1.1),   # goi om: trang ngả vang o
  "R17":(0.85,1.2,(1,0.94,0.82),1.1),  # poster: giay ngả vang
- "R20":(0.9,1.3,(1,0.93,0.8),1.1),    # mui go
  "R26":(0.85,1.3,(1,1,1),1.2),        # tam pin chay
  "R28":(0.9,1.0,(1,1,1),1.15),        # dia game
  "R29":(0.9,1.0,(1,1,1),1.15),        # tay cam xam

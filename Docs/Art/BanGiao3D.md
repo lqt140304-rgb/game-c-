@@ -366,20 +366,22 @@ Còn lại: xem danh sách làm lại; 7 Thường và 5 Hiếm mới chưa làm
 
 | Mã | Món | Rương | Tình trạng |
 |---|---|---|---|
-| R13 | Que kem đã liếm sạch | Tuổi thơ Việt Nam | Có; Meshy vẽ cây kem còn kem (có vết cắn), chưa "liếm sạch" |
-| R14 | Sổ liên lạc | Tuổi thơ Việt Nam | Có, bìa xanh nhàu, mất chữ ký |
+| R13 | Que kem đã liếm sạch | Tuổi thơ Việt Nam | Có; dựng lại bằng Blender (que gỗ trơn 11,4 cm, 2 vết cắn, vệt kem sót), 84 tam giác |
+| R14 | Sổ liên lạc | Tuổi thơ Việt Nam | Có, bìa xanh nhàu; mép giấy bạc đã tô ngà; chưa có chữ ký |
 | R15 | Vỏ bim bim | Tuổi thơ Việt Nam | Có, nhàu, xé miệng, không nhãn hãng |
-| R16 | Gối ôm waifu bạc màu | Wibu | Có, dài 1 m, dẹt, ố màu, hình in mờ (không nhân vật thật) |
+| R16 | Gối ôm waifu bạc màu | Wibu | Có; Blender xoay thẳng, làm dày 1 m × 34 × 20 cm; vệt bóng bạc tô kem; hình in mờ (không nhân vật thật) |
 | R17 | Poster rách | Wibu | Có, hai ống cuộn |
-| R20 | Mũi Pinocchio gãy | Truyền thuyết Châu Âu | Có, que gãy đôi đầu hồng (gộp 2 mảnh), giống que diêm |
-| R26 | Mảnh vệ tinh cháy | Không gian | Có, tấm pin cong cháy mép, lòi dây (gộp 3 mảnh) |
+| R20 | Mũi Pinocchio gãy | Truyền thuyết Châu Âu | Có; dựng lại bằng Blender (mũi gỗ thuôn 8 cạnh, gãy đôi lởm chởm, chóp hồng), 218 tam giác |
+| R26 | Mảnh vệ tinh cháy | Không gian | Có, tấm pin cong cháy mép, lòi dây (gộp 3 mảnh); dây tô đỏ và đen |
 | R28 | Đĩa game lậu (hư) | Game | Có, đĩa nứt trong hộp vỡ, dẹt |
-| R29 | Tay cầm đứt dây | Game | Có, gộp dây đứt |
-| R30 | Vé bóng đá giả | Thể thao | Có, vo viên (gộp 4 mảnh), ~9,9 nghìn tam giác (nặng nhất đợt) |
-| R31 | Còi méo | Thể thao | Có, dây đỏ |
-| R32 | Băng đội trưởng giãn chun | Thể thao | Có, cuộn xoắn, chữ C |
+| R29 | Tay cầm đứt dây | Game | Có, gộp dây đứt; thân trắng bạc tô xám |
+| R30 | Vé bóng đá giả | Thể thao | Có, vo viên (gộp 4 mảnh); Blender giảm lưới 9,9 → 2,5 nghìn tam giác |
+| R31 | Còi méo | Thể thao | Có; đoạn dây trắng tô đỏ |
+| R32 | Băng đội trưởng giãn chun | Thể thao | Có, cuộn xoắn, chữ C; mặt trong bạc tô vàng |
 | R37 | Chuông gió | Phim kinh dị | Có, nằm, dây rối (gộp ống rời) |
 | R39 | Lọ cát | Ai Cập cổ đại | Có, lọ gốm nút bần |
+
+**Sửa sau kiểm tra (không tốn credit):** hình dáng sửa bằng Blender (`Tools/Meshy/blender/sua_rac.py <mã> vào.glb ra.glb`, cần `pip install bpy`): R13, R20 dựng mới; R16 xoay và làm dày; R30 giảm lưới. Màu sửa theo vùng trong `retex/fix_rac.py` (chọn điểm ảnh trắng bạc, theo mảnh rời hoặc theo vùng mặt bằng): R14, R16, R26, R29, R31, R32. Thứ tự: Blender trước, `fix_rac.py` sau. Đã rà màu cả 14 món: R15 mặt trong bạc là giấy bạc thật, R28 hộp xám bạc, R37 dây trắng mảnh, giữ nguyên.
 
 ## Danh sách làm lại
 

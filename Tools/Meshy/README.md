@@ -14,6 +14,8 @@ Món lỗi (mất, dính nhau, không nhận ra): **không làm lại riêng l�
 
 Mẹo: để mỗi món đứng riêng, không hộp, không ma-nơ-canh, không giá đỡ (dễ bị mất hoặc dính). Logo thật trong ảnh nguồn thì xóa (inpaint) trước khi dựng 3D. Kim tuyến, đồ trong suốt không giữ được.
 
+Lỗi hình dáng (món sai dáng, dẹt, nằm chéo, quá nhiều tam giác): sửa bằng Blender dạng module Python (`pip install bpy`), script `Tools/Meshy/blender/sua_rac.py` làm mẫu (dựng mới món đơn giản, xoay, co giãn, giảm lưới), không tốn credit. Chạy trước bước tô màu.
+
 Lỗi màu nhỏ (vệt, nhòe texture): tô lại tại chỗ bằng `Tools/Meshy/retex/` (`python3 fix_helm.py vao.glb ra.glb`, xem `fix_ball.py` làm mẫu), không tốn credit.
 
 ## Mẫu tải từ thư viện cộng đồng Meshy (không tốn credit dựng)
