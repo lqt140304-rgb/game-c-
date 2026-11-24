@@ -101,6 +101,12 @@ RULES = {
     "L22_ban_do_co": [
         dict(texels=lambda lab, p: lab[:, 0] > 45, act="tint", color=(204, 176, 128), keep=0.3),
     ],
+    # tuong Di Lac go: Meshy ve mang xanh duong lac o goc day de -> mau go cua tuong
+    "X07_tuong_di_lac_go": [
+        # lab[:, 2] (b*) < 8: moi texel it vang hon go (go nau: b* ~ 30; xanh duong: b* < 0), ke ca vien chuyen tiep
+        dict(texels=lambda lab, p: (lab[:, 2] < 12) & (lab[:, 0] < 70),
+             act="tint", color="auto", keep=0.3),
+    ],
     # qua cau ngoc (ref_rat_hiem.png): cam trong deu, 6 sao do chi o mat truoc, de go nau.
     # Meshy ve san mang cam sam loang (bong khuc xa), manh sao lac o dinh/mat sau, dia xam trong de.
     "X04_qua_cau_ngoc": [

@@ -85,7 +85,7 @@ Chạy từng file một (máy dễ hết bộ nhớ). Bản texture gốc 2048/
 ```
 git show cce9f69:<path> | git lfs smudge -- <path> > goc.glb
 python3 Tools/Blender/rebake_items_meshy.py <file.glb> goc.glb [bao_cao.json]
-python3 Tools/Blender/repaint_items_meshy.py <file.glb>        # chỉ 12 món có quy tắc tô lại
+python3 Tools/Blender/repaint_items_meshy.py <file.glb>        # chỉ 13 món có quy tắc tô lại
 python3 Tools/Blender/audit_color_bleed.py audit <file.glb>
 python3 Tools/Blender/audit_color_bleed.py compare <truoc.glb> <sau.glb> <anh.jpg>
 ```
@@ -113,6 +113,7 @@ python3 Tools/Blender/audit_color_bleed.py compare <truoc.glb> <sau.glb> <anh.jp
 | L19 găng tay | Phủ kim sa bạc (lưới lục giác); vật liệu metallic 0,6, roughness 0,25 |
 | L20 băng video | Viền cạnh xung quanh đen, bỏ mảng hồng/nâu; giữ nhãn trắng, cửa sổ |
 | L22 bản đồ | Bỏ mảng trắng, giấy da đều màu, giữ nét mực |
+| X07 tượng Di Lặc (mô hình mới) | Mảng xanh dương lạc ở góc đáy đế thành màu gỗ |
 | X04 quả cầu ngọc | Cam đều, bỏ mảng cam sẫm loang (bóng khúc xạ vẽ sẵn) và vệt gỗ vẽ lên mặt cầu; chỉ giữ 6 sao ở mặt trước; đế (kể cả đĩa xám xanh trong lòng) gỗ nâu. Cầu và đế dính chung một lưới nên tách theo từng texel: trong 1,025 bán kính hoặc nửa trên là cầu; mép đế ôm đáy cầu nhận theo màu gỗ gốc |
 
 - `audit_color_bleed.py` và `color_bleed_lib.py`: **kiểm tra tự động.** Mỗi tam giác lấy 7 mẫu màu texture trong vùng UV của nó (Lab):
@@ -209,3 +210,21 @@ Bảng chi tiết từng món (khoảng đệm, tỷ lệ phủ texture, số m�
 Ảnh trước và sau từng món: `KiemTra3D/loang_mau/<tên>.jpg`. Hàng trên là bản trước (atlas 1024 chung), hàng dưới là bản sau; ô cuối phóng to vùng khác nhau nhiều nhất. Với các món tô lại bằng `repaint_items_meshy.py` (11 món Legendary và X04), hàng trên là bản gốc trước mọi lần sửa.
 
 **Trong Unity:** mỗi món giờ có texture riêng và các mảnh UV đã có phần đệm, nên để mipmap bật như mặc định. Không cần gộp material dùng chung atlas như gợi ý cũ ở mục "Lỗi cần sửa" số 2.
+
+## Mô hình mới thêm sau PR #10 (2026-11-24)
+
+Nhánh `claude/compassionate-gauss-76kxfz` (phiên khác) thêm 136 mô hình LowPoly mới: V13–V47, R10–R50, H06–H40, L23–L24, X07–X30. Chúng được gộp vào cùng nhánh với bản sửa loang màu, và tô lại đệm giày thủy tinh L03 ở nhánh đó được giữ lại. Cùng quy trình như trên.
+
+**Đo trước khi sửa:** mỗi file nhúng nguyên một atlas 2048 dùng chung (5–6 MB), mỗi món chỉ dùng trung vị khoảng 5% diện tích. 119/136 món có mặt loang ở mip0, tổng 14,353 mặt loang ở mip2: cùng nguyên nhân 1 ở trên.
+
+**Đã làm:**
+- Bake lại texture 1024 riêng cho 128 món dùng atlas (127 món 2048 cộng L03). Dung lượng 741 MB → 60 MB. Loang mip0 921 → 527, mip1 2,191 → 532, mip2 14,353 → 540. Hình học không đổi (đối chiếu từng tam giác, pháp tuyến lệch 0,0000–0,0005).
+- **L03:** bản ở nhánh kia là bản thô (atlas 4096, 38 MB, chưa hàn khe và trám lỗ). Chạy lại cả chuỗi `fix_lowpoly_meshy.py` → `fill_holes_meshy.py` hai lượt → `rebake_items_meshy.py` trên bản có đệm đã tô: 38 MB → 0,7 MB, cạnh hở 25 → 0.
+- **X07 tượng Di Lặc:** tô lại mảng xanh dương lạc ở góc đáy đế (`repaint_items_meshy.py`).
+- **Không bake:** V47 (màu phẳng, không có texture) và 8 món có texture nhỏ riêng không dùng atlas chung, bleed bằng 0: H37, H38, H39, R13, R30, V42, V44, R16 (R16 còn 6,7 MB vì texture 3072×2048 tự vẽ chữ in, bake xuống 1024 sẽ làm nhòe).
+
+**Soát bằng mắt cả 128 món so với tên và thiết kế:** ngoài X07 không thấy mảng sai màu lớn kiểu L10. Còn lại là chi tiết chủ ý hoặc lỗi hình thể, không phải màu: vết cháy R23, R24, R26; vết bẩn R18; sợi dây xanh dưới máy ảnh H10 (dây đeo); mũ trắng ở đầu hạt đậu V21; viền cam mờ quanh thân guitar X20 (hình dạng mô hình). Chữ ở mặt sau R11 và R12 bị lật là do texture gốc.
+
+**Chưa xử lý (ngoài phạm vi loang màu):** hình học của các mô hình mới chưa qua `fix_lowpoly_meshy.py` và `fill_holes_meshy.py` như 60 món trước (lỗ hở, pháp tuyến). Năm món vượt ngân sách 10.000 tam giác: R34 18.367, X20 14.661, V15 11.595, H32 11.352, X13 10.433.
+
+Ảnh trước/sau từng món ở `KiemTra3D/loang_mau/<tên>.jpg`.
