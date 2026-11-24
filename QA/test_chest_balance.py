@@ -35,10 +35,16 @@ class ChestRules(unittest.TestCase):
 
     def test_junk_order(self):
         r = {n: ch["tiers"]["R"] for n, ch in CS.FINAL_CHESTS.items()}
-        # ruong-suu-tap: Gỗ ít, Vải Niêm vừa, Kim Khí vài món, Đen nhiều nhất
+        # Bảng chủ dự án duyệt 2026-11-24: rác Vải Niêm 30% (cao nhất), Đen 25%, Gỗ ít, Kim Khí vài món.
+        # Lệch với "Đen nhiều nhất" của ruong-suu-tap: câu hỏi mở trong Sprint5Ruong.md.
+        self.assertEqual(r, {"Gỗ": .18, "Vải Niêm": .30, "Kim Khí": .10, "Đen": .25})
         self.assertLess(r["Gỗ"], r["Vải Niêm"])
-        self.assertEqual(max(r, key=r.get), "Đen")
         self.assertLessEqual(r["Kim Khí"], r["Gỗ"])
+
+    def test_wood_has_small_very_rare(self):
+        """Chủ dự án: Gỗ có tỉ lệ nhỏ Rất hiếm; Đen giữ 12.000.000 đ (price=1200)."""
+        self.assertTrue(0 < CS.FINAL_CHESTS["Gỗ"]["tiers"]["X"] <= .02)
+        self.assertEqual(CS.FINAL_CHESTS["Đen"]["price"], 1200)
 
     def test_spec_start_table_is_a_trap(self):
         """Bảng khởi đầu của spec: Kim Khí chỉ ra tạo tác và Đen đều lỗ kỳ vọng."""

@@ -58,10 +58,11 @@ CHESTS = {  # tên rương -> mô tả. tiers = tỉ lệ bậc (R,T,H,X,L). poo
                 pools=dict(T=["N08", "N09"], H=["N10", "N11"], X=["N12"], L=["N15"])),
 }
 DEFAULT = dict(chests=CHESTS, slots=4, dup_frac=.5, art_value=1.0, script=True, rd_from_day=4, amp=.20)
-# Bảng ĐỀ XUẤT cuối của phần 1 (Claude 2, Docs/Balance/Sprint5Ruong.md). Chưa chốt: chờ chủ dự án duyệt.
+# Bảng 4 rương cơ bản CHỦ DỰ ÁN ĐÃ DUYỆT 2026-11-24 (Docs/Balance/Sprint5Ruong.md): Đen giữ 12.000.000 đ,
+# Gỗ có thêm Rất hiếm nhỏ rồi cân bằng lại, rác Vải Niêm lên 30%.
 FINAL_CHESTS = {
-    "Gỗ": dict(price=140, fake=.10, ntrue=2, tiers=dict(R=.15, T=.83, H=.015, X=0, L=.005), pools=CHESTS["Gỗ"]["pools"]),
-    "Vải Niêm": dict(price=350, fake=.15, ntrue=2, tiers=dict(R=.22, T=.49, H=.23, X=.05, L=.01), pools=CHESTS["Vải Niêm"]["pools"]),
+    "Gỗ": dict(price=140, fake=.10, ntrue=2, tiers=dict(R=.18, T=.795, H=.01, X=.01, L=.005), pools=CHESTS["Gỗ"]["pools"]),
+    "Vải Niêm": dict(price=350, fake=.15, ntrue=2, tiers=dict(R=.30, T=.39, H=.25, X=.05, L=.01), pools=CHESTS["Vải Niêm"]["pools"]),
     "Kim Khí": dict(price=450, fake=0.0, ntrue=1, tiers=dict(R=.10, T=.25, H=.22, X=.08, L=.01), art_mix=(.60, .35, .05),
                     pools=CHESTS["Kim Khí"]["pools"]),   # 34% còn lại là tạo tác
     "Đen": dict(price=1200, fake=.30, ntrue=1, tiers=dict(R=.25, T=.05, H=.10, X=.55, L=.05), pools=CHESTS["Đen"]["pools"]),
