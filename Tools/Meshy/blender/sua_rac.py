@@ -5,6 +5,7 @@
 #  R20 mui Pinocchio: dung lai mui go thuon nhon gay doi, mat gay lom chom, dau hong (ban Meshy giong que diem).
 #  R16 goi om: xoay thang theo truc dai, lam day (ban Meshy det, nam cheo).
 #  R30 ve vo vien: giam luoi con ~1/4 (ban Meshy ~9,9 nghin tam giac).
+#  V45 tuong nhan su (Thuong): giam luoi con ~6 nghin tam giac.
 import sys, math, random, bpy, bmesh, numpy as np
 from mathutils import Vector, Matrix
 
@@ -186,9 +187,9 @@ else:
         co = np.array([v.co[:] for v in ob.data.vertices])
         ext = co.max(0) - co.min(0)
         ob.data.transform(Matrix.Diagonal((1.0 / ext[0], 0.34 / ext[1], 0.20 / ext[2], 1)))  # 1 m x 34 cm x 20 cm
-    elif code == "R30":
+    elif code in ("R30", "V45"):  # V45 nhan su: Meshy dung ca anh thanh 1 mon (~28 nghin tam giac)
         m = ob.modifiers.new("giam", "DECIMATE")
-        m.ratio = 0.25
+        m.ratio = {"R30": 0.25, "V45": 0.21}[code]
         bpy.ops.object.modifier_apply(modifier="giam")
     ob.data.update()
 

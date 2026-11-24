@@ -399,7 +399,7 @@ Cứu không tốn credit:
 | V42 | Sổ hộ khẩu giấy | Việt Nam | Có (Meshy), bìa đỏ nâu trơn, mở hé |
 | V43 | Tay cầm game kiểu cũ | Game | Có (Meshy), dây cuộn gọn; đã tô xám |
 | V44 | Lightstick | Âm nhạc | Có (Blender), đầu tròn hồng phát sáng nhẹ, cán xám có gân |
-| V45 | Tượng nhân sư bằng đá | Ai Cập cổ đại | Có (Meshy, tách khỏi cán lightstick) |
+| V45 | Tượng nhân sư bằng đá | Ai Cập cổ đại | Có (làm lại 2026-11-24: Meshy, đủ thân, có đế, giảm lưới còn 6 nghìn tam giác) |
 | V46 | Đũa đỏ đầu mạ vàng | Trung Hoa cổ | Có (Meshy, chiếc thẳng nhân đôi thành đôi) |
 | V47 | Hộp bento sơn mài | Nhật Bản cổ | Có (Blender), 2 tầng đen, viền đỏ, huy hiệu vàng |
 | V48 | Ô giấy dầu | Nhật Bản cổ | Có (tán Meshy + cán tre Blender), nằm nghiêng, dài 85 cm |
@@ -410,6 +410,19 @@ Cứu không tốn credit:
 | H40 | Chân gỗ thuyền trưởng | Hải tặc | Có (Meshy, tách chiếc đũa xuyên qua), vòng đồng, dây da |
 
 Món Blender có ít tam giác (150–220) và màu phẳng hơn món Meshy; nếu lệch phong cách khi đặt cạnh nhau trong Unity thì gom vào danh sách làm lại.
+
+### Rà soát của chủ dự án (2026-11-24)
+
+Làm lại bằng Meshy ở phiên này: 1 ảnh gộp 8 ô (nhân sư ×3, mũ ×3, gối ôm ×2; `Art/Source/ref_lam_lai_2.png`), tô nền đè 3 ô mũ (chủ dự án quyết R10 giữ bản cũ), dựng 3D. **Meshy coi cả ảnh là một vật**: chỉ dựng 1 con nhân sư (đẹp, đủ thân), mất 2 gối ôm. Có lẽ do các ô chỉ còn 5 món thưa, cùng tông nền, nên Meshy chọn một vật nổi bật. Thêm một lần tạo ảnh bị dừng giữa chừng vẫn tính 9 credit. Tổng 48 credit, số dư còn 369. V45 đã thay (`render_V45_lam_lai.png`).
+
+Chuyển sang phiên sửa (không tốn credit):
+- R16 Gối ôm: in hình cô gái anime (ảnh mẫu `Art/Source/ref_goi_om_anime.png`, nhân vật tự nghĩ) lên mặt trên của gối hiện có.
+- R20 Mũi Pinocchio: bỏ (xóa file, bỏ khỏi spec và bảng mã).
+- R30 Vé bóng đá giả: làm lại thành một tấm vé phẳng có chữ và dấu "FAKE" (Blender).
+- V42 Sổ hộ khẩu: giống sổ Việt Nam hơn, bìa có chữ "SỔ HỘ KHẨU".
+- V43 Tay cầm: tô dây cùng màu thân, xóa chỗ lem.
+- V46 Đũa, H40 Chân gỗ: tô lại màu.
+- V48 Ô giấy dầu: làm sạch mảnh thừa ngay dưới tán.
 
 ## Danh sách làm lại
 
