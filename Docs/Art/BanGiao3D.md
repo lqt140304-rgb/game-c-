@@ -147,7 +147,7 @@ Lưu ý: tất thối và trứng thối có vạch mùi xanh nổi trên đầu
 
 **Gậy sắt làng Gióng** (`L06`): theo truyền thuyết là gậy sắt thẳng và cứng, nên mô hình để dáng thẳng, không xương, không chuyển động. Công cụ `Tools/Blender/rig_whip.py` (gắn xương và sóng uốn cho vật thẳng) và video thử `Art/Source/roi_sat_uon_luon.mp4` chỉ giữ để tham khảo, không dùng cho món này.
 
-Lưu ý: Meshy không giữ vật trong suốt, nên trái tim robot (X05) không có chuông kính. Đệm giày thủy tinh (L03) có một vệt đỏ do texture.
+Lưu ý: Meshy không giữ vật trong suốt, nên trái tim robot (X05) không có chuông kính. Đệm giày thủy tinh (L03) từng có vệt đỏ do texture, đã tô lại xanh bằng `Tools/Meshy/retex/fix_shoe.py` (ảnh kiểm tra `Art/Source/render_L03_to_lai.png`).
 
 ## Huyền thoại theo rương (đợt 2026-11-24, low-poly)
 
