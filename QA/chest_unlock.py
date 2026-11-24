@@ -250,6 +250,42 @@ def bot_mix(content, n, strat="thận trọng"):
     return {CS.STATE["name"][k]: round(100 * v / tot, 1) for k, v in mix.items()}
 
 
+HUNT_SET = {"CP": ("CP1", "CP2"), "TC": ("TC1", "TC2")}
+
+
+def hunt_strategy(name, bold=False):
+    """Người chơi giỏi 'săn hệ': ngày 1 đến 5, chưa đủ cặp combo của hệ (CB1 hoặc CB2) thì ưu tiên mua rương hệ `name`,
+    rồi chơi như người chơi giỏi (chọn rương theo lời kỳ vọng, đọc manh mối, giám định)."""
+    def strat(run):
+        g = run.g
+        k = CS.STATE["key"].get(name)
+        need = HUNT_SET[CS.STATE["design"]["chests"][name]["art_sys"]] if k else ()
+        while k and g.day <= 5 and g.day >= FROM.get(k, 1) and g.bought_today < 3 and not all(a in run.owned for a in need):
+            r = 0 if bold else P.reserve5(run)
+            if g.cash - run.c.box_price[k] < r:
+                break
+            it = run.buy_open(k)
+            if not it:
+                break
+            P.handle5(run, it, r, True)
+        ladder_turns(run, not bold, True)
+    return strat
+
+
+def measure_hunt(content, name, n):
+    old = dict(C.SKILL)
+    C.SKILL.update(lam=.75, tau=1.0, per_box=True)
+    try:
+        out = {}
+        for lbl, bold in (("săn hệ thận trọng", False), ("săn hệ liều", True)):
+            st = hunt_strategy(name, bold)
+            out[lbl] = round(100 * sum(P.play5(s, content, st).g.status == "won" for s in range(n)) / n, 1)
+        return out
+    finally:
+        C.SKILL.clear()
+        C.SKILL.update(old)
+
+
 def evaluate(sc, n=1000, with_mix=True):
     c = apply(sc)
     C.setup_done = True
@@ -259,6 +295,9 @@ def evaluate(sc, n=1000, with_mix=True):
         out["bot"] = {k: v["win"] for k, v in lad.items()}
         sk = C.measure_turns(c, n, lam=.75, tau=1.0)
         out["skilled"] = {k.replace(" + giám định", ""): v for k, v in sk.items() if not k.endswith("[mua]")}
+        for name, ch in sc["extra"].items():
+            if ch.get("art_sys"):
+                out.setdefault("hunt", {}).update({"%s %s" % (k, name): v for k, v in measure_hunt(c, name, n).items()})
         if with_mix:
             out["mix"] = mix_of(c, min(n, 600))
             out["mix_lieu"] = mix_of(c, min(n, 600), "liều + giám định")
