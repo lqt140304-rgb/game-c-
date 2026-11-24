@@ -1,4 +1,4 @@
-"""Rương Game (bản tạm): rương hình nấm đỏ chấm trắng, mũ nấm là nắp. Dựng hoàn toàn bằng bpy.
+"""Rương Game (bản tạm): tay cầm game khổng lồ dựng nghiêng trên chân đế, nửa vỏ trên là nắp. Dựng hoàn toàn bằng bpy.
 
 Chạy:  python make_chest_game.py -- <thư mục ra>                (xuất Chest_Game.glb)
        python make_chest_game.py -- <thư mục ra> --render <png> [samples]   (thêm ảnh xem trước Cycles)
@@ -18,9 +18,11 @@ R90 = math.radians(90)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 
 PALETTE = {  # sRGB
+    "shell": (0.62, 0.62, 0.64), "shell_lt": (0.78, 0.77, 0.76), "shell_dk": (0.28, 0.29, 0.31),
+    "btn_r": (0.72, 0.22, 0.18), "btn_y": (0.85, 0.70, 0.25), "btn_b": (0.25, 0.42, 0.65),
     "stem": (0.86, 0.80, 0.68), "stem_dk": (0.70, 0.63, 0.52), "cap": (0.72, 0.18, 0.14), "cap_dk": (0.50, 0.12, 0.10),
     "spot": (0.93, 0.90, 0.84), "gill": (0.62, 0.52, 0.42), "eye": (0.08, 0.07, 0.07), "cheek": (0.85, 0.50, 0.45),
-    "cart": (0.42, 0.43, 0.45), "cart_lbl": (0.82, 0.74, 0.42), "slot": (0.12, 0.11, 0.11), "btn": (0.30, 0.55, 0.40),
+    "cart": (0.42, 0.43, 0.45), "cart_lbl": (0.82, 0.74, 0.42), "slot": (0.12, 0.11, 0.11), "btn_g": (0.30, 0.55, 0.40),
     "grass": (0.30, 0.42, 0.24), "interior": (0.07, 0.055, 0.045), "glow": (1.0, 0.82, 0.45),
 }
 _mats = {}
@@ -86,58 +88,84 @@ def dome(radius, zscale, loc, material, seg=16, rings=8):
 
 
 # ------------------------------------------------------------------ build
-H = 0.20                    # height of the stem rim (the mouth)
-CAP_R, CAP_Z = 0.23, 0.62   # cap radius and vertical squash
+# The controller is modelled lying flat (face up, grips towards -Y, seam at z = SEAM, hinge on the back edge),
+# then every layer is tilted by TILT about X (back edge up) and lifted onto a kickstand.
+import bmesh
+from mathutils import Matrix
+SEAM, TOP, TILT = 0.05, 0.095, math.radians(52)
 parts = {"Body": [], "Lid": [], "Seal": [], "Binding": [], "Glow": []}
 add = lambda layer, o: parts[layer].append(o)
 
-# Body: a slightly bulging stem on a grassy tuft
-add("Body", cone(0.17, 0.17, 0.025, (0, 0, 0.0125), "grass", verts=10))
-for i in range(10):                                                   # tufts of grass
-    a = i * math.tau / 10 + 0.2
-    add("Body", cone(0.025, 0.0, 0.05, (math.cos(a) * 0.16, math.sin(a) * 0.16, 0.045), "grass", verts=4))
-add("Body", cone(0.13, 0.145, 0.10, (0, 0, 0.075), "stem", verts=16))
-add("Body", cone(0.145, 0.125, 0.075, (0, 0, 0.1625), "stem", verts=16))
-add("Body", cone(0.133, 0.133, 0.008, (0, 0, H - 0.004), "stem_dk", verts=16))   # rim
-add("Body", cone(0.118, 0.118, 0.004, (0, 0, H - 0.001), "interior", verts=16))  # dark mouth
-# face on the front (-Y)
-for sx in (-1, 1):
-    add("Body", ico(0.016, (sx * 0.045, -0.140, 0.120), "eye", scale=(0.7, 0.5, 1.4)))
-    add("Body", ico(0.016, (sx * 0.078, -0.128, 0.095), "cheek", scale=(1.2, 0.4, 0.7)))
-add("Body", box((0.03, 0.01, 0.006), (0, -0.142, 0.088), "eye"))     # small smile
-# cartridge slot on the front, below the face
-add("Body", box((0.09, 0.02, 0.016), (0, -0.138, 0.045), "slot"))
-# D-pad and buttons on the side (left) and right
-add("Body", box((0.012, 0.045, 0.014), (-0.142, 0, 0.13), "slot"))
-add("Body", box((0.012, 0.014, 0.045), (-0.142, 0, 0.13), "slot"))
-for dy, dz in ((-0.018, 0.12), (0.018, 0.14)):
-    add("Body", cone(0.012, 0.012, 0.012, (0.142, dy, dz), "btn", verts=8, rot=(0, R90, 0)))
 
-# Lid: the cap with spots and gills underneath
-add("Lid", dome(CAP_R, CAP_Z, (0, 0, H + 0.004), "cap"))
-add("Lid", cone(CAP_R - 0.004, 0.13, 0.014, (0, 0, H + 0.004 - 0.007), "gill", verts=16))
-spots = [(0.0, 0.0, 0.055), (35, 50, 0.04), (110, 48, 0.034), (190, 52, 0.045), (260, 46, 0.03), (320, 60, 0.032),
-         (70, 72, 0.026), (150, 75, 0.024), (235, 74, 0.028)]
-for az, pol, r in spots:  # azimuth (deg, 0 = +X), polar angle from top (deg)
-    a, p = math.radians(az - 90), math.radians(pol)    # -90 so the first ring spot sits towards the front
-    n = Vector((math.sin(p) * math.cos(a), math.sin(p) * math.sin(a), math.cos(p) / CAP_Z)).normalized()
-    pos = Vector((math.sin(p) * math.cos(a) * CAP_R, math.sin(p) * math.sin(a) * CAP_R, H + 0.004 + math.cos(p) * CAP_R * CAP_Z))
-    rot = n.to_track_quat("Z", "Y").to_euler()
-    add("Lid", ico(r, pos, "spot", scale=(1, 1, 0.22), rot=rot))
-add("Lid", cone(0.012, 0.016, 0.03, (0, -CAP_R + 0.01, H - 0.01), "cap_dk", verts=6))   # catch tab at the front
-hinge = (0, 0.133, H)
-for sx in (-1, 1):
-    add("Body", box((0.03, 0.02, 0.02), (sx * 0.035, 0.138, H - 0.008), "cap_dk"))     # hinge knuckles
+def outline():
+    """Top view of the pad: rounded centre plate (+ two grips added separately)."""
+    pts, w, d, r = [], 0.17, 0.095, 0.05
+    for cx, cy, a0 in ((w - r, d - r, 0), (-w + r, d - r, 90), (-w + r, -d + r, 180), (w - r, -d + r, 270)):
+        for i in range(5):
+            a = math.radians(a0 + i * 22.5)
+            pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+    return pts
 
-# Binding: a game cartridge plugged in the slot (pops out when unsealing)
-add("Binding", box((0.08, 0.02, 0.07), (0, -0.140, 0.075), "cart"))
-add("Binding", box((0.06, 0.004, 0.035), (0, -0.151, 0.082), "cart_lbl"))
-add("Binding", box((0.08, 0.02, 0.008), (0, -0.140, 0.114), "cart"))
-# Seal: round sticker with a green "A" button bridging cap tab and stem
-add("Seal", cone(0.024, 0.024, 0.006, (0, -0.150, H - 0.014), "spot", verts=10, rot=(R90, 0, 0)))
-add("Seal", cone(0.015, 0.015, 0.006, (0, -0.154, H - 0.014), "btn", verts=8, rot=(R90, 0, 0)))
-# Glow
-add("Glow", ico(0.07, (0, 0, H), "glow", scale=(1, 1, 0.5)))
+
+def prism(pts, z0, z1, material):
+    me = bpy.data.meshes.new("p"); bm = bmesh.new()
+    f = bm.faces.new([bm.verts.new((x, y, z0)) for x, y in pts])
+    bmesh.ops.reverse_faces(bm, faces=[f])
+    ext = bmesh.ops.extrude_face_region(bm, geom=[f])
+    bmesh.ops.translate(bm, vec=(0, 0, z1 - z0), verts=[v for v in ext["geom"] if isinstance(v, bmesh.types.BMVert)])
+    bm.to_mesh(me); bm.free()
+    o = bpy.data.objects.new("p", me); bpy.context.scene.collection.objects.link(o)
+    return finish(o, material)
+
+
+def shell(z0, z1, material, inset_z):
+    out = [prism(outline(), z0, z1, material)]
+    for sx in (-1, 1):  # grips: squashed 10-sided cylinders angled outwards
+        out.append(cone(0.075, 0.075, z1 - z0, (sx * 0.15, -0.09, (z0 + z1) / 2), material, verts=10))
+        o = out[-1]; o.data.transform(Matrix.Translation((sx * 0.15, -0.09, 0)) @ Matrix.Rotation(sx * 0.35, 4, "Z")
+                                      @ Matrix.Scale(1.35, 4, (0, 1, 0)) @ Matrix.Translation((-sx * 0.15, 0.09, 0)))
+    out.append(prism([(x * 0.86, y * 0.8) for x, y in outline()], inset_z - 0.002, inset_z + 0.002, "interior"))
+    return out
+
+
+for o in shell(0.0, SEAM, "shell", SEAM): add("Body", o)
+for o in shell(SEAM, TOP, "shell_lt", SEAM): add("Lid", o)
+# face of the lid: D-pad, four face buttons, start/select, two sticks
+add("Lid", box((0.075, 0.024, 0.014), (-0.14, -0.005, TOP + 0.007), "slot"))
+add("Lid", box((0.024, 0.075, 0.014), (-0.14, -0.005, TOP + 0.007), "slot"))
+for (dx, dy), m in zip(((0, 0.032), (0.032, 0), (0, -0.032), (-0.032, 0)), ("btn_y", "btn_r", "btn_g", "btn_b")):
+    add("Lid", cone(0.016, 0.014, 0.016, (0.14 + dx, -0.005 + dy, TOP + 0.008), m, verts=8))
+for sx in (-1, 1):
+    add("Lid", box((0.03, 0.011, 0.008), (sx * 0.03, 0.035, TOP + 0.004), "slot", rot=(0, 0, sx * 0.3)))
+    add("Lid", cone(0.03, 0.026, 0.012, (sx * 0.065, -0.075, TOP + 0.006), "slot", verts=10))
+    add("Lid", cone(0.022, 0.024, 0.022, (sx * 0.065, -0.075, TOP + 0.022), "shell_dk", verts=10))
+add("Lid", cone(0.012, 0.012, 0.004, (0, -0.02, TOP + 0.002), "btn_r", verts=8))         # home light
+# body: shoulder bumpers, cable port, hinge knuckles at the back edge
+for sx in (-1, 1):
+    add("Body", box((0.09, 0.03, 0.035), (sx * 0.11, 0.098, SEAM - 0.02), "shell_dk", rot=(0, 0, -sx * 0.12)))
+add("Body", box((0.05, 0.02, 0.02), (0, 0.1, SEAM - 0.015), "slot"))
+hinge = Vector((0, 0.095, SEAM))
+# Binding: a clasp across the front seam; Seal: round sticker on it
+add("Binding", box((0.05, 0.02, 0.06), (0, -0.1, SEAM), "shell_dk"))
+add("Seal", cone(0.022, 0.022, 0.006, (0, -0.112, SEAM), "spot", verts=10, rot=(R90, 0, 0)))
+add("Seal", box((0.022, 0.004, 0.008), (0, -0.116, SEAM), "btn_r"))
+add("Glow", ico(0.08, (0, 0, SEAM + 0.01), "glow", scale=(1.6, 0.9, 0.35)))
+
+# tilt everything, then sit it on the floor with a kickstand under the raised back
+M = Matrix.Rotation(TILT, 4, "X")
+for objs in parts.values():
+    for o in objs: o.data.transform(M)
+lift = -min((v.co.z for objs in parts.values() for o in objs for v in o.data.vertices)) + 0.025
+T = Matrix.Translation((0, 0.03, lift))
+for objs in parts.values():
+    for o in objs: o.data.transform(T)
+hinge = T @ M @ hinge
+add("Body", cone(0.2, 0.19, 0.025, (0, 0.03, 0.0125), "shell_dk", verts=12))               # round base
+for sx in (-1, 1):                                                                         # kickstand struts
+    top = T @ M @ Vector((sx * 0.1, 0.04, 0.005))
+    bot = Vector((sx * 0.1, 0.03 + 0.12, 0.02))
+    mid, v = (top + bot) / 2, top - bot
+    add("Body", box((0.03, 0.025, v.length), mid, "shell_dk", rot=v.to_track_quat("Z", "Y").to_euler()))
 
 
 def join(objs):
@@ -202,7 +230,7 @@ if RENDER:
         o.rotation_euler = (Vector((0, 0, 0.2)) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
     light((-0.8, -1.0, 1.4), 140, 1.2, (1, .93, .85)); light((1.0, 0.6, 1.0), 40, 1.5, (.7, .8, 1)); light((0, 0.9, 1.2), 30, 1.0)
     pt = bpy.data.lights.new("in", "POINT"); pt.color = (1, .8, .45); pt.shadow_soft_size = 0.03
-    po = bpy.data.objects.new("in", pt); sc.collection.objects.link(po); po.location = (0, 0, H + 0.04)
+    po = bpy.data.objects.new("in", pt); sc.collection.objects.link(po); po.location = hinge + Vector((0, -0.12, 0.08))
     cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam")); sc.collection.objects.link(cam); sc.camera = cam
     cam.data.lens = 50
     glow, lid, gs0 = L["Glow"], L["Lid"], tuple(L["Glow"].scale)
@@ -213,7 +241,7 @@ if RENDER:
         lid.rotation_euler = (math.radians(-lid_deg), 0, 0)   # negative X turns the front of the cap up and back
         glow.scale = tuple(s * max(1e-4, glw) for s in gs0); glow.hide_render = glw < 0.01
         pt.energy = 4 * glw
-        a = math.radians(az); tgt = Vector((0, 0, 0.18))
+        a = math.radians(az); tgt = Vector((0, 0, 0.16))
         cam.location = tgt + Vector((math.sin(a) * dist, -math.cos(a) * dist, elev * dist))
         cam.rotation_euler = (tgt - cam.location).to_track_quat("-Z", "Y").to_euler()
         floor.hide_render = silhouette; sc.render.film_transparent = silhouette
@@ -226,7 +254,7 @@ if RENDER:
 
     shot("closed", 0, 0, 28)
     shot("ajar", 25, 0.5, 28)
-    shot("open", 100, 1.0, 28)
+    shot("open", 85, 1.0, 28)
     for i, az in enumerate((0, 90, 45)):
         shot(f"sil{i}", 0, 0, az, elev=0.05, dist=1.4, silhouette=True)
     sheet = Image.new("RGB", (640 * 3, 480 * 2))

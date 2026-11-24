@@ -193,9 +193,9 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 
 ## Rương Game (dựng bằng Blender, tạm)
 
-`Assets/_Project/Art/Chests/Chest_Game.glb`. Đây là bản thử tạm, **chưa gán ID hay chủ đề vào dữ liệu game**. Ý tưởng: [ruong-game](../../docs/superpowers/specs/2026-11-24-ruong-game-design.md). Rương hình **cây nấm đỏ chấm trắng** (nhại nấm trong game), cả mũ nấm là nắp. Thân màu kem có mặt cười, khe cắm băng game, nút D-pad và hai nút bấm, đứng trên một khóm cỏ.
+`Assets/_Project/Art/Chests/Chest_Game.glb`. Đây là bản thử tạm, **chưa gán ID hay chủ đề vào dữ liệu game**. Ý tưởng: [ruong-game](../../docs/superpowers/specs/2026-11-24-ruong-game-design.md). Rương là **tay cầm game khổng lồ** dựng nghiêng 52° trên chân đế tròn, nửa vỏ trên (mặt có D-pad, 4 nút màu, 2 cần analog) là nắp, lật ra sau. Bản nấm trước đó bị bỏ vì không đủ chất game.
 
 - Chạy lại: `python Tools/Blender/make_chest_game.py -- Assets/_Project/Art/Chests [--render Assets/_Project/Art/Source/render_chest_game_open.png 32]` (cần `pip install bpy pillow`).
-- Lớp: root `Chest_Game` gồm `Body` (544 tam giác), `Lid` (386, mũ nấm, **gốc ở bản lề phía sau** (0; 0,133; 0,20), xoay quanh X), `Binding` (36, băng game cắm ở khe trước), `Seal` (64, nhãn tròn nút A xanh), `Glow` (20, quầng vàng ở miệng). Tổng **1.030 tam giác** (không tính Glow). Cao 0,36 m.
-- Vật liệu đơn sắc, không texture. Mặt trước là -Y.
-- Ảnh `Art/Source/render_chest_game_open.png` dựng bằng Cycles ngoại tuyến: hàng trên là đóng, hé, mở toang; hàng dưới là hình bóng chính diện, cạnh bên, chéo 45°. **Chưa chạy trong Unity**: chưa có prefab, chưa kiểm tra chiều mở (đổi `lidOpenSign` nếu ngược).
+- Lớp: root `Chest_Game` gồm `Body` (328 tam giác, nửa vỏ dưới, nút vai, chân đế), `Lid` (556, nửa vỏ trên, **gốc ở bản lề mép sau**, xoay quanh X), `Binding` (12, khóa gài ở mép trước), `Seal` (48, nhãn tròn chấm đỏ), `Glow` (20). Tổng **944 tam giác** (không tính Glow). Cao 0,30 m.
+- Vật liệu đơn sắc, xám trung tính, nút màu làm điểm nhấn. Mặt trước là -Y.
+- Ảnh `Art/Source/render_chest_game_open.png` dựng bằng Cycles ngoại tuyến: hàng trên là đóng, hé, mở; hàng dưới là hình bóng chính diện, cạnh bên, chéo 45°. **Chưa chạy trong Unity**: chưa có prefab, chưa kiểm tra chiều mở (đổi `lidOpenSign` nếu ngược). Nắp đã nghiêng sẵn 52° nên góc mở chỉ nên khoảng 80–90°.
