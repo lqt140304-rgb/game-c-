@@ -360,11 +360,33 @@ Còn lại: xem danh sách làm lại; 7 Thường và 5 Hiếm mới chưa làm
 | R49 | Hộp bento nứt | Nhật Bản cổ | Có, nắp lệch |
 | R50 | Ô giấy rách | Nhật Bản cổ | Có, mở nửa |
 
+## Rác theo chủ đề, đợt 3 (2026-11-24, làm lại 13 món + R26)
+
+1 ảnh gộp 14 món (lưới 5×3, `gen_img.py ... 14`), 39 credit (số dư còn 456). Ảnh ra kiểu render 3D (không nét viền), không nhân đôi; có đường kẻ ô nhẹ nên đã làm phẳng (`flatten.py ... 5 3`). Món phẳng mô tả cuộn, nhàu hoặc gấp (poster cuộn hai ống, vé vo viên, bao bim bim phồng). **Đủ 14 món, không mất món.** Meshy xếp lại vị trí và tách mảnh: vé, tay cầm (dây), tấm pin (dây), mũi gỗ (hai nửa), chuông gió (ống rời) đã gộp; bỏ một vòng đỏ thừa 7 cm. Đã tô lại màu cả 14 món (`retex/fix_rac.py`, bảng `TONE`). Ảnh nguồn `Art/Source/ref_rac_chu_de_4.png`; ảnh kiểm tra `render_rac_chu_de_3.png`. File ở `Items/LowPoly/Junk/`, cỡ thật (mét), đáy y=0.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| R13 | Que kem đã liếm sạch | Tuổi thơ Việt Nam | Có; Meshy vẽ cây kem còn kem (có vết cắn), chưa "liếm sạch" |
+| R14 | Sổ liên lạc | Tuổi thơ Việt Nam | Có, bìa xanh nhàu, mất chữ ký |
+| R15 | Vỏ bim bim | Tuổi thơ Việt Nam | Có, nhàu, xé miệng, không nhãn hãng |
+| R16 | Gối ôm waifu bạc màu | Wibu | Có, dài 1 m, dẹt, ố màu, hình in mờ (không nhân vật thật) |
+| R17 | Poster rách | Wibu | Có, hai ống cuộn |
+| R20 | Mũi Pinocchio gãy | Truyền thuyết Châu Âu | Có, que gãy đôi đầu hồng (gộp 2 mảnh), giống que diêm |
+| R26 | Mảnh vệ tinh cháy | Không gian | Có, tấm pin cong cháy mép, lòi dây (gộp 3 mảnh) |
+| R28 | Đĩa game lậu (hư) | Game | Có, đĩa nứt trong hộp vỡ, dẹt |
+| R29 | Tay cầm đứt dây | Game | Có, gộp dây đứt |
+| R30 | Vé bóng đá giả | Thể thao | Có, vo viên (gộp 4 mảnh), ~9,9 nghìn tam giác (nặng nhất đợt) |
+| R31 | Còi méo | Thể thao | Có, dây đỏ |
+| R32 | Băng đội trưởng giãn chun | Thể thao | Có, cuộn xoắn, chữ C |
+| R37 | Chuông gió | Phim kinh dị | Có, nằm, dây rối (gộp ống rời) |
+| R39 | Lọ cát | Ai Cập cổ đại | Có, lọ gốm nút bần |
+
 ## Danh sách làm lại
 
 Không làm lại riêng lẻ. Đủ 8 món (rác: 14 món) hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi lượt).
 
-- Rác hỏng ở đợt 2 (13 món): R13 Que kem, R14 Sổ liên lạc, R15 Vỏ bim bim, R16 Gối ôm waifu, R17 Poster rách, R20 Mũi Pinocchio, R28 Đĩa game lậu, R29 Tay cầm đứt dây, R30 Vé bóng đá giả, R31 Còi méo, R32 Băng đội trưởng giãn chun, R37 Chuông gió, R39 Lọ cát. Cộng R26 Mảnh vệ tinh cháy (chưa làm) là đủ một lượt 14 món.
+- Rác: đủ (đợt 3 làm xong 13 món hỏng ở đợt 2 và R26).
+- Chưa làm: 7 Thường và 5 Hiếm mới (spec, đoạn "Thêm 2026-11-24"), 12 món = 2 lượt (8 + 4); chờ chủ dự án duyệt credit.
 
 Đã có mô hình cho mọi món trong bảng rương của spec (Thường V13–V41, Hiếm đủ).
 

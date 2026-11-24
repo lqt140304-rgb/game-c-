@@ -30,6 +30,21 @@ TONE={
  "R48":(0.8,1.3,(1,0.92,0.76),1.0),   # que xam: giay ngả vang
  "R49":(0.95,1.4,(1,1,1),1.1),        # hop bento
  "R50":(0.85,1.7,(1,1,1),1.1),        # o giay do
+ # dot 3 (lam lai 13 mon + R26)
+ "R13":(0.95,1.2,(1,0.97,0.9),1.1),   # que kem go
+ "R14":(0.85,2.0,(0.88,0.95,1.1),1.15),# so lien lac: bia xanh dam hon
+ "R15":(0.95,1.3,(1,1,1),1.1),        # vo bim bim
+ "R16":(0.9,1.2,(1,0.96,0.86),1.1),   # goi om: trang ngả vang o
+ "R17":(0.85,1.2,(1,0.94,0.82),1.1),  # poster: giay ngả vang
+ "R20":(0.9,1.3,(1,0.93,0.8),1.1),    # mui go
+ "R26":(0.85,1.3,(1,1,1),1.2),        # tam pin chay
+ "R28":(0.9,1.0,(1,1,1),1.15),        # dia game
+ "R29":(0.9,1.0,(1,1,1),1.15),        # tay cam xam
+ "R30":(0.85,1.0,(1,0.95,0.85),1.2),  # ve nhau: giay ngả vang
+ "R31":(0.85,1.4,(1,1,1),1.1),        # coi, day do
+ "R32":(0.9,1.5,(1,1,1),1.1),         # bang vang
+ "R37":(0.85,1.0,(1,1,1),1.2),        # chuong gio kim loai
+ "R39":(0.9,1.2,(1,1,1),1.1),         # lo gom
 }
 if code in TONE:
     k,sat,tint,con=TONE[code];mu=cols.mean()
