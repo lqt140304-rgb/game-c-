@@ -35,9 +35,9 @@ class ChestRules(unittest.TestCase):
 
     def test_junk_order(self):
         r = {n: ch["tiers"]["R"] for n, ch in CS.FINAL_CHESTS.items()}
-        # Bảng chủ dự án duyệt 2026-11-24: rác Vải Niêm 30% (cao nhất), Đen 25%, Gỗ ít, Kim Khí vài món.
-        # Lệch với "Đen nhiều nhất" của ruong-suu-tap: câu hỏi mở trong Sprint5Ruong.md.
-        self.assertEqual(r, {"Gỗ": .18, "Vải Niêm": .30, "Kim Khí": .10, "Đen": .25})
+        # Bảng chủ dự án duyệt 2026-11-24: rác Đen và Vải Niêm cùng 30% (nhiều nhất), Gỗ ít, Kim Khí vài món.
+        self.assertEqual(r, {"Gỗ": .18, "Vải Niêm": .30, "Kim Khí": .10, "Đen": .30})
+        self.assertEqual(max(r.values()), r["Đen"])
         self.assertLess(r["Gỗ"], r["Vải Niêm"])
         self.assertLessEqual(r["Kim Khí"], r["Gỗ"])
 

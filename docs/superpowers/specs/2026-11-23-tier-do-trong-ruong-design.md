@@ -55,14 +55,14 @@ Nguyên tắc nội dung: **gần gũi, người chơi nhận ra ngay**. Pha **c
 
 ### Đã chốt (chủ dự án duyệt 2026-11-24)
 
-Bảng của Claude 2 ([Sprint5Ruong.md](../../../Docs/Balance/Sprint5Ruong.md)), chủ dự án duyệt và chỉnh hai điểm: **Đen giữ 12.000.000 đ**; **Gỗ có thêm một tỉ lệ nhỏ Rất hiếm**, rồi cân bằng lại Gỗ; **rác Vải Niêm lên 30%**. Quay hai bước: quay bậc, rồi quay đều một món trong bộ sưu tập của rương ở bậc đó ([rương chủ đề](2026-11-24-ruong-chu-de-design.md)).
+Bảng của Claude 2 ([Sprint5Ruong.md](../../../Docs/Balance/Sprint5Ruong.md)), chủ dự án duyệt và chỉnh hai điểm: **Đen giữ 12.000.000 đ**; **Gỗ có thêm một tỉ lệ nhỏ Rất hiếm**, rồi cân bằng lại Gỗ; **rác Vải Niêm lên 30%**; **rác Đen lên 30%, Rất hiếm Đen tăng nhẹ** (55% lên 58%) để Đen vẫn nhiều rác nhất. Quay hai bước: quay bậc, rồi quay đều một món trong bộ sưu tập của rương ở bậc đó ([rương chủ đề](2026-11-24-ruong-chu-de-design.md)).
 
 | Rương | Giá | Rác | Thường | Hiếm | Rất hiếm | Huyền thoại | Tạo tác | Hàng giả |
 |---|---|---|---|---|---|---|---|---|
 | Gỗ | 1.400.000 đ | 18% | 79,5% | 1% | 1% | 0,5% | — | 10% |
 | Vải Niêm | 3.500.000 đ | 30% | 39% | 25% | 5% | 1% | — | 15% |
 | Kim Khí | 4.500.000 đ | 10% | 25% | 22% | 8% | 1% | 34% (tier 1: 60%, tier 2: 35%, tier 3: 5%) | 0% |
-| Đen | 12.000.000 đ | 25% | 5% | 10% | 55% | 5% | — | 30% |
+| Đen | 12.000.000 đ | 30% | 3% | 4% | 58% | 5% | — | 30% |
 
 - Rác bán 30.000 đ, không giả. Kim Khí ra **cả đồ lẫn tạo tác** (không còn chỉ ra tạo tác).
 - **Huyền thoại có ở 4 rương cơ bản nhưng hiếm** (0,5% đến 5%), theo rương chủ đề; thay cho dòng "không có" bên dưới.
