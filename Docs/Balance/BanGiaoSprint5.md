@@ -8,20 +8,9 @@ Viết ngày 2026-11-24 khi kết thúc phiên đổi tiền tệ. Theo quy tắ
 - **Chưa đổi** (chủ của file khác): nhãn "xu" trong `Docs/Content`, GDD, `content.json` (Claude 1), định dạng tiền trong lõi gameplay (Codex), hiển thị (Antigravity).
 - Gộp `main` (64 commit) và nhánh của Claude 1 vào nhánh `claude/eloquent-bell-5baoyc`. 175 test đạt.
 
-## Việc còn dở: đo phương án C (giá hộp dao động theo ngày)
+## Phương án C đã đo xong (phiên cuối)
 
-Chủ dự án đã chọn phương án C ([DieuChinhSauCanBang.md](../Content/DieuChinhSauCanBang.md) mục K). Claude 1 nhờ Claude 2 đo lại bằng bộ chiến thuật đầy đủ, luật dịch vụ, **biên độ ±15% và ±20%**, và kết hợp hạ giá Rương Đen (1.250), rồi khóa vào test.
-
-Mô phỏng `QA/swing_sim.py` đã viết, chạy bằng `cd QA && python3 swing_sim.py` (khoảng 40 phút, nên chạy nền). Mới có kết quả ±0% và ±15% (Rương Đen 1.500), phiên bị ngắt:
-
-| Cấu hình | Người chơi chọn loại hộp + manh mối miễn phí (thận trọng / liều / combo nhỏ / combo lớn) | + lời mách Dì Mận 15 xu | Chọn hộp (thận trọng + gđ) |
-| --- | --- | --- | --- |
-| ±0% | 36,9 / 43,6 / 44,5 / 45,6 | 38,9 / 45,9 / 47,2 / 47,4 | H1 14%, H2 63%, H3 23%, RD 0% |
-| ±15% | 38,3 / 43,4 / 45,4 / 47,3 | 39,5 / 45,5 / 48,3 / 48,9 | H1 18%, H2 56%, H3 22%, RD 4% |
-
-Bậc thang (mua hộp đắt nhất), ±15%: thận trọng 18,2, thận trọng + gđ 24,5, liều 14,9, liều + gđ 24,2, combo nhỏ 31,0, combo nhỏ + gđ 37,3, combo lớn 32,7, combo lớn + gđ 38,8.
-
-Còn thiếu: ±20%, Rương Đen 1.250, dịch vụ (đấu giá k 1,16, cầm tạo tác, sòng bạc), biến cố E1 đến E6. Sau khi đủ: viết `Docs/Balance/GiaHopDaoDong.md`, thêm test khóa, ghi vào `TASKS.md`. Ghi chú: ±15% đã làm Rương Đen được chọn 4%, chưa giải hẳn D-30.
+Kết quả đầy đủ ở [GiaHopDaoDong.md](GiaHopDaoDong.md), test khóa `QA/test_box_price_swing.py`. Kết luận: giữ **±20% và Rương Đen 1.500**; hạ Rương Đen xuống 1.250 làm bot thường thắng 24% đến 30% (quá dễ). Dịch vụ và biến cố không phá cân bằng. **Còn dở nhỏ:** dịch vụ chưa đo trên người chơi chọn loại hộp (`measure_turns` cần tham số `opt`), xem mục 5 của GiaHopDaoDong.md.
 
 ## Sprint 5 (cân bằng hệ mới): ghi chú phân tích ban đầu
 
@@ -40,5 +29,5 @@ Phát hiện sớm, tính bằng số liệu hiện có (chưa cần mô phỏng
 
 1. Đọc [DaChot.md](../DaChot.md) và file này.
 2. Bật Ponytail mức `full`, dùng Superpowers (brainstorming trước khi xây) theo README.
-3. Chọn một trong hai việc: (a) **hoàn thành đo phương án C** (nhỏ, đã có mô phỏng), hoặc (b) **cân bằng hệ mới Sprint 5** (lớn; nên chia phiên: một phiên cho giá và tỉ lệ rương, một phiên cho soi lỗi và trả giá, một phiên cho cây phát triển).
+3. Làm **cân bằng hệ mới Sprint 5** (lớn; nên chia phiên: một phiên cho giá và tỉ lệ rương, một phiên cho soi lỗi và trả giá, một phiên cho cây phát triển). Việc nhỏ có thể làm kèm: thêm `opt` cho `measure_turns` và đo dịch vụ trên người chơi chọn loại.
 4. Mô phỏng nền: `QA/clue_sim.py`, `QA/proposal_sim.py`, `QA/swing_sim.py`, `QA/tier_sim.py`; hằng số kinh tế ở `QA/economy_model.py`. Sprint 5 cần mô hình hóa 5 bậc, hai bước quay, rác, soi lỗi và trả giá.
