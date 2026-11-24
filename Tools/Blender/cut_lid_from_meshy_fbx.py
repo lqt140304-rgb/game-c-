@@ -5,9 +5,9 @@ and, when a keyhole position is given, Key (a silver key already in the "inserte
 Both cut faces get a dark-wood rim plus a bevelled lining pad (raised in Body, hung under the lid) instead of a bare filled cap.
 There is no Seal or Binding layer: the lock and bands are baked into the Meshy texture (BoxOpenSequence skips missing layers).
 
-Run:  python cut_lid_from_meshy_fbx.py -- <dir with fbx + png maps> <out.glb> <root name> <seam z in source units> <target height m> [tex size] ["x,y,z" keyhole in source units] ["r,g,b" glow colour] ["r,g,b" lining colour] [key scale]
+Run:  python cut_lid_from_meshy_fbx.py -- <dir with fbx + png maps> <out.glb> <root name> <seam z in source units> <target height m> [tex size] ["x,y,z" keyhole in source units] ["r,g,b" glow colour] ["r,g,b" lining colour] [key scale] [max tris]
   Glow and lining colours are linear 0-1 and optional; the defaults (warm gold glow, burgundy lining) reproduce Chest_Golden exactly.
-  Magic example: ... 1024 "0,-0.70,-0.10" "0.62,0.28,1.0" "0.05,0.02,0.11" 2.0   (source units for seam and keyhole; see Docs/Art/BanGiao3D.md)
+  Magic example: ... 1024 "0,-0.70,-0.10" "0.62,0.28,1.0" "0.05,0.02,0.11" 2.0 4700   (source units for seam and keyhole; see Docs/Art/BanGiao3D.md)
   Source FBX imports Z-up, centred on the origin. The seam is the height (source units) where the lid meets the body;
   find it with a vertex-height histogram or a side render. Front of the chest must face -Y (lock side); the hinge is at +Y.
 Needs Blender (`pip install bpy` works) and Pillow.
@@ -19,11 +19,12 @@ import mathutils
 from PIL import Image
 
 src_dir, out, name, seam_src, target_h = sys.argv[sys.argv.index("--") + 1:][:5]
-_a = sys.argv[sys.argv.index("--") + 1:] + ["1024", "", "", "", ""]
+_a = sys.argv[sys.argv.index("--") + 1:] + ["1024", "", "", "", "", ""]
 tex_size = int(_a[5]); keyhole_arg = _a[6]
 def _rgb(txt, default):
     return tuple(float(v) for v in txt.split(",")) + (1,) if txt else default
 glow_rgb = _rgb(_a[7], (1.0, 0.82, 0.45, 1)); lining_rgb = _rgb(_a[8], (0.16, 0.018, 0.03, 1))
+max_tris = int(_a[10]) if _a[10] else 0      # 0 = keep the source triangle count; else collapse-decimate to about this many before cutting
 key_scale = float(_a[9]) if _a[9] else 1.45   # Golden default; a big lock (Magic) wants a bigger key
 seam_src = float(seam_src); target_h = float(target_h)
 
@@ -36,6 +37,13 @@ obj.parent = None
 bpy.context.view_layer.objects.active = obj
 obj.select_set(True)
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+
+if max_tris:
+    n0 = sum(len(p.vertices) - 2 for p in obj.data.polygons)
+    if n0 > max_tris:
+        dm = obj.modifiers.new("dec", "DECIMATE"); dm.ratio = max_tris / n0
+        bpy.ops.object.modifier_apply(modifier="dec")
+        print("decimated", n0, "->", sum(len(p.vertices) - 2 for p in obj.data.polygons))
 
 zs = [v.co.z for v in obj.data.vertices]
 zmin, zmax = min(zs), max(zs)

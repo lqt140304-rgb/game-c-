@@ -193,16 +193,17 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 
 ## Rương Magic (đá và tinh thể tím, khóa lục giác)
 
-`Assets/_Project/Art/Chests/Chest_Magic.glb`, **chưa gán chủ đề hay ID rương** vì danh sách chủ đề chưa chốt. Nguồn: FBX Meshy do chủ dự án cung cấp ở `Art/Source/MeshyChests/Magic/` (10,1 nghìn tam giác, Git LFS; chạy `git lfs pull`), không tốn credit mới. Tạo bằng cùng script với Golden, thêm ba tham số tùy chọn (màu glow, màu lót, cỡ chìa; bỏ trống thì ra y như Golden):
+`Assets/_Project/Art/Chests/Chest_Magic.glb`, **chưa gán chủ đề hay ID rương** vì danh sách chủ đề chưa chốt. Nguồn: FBX Meshy do chủ dự án cung cấp ở `Art/Source/MeshyChests/Magic/` (10,1 nghìn tam giác, Git LFS; bản game giảm còn ≈5 nghìn; chạy `git lfs pull`), không tốn credit mới. Tạo bằng cùng script với Golden, thêm bốn tham số tùy chọn (màu glow, màu lót, cỡ chìa, số tam giác tối đa; bỏ trống thì ra y như Golden):
 
 ```
-python cut_lid_from_meshy_fbx.py -- Assets/_Project/Art/Source/MeshyChests/Magic Assets/_Project/Art/Chests/Chest_Magic.glb Chest_Magic -0.13 0.6 1024 "0,-0.70,-0.10" "0.62,0.28,1.0" "0.05,0.02,0.11" 2.0
+python cut_lid_from_meshy_fbx.py -- Assets/_Project/Art/Source/MeshyChests/Magic Assets/_Project/Art/Chests/Chest_Magic.glb Chest_Magic -0.13 0.6 1024 "0,-0.70,-0.10" "0.62,0.28,1.0" "0.05,0.02,0.11" 2.0 4300
 ```
 
 - **Đường nối** z = -0,13 (đơn vị nguồn): rãnh tím giữa hai đai vàng, chỗ ít đỉnh nhất (13 đỉnh) nên các viên tinh thể không bị cắt đôi. Ổ khóa lục giác nằm vắt qua đường nối (nửa trên theo nắp), giống Golden.
 - **Hướng:** cả hai mặt ±Y đều có khóa nên không cần xoay; mặt trước vẫn là -Y.
 - **Kích thước:** cao 0,6 m (cả tinh thể), rộng ≈0,57 m, gần cỡ Golden (0,60 × 0,42). Cao hơn Golden vì tinh thể nhô lên.
-- **Cấu trúc:** root `Chest_Magic` gồm `Body` (4,9 nghìn tam giác), `Lid` (6,4 nghìn, gốc ở bản lề sau), `Glow` (quầng sáng **tím**), `Key` (chìa bạc cỡ 2,0, to hơn Golden vì ổ khóa lớn). Đệm lót **tím sẫm**. Hiệu ứng chìa dùng nguyên `BoxOpenSequence`, không đổi code.
+- **Cấu trúc:** root `Chest_Magic` gồm `Body` (2,2 nghìn tam giác), `Lid` (2,8 nghìn, gốc ở bản lề sau), `Glow` (quầng sáng **tím**), `Key` (chìa bạc cỡ 2,0, to hơn Golden vì ổ khóa lớn). Đệm lót **tím sẫm**. Hiệu ứng chìa dùng nguyên `BoxOpenSequence`, không đổi code.
+- **Tổng ≈5,06 nghìn tam giác:** script giảm mặt (Decimate collapse) từ 10,1 nghìn xuống 4,3 nghìn trước khi cắt, cộng đệm lót, glow, chìa. Hình dạng, viền vàng và tinh thể gần như không đổi so với bản 11 nghìn (xem ảnh kiểm tra); chỉ các mặt đá hơi thô hơn khi nhìn cận.
 - Texture ép 1024, có normal và metallic/roughness. Không có `Seal`, `Binding` (khóa và đai nằm trong texture).
 - Ảnh kiểm tra (dựng bằng Cycles CPU: chìa tới gần, cắm, xoay, hé nắp, đóng, mở toang): `Art/Source/render_chest_magic_open.png`. Bộ dựng: `Tools/Blender/cycles_chest_preview_setup.py` (đặt `CHEST_GLB`, `CHEST_EXPOSURE`).
 
