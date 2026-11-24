@@ -190,3 +190,29 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Âm nhạc (dựng bằng Blender)
+
+`Assets/_Project/Art/Chests/Chest_AmNhac.glb`, bản thử, **chưa gán ID hay chủ đề vào dữ liệu game**. Dựng hoàn toàn bằng script, không dùng Meshy, không texture ảnh (vật liệu đơn sắc, neon có phát sáng nhẹ). Ý tưởng và lý do chọn dáng: [ruong-am-nhac](../../docs/superpowers/specs/2026-11-24-ruong-am-nhac-design.md).
+
+- **Dáng:** jukebox mini mái vòm. Chính diện là hình đầu tròn với hai cột neon hồng, vòm neon xanh ngọc, cửa kính có đĩa than, lưới loa kem và hàng nút chọn bài. Lưng thân vát nghiêng vào trong và mái vòm bo tròn phía sau, để nhìn từ hông và sau không ra hộp chữ nhật. Cao khoảng 0,47 m (tính cả chóp crom), rộng 0,34 m.
+- **Số tam giác:** 3.800 (không tính Glow): Body 1.724, Lid 1.216, Record 488, Binding 300, Seal 72; Glow 20.
+- **Cấu trúc:** root `Chest_AmNhac` gồm
+  - `Body`: thân, đế, lưới loa, nút, cột neon, mâm đĩa crom và cần đọc đĩa.
+  - `Lid`: mái vòm cùng viền chắn (che đĩa khi đóng), **gốc ở bản lề sau**, xoay quanh trục X, mặt trước là -Y (Blender).
+  - `Seal`: miếng gảy đàn (pick) đỏ dán đè đường nối nắp.
+  - `Binding`: dây đeo ghi-ta da nâu có khóa crom, vắt qua mái vòm xuống hai hông.
+  - `Record`: đĩa than nằm trên mâm, **gốc ở tâm đĩa**; nhãn có sọc kem để thấy đĩa đang quay.
+  - `Glow`: quầng sáng dẹt trên mặt đĩa, ẩn bằng scale.
+- **Đĩa quay:** bật `spinRecord` trên `BoxOpenSequence` (mặc định tắt, rương khác không đổi). Đĩa quay quanh `recordSpinAxis` (mặc định trục Y cục bộ, tức trục đứng sau khi nhập glTF), `recordRpm` 33,3 vòng/phút nhân với độ sáng `glow`, nên đĩa bắt đầu quay khi nắp hé và quay đều khi mở toang. **Đoạn C# này chưa biên dịch** (máy không có Unity).
+- **Chạy lại:**
+
+```
+pip install bpy pillow                      # Python 3.13, Blender 5.3 dạng thư viện
+python Tools/Blender/make_chest_am_nhac.py -- Assets/_Project/Art/Chests
+python Tools/Blender/render_chest_am_nhac_preview.py -- Assets/_Project/Art/Chests/Chest_AmNhac.glb Assets/_Project/Art/Source/render_chest_am_nhac_open.png 96 640
+```
+
+  Kích thước chính (`HW`, `HD`, `HDT`, `HB`, `R`) và bảng màu (`PALETTE`) nằm đầu script.
+- **Ảnh xem trước:** `Art/Source/render_chest_am_nhac_open.png`, dựng bằng Cycles (ánh sáng theo `cycles_chest_preview_setup.py`): đóng, hé, mở toang, và chính diện, hông, sau 3/4. Ảnh dựng ngoại tuyến, **không phải ảnh từ Unity**.
+- Chưa tạo prefab, chưa chạy trong Unity. Chiều mở nắp có thể ngược sau khi nhập: đổi `lidOpenSign`. Giai đoạn "Gỡ niêm" sẽ thả pick và dây đeo như các hộp khác.

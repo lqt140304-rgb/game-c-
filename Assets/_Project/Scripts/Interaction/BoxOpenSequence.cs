@@ -17,6 +17,9 @@ namespace ChoDoLa.Interaction
     /// and the whole thing can wait for the player between stages.
     /// Optional "Key" layer (a key modelled in the inserted pose, shaft along its local Z): before stage 1 the key
     /// floats in from the front, slides into the lock, turns, clicks, and slides out (see the Key intro fields).
+    /// Optional "Record" layer (a vinyl on a turntable, origin at its centre): with spinRecord on, it spins about
+    /// recordSpinAxis at a speed that follows the glow, so it starts turning as the lid opens and keeps going.
+    /// Off by default, so every other chest behaves exactly as before.
     /// The same stage data is mirrored by the three.js preview used for the reference screenshots.
     /// </summary>
     public class BoxOpenSequence : MonoBehaviour
@@ -71,6 +74,13 @@ namespace ChoDoLa.Interaction
         [Tooltip("Axis the key turns round, in the key's own space (its shaft).")]
         [SerializeField] private Vector3 keyTurnAxis = Vector3.forward;
 
+        [Header("Spinning record (only when the model has a \"Record\" child, e.g. Chest_AmNhac)")]
+        [SerializeField] private bool spinRecord = false;
+        [Tooltip("Turns per minute at full glow.")]
+        [SerializeField] private float recordRpm = 33.3f;
+        [Tooltip("Local axis the record spins round (up after the glTF import).")]
+        [SerializeField] private Vector3 recordSpinAxis = Vector3.up;
+
         [Header("Light inside the box")]
         [SerializeField] private Light innerLight;
         [SerializeField] private float innerLightMaxIntensity = 2f;
@@ -90,7 +100,8 @@ namespace ChoDoLa.Interaction
             public Vector3 scale;
         }
 
-        private LayerState _lid, _seal, _binding, _glow, _key;
+        private LayerState _lid, _seal, _binding, _glow, _key, _record;
+        private float _currentGlow;
         private Vector3 _rootStart;
         private bool _ready;
         private bool _playing;
@@ -120,7 +131,15 @@ namespace ChoDoLa.Interaction
             StopAllCoroutines();
             _playing = false;
             SetKey(0f, 0f, 0f);
+            if (_record.transform != null) _record.transform.localRotation = _record.rotation;
             Apply(Pose(-1, -1, 0f), 0f);
+        }
+
+        private void Update()
+        {
+            if (!spinRecord || _record.transform == null || _currentGlow <= 0.01f) return;
+            float degrees = recordRpm * 6f * _currentGlow * Time.deltaTime;   // rpm * 360 / 60
+            _record.transform.localRotation *= Quaternion.AngleAxis(degrees, recordSpinAxis);
         }
 
         // ---------------------------------------------------------------- Setup
@@ -140,6 +159,7 @@ namespace ChoDoLa.Interaction
             _binding = Capture(transform.Find("Binding"));
             _glow = Capture(transform.Find("Glow"));
             _key = Capture(transform.Find("Key"));
+            _record = Capture(transform.Find("Record"));
             SetKey(0f, 0f, 0f);
             Apply(Pose(-1, -1, 0f), 0f);
         }
@@ -282,6 +302,7 @@ namespace ChoDoLa.Interaction
 
         private void Apply(PoseValues p, float shakeAmplitude)
         {
+            _currentGlow = p.glow;
             if (_lid.transform != null)
             {
                 _lid.transform.localRotation = _lid.rotation * Quaternion.AngleAxis(lidOpenSign * p.lid, lidHingeAxis);
