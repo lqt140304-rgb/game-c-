@@ -40,6 +40,9 @@ namespace ChoDoLa.Sprint1
             MaxDailyBoxes = Run.DailyLimit,
             DebtDueToday = Run.DueToday,
             Arrears = Run.Arrears,
+            ClockMinute = Run.DayClockMinute,
+            ClockPhase = Run.ClockPhase,
+            TimedDays = host.TimedDaysEnabled,
             CarryDebt = Run.CarryDebt,
             PostponeAvailable = Run.PostponeAvailable,
             ActiveHeirloomId = Run.ActiveHeirloomId,
@@ -138,7 +141,27 @@ namespace ChoDoLa.Sprint1
         private void Awake() => Bind(GetComponent<MarketRunHost>() ?? gameObject.AddComponent<MarketRunHost>());
         private void Start() => RefreshState();
 
-        internal void Bind(MarketRunHost runHost) => host = runHost;
+        internal void Bind(MarketRunHost runHost)
+        {
+            if (host != null) host.ClockPhaseChanged -= HandleClockPhaseChanged;
+            host = runHost;
+            host.ClockPhaseChanged += HandleClockPhaseChanged;
+        }
+
+        private void OnDestroy()
+        {
+            if (host != null) host.ClockPhaseChanged -= HandleClockPhaseChanged;
+        }
+
+        public void EnableTimedDays() => host.EnableTimedDays();
+
+        public bool CanSleep => host.TimedDaysEnabled && Run.IsNight && Run.Status == "active";
+
+        private void HandleClockPhaseChanged()
+        {
+            RefreshState();
+            if (Run.IsNight) OnNotice?.Invoke("Chợ đã đóng. Về phòng trọ nghỉ qua đêm.");
+        }
 
         public bool RequestBuyClue(string offerId)
         {
@@ -184,7 +207,9 @@ namespace ChoDoLa.Sprint1
 
         public bool RequestEndDay(int expectedDay, bool postpone = false)
         {
-            if (!Try(() => Run.EndDay(NewTransaction(), expectedDay, postpone), out var result)) return false;
+            if (!Try(() => host.TimedDaysEnabled
+                ? Run.Sleep(NewTransaction(), expectedDay, postpone)
+                : Run.EndDay(NewTransaction(), expectedDay, postpone), out var result)) return false;
             RefreshState();
             OnDebtSettled?.Invoke(Run.Arrears == 0, Run.Cash);
             string deferred = postpone ? $" · chuyển kỳ {Run.CarryDebt} xu sang ngày mai" : "";
@@ -246,6 +271,8 @@ namespace ChoDoLa.Sprint1
                     "INVENTORY_FULL" => "Kho đầy. Hãy bán bớt hiện vật.",
                     "CLUE_LIMIT" => "Bạn đã mua lời mách cho hộp này.",
                     "STALE_DAY" => "Ngày này đã kết thúc.",
+                    "WAIT_UNTIL_NIGHT" => "Về ngủ sau khi trời tối.",
+                    "MARKET_CLOSED" => "Chợ đã đóng cửa.",
                     "POSTPONE_NOT_AVAILABLE" => "Không thể hoãn kỳ nợ này.",
                     "RUN_ENDED" => "Ván chơi đã kết thúc.",
                     _ => "Thao tác không còn khả dụng."

@@ -299,3 +299,30 @@ Check(arrearsBook.EndDay("arrears-first", 1).Success && arrearsBook.Arrears == 2
 var deferredReceipt = arrearsBook.EndDay("arrears-postpone", 2, postpone: true);
 Check(deferredReceipt.Penalty == 48 && arrearsBook.Arrears == 288 && arrearsBook.CarryDebt == 403,
     "GT1 does not defer old arrears and deferred amount is not penalized that day");
+
+var timed = new MarketRun(json, 123);
+Check(timed.ClockPhase == "morning" && timed.DayClockMinute == 480, "starts at eight");
+Check(timed.Sleep("too-soon", 1).Code == "WAIT_UNTIL_NIGHT", "can't sleep during daytime");
+Check(timed.AdvanceClock(60) && timed.ClockPhase == "market", "market phase after morning");
+var afternoonBox = timed.BuyBox("before-close", timed.Shelf[0].Id);
+Check(afternoonBox.Success, "buy before night");
+Check(timed.AdvanceClock(480) && timed.ClockPhase == "night" && timed.DayClockMinute == 1080, "night starts at 18:00");
+Check(timed.BuyBox("after-close", "any").Code == "MARKET_CLOSED" &&
+    timed.OpenBox("after-close-open", afternoonBox.EntityId).Code == "MARKET_CLOSED", "reject new night actions");
+var sleep = timed.Sleep("sleep", 1);
+Check(sleep.Success && sleep.Amount == 200 && timed.Day == 2 && timed.ElapsedDaySeconds == 0, "sleep settles debt and starts next day");
+Check(!timed.Sleep("duplicate-sleep", 1).Success && timed.Day == 2, "sleep confirmation cannot advance twice");
+Console.WriteLine("Day clock checks passed.");
+
+string clockSave = null;
+var clockHost = new MarketRunHost { Run = new MarketRun(json, 123, null, value => clockSave = value) };
+var clockScene = new ChoDoLa.Sprint1.Sprint1MarketService();
+clockScene.Bind(clockHost);
+clockScene.EnableTimedDays();
+Check(!clockScene.RequestEndDay(1), "timed scene cannot end day before the evening");
+clockHost.Run.AdvanceClock(540);
+Check(clockScene.CanSleep && clockScene.CurrentRunState.ClockMinute == 1080, "bed can sleep at night");
+clockHost.Run = new MarketRun(json, 999, clockSave);
+Check(clockScene.CanSleep, "reload keeps the night phase");
+Check(clockScene.RequestEndDay(1) && !clockScene.RequestEndDay(1), "bed closes exactly one evening");
+Check(clockScene.CurrentRunState.ClockMinute == 480 && !clockScene.CanSleep, "next morning resets clock and sleep");

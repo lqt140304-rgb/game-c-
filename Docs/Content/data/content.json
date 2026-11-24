@@ -51,6 +51,15 @@
       }
     ]
   },
+  "day_clock": {
+    "day_seconds": 600,
+    "morning_seconds": 60,
+    "market_close_seconds": 540,
+    "start_minute": 480,
+    "market_close_minute": 1080,
+    "end_minute": 1140,
+    "checkpoint_seconds": 15
+  },
   "origins": [
     {
       "id": "qua_khu",

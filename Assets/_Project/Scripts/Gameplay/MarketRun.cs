@@ -76,6 +76,7 @@ namespace ChoDoLa.Gameplay
             public int Schema { get; set; } = 1;
             public int Seed { get; set; }
             public int Day { get; set; } = 1;
+            public int ElapsedDaySeconds { get; set; }
             public int Cash { get; set; }
             public int Bought { get; set; }
             public int Arrears { get; set; }
@@ -172,6 +173,7 @@ namespace ChoDoLa.Gameplay
                 saved["Seed"]?.Type != JTokenType.Integer ||
                 saved["Table"]?.Type != JTokenType.Array || saved["Inventory"]?.Type != JTokenType.Array ||
                 saved["AppliedTransactions"]?.Type != JTokenType.Array || saved["ExtraClues"]?.Type != JTokenType.Object ||
+                loaded.ElapsedDaySeconds < 0 || loaded.ElapsedDaySeconds > MaxDaySeconds ||
                 loaded.Day < 1 || loaded.Day > (int)rules["days"] || loaded.Cash < 0 || loaded.Arrears < 0 ||
                 !ValidTactSave(loaded) || !ValidHeirloomSave(loaded) || loaded.Bought < 0 || loaded.Bought > DailyLimit ||
                 (loaded.Status != "active" && loaded.Status != "won" && loaded.Status != "lost") ||
@@ -192,7 +194,7 @@ namespace ChoDoLa.Gameplay
             next.Cash -= ExtraCluePrice;
             next.ExtraClues.Add(offerId, 1);
             return new Result(entityId: offerId, amount: ExtraCluePrice);
-        });
+        }, tradeOnly: true);
 
         public Result BuyBox(string transactionId, string offerId) => Apply(transactionId, next =>
         {
@@ -207,7 +209,7 @@ namespace ChoDoLa.Gameplay
             next.Bought++;
             next.ExtraClues.Clear();
             return new Result(entityId: box.Id, amount: offer.Price);
-        });
+        }, tradeOnly: true);
 
         public Result StopBuying(string transactionId, int expectedDay) => Apply(transactionId, next =>
         {
@@ -227,7 +229,7 @@ namespace ChoDoLa.Gameplay
             box.Id = "item:" + box.Id;
             next.Inventory.Add(box);
             return new Result(entityId: box.Id);
-        });
+        }, tradeOnly: true);
 
         public ItemView Inspect(string itemId)
         {
@@ -244,11 +246,15 @@ namespace ChoDoLa.Gameplay
             next.Inventory.Remove(item);
             next.Cash += price;
             return new Result(entityId: itemId, amount: price, wasFake: item.Fake);
-        });
+        }, tradeOnly: true);
 
-        public Result EndDay(string transactionId, int expectedDay, bool postpone = false) => Apply(transactionId, next =>
+        public Result EndDay(string transactionId, int expectedDay, bool postpone = false) =>
+            SettleDay(transactionId, expectedDay, postpone, requireNight: false);
+
+        private Result SettleDay(string transactionId, int expectedDay, bool postpone, bool requireNight) => Apply(transactionId, next =>
         {
             if (next.Day != expectedDay) return new Result("STALE_DAY");
+            if (requireNight && !IsNight) return new Result("WAIT_UNTIL_NIGHT");
             var installment = ScheduledDebt(next.Day);
             var due = installment + next.Arrears + next.CarryDebt;
             next.CarryDebt = 0;
@@ -279,6 +285,7 @@ namespace ChoDoLa.Gameplay
             else
             {
                 next.Day++;
+                next.ElapsedDaySeconds = 0;
                 next.Bought = 0;
                 next.StoppedBuying = false;
                 next.ExtraClues.Clear();
@@ -287,7 +294,7 @@ namespace ChoDoLa.Gameplay
             return new Result(amount: paid, penalty: penalty);
         });
 
-        private Result Apply(string transactionId, Func<State, Result> change)
+        private Result Apply(string transactionId, Func<State, Result> change, bool tradeOnly = false)
         {
             Result result;
             lock (writeLock)
@@ -295,6 +302,7 @@ namespace ChoDoLa.Gameplay
                 if (string.IsNullOrWhiteSpace(transactionId)) return new Result("INVALID_TRANSACTION");
                 if (state.AppliedTransactions.Contains(transactionId)) return new Result("DUPLICATE_TRANSACTION");
                 if (Status != "active") return new Result("RUN_ENDED");
+                if (tradeOnly && IsNight) return new Result("MARKET_CLOSED");
 
                 var next = JsonConvert.DeserializeObject<State>(JsonConvert.SerializeObject(state));
                 result = change(next);

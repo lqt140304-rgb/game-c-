@@ -109,6 +109,9 @@ namespace ChoDoLa.Contracts
         public int MaxDailyBoxes;
         public int DebtDueToday;
         public int Arrears;
+        public int ClockMinute;
+        public string ClockPhase;
+        public bool TimedDays;
         public int CarryDebt;
         public bool PostponeAvailable;
         public bool IsDebtPaidToday;

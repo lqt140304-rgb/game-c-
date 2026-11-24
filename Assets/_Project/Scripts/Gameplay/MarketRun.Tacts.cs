@@ -81,7 +81,7 @@ namespace ChoDoLa.Gameplay
             next.Cash -= price;
             next.OwnedTacts.Add(tactId);
             return new Result(entityId: tactId, amount: price);
-        });
+        }, tradeOnly: true);
 
         public Result EquipTact(string transactionId, string tactId, int slot) => Apply(transactionId, next =>
         {

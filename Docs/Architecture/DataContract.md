@@ -127,3 +127,11 @@ Prefab hiển thị được tra bằng mã `CP1–CP3` hoặc `TC1–TC3` tại
 `MarketRun` cấp một gia truyền theo seed đầu ván. Scene đọc `ActiveHeirloomId`, `ActiveHeirloomName`, `CarryDebt` và `PostponeAvailable`. GT2 thêm một manh mối miễn phí cho hộp H1, tuân theo giới hạn ba manh mối. GT1 cho phép gọi `EndDay(transactionId, expectedDay, postpone: true)` đúng một lần và trước ngày 7. Nợ tồn vẫn được xử lý cuối ngày. Phần kỳ được hoãn chuyển sang ngày sau với hệ số 1,15, làm tròn lên.
 
 Sổ nợ hiển thị gia truyền, kỳ hoãn còn phải thu và nút hoãn nếu còn khả dụng. Nút hoãn là một cách xác nhận kết thúc ngày, không tạo thao tác thu nợ riêng. Bản lưu giữ mã gia truyền, lượt hoãn đã dùng và số tiền chuyển kỳ. Bản lưu cũ nhận gia truyền ổn định từ seed đã lưu. Quyền chọn qua M1 sẽ nối khi hợp nhất với nhánh Cây Phát Triển.
+
+### Đồng hồ ngày và ngủ ở phòng trọ
+
+Cấu hình `day_clock` trong `content.json` đặt khung một ngày khoảng 600 giây. Bắt đầu lúc 08:00, sau phút đầu chuyển sang buổi chợ và lúc 18:00 (giây 540) dừng giao dịch mới. Giờ tăng đến 19:00 rồi dừng để người chơi có thể về phòng trọ. Mở hộp đã ghi nhận trước khi đóng chợ vẫn hoàn thành hoạt ảnh và bước soi hiện tại. Ngày chỉ sang khi ngủ.
+
+Gắn `SleepBedInteractable` và collider lên giường trong scene có `Sprint1HudController`. Khi giường được khởi tạo, đồng hồ bắt đầu chạy và Sổ nợ bỏ nút kết thúc ngày trực tiếp. Ở sổ nợ, GT1 cho đánh dấu hoãn. Tương tác với giường ban đêm gọi `Sleep`, chốt nợ và tự lưu trong cùng giao dịch. Sau ngày 7 hiển thị kết quả. Scene thử chưa có giường vẫn dùng luồng kết thúc ngày từ sổ.
+
+`CurrentRunState.ClockMinute` và `ClockPhase` cung cấp giờ và buổi để giao diện điện thoại hoặc ánh sáng cảnh đọc. Đóng chợ và các mốc 15 giây ghi lại đồng hồ, cùng với thao tác lưu khi ứng dụng rời tiêu điểm hoặc thoát. Tải lại không chạy bù thời gian ngoài game. Scene hiện chưa gắn giường, điện thoại hay ánh sáng theo buổi.

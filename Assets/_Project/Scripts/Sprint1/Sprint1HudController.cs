@@ -111,6 +111,7 @@ namespace ChoDoLa.Sprint1
         private int _ledgerConfirmedDay;
         private Button _endDayBtn;
         private Button _postponeDayBtn;
+        private int _postponeOnDay;
         private RectTransform _tabInvRt;
         private RectTransform _tabTactRt;
         private RectTransform _tabBikheRt;
@@ -370,6 +371,18 @@ namespace ChoDoLa.Sprint1
             _inspectModal.SetActive(true);
             if (_inspectHintsBar != null) _inspectHintsBar.SetActive(true);
             RefreshHudVisibility();
+        }
+
+        public void EnableSleepAtBed() => marketService?.EnableTimedDays();
+
+        public bool CanSleepAtBed => marketService != null && marketService.CanSleep && !IsAnyModalOpen();
+
+        public void SleepAtBed()
+        {
+            if (!CanSleepAtBed) return;
+            var state = marketService.CurrentRunState;
+            if (marketService.RequestEndDay(state.CurrentDay, _postponeOnDay == state.CurrentDay && state.PostponeAvailable))
+                _postponeOnDay = 0;
         }
 
         public void OpenLedgerModal(bool startOnDebtTab)
@@ -1033,7 +1046,15 @@ namespace ChoDoLa.Sprint1
                 stT.alignment = TextAnchor.MiddleRight;
             }
 
+            _endDayBtn.gameObject.SetActive(!s.TimedDays);
             _endDayBtn.interactable = !s.IsRunEnded;
+            if (s.TimedDays)
+            {
+                string clock = $"{s.ClockMinute / 60:D2}:{s.ClockMinute % 60:D2}";
+                _debtSummaryText.text += $"\n{clock} · " + (s.ClockPhase == "night" ? "Về giường để ngủ" : "Ngủ sau 18:00");
+                var label = _postponeDayBtn.GetComponentInChildren<Text>();
+                if (label != null) label.text = _postponeOnDay == s.CurrentDay ? "Bỏ hoãn kỳ này" : "Hoãn khi ngủ · +15%";
+            }
             _postponeDayBtn.gameObject.SetActive(s.PostponeAvailable);
         }
 
@@ -1727,6 +1748,13 @@ namespace ChoDoLa.Sprint1
             _postponeDayBtn = CreateButton(debtActions.transform, "Hoãn kỳ nợ · +15%", ColBrassDark, 0f, 56f, () =>
             {
                 if (marketService == null || !_ledgerModal.activeSelf) return;
+                var snapshot = marketService.CurrentRunState;
+                if (snapshot.TimedDays)
+                {
+                    _postponeOnDay = _postponeOnDay == snapshot.CurrentDay ? 0 : snapshot.CurrentDay;
+                    RefreshDebtTab();
+                    return;
+                }
                 if (marketService.RequestEndDay(_ledgerConfirmedDay, postpone: true) && _ledgerModal.activeSelf)
                     CloseAllModals();
             });

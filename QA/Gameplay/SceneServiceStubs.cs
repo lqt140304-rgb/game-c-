@@ -14,6 +14,9 @@ namespace ChoDoLa.Gameplay
     public sealed class MarketRunHost
     {
         public MarketRun Run { get; set; }
+        public bool TimedDaysEnabled { get; private set; }
+        public void EnableTimedDays() => TimedDaysEnabled = true;
+        public event System.Action ClockPhaseChanged { add { } remove { } }
         public bool StartNextRun() => false;
     }
 }
