@@ -41,7 +41,9 @@ SETS = {
     "he": [("%s 4.500.000 đ, R%d T%d H%d X%d" % (nm, *[round(100 * v) for v in t[:4]]), one(nm, tiers=dict(zip("RTHXL", t))))
            for nm in ("Cổ Phong", "Thiên Cơ") for t in ((.15, .30, .15, .06, 0), (.12, .29, .17, .08, 0))],
 }
-N = {"final": 1500, "sens": 1000, "he": 1000}
+SETS["xacnhan"] = [("Cổ Phong", U.scenario("Cổ Phong")), ("mo_khoa", U.scenario("mo_khoa")), ("tat_ca", U.scenario("tat_ca")),
+                   ("tất cả, shop bày 2 rương mới mỗi ngày", U.scenario("tat_ca", shop_extra=2))]
+N = {"final": 1500, "sens": 1000, "he": 1000, "xacnhan": 1500}
 
 
 def job(a):
