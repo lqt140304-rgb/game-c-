@@ -19,7 +19,7 @@ Mỗi chủ đề là một **hệ sinh thái riêng**: một rương, một nh�
 9. **Rương Tổng Hợp** ra ngẫu nhiên các món trong **bộ sưu tập của các rương thường** (4 rương cơ bản), **không** ra món của rương chủ đề. Điều này **thay** ghi chú cũ "Rương Tổng Hợp là rương cho Huyền thoại" ở spec tier.
 10. **Rương thường cũng có món Huyền thoại**, nhưng **cơ bản hơn, giá thấp hơn** Huyền thoại của rương chủ đề và rương đặc biệt. Rương thường để **sinh tồn**: mở để kiếm tiền. Đồ ở đây tự phát, không cần nhiều câu chuyện; người chơi tự dệt câu chuyện cho nó. Tiêu chí "biểu tượng, có truyền thuyết" ở mục 8 chỉ áp dụng cho Huyền thoại của rương chủ đề.
 11. **Vé số độc đắc giữ ở Huyền thoại** (Huyền thoại của rương thường). Sau này có thể thêm cơ chế mang vé đến **quầy vé số để rút thưởng** (chưa thiết kế).
-12. **Bộ sưu tập khóa chặt theo rương:** mỗi món chỉ thuộc **một** rương. Món của chủ đề chỉ ra ở rương chủ đề đó; món của từng rương cơ bản chỉ ra ở rương đó. **Ngoại lệ duy nhất:** Rương Tổng Hợp ra được món của các rương cơ bản (mục 9).
+12. **Bậc Rác dùng chung** cho mọi rương (ngoại lệ). **Các bậc còn lại khóa chặt theo rương:** mỗi món chỉ thuộc **một** rương. Món của chủ đề chỉ ra ở rương chủ đề đó; món của từng rương cơ bản chỉ ra ở rương đó. **Ngoại lệ duy nhất:** Rương Tổng Hợp ra được món của các rương cơ bản (mục 9).
 
 ## Cơ chế mở rương (đã chốt)
 
@@ -53,32 +53,43 @@ Tỉ lệ bậc của từng rương và trọng số từng món: Claude 2.
 
 Dấu "?" là gợi ý ghép đồ đã có mô hình, **chưa chốt**. Món Huyền thoại riêng của từng chủ đề có thể là món sẵn có hoặc món làm mới; mô hình mới sẽ gom vào một lượt Meshy chung để đỡ tốn credit.
 
-## Bảng chia 38 món vào rương (đề xuất, chờ duyệt)
+## Danh sách rương và món theo bậc (đề xuất, chờ duyệt)
 
-Mỗi món một rương. "—" là ô **còn thiếu**, sẽ bổ sung cùng chủ dự án. Kim Khí ngoài bảng này còn ra **tạo tác**.
+Chủ dự án đồng ý danh sách rương chủ đề gợi ý (2026-11-24). Món có mã (V, H, X, L, R) là **đã có mô hình**; món không mã là **đề xuất mới, chưa có mô hình**. "(nhại)" là bản gợi nhắc, không dùng tên hay logo thật.
 
-**Rương cơ bản**
+### Rác: dùng chung cho mọi rương
 
-| Rương | Rác | Thường | Hiếm | Rất hiếm | Huyền thoại (cơ bản) |
-|---|---|---|---|---|---|
-| Gỗ (an toàn, đồ đời thường) | Giày cũ R01, Tất thối R02, Trứng thối R03, Xương cá R04 | Bình sứ V01, Đồng hồ quả lắc V03, Lá bùa V09 | — | — | Vé số độc đắc L04 |
-| Vải Niêm (đồ xưa, gom bộ) | — | Sách cổ V02, Mảnh kính thiên văn V04 | — | Mảnh vảy long V10 | — |
-| Kim Khí (máy móc, tạo tác) | Lon bẹp R06 | Thiết bị liên lạc V05 | Pin lượng tử V06 | Tinh thể lam V07 | — |
-| Đen (cờ bạc, cá độ) | Áo đấu cũ R07, Vé cược nhàu R09 | — | — | — | — |
+**Ngoại lệ của luật khóa chặt:** bậc Rác là **một kho chung**, rương nào quay ra Rác cũng lấy từ kho này. Gồm 9 món: Giày cũ R01, Tất thối R02, Trứng thối R03, Xương cá R04, Dép tổ ong R05, Lon bẹp R06, Áo đấu cũ R07, Bao thuốc rồng R08, Vé cược nhàu R09. Có thể thêm rác sau.
 
-**Rương chủ đề**
+### Rương cơ bản (Huyền thoại cơ bản, rẻ hơn, không cần truyền thuyết)
 
-| Rương | Rác | Thường | Hiếm | Rất hiếm | Huyền thoại (biểu tượng) |
-|---|---|---|---|---|---|
-| Việt Nam | Dép tổ ong R05, Bao thuốc rồng R08 | Quạt nan V11 | Cassette H01, Nón lá H02 | Đàn thần X01, Trống đồng X02 | Ấn Ngọc Tỷ L01, Nỏ thần L05, Gậy sắt làng Gióng L06 |
-| Wibu | — | — | Túi thần kỳ H03, Cục sạc chuột H04 | Quả cầu ngọc X04 | Quyển sổ định mệnh (chưa có mô hình) |
-| Truyền thuyết Châu Âu | — | — | Gương cổ tích V08, Mũ phù thủy H05 | — | Táo vàng L02, Giày thủy tinh L03, Chiếc nhẫn duy nhất (chưa có mô hình) |
-| Robot (và khoa học viễn tưởng) | — | — | — | Kiếm sáng X03, Trái tim robot X05, Phi thuyền mini X06 | — |
-| Mô hình | — | Máy game 8-bit V12 | — | — | — |
+| Rương | Thường | Hiếm | Rất hiếm | Huyền thoại |
+|---|---|---|---|---|
+| Gỗ | Bình sứ V01, Đồng hồ quả lắc V03, Lá bùa V09 | Ấm trà đất nứt, Hộp nữ trang gỗ khảm | Tượng Di Lặc gỗ | Vé số độc đắc L04 |
+| Vải Niêm | Sách cổ V02, Mảnh kính thiên văn V04 | Tranh cuộn thủy mặc, Con dấu đồng | Mảnh vảy long V10 | Bản đồ cổ vẽ tay |
+| Kim Khí (+ tạo tác) | Thiết bị liên lạc V05, Radio bóng đèn | Pin lượng tử V06, Máy ảnh phim cổ | Tinh thể lam V07 | Đồng hồ bỏ túi không bao giờ hết pin |
+| Đen | Xúc xắc chì, Bộ bài cũ | Bật lửa mạ vàng, Đồng hồ "xách tay" | Nhẫn kim cương không rõ nguồn | Két sắt chưa ai mở được |
 
-**Thiếu nhiều nhất:** Huyền thoại của Vải Niêm, Kim Khí, Đen, Robot, Mô hình; gần như cả rương Mô hình; bậc thấp của Wibu, Châu Âu, Robot; Hiếm và Rất hiếm của Gỗ, bậc giữa của Đen.
+### Rương chủ đề (Huyền thoại là biểu tượng, có câu chuyện)
 
-**Lý do vài chỗ gán:** Áo đấu và vé cược vào Đen vì gắn chuyện cá độ của nhân vật chính. Gương cổ tích chuyển từ đồ thường sang Châu Âu (Bạch Tuyết). Kiếm sáng xếp vào Robot vì là khoa học viễn tưởng, không phải anime. Máy game 8-bit tạm để ở Mô hình.
+| Rương | Thường | Hiếm | Rất hiếm | Huyền thoại |
+|---|---|---|---|---|
+| Việt Nam | Quạt nan V11, Đèn dầu | Cassette H01, Nón lá H02 | Đàn thần X01, Trống đồng X02 | Ấn Ngọc Tỷ L01, Nỏ thần L05, Gậy sắt làng Gióng L06 |
+| Tuổi thơ Việt Nam | Bi ve, Con quay gỗ | Tò he, Hộp dế mèn | Đèn ông sao | Diều sáo |
+| Wibu | Băng đô ninja (nhại), Bát mì ramen (nhại) | Túi thần kỳ H03, Cục sạc chuột H04 | Quả cầu ngọc X04 | Quyển sổ định mệnh (nhại) |
+| Truyền thuyết Châu Âu | Hạt đậu thần, Guồng quay sợi | Gương cổ tích V08, Mũ phù thủy H05 | Sừng kỳ lân | Táo vàng L02, Giày thủy tinh L03, Chiếc nhẫn duy nhất (nhại) |
+| Robot | Tay robot thiếc, Robot dây cót | Đầu robot đồ chơi, Chó robot | Trái tim robot X05 | Bàn tay robot khổng lồ (nhại) |
+| Không gian | Đá mặt trăng, Thức ăn phi hành gia | Mũ phi hành gia | Phi thuyền mini X06, Kiếm sáng X03 (nhại) | Lá cờ trên mặt trăng (nhại) |
+| Game (gộp Mô hình) | Máy game 8-bit V12, Băng game | Tay cầm vàng, Máy điện tử thùng mini | Mô hình nhân vật game (nhại) | Hộp băng game vàng (nhại) |
+| Thể thao | Giày bóng đá, Huy chương đồng | Vợt cầu lông, Găng thủ môn | Áo đấu có chữ ký (nhại) | Cúp vàng thế giới (nhại) |
+| Âm nhạc | Đĩa than, Kèn harmonica | Micro cổ, Máy hát đĩa | Đàn bầu | Cây ghi-ta của danh ca (nhại) |
+| Phim kinh dị | Nến đen, Búp bê vải | Gương ám, Hộp nhạc tự kêu | Búp bê ma (nhại) | Băng video "7 ngày" (nhại) |
+| Ai Cập cổ đại | Bọ hung, Giấy cói | Tượng mèo, Bình đựng nội tạng | Con mắt Horus | Mặt nạ vàng pharaoh |
+| Hải tặc | La bàn, Đồng xu vàng | Ống nhòm, Móc tay | Bản đồ kho báu | Mũ rơm thuyền trưởng (nhại) |
+| Trung Hoa cổ | Quạt lông, Bình rượu sứ | Bàn tính, Đèn lồng đỏ | Kiếm Thanh Long | Gậy Như Ý |
+| Nhật Bản cổ | Quạt giấy, Mèo vẫy tay | Mặt nạ Noh, Ấm trà sắt | Giáp samurai mini | Thanh kiếm cắt sắt |
+
+**Thay đổi so với bảng chia cũ:** Mô hình gộp vào Game; Kiếm sáng chuyển sang Không gian; Áo đấu cũ và Vé cược thành rác chung. **Số món mới cần mô hình:** khoảng 75. Gom tối đa 8 món mỗi lượt Meshy, ước tính sẽ báo trước khi chạy.
 
 ## Hệ quả cần xử lý
 
