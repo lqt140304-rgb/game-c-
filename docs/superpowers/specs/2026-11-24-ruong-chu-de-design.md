@@ -53,6 +53,33 @@ Tỉ lệ bậc của từng rương và trọng số từng món: Claude 2.
 
 Dấu "?" là gợi ý ghép đồ đã có mô hình, **chưa chốt**. Món Huyền thoại riêng của từng chủ đề có thể là món sẵn có hoặc món làm mới; mô hình mới sẽ gom vào một lượt Meshy chung để đỡ tốn credit.
 
+## Bảng chia 38 món vào rương (đề xuất, chờ duyệt)
+
+Mỗi món một rương. "—" là ô **còn thiếu**, sẽ bổ sung cùng chủ dự án. Kim Khí ngoài bảng này còn ra **tạo tác**.
+
+**Rương cơ bản**
+
+| Rương | Rác | Thường | Hiếm | Rất hiếm | Huyền thoại (cơ bản) |
+|---|---|---|---|---|---|
+| Gỗ (an toàn, đồ đời thường) | Giày cũ R01, Tất thối R02, Trứng thối R03, Xương cá R04 | Bình sứ V01, Đồng hồ quả lắc V03, Lá bùa V09 | — | — | Vé số độc đắc L04 |
+| Vải Niêm (đồ xưa, gom bộ) | — | Sách cổ V02, Mảnh kính thiên văn V04 | — | Mảnh vảy long V10 | — |
+| Kim Khí (máy móc, tạo tác) | Lon bẹp R06 | Thiết bị liên lạc V05 | Pin lượng tử V06 | Tinh thể lam V07 | — |
+| Đen (cờ bạc, cá độ) | Áo đấu cũ R07, Vé cược nhàu R09 | — | — | — | — |
+
+**Rương chủ đề**
+
+| Rương | Rác | Thường | Hiếm | Rất hiếm | Huyền thoại (biểu tượng) |
+|---|---|---|---|---|---|
+| Việt Nam | Dép tổ ong R05, Bao thuốc rồng R08 | Quạt nan V11 | Cassette H01, Nón lá H02 | Đàn thần X01, Trống đồng X02 | Ấn Ngọc Tỷ L01, Nỏ thần L05, Gậy sắt làng Gióng L06 |
+| Wibu | — | — | Túi thần kỳ H03, Cục sạc chuột H04 | Quả cầu ngọc X04 | Quyển sổ định mệnh (chưa có mô hình) |
+| Truyền thuyết Châu Âu | — | — | Gương cổ tích V08, Mũ phù thủy H05 | — | Táo vàng L02, Giày thủy tinh L03, Chiếc nhẫn duy nhất (chưa có mô hình) |
+| Robot (và khoa học viễn tưởng) | — | — | — | Kiếm sáng X03, Trái tim robot X05, Phi thuyền mini X06 | — |
+| Mô hình | — | Máy game 8-bit V12 | — | — | — |
+
+**Thiếu nhiều nhất:** Huyền thoại của Vải Niêm, Kim Khí, Đen, Robot, Mô hình; gần như cả rương Mô hình; bậc thấp của Wibu, Châu Âu, Robot; Hiếm và Rất hiếm của Gỗ, bậc giữa của Đen.
+
+**Lý do vài chỗ gán:** Áo đấu và vé cược vào Đen vì gắn chuyện cá độ của nhân vật chính. Gương cổ tích chuyển từ đồ thường sang Châu Âu (Bạch Tuyết). Kiếm sáng xếp vào Robot vì là khoa học viễn tưởng, không phải anime. Máy game 8-bit tạm để ở Mô hình.
+
 ## Hệ quả cần xử lý
 
 - Đồ nhại hiện có (áo đấu, máy game 8-bit, túi thần kỳ, cục sạc chuột, mũ phù thủy, kiếm sáng, quả cầu ngọc) cần phân vào các chủ đề mới.
