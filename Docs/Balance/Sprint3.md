@@ -1,6 +1,6 @@
 # Sprint 3 — So sánh chiến thuật trên seed tái lập (Claude 2)
 
-> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+> **Tiền tệ:** số tiền trong tài liệu này đã đổi sang **đồng Việt Nam** ngày 2026-11-24 (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ, `QA/currency.py` đổi sang đồng khi in.
 
 > **Cập nhật theo mục tiêu độ khó:** chủ dự án muốn ván khó và nhiều đánh đổi. Đề xuất giá nền, hiệu ứng nhân 2 và các tỷ lệ thắng 42% đến 50% trong tài liệu này **quá dễ** và đã được thay bằng [DoKho.md](DoKho.md). Phát hiện về nội dung gốc, giám định và vòng xoáy thiếu tiền vẫn đúng.
 
@@ -8,9 +8,9 @@ Mô phỏng ba chiến thuật trên 10.000 seed (seed 0 đến 9999, cùng seed
 
 ## Kết luận ngắn
 
-1. **Nội dung gốc không thể thắng: 0,0% ở cả ba chiến thuật.** Chỉ hộp H1 lời (3,18 lần giá hộp). H2, H3 và Rương Đen đều lỗ kỳ vọng (0,77 / 0,77 / 0,62 lần) sau khi tính chất lượng và hàng giả. Với giới hạn 3 hộp mỗi ngày, hộp rẻ không đủ kiếm 6.550 xu nợ.
+1. **Nội dung gốc không thể thắng: 0,0% ở cả ba chiến thuật.** Chỉ hộp H1 lời (3,18 lần giá hộp). H2, H3 và Rương Đen đều lỗ kỳ vọng (0,77 / 0,77 / 0,62 lần) sau khi tính chất lượng và hàng giả. Với giới hạn 3 hộp mỗi ngày, hộp rẻ không đủ kiếm 65.500.000 đ nợ.
 2. **Giá nền cần tăng mạnh** ở các hiện vật của H2, H3 và Rương Đen. Bảng đề xuất ở mục 3 đưa tỷ lệ thắng của người chơi chưa biết soi lên 42% / 49% (thận trọng / liều).
-3. **Tạo tác và combo hiện không đáng mua.** Chiến thuật săn combo thắng 19,3%, thua chiến thuật không mua tạo tác (41,9%). Hiệu ứng tăng giá chỉ áp dụng cho nhóm Quá khứ và Thần thoại, mà các nhóm này nằm ở hộp rẻ nhất, nên 996 xu chi cho tạo tác chỉ thu thêm 170 xu.
+3. **Tạo tác và combo hiện không đáng mua.** Chiến thuật săn combo thắng 19,3%, thua chiến thuật không mua tạo tác (41,9%). Hiệu ứng tăng giá chỉ áp dụng cho nhóm Quá khứ và Thần thoại, mà các nhóm này nằm ở hộp rẻ nhất, nên 9.960.000 đ chi cho tạo tác chỉ thu thêm 1.700.000 đ.
 4. **Luật nợ khiến gia truyền giảm phạt vô nghĩa.** Thắng% với GT1 (phạt 10%) và GT2 đều bằng 41,9%: ván nào từng hụt tiền thì gần như chắc thua, nên giảm mức phạt không đổi kết quả.
 5. **Giám định và phục chế chưa có giá trị kinh tế** vì giá bán không phụ thuộc đã giám định hay chưa. Mọi hiệu ứng giảm phí (CP2, TC1, Mốc 2, BK2, CB3) hiện không có tác dụng.
 
@@ -33,8 +33,8 @@ Luật nợ lấy từ Claude 1. Phần chưa có luật thì Claude 2 đặt gi
 
 - Chất lượng: Nguyên 50% (nhân 1,0), Xước 35% (nhân 0,7), Hỏng 15% (nhân 0,3).
 - Hàng giả 15%, riêng V09 Lá bùa 35%. Bán chỉ được 20%.
-- Phí giám định 15% giá nền (tối thiểu 20 xu). Phí phục chế 25% giá nền, đưa Hỏng lên Xước. Người chơi phục chế món Hỏng khi còn đủ tiền.
-- Hiệu ứng thông tin (thêm manh mối, thêm dấu hiệu soi) không đo được bằng xu nên không có trong mô phỏng. Đó là CB2, GT2, TC2 và Mốc 3 Cổ Phong.
+- Phí giám định 15% giá nền (tối thiểu 200.000 đ). Phí phục chế 25% giá nền, đưa Hỏng lên Xước. Người chơi phục chế món Hỏng khi còn đủ tiền.
+- Hiệu ứng thông tin (thêm manh mối, thêm dấu hiệu soi) không đo được bằng tiền nên không có trong mô phỏng. Đó là CB2, GT2, TC2 và Mốc 3 Cổ Phong.
 - Người chơi bán ngay mọi hiện vật, không giữ chờ giá. Không mô phỏng kỹ năng soi nên kết quả là **sàn** cho người chơi mới, người chơi giỏi sẽ cao hơn.
 
 ## Ba chiến thuật
@@ -61,34 +61,34 @@ Giá trị kỳ vọng mỗi hộp (đã tính chất lượng và hàng giả):
 
 | Hộp | Giá | Kỳ vọng | Lần giá hộp |
 | --- | --- | --- | --- |
-| H1 Hộp Gỗ Nhỏ | 100 | 318 | **3,18** |
-| H2 Hộp Kim Loại Mờ | 350 | 271 | **0,77** |
-| H3 Hộp Vải Dày | 800 | 619 | **0,77** |
-| RD Rương Đen | 1.500 | 932 | **0,62** |
+| H1 Hộp Gỗ Nhỏ | 1.000.000 đ | 3.180.000 đ | **3,18** |
+| H2 Hộp Kim Loại Mờ | 3.500.000 đ | 2.710.000 đ | **0,77** |
+| H3 Hộp Vải Dày | 8.000.000 đ | 6.190.000 đ | **0,77** |
+| RD Rương Đen | 15.000.000 đ | 9.320.000 đ | **0,62** |
 
 ## 2. Đề xuất giá nền (Claude 2 sở hữu cân bằng)
 
-Mục tiêu giá trị kỳ vọng: H1 2,6 lần, H2 1,7 lần, H3 1,4 lần, RD 1,25 lần. Hộp càng đắt thì tỷ lệ lời càng thấp nhưng số xu lời tuyệt đối càng cao, vì chỉ được mua 3 hộp mỗi ngày.
+Mục tiêu giá trị kỳ vọng: H1 2,6 lần, H2 1,7 lần, H3 1,4 lần, RD 1,25 lần. Hộp càng đắt thì tỷ lệ lời càng thấp nhưng số tiền lời tuyệt đối càng cao, vì chỉ được mua 3 hộp mỗi ngày.
 
 | Hiện vật | Giá nền gốc | Giá nền đề xuất |
 | --- | --- | --- |
-| V01 Bình sứ men xanh | 300 | 250 |
-| V02 Sách cổ bìa da | 500 | 410 |
-| V03 Đồng hồ quả lắc cũ | 650 | 530 |
-| V04 Mảnh kính đồng hồ thiên văn | 200 | 440 |
-| V05 Thiết bị liên lạc hỏng | 150 | 330 |
-| V06 Bộ pin lượng tử | 900 | 1.970 |
-| V07 Tinh thể lam cầm tay | 1.200 | 2.880 |
-| V08 Gương thủy tinh cổ tích | 1.000 | 1.700 |
-| V09 Lá bùa giấy vàng | 400 | 960 |
-| V10 Mảnh vảy long | 1.800 | 3.060 |
+| V01 Bình sứ men xanh | 3.000.000 đ | 2.500.000 đ |
+| V02 Sách cổ bìa da | 5.000.000 đ | 4.100.000 đ |
+| V03 Đồng hồ quả lắc cũ | 6.500.000 đ | 5.300.000 đ |
+| V04 Mảnh kính đồng hồ thiên văn | 2.000.000 đ | 4.400.000 đ |
+| V05 Thiết bị liên lạc hỏng | 1.500.000 đ | 3.300.000 đ |
+| V06 Bộ pin lượng tử | 9.000.000 đ | 19.700.000 đ |
+| V07 Tinh thể lam cầm tay | 12.000.000 đ | 28.800.000 đ |
+| V08 Gương thủy tinh cổ tích | 10.000.000 đ | 17.000.000 đ |
+| V09 Lá bùa giấy vàng | 4.000.000 đ | 9.600.000 đ |
+| V10 Mảnh vảy long | 18.000.000 đ | 30.600.000 đ |
 
 | Hộp | Giá | Kỳ vọng mới | Lần giá hộp |
 | --- | --- | --- | --- |
-| H1 | 100 | 261 | 2,61 |
-| H2 | 350 | 594 | 1,70 |
-| H3 | 800 | 1.117 | 1,40 |
-| RD | 1.500 | 1.876 | 1,25 |
+| H1 | 1.000.000 đ | 2.610.000 đ | 2,61 |
+| H2 | 3.500.000 đ | 5.940.000 đ | 1,70 |
+| H3 | 8.000.000 đ | 11.170.000 đ | 1,40 |
+| RD | 15.000.000 đ | 18.760.000 đ | 1,25 |
 
 Nếu Claude 1 muốn giữ giá nền nhỏ cho đẹp, có thể chia mọi giá nền cho một hệ số rồi nhân lại ở hệ số giá bán chung (ví dụ giá nền nhân 2 lần khi bán). Mình chỉ kiểm hệ quả tiền, không đổi bản sắc từng món.
 
@@ -96,9 +96,9 @@ Nếu Claude 1 muốn giữ giá nền nhỏ cho đẹp, có thể chia mọi gi
 
 | Chiến thuật | Thắng | Từng hụt tiền | Ngày hụt TB mỗi ván | Ngày thua TB | CB1 | CB3 | BK1 | BK2 | Chi tạo tác TB |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Thận trọng | 41,9% | 58,1% | 1,07 | 5,0 | — | — | — | — | 0 |
-| Săn combo | 19,3% | 80,7% | 1,46 | 5,1 | 61,0% | 23,3% | 60,0% | 45,3% | 996 |
-| Liều | 48,9% | 51,1% | 1,10 | 4,9 | — | — | — | — | 0 |
+| Thận trọng | 41,9% | 58,1% | 1,07 | 5,0 | — | — | — | — | 0 đ |
+| Săn combo | 19,3% | 80,7% | 1,46 | 5,1 | 61,0% | 23,3% | 60,0% | 45,3% | 9.960.000 đ |
+| Liều | 48,9% | 51,1% | 1,10 | 4,9 | — | — | — | — | 0 đ |
 
 Ba điều thấy từ bảng:
 
@@ -113,21 +113,21 @@ Tất cả dùng giá nền đề xuất. Thắng% theo thứ tự thận trọn
 | Phương án | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- |
 | Luật gốc | 41,9% | 19,3% | 48,9% |
-| Chừa lại 100 xu khi thu nợ | 42,4% | 20,4% | 51,0% |
+| Chừa lại 1.000.000 đ khi thu nợ | 42,4% | 20,4% | 51,0% |
 | Giá tạo tác nhân 0,5 | 41,9% | 27,6% | 48,9% |
 | Hiệu ứng tăng giá áp dụng mọi hiện vật (CP1 +5%, CB1 +10%) | 41,9% | 36,0% | 48,9% |
 | Như trên và hiệu ứng nhân 2 (+10%, +20%) | 41,9% | **50,3%** | 48,9% |
 | Như trên và giá tạo tác nhân 0,5 | 41,9% | 59,7% | 48,9% |
 
-Với phương án "mọi hiện vật, hiệu ứng nhân 2", săn combo chi 1.364 xu và thu thêm 6.036 xu, thắng 50,3%, nhỉnh hơn thận trọng và liều. Đây là phương án Claude 2 đề xuất: tạo tác đáng mua nhưng không thống trị.
+Với phương án "mọi hiện vật, hiệu ứng nhân 2", săn combo chi 13.640.000 đ và thu thêm 60.360.000 đ, thắng 50,3%, nhỉnh hơn thận trọng và liều. Đây là phương án Claude 2 đề xuất: tạo tác đáng mua nhưng không thống trị.
 
 **Đề xuất cụ thể:** CP1 +10% giá bán mọi hiện vật. CB1 thêm +20% giá bán mọi hiện vật bán trong ngày. CP3 giữ +10% cho Thần thoại.
 
 ## 5. Trả lời câu hỏi của Claude 1
 
-**Mức giảm phạt 10% đến 20% có đủ hấp dẫn không?** Không. GT1 và GT2 cho kết quả giống hệt (41,9%), và chừa lại 100 xu cũng như nhau (42,4%). Thiếu tiền một lần gần như là thua, nên giảm mức phạt không có giá trị. Giá trị chỉ xuất hiện nếu người chơi có đường gỡ lại sau khi thiếu tiền (D-05). TC3 giá 1.000 xu vì thế cũng không đáng mua cho hiệu ứng giảm phạt.
+**Mức giảm phạt 10% đến 20% có đủ hấp dẫn không?** Không. GT1 và GT2 cho kết quả giống hệt (41,9%), và chừa lại 1.000.000 đ cũng như nhau (42,4%). Thiếu tiền một lần gần như là thua, nên giảm mức phạt không có giá trị. Giá trị chỉ xuất hiện nếu người chơi có đường gỡ lại sau khi thiếu tiền (D-05). TC3 giá 10.000.000 đ vì thế cũng không đáng mua cho hiệu ứng giảm phạt.
 
-**CB3 có quá mạnh không?** Ngược lại, quá yếu. Hiệu ứng là một lần giám định miễn phí, trị giá tối đa vài trăm xu, và giám định không đổi giá bán. Hai tạo tác đi kèm (CP3 900 xu, TC3 1.000 xu) là khoản đầu tư lớn nhất trong game.
+**CB3 có quá mạnh không?** Ngược lại, quá yếu. Hiệu ứng là một lần giám định miễn phí, trị giá tối đa vài triệu đồng, và giám định không đổi giá bán. Hai tạo tác đi kèm (CP3 9.000.000 đ, TC3 10.000.000 đ) là khoản đầu tư lớn nhất trong game.
 
 **Tần suất BK1 đạt trước ngày 5?** 60,0% ở chiến thuật săn combo (mua CP1, CP2 ngày 1 đến 2). Hai chiến thuật còn lại không mua tạo tác nên 0%. BK2 (giám định 2 hiện vật Thần thoại) đạt 45,3%, nhưng phần thưởng giảm phí giám định không đáng giá nên không thúc đẩy ai làm.
 
@@ -138,7 +138,7 @@ Với phương án "mọi hiện vật, hiệu ứng nhân 2", săn combo chi 1.
 | Mã | Mức | Mô tả | Đề xuất | Chủ xử lý |
 | --- | --- | --- | --- | --- |
 | D-09 | Cao | Nội dung gốc không thể thắng (0%). H2, H3, Rương Đen lỗ kỳ vọng | Áp dụng bảng giá nền mục 2 hoặc tương đương | Claude 1, chủ dự án |
-| D-10 | Cao | Tạo tác và combo net âm cho người chơi: chi 996 xu, thu thêm 170 xu. Hiệu ứng tăng giá chỉ chạm hộp rẻ | CP1 và CB1 áp dụng mọi hiện vật, nhân 2 (mục 4) | Claude 1 |
+| D-10 | Cao | Tạo tác và combo net âm cho người chơi: chi 9.960.000 đ, thu thêm 1.700.000 đ. Hiệu ứng tăng giá chỉ chạm hộp rẻ | CP1 và CB1 áp dụng mọi hiện vật, nhân 2 (mục 4) | Claude 1 |
 | D-11 | Trung bình | Giám định không đổi giá bán nên CP2, TC1, Mốc 2, BK2, CB3 không có giá trị tiền | Chốt hệ số `u` cho món chưa giám định (mục 5) | Claude 1, chủ dự án |
 | D-12 | Trung bình | Giảm phạt nợ (GT1, TC3, Mốc 3 Thiên Cơ) vô nghĩa do vòng xoáy thiếu tiền (D-05) | Giải D-05 trước | Claude 1, chủ dự án |
 | O-03 | Cân bằng | Chiến thuật liều vẫn không bị phạt | Đo lại khi có kỹ năng soi trong bản chơi thật | Claude 2 |
