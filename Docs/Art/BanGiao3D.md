@@ -205,3 +205,21 @@ python Tools/Blender/make_chest_thien_co.py -- Assets/_Project/Art/Chests/Chest_
 - Không có `Key`, `Binding`.
 - Ảnh `Art/Source/render_chest_thien_co_open.png`: đóng, hé, mở toang, và 3 góc hình bóng; dựng ngoại tuyến bằng Cycles, **không phải ảnh từ Unity**. Chưa tạo prefab, chưa chạy trong Unity (đổi `lidOpenSign` nếu nắp mở ngược).
 - Điểm còn yếu: mặt trong nắp khi mở toang còn sáng xám, đĩa Glow phẳng và to.
+
+## Hiệu ứng và âm thanh mở rương
+
+Lõi dùng chung cho mọi rương: màu các bậc nhảy như vòng quay rồi dừng đúng bậc game đã quay, cùng lúc bóng của món trúng nhô ra khỏi rương và lớn dần tới hình hoàn chỉnh. Thiết kế, nhịp giây, bảng màu (đề xuất) và cách thêm hồ sơ cho rương mới: [spec](../../docs/superpowers/specs/2026-11-24-hieu-ung-mo-rong-design.md).
+
+- Mã: `Assets/_Project/Scripts/ChestFx/` (`ChestRevealSequence` đặt cạnh `BoxOpenSequence` trên gốc rương, hồ sơ `ChestFxProfile`, bảng màu `TierPalette`). Hạt, tia, vật liệu đều dựng bằng code, không cần prefab.
+- Âm thanh: `Assets/_Project/Audio/Chests/`, **âm thanh tạm tổng hợp bằng code** bởi `python3 Tools/Audio/make_chest_sfx.py` (chỉ cần numpy). Thay bằng âm thật sau.
+- Hồ sơ mẫu duy nhất: Chest_Golden (`ScriptableObjects/ChestFx/ChestFx_Golden.asset`, do menu tạo ra, không có sẵn trong repo vì repo không lưu file `.meta`).
+
+**Chạy thử trong Unity:**
+
+1. `git lfs pull`, và cài gói glTF **com.unity.cloud.gltfast** (Window > Package Manager > + > Add package by name). Thiếu gói thì menu sẽ cảnh báo và dùng rương giả làm bằng khối hộp, món giả là hình cầu.
+2. Mở hoặc tạo cảnh có camera `MainCamera` (ví dụ `Tools/Cho Do La/Create Sprint 0 Test Scene`).
+3. Chạy `Tools/Cho Do La/Add Chest Reveal Test`. Menu đặt Chest_Golden lên bục trước camera, gắn `BoxOpenSequence`, `ChestRevealSequence`, `AudioSource`, `GoldenGlintHook`, tạo `ChestFx_Golden.asset` (gán sẵn âm) và đối tượng `ChestRevealDemo` chứa danh sách mọi món `Art/Items/LowPoly/**/*.glb` và mọi `Chest_*.glb`.
+4. Bấm Play. **T** đổi bậc ép (vòng qua 5 bậc), **Y** chọn món minh hoạ ngẫu nhiên, **Space** mở rương, **R** đóng lại, **C** đổi rương. Hướng dẫn hiện ở góc trái trên.
+5. Nếu rương quay lưng về camera, xoay gốc rương 180° quanh Y; nếu nắp mở ngược, đổi `lidOpenSign` của `BoxOpenSequence`.
+
+**Chưa kiểm chứng:** chưa chạy trong Unity, hạt và bóng chưa thấy tận mắt, âm chưa nghe. Mã chỉ biên dịch thử với stub UnityEngine.

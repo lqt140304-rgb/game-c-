@@ -98,6 +98,12 @@ namespace ChoDoLa.Interaction
 
         public bool IsPlaying => _playing;
 
+        /// <summary>
+        /// The stage list, read by ChestFx.ChestRevealSequence to time the reveal (and to stretch a hold when the
+        /// roulette needs more time). Editing a value changes the next stage that runs; nothing else uses this.
+        /// </summary>
+        public IList<Stage> Stages => stages;
+
         // ---------------------------------------------------------------- Public API
 
         public void Play()
