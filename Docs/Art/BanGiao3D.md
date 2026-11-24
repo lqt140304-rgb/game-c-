@@ -339,6 +339,7 @@ Còn lại: xem danh sách làm lại; 7 Thường và 5 Hiếm mới chưa làm
 2 ảnh gộp 14 món (lưới 5×3, `gen_img.py ... 14`), 78 credit (số dư còn 495). Ảnh nguồn `Art/Source/ref_rac_chu_de_3.png` (đạt) và `ref_rac_chu_de_2_hong.png` (hỏng, giữ để đối chiếu); ảnh kiểm tra `render_rac_chu_de_2.png`. File ở `Items/LowPoly/Junk/`, cỡ thật (mét), đáy y=0. Cả hai ảnh đều ra 15 món (Meshy nhân đôi một món), đã xóa bản thừa khỏi ảnh trước khi dựng; cả hai có đường kẻ ô, đã làm phẳng bằng `Tools/Meshy/flatten.py vào.png ra.png 5 3`.
 
 - **Ảnh 3 đạt đủ 14 món.** Đũa, tóc giả, bàn cầu cơ tách mảnh nên đã gộp.
+- **Đã tô lại màu cả 15 món** (không tốn credit, `Tools/Meshy/retex/fix_rac.py <mã> vào.glb ra.glb`, bảng `TONE` chỉnh độ sáng, độ đậm màu, tông từng món): đỏ lì xì, đũa, ô đậm hơn; chai xanh rõ; tượng nhân sư ngả kem; lightstick ngả tím; vé và quẻ xăm ngả vàng giấy.
 - **Ảnh 2 hỏng: Meshy chỉ dựng 2 khối**, dùng được loa kẹo kéo, mất 13 món. Ảnh này ra kiểu tranh vẽ có nét viền và nhiều món phẳng (vé, sổ, poster, que kem); ảnh 3 cùng lưới vẫn đạt, nên lỗi do kiểu ảnh chứ không do số món. Lần sau: xem kỹ ảnh, kiểu tranh vẽ phẳng thì tạo lại ảnh (9 credit) trước khi dựng 3D.
 
 | Mã | Món | Rương | Tình trạng |
