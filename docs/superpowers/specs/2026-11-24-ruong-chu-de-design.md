@@ -17,12 +17,15 @@ Mỗi chủ đề là một **hệ sinh thái riêng**: một rương, một nh�
 7. Các chủ đề chủ dự án nêu: **Việt Nam, Wibu, truyền thuyết Châu Âu, mô hình, robot**. **Việt Nam vẫn là một chủ đề.** Danh sách sẽ còn thêm, chủ dự án chưa chọn.
 8. **Tiêu chí món Huyền thoại:** là **biểu tượng (icon)** của chủ đề, **có câu chuyện** (thần thoại, truyền thuyết, sự tích), và **người trong nền văn hóa đó ai cũng biết**, đủ tầm ảnh hưởng và phẩm giá để đứng ở bậc cao nhất. Ví dụ mẫu: **Nỏ thần** của Việt Nam (truyện An Dương Vương, người Việt nào cũng biết).
 9. **Rương Tổng Hợp** ra ngẫu nhiên các món trong **bộ sưu tập của các rương thường** (4 rương cơ bản), **không** ra món của rương chủ đề. Điều này **thay** ghi chú cũ "Rương Tổng Hợp là rương cho Huyền thoại" ở spec tier.
+10. **Rương thường cũng có món Huyền thoại**, nhưng **cơ bản hơn, giá thấp hơn** Huyền thoại của rương chủ đề và rương đặc biệt. Rương thường để **sinh tồn**: mở để kiếm tiền. Đồ ở đây tự phát, không cần nhiều câu chuyện; người chơi tự dệt câu chuyện cho nó. Tiêu chí "biểu tượng, có truyền thuyết" ở mục 8 chỉ áp dụng cho Huyền thoại của rương chủ đề.
+11. **Vé số độc đắc giữ ở Huyền thoại** (Huyền thoại của rương thường). Sau này có thể thêm cơ chế mang vé đến **quầy vé số để rút thưởng** (chưa thiết kế).
+12. **Bộ sưu tập khóa chặt theo rương:** mỗi món chỉ thuộc **một** rương. Món của chủ đề chỉ ra ở rương chủ đề đó; món của từng rương cơ bản chỉ ra ở rương đó. **Ngoại lệ duy nhất:** Rương Tổng Hợp ra được món của các rương cơ bản (mục 9).
 
 ## Cơ chế mở rương (đã chốt)
 
 1. **Bước 1, quay bậc:** mỗi rương có bảng tỉ lệ bậc riêng (Rác, Thường, Hiếm, Rất hiếm, Huyền thoại). Quay ra một bậc.
 2. **Bước 2, quay món:** trong bộ sưu tập của **chính rương đó**, lấy các món thuộc bậc vừa quay, quay ra một món.
-3. Rương nào cũng có bộ sưu tập riêng, nên cùng một món có thể nằm ở nhiều rương hay chỉ một rương là do danh sách của từng rương quyết định.
+3. Mỗi món chỉ thuộc bộ sưu tập của một rương (mục 12), trừ Rương Tổng Hợp.
 4. Món Huyền thoại riêng của chủ đề chỉ nằm trong bộ sưu tập của rương chủ đề đó.
 5. Cả hai bước dùng hạt giống ván, để lưu và tải lại cho kết quả không đổi.
 
@@ -61,8 +64,7 @@ Dấu "?" là gợi ý ghép đồ đã có mô hình, **chưa chốt**. Món Hu
 ## Câu hỏi còn mở
 
 1. Chủ đề bổ sung ngoài 5 chủ đề trên (chủ dự án sẽ nghĩ thêm).
-2. Món Huyền thoại cụ thể của từng chủ đề (theo tiêu chí ở mục 8), và đồ hiện có thuộc chủ đề nào. Cần xét lại Huyền thoại hiện có theo tiêu chí: Vé số độc đắc là món hài, không có truyền thuyết, có thể không đạt.
+2. Món Huyền thoại cụ thể của từng chủ đề (theo tiêu chí ở mục 8), và đồ hiện có thuộc chủ đề nào. Vé số đã chốt giữ (mục 11). Cần chia 38 món hiện có vào từng rương (mỗi món một rương), và tách Huyền thoại hiện có thành loại của rương thường và loại của rương chủ đề.
 3. Thành tựu mở khóa từng rương.
-4. ~~Rương Tổng Hợp còn ra Huyền thoại không~~ Đã chốt ở mục 9. Còn lại: các rương thường có món Huyền thoại nào không, hay Huyền thoại chỉ nằm ở rương chủ đề.
-5. Một món có được nằm trong bộ sưu tập của nhiều rương không, hay mỗi món chỉ thuộc một rương (4 rương cơ bản có chung kho Thường và Rác không).
+4. ~~Rương Tổng Hợp còn ra Huyền thoại không~~ Đã chốt ở mục 9. Rương thường có Huyền thoại cơ bản (mục 10).
 6. Tỉ lệ và giá: Claude 2.
