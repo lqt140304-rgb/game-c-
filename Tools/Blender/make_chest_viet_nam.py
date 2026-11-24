@@ -15,7 +15,7 @@ PALETTE = {
     "tre": (0.66, 0.52, 0.32), "tre_dk": (0.47, 0.35, 0.20), "tre_lt": (0.76, 0.64, 0.42),
     "la": (0.86, 0.80, 0.62), "la_dk": (0.70, 0.63, 0.45), "lua": (0.62, 0.13, 0.12),
     "giay": (0.75, 0.16, 0.12), "vang": (0.86, 0.68, 0.25), "interior": (0.10, 0.07, 0.04),
-    "glow": (1.0, 0.82, 0.45),
+    "khac": (0.42, 0.26, 0.14), "glow": (1.0, 0.82, 0.45),
 }
 _m = {}
 
@@ -95,6 +95,37 @@ for t in (0.18, 0.42, 0.66):
     add("Lid", torus(LR * (1 - t) + 0.002, 0.0035, (0, 0, LZ + LH * t), "la_dk", mj=20, mn=3))
 add("Lid", torus(LR, 0.006, (0, 0, LZ + 0.002), "tre_dk", mj=20, mn=4))       # vành nón
 add("Lid", ico(0.012, (0, 0, LZ + LH - 0.004), "vang"))                        # chóp
+
+# ---- khắc chim Lạc (kiểu trống đồng) bay vòng quanh nón, dưới là dải răng cưa
+LAC = [(0.075, 0.000), (0.030, 0.006), (0.018, 0.014), (-0.010, 0.030), (0.004, 0.012), (-0.010, 0.010),
+       (-0.040, 0.034), (-0.030, 0.008), (-0.045, 0.004), (-0.075, 0.018), (-0.050, -0.004), (-0.020, -0.010),
+       (0.012, -0.006), (0.026, -0.002)]   # chim Lạc: mỏ dài, cánh xòe, mào và đuôi vắt ngược
+
+
+def on_cone(pts2d, a, t, n, lift=0.0018, th=0.002):
+    """Đắp hình 2D (x theo vòng nón, y theo sườn nón) lên mặt nón tại góc a, độ cao t."""
+    import bmesh
+    V = mathutils.Vector
+    T = V((-math.sin(a), math.cos(a), 0)); U = V((-math.cos(a) * LR, -math.sin(a) * LR, LH)).normalized()
+    N = T.cross(U).normalized()
+    if N.dot(V((math.cos(a), math.sin(a), 0))) < 0:
+        N = -N
+    c = V((math.cos(a) * LR * (1 - t), math.sin(a) * LR * (1 - t), LZ + LH * t)) + N * lift
+    me = bpy.data.meshes.new("k"); bm = bmesh.new()
+    f = bm.faces.new([bm.verts.new(c + T * x + U * y) for x, y in pts2d])
+    r = bmesh.ops.extrude_face_region(bm, geom=[f])
+    for v in r["geom"]:
+        if isinstance(v, bmesh.types.BMVert):
+            v.co += N * th
+    bm.to_mesh(me); bm.free()
+    o = bpy.data.objects.new("k", me); bpy.context.scene.collection.objects.link(o)
+    return fin(o, n)
+
+
+for i in range(4):                     # né quai đỏ ở chính diện (-Y)
+    add("Lid", on_cone(LAC, -math.pi / 2 + math.pi / 4 + i * math.pi / 2, 0.30, "khac"))
+for i in range(28):
+    add("Lid", on_cone([(-0.012, 0), (0.012, 0), (0, 0.012)], 2 * math.pi * i / 28, 0.08, "lua"))
 
 # ---- quai nón lụa đỏ (Binding): hai dải từ đỉnh vòng xuống trước, nút ở mặt trước
 for sx in (-1, 1):

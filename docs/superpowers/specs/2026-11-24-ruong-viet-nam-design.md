@@ -17,3 +17,7 @@ Trạng thái: **bản tạm dựng bằng Blender**, chưa gán ID hay chủ đ
 ## Nắp mở thế nào
 
 Nón lá là `Lid`, bản lề ở mép sau vành nón (+Y), nón lật ngửa ra sau quanh trục X. Quai nón (dải lụa đỏ) buộc vòng qua đỉnh nón xuống quai thúng phía trước là `Binding`; một tem giấy đỏ chữ "Phúc" dạng hình thoi trên mặt trước thúng là `Seal`. Ánh sáng vàng (`Glow`) nằm trong lòng thúng.
+
+## Dấu ấn Việt Nam
+
+Trên nón khắc nổi 4 chim Lạc (dáng chim trên trống đồng Đông Sơn) bay vòng quanh, né quai đỏ ở mặt trước; sát vành nón là dải răng cưa đỏ.
