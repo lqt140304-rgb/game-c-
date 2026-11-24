@@ -11,7 +11,7 @@ Chốt rương ra **loại đồ nào** và **cụ thể là món gì**, để n
 ## Mục tiêu
 
 - Khung **5 bậc**: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại.
-- Danh sách **36 món** (Rác 9, Thường 8, Hiếm 7, Rất hiếm 8, Huyền thoại 6), trải đều 6 nhóm nguồn gốc.
+- Danh sách **38 món** (Rác 9, Thường 8, Hiếm 7, Rất hiếm 8, Huyền thoại 8), trải đều 6 nhóm nguồn gốc.
 - Bảng phân bổ bậc theo từng loại rương.
 
 ## Không phải mục tiêu
@@ -49,7 +49,7 @@ Nguyên tắc nội dung: **gần gũi, người chơi nhận ra ngay**. Pha **c
 | **Thường (8)** | **V01** Bình sứ men xanh, **V02** Sách cổ bìa da, **V03** Đồng hồ quả lắc cũ, **V04** Mảnh kính đồng hồ thiên văn, **V05** Thiết bị liên lạc hỏng, **V09** Lá bùa giấy vàng, Quạt nan cũ (VN), Máy game cầm tay 8-bit (NH) |
 | **Hiếm (7)** | **V06** Bộ pin lượng tử, **V08** Gương thủy tinh cổ tích, Băng cassette và máy phát (VN), Nón lá thêu hoa (VN), Cái túi thần kỳ 4 chiều (NH), Cục sạc hình chuột vàng (NH), Mũ phù thủy học việc (NH) |
 | **Rất hiếm (8)** | **V07** Tinh thể lam cầm tay, **V10** Mảnh vảy long, Đàn thần (VN, truyền thuyết Thạch Sanh), Trống đồng nhỏ (VN), Kiếm sáng ba màu (NH), Quả cầu ngọc 7 sao (NH), Trái tim robot (hạ từ Huyền thoại), Phi thuyền mini của phi hành gia (hạ từ Huyền thoại) |
-| **Huyền thoại (6)** | Ấn Ngọc Tỷ (VN), Tấm vé số độc đắc "chưa đổi" (VN, hài), Giày thủy tinh nguyên bản (cổ tích), Quả táo vàng (thần thoại), **Nỏ thần** (VN, An Dương Vương, `L05`), **Gậy sắt của vị anh hùng làng Gióng** (VN, `L06`, gậy thẳng cứng theo truyền thuyết) |
+| **Huyền thoại (8)** | Ấn Ngọc Tỷ (VN), Tấm vé số độc đắc "chưa đổi" (VN, hài), Giày thủy tinh nguyên bản (cổ tích), Quả táo vàng (thần thoại), **Nỏ thần** (VN, An Dương Vương, `L05`), **Gậy sắt của vị anh hùng làng Gióng** (VN, `L06`, gậy thẳng cứng theo truyền thuyết), **Chiếc nhẫn duy nhất** (NH, *chưa có mô hình*), **Quyển sổ định mệnh** (NH, *chưa có mô hình*) |
 
 ## 3. Rương ra bậc nào (đề xuất)
 
@@ -63,6 +63,7 @@ Cột là phần trăm khối lượng ra của rương; **Kim Khí** ra tạo t
 | **Kim Khí** | 10% rác máy móc | — | — | — | — |
 
 - **Kim Khí:** 90% ra tạo tác (tier 1: 60%, tier 2: 35%, tier 3: 5%), 10% rác máy móc hỏng.
+- *(Đã thay đổi: xem [rương chủ đề](2026-11-24-ruong-chu-de-design.md), mục 9. Rương Tổng Hợp ra món của các rương thường, Huyền thoại riêng nằm ở rương chủ đề.)*
 - **Huyền thoại không có ở 4 rương cơ bản.** Chỉ có ở **rương mở khóa** (phần 1): Rương Tổng Hợp là rương cho Huyền thoại, đề xuất mỗi lần mở có 8–10% ra một món Huyền thoại.
 - Các rương mở khóa khác (Cổ Phong, Thiên Cơ, Rác Quý) giữ như phần 1.
 - Hàng giả áp dụng cho **Thường, Hiếm, Rất hiếm** (và Huyền thoại, đề xuất tỉ lệ thấp); rác không có giả.
@@ -128,4 +129,4 @@ Mô hình low-poly ở `Assets/_Project/Art/Items/LowPoly/` (`Junk`, `Common`, `
 - **Hạ xuống Rất hiếm:** Trái tim robot (`X05`), Phi thuyền mini (`X06`).
 - **Giữ ở Huyền thoại:** Ấn Ngọc Tỷ (`L01`), Quả táo vàng (`L02`), Giày thủy tinh (`L03`), Vé số độc đắc (`L04`).
 - **Thêm vào Huyền thoại, đã có mô hình:** Nỏ thần (`L05`), Gậy sắt làng Gióng (`L06`, dáng thẳng).
-- **Bỏ khỏi danh sách:** Chiếc nhẫn duy nhất, Quyển sổ định mệnh (hai món nhại, thay bằng hai món Việt Nam). Đây là tôi suy ra từ "thêm các món Việt Nam vào", chủ dự án chưa xác nhận từng món.
+- **Vẫn giữ ở Huyền thoại, chưa có mô hình:** Chiếc nhẫn duy nhất, Quyển sổ định mệnh (chủ dự án chốt giữ). Chờ gom thêm món Huyền thoại khác rồi làm **một lượt Meshy chung** cho đỡ tốn credit; chưa dùng credit.

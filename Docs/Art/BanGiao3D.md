@@ -141,10 +141,35 @@ Lưu ý: tất thối và trứng thối có vạch mùi xanh nổi trên đầu
 
 `Assets/_Project/Art/Items/LowPoly/VeryRare/`, tạo bằng Meshy từ **một ảnh gộp 6 món** (`Art/Source/ref_rat_hiem.png`), chi tiết hơn bậc Hiếm (4–23 nghìn tam giác mỗi món): `V07_tinh_the_lam`, `V10_manh_vay_long`, `X01_dan_than`, `X02_trong_dong`, `X03_kiem_sang`, `X04_qua_cau_ngoc`, cộng `X05_trai_tim_robot` và `X06_phi_thuyen_mini` (hạ từ Huyền thoại). Mã `X01`–`X06` là tạm. **X04 (quả cầu ngọc) và X03 (kiếm sáng) gợi nhắc rất rõ nhân vật và tác phẩm nổi tiếng, cần chủ dự án duyệt về bản quyền trước khi phát hành.** Cỡ thật (mét), đáy y=0.
 
-## Hiện vật Huyền thoại low-poly (6 món)
+## Hiện vật Huyền thoại low-poly (6 trong 8 món)
 
-`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly và texture cao nhất: `L01_an_ngoc_ty`, `L02_qua_tao_vang`, `L03_giay_thuy_tinh`, `L04_ve_so_doc_dac`, `L05_no_than`, `L06_gay_sat_lang_giong`. Mã tạm. Hai món Trái tim robot và Phi thuyền mini đã **hạ xuống Rất hiếm** (`VeryRare/X05`, `X06`). Ảnh nguồn: `Art/Source/ref_huyen_thoai.png`, `ref_huyen_thoai2.png`, `ref_no_roi.png`.
+`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly và texture cao nhất: `L01_an_ngoc_ty`, `L02_qua_tao_vang`, `L03_giay_thuy_tinh`, `L04_ve_so_doc_dac`, `L05_no_than`, `L06_gay_sat_lang_giong`. Mã tạm. **Còn 2 món chưa có mô hình:** Chiếc nhẫn duy nhất và Quyển sổ định mệnh (giữ trong danh sách, chờ gom thêm món rồi làm chung một lượt Meshy). Hai món Trái tim robot và Phi thuyền mini đã **hạ xuống Rất hiếm** (`VeryRare/X05`, `X06`). Ảnh nguồn: `Art/Source/ref_huyen_thoai.png`, `ref_huyen_thoai2.png`, `ref_no_roi.png`.
 
 **Gậy sắt làng Gióng** (`L06`): theo truyền thuyết là gậy sắt thẳng và cứng, nên mô hình để dáng thẳng, không xương, không chuyển động. Công cụ `Tools/Blender/rig_whip.py` (gắn xương và sóng uốn cho vật thẳng) và video thử `Art/Source/roi_sat_uon_luon.mp4` chỉ giữ để tham khảo, không dùng cho món này.
 
 Lưu ý: Meshy không giữ vật trong suốt, nên trái tim robot (X05) không có chuông kính. Đệm giày thủy tinh (L03) có một vệt đỏ do texture.
+
+## Huyền thoại theo rương (đợt 2026-11-24, low-poly)
+
+Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md). Meshy, 2 ảnh gộp 8 món, ~30 nghìn tam giác mỗi ảnh (như các bậc khác, không tăng poly). Ảnh nguồn `Art/Source/ref_huyen_thoai_chu_de_1.png`, `_2.png`; ảnh kiểm tra `render_huyen_thoai_chu_de_1.png`, `_2.png`. Kích thước đã đặt theo vật thật, đáy ở y=0.
+
+| Mã | Món | Rương |
+|---|---|---|
+| L07 | Gươm Thuận Thiên | Việt Nam |
+| L08 | Quyển sổ tử thần (nhại) | Wibu |
+| L09 | Mũ giáp người sắt (nhại) | Robot |
+| L10 | Mũ đỏ chữ M (nhại) | Game |
+| L11 | Gậy Như Ý | Trung Hoa cổ |
+| L12 | Cúp vàng thế giới (nhại) | Thể thao |
+| L13 | Mặt nạ vàng pharaoh | Ai Cập cổ đại |
+| L14 | Mũ rơm (nhại) | Hải tặc |
+| L15 | Truyện tranh thần đồng đất Việt (nhại) | Tuổi thơ Việt Nam |
+| L16 | Chiếc nhẫn duy nhất (nhại) | Truyền thuyết Châu Âu |
+| L17 | Thanh gươm trong đá | Truyền thuyết Châu Âu |
+| L18 | Mặt nạ chúa tể bóng tối (nhại) | Không gian |
+| L19 | Găng tay lấp lánh (nhại) | Âm nhạc |
+| L20 | Băng video "7 ngày" (nhại) | Phim kinh dị |
+| L21 | Thần kiếm Kusanagi | Nhật Bản cổ |
+| L22 | Bản đồ cổ vẽ tay | Vải Niêm (rương cơ bản) |
+
+Lưu ý: găng tay L19 mất lớp kim tuyến (ra màu trắng trơn); kiếm L21 hơi cong. Chưa có: Đồng hồ bỏ túi (Kim Khí), Két sắt (Đen), gom vào đợt làm lại sau.
