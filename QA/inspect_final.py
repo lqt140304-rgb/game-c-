@@ -2,7 +2,7 @@
 Chạy song song 4 tiến trình (nên chạy nền với nohup):
   python3 inspect_final.py final   # n=2.000: bot thường theo 4 hồ sơ soi, người chơi giỏi đủ 4 chiến thuật,
                                    # lần chơi đầu (chest_sim.FIRST_RUN), số đo ngày 1 (khoảng 6 phút)
-  python3 inspect_final.py sens    # n=1.000: độ nhạy mức phạt, trần, lượt soi, chứng nhận, dấu hiệu, hồ sơ (khoảng 10 phút)
+  python3 inspect_final.py sens    # n=1.000: độ nhạy mức phạt, trần, lượt soi, chứng nhận, dấu hiệu, hồ sơ
 Mọi số tiền in ra đều bằng đồng (currency.fmt_vnd); bên trong mô phỏng vẫn tính theo đơn vị 10.000 đ."""
 import json
 import multiprocessing as mp
@@ -58,19 +58,17 @@ def final_jobs(n=2000):
 
 
 SENS = [
-    ("phạt 0%", dict(fine=0.0, fine_T=0.0)), ("phạt 10%", dict(fine=.10)), ("phạt 30%", dict(fine=.30)),
-    ("phạt 40%", dict(fine=.40)), ("phạt 60%", dict(fine=.60)),
-    ("trần 1,15", dict(cap=1.15)), ("trần 1,10", dict(cap=1.10)), ("trần 1,20", dict(cap=1.20)),
-    ("2 vòng", dict(rounds=2)), ("giá chào mở màn 90%", dict(open=.90)),
-    ("lượt soi 1/3/3/3", dict(looks=dict(T=1, H=3, X=3, L=3))), ("lượt soi 1/4/5/5", dict(looks=dict(T=1, H=4, X=5, L=5))),
-    ("không bán lượt soi thêm", dict(max_extra=0)), ("lượt soi thêm miễn phí", dict(extra_fee=dict(T=0, H=0, X=0, L=0))),
-    ("giữ chứng nhận +25%", dict(cert=True)),
-    ("dấu hiệu rõ hơn (nhiễu 15%, dấu lạ 5%)", dict(noise_fake=.15, sig_real=.05)),
-    ("dấu hiệu mờ hơn (nhiễu 35%, dấu lạ 15%)", dict(noise_fake=.35, sig_real=.15)),
-    ("bán không soi 90%", dict(skip_quick=.90)),
+    ("phạt sót 0%", dict(miss_pen=0.0)), ("phạt sót 10%", dict(miss_pen=.10)),
+    ("dấu lạ 0%", dict(odd=0.0)), ("dấu lạ 20%", dict(odd=.20)),
+    ("phạt giả khai thật 0%", dict(fine=0.0, fine_T=0.0)), ("phạt giả khai thật 40%", dict(fine=.40)),
+    ("trần 1,05", dict(cap=1.05)), ("trần 1,20", dict(cap=1.20)), ("2 vòng", dict(rounds=2)),
+    ("thắng +12%", dict(up=.12)), ("thua -10%", dict(down=.10)),
+    ("gợi ý 10% giá nền", dict(hint_rate=.10)), ("giữ chứng nhận +25%", dict(cert=True)),
+    ("1 dấu giả mỗi món giả", dict(marks=dict(T=1, H=1, X=1, L=1))),
+    ("3 dấu giả ở Rất hiếm và Huyền thoại", dict(marks=dict(T=1, H=1, X=3, L=3))),
 ]
-SENS_PROF = [("người soi thường khá hơn (h 75%, đọc nhầm 7%)", dict(thường=dict(h=.75, e=.07, c=.8))),
-             ("người soi thường kém hơn (h 55%, đọc nhầm 15%)", dict(thường=dict(h=.55, e=.15, c=.7))),
+SENS_PROF = [("người soi thường khá hơn (s 85%)", dict(thường=dict(s=.85, c=.8))),
+             ("người soi thường kém hơn (s 60%)", dict(thường=dict(s=.60, c=.65))),
              ("người soi thường quyết theo giá trị kỳ vọng", dict(thường=dict(rule="opt")))]
 
 

@@ -1,6 +1,6 @@
-"""Khóa Sprint 5 phần 3: luật soi lỗi và trả giá ĐỀ XUẤT (inspect_sim.RULES) trên 4 rương cơ bản đã chốt.
+"""Khóa Sprint 5 phần 3: luật soi MỚI (lỗi trừ giá) và trả giá ĐỀ XUẤT (inspect_sim.RULES) trên 4 rương cơ bản đã chốt.
 Số liệu đầy đủ (n = 2.000): Docs/Balance/Sprint5SoiLoi.md. Ở đây n nhỏ (khoảng 1 phút) nên so trung bình của hai chiến thuật bot, hạt giống cố định 0..N-1.
-Số tiền trong mã tính theo đơn vị 10.000 đ (extra_fee H=20 là 200.000 đ)."""
+Số tiền trong mã tính theo đơn vị 10.000 đ (phí gợi ý tối thiểu 20 là 200.000 đ)."""
 import unittest
 import chest_sim as CS
 import clue_sim as C
@@ -12,65 +12,60 @@ N_DAY1 = 300
 
 
 class InspectRules(unittest.TestCase):
-    """Luật và phép tính một món, không cần mô phỏng cả ván."""
+    """Luật soi mới và phép tính một món, không cần mô phỏng cả ván."""
     rl = I.RULES
 
-    def test_money_is_multiple_of_10000_dong(self):
-        for t, fee in self.rl["extra_fee"].items():
-            self.assertIsInstance(fee, int, t)   # đơn vị 10.000 đ là số nguyên, nên luôn là bội số 10.000 đ
+    def test_defect_counts_match_condition(self):
+        """Nguyên 0 lỗi; Xước n lỗi nhẹ; Hỏng n lỗi nhẹ + 1 vết lớn; trừ 30% và 70% như hệ số cũ (0,7 và 0,3)."""
+        for t, n in dict(T=1, H=2, X=3, L=3).items():
+            self.assertEqual(I.n_defects(1.0, t, self.rl), 0)
+            self.assertEqual(I.n_defects(.7, t, self.rl), n)
+            self.assertEqual(I.n_defects(.3, t, self.rl), n + 1)
+        self.assertAlmostEqual(1 - self.rl["light_cut"], .7)
+        self.assertAlmostEqual(1 - self.rl["light_cut"] - self.rl["big_cut"], .3)
 
-    def test_tier_shortcuts(self):
-        """Thường: soi nhanh 1 lượt, bán nhanh. Hiếm trở lên: 3 đến 4 lượt, trả giá đầy đủ (spec mục 2, 5)."""
-        self.assertEqual(self.rl["looks"]["T"], 1)
-        for t in ("H", "X", "L"):
-            self.assertTrue(3 <= self.rl["looks"][t] <= 4, t)
+    def test_fake_marks_by_tier(self):
+        """Thường và Hiếm 1 dấu giả; Rất hiếm và Huyền thoại 2."""
+        self.assertEqual(self.rl["marks"], dict(T=1, H=1, X=2, L=2))
+
+    def test_haggle_bounds(self):
+        """Trả giá có trần: dù thắng cả vòng cũng không vượt cap; thua nhiều không dưới floor; người không tìm lỗi thì dừng."""
         pf = I.PROFILES["giỏi"]
-        self.assertEqual(I.real_value("T", 3, pf, self.rl), self.rl["quick"])
-        self.assertGreater(I.real_value("X", 3, pf, self.rl), self.rl["quick"])
-
-    def test_errors_list_matches_tier_spec(self):
-        """tier-do-trong-ruong mục 4: Thường 1-2, Hiếm 2-3, Rất hiếm 3, Huyền thoại 3-4 lỗi."""
-        lo_hi = dict(T=(1, 2), H=(2, 3), X=(3, 3), L=(3, 4))
-        for t, (lo, hi) in lo_hi.items():
-            self.assertTrue(lo <= self.rl["points"][t] <= hi, t)
-
-    def test_haggle_bounds_and_press(self):
-        """Không có bằng chứng thì bị ép dưới giá bán nhanh; đủ bằng chứng thì lên tới trần, không vượt."""
-        pf = I.PROFILES["giỏi"]
-        self.assertLess(I.haggle_ev(0, pf, self.rl), self.rl["quick"])
-        self.assertLessEqual(I.haggle_ev(9, dict(pf, c=1.0), self.rl), self.rl["cap"])
-        self.assertGreater(I.haggle_ev(3, pf, self.rl), I.haggle_ev(1, pf, self.rl))
+        self.assertLessEqual(I.haggle_ev(1.0, self.rl), self.rl["cap"])
         self.assertLessEqual(self.rl["cap"], 1.15)
+        self.assertEqual(I.haggle_ev(0.0, self.rl), self.rl["open"])
+        self.assertGreater(I.haggle_win(pf, 3, 3), I.haggle_win(pf, 1, 3))
+        self.assertEqual(I.haggle_win(pf, 0, 0), pf["c"])
+
+    def test_thuong_sells_fast(self):
+        pf = I.PROFILES["giỏi"]
+        self.assertEqual(I.real_value("T", pf, self.rl, 1, 1, 0), self.rl["open"])
+        self.assertGreater(I.real_value("X", pf, self.rl, 3, 3, 0), self.rl["open"])
 
     def test_wrong_calls_have_consequences(self):
-        """Thật mà khai giả thì chỉ nhận giá hàng giả; giả mà khai thật thì bị phạt thêm; ngày 1 miễn phạt."""
+        """Thật mà khai giả chỉ nhận giá hàng giả; giả mà khai thật bị tịch thu; ngày 1 miễn phạt."""
         self.assertEqual(self.rl["fake_x"], .20)
-        self.assertGreater(self.rl["fine"], 0)
-        self.assertEqual(self.rl["fine"], self.rl["fake_x"])   # đề xuất: món giả khai thật bị tịch thu (0 đ)
+        self.assertEqual(self.rl["fine"], self.rl["fake_x"])
         self.assertIsNone(self.rl["fine_T"])
         self.assertEqual(self.rl["day1_fine"], 0)
 
     def test_doubt_means_claim_real(self):
-        """Lỗ khi khai giả món thật (80%) lớn hơn phạt khi khai thật món giả, nên phải khá chắc mới khai giả."""
         pf, rl = I.PROFILES["giỏi"], self.rl
-        self.assertFalse(I.decide_fake(.5, "X", 3, rl["fine"], pf, rl))
-        self.assertTrue(I.decide_fake(.95, "X", 3, rl["fine"], pf, rl))
+        self.assertFalse(I.decide_fake(.5, "X", rl["fine"], pf, rl, 3, 3, 0))
+        self.assertTrue(I.decide_fake(.95, "X", rl["fine"], pf, rl, 3, 3, 0))
 
     def test_posterior_moves_with_evidence(self):
-        pf, rl = I.PROFILES["thường"], self.rl
-        p0 = I.posterior(.3, 0, 0, pf, rl)
-        self.assertAlmostEqual(p0, .3)
-        self.assertGreater(I.posterior(.3, 2, 0, pf, rl), p0)
-        self.assertLess(I.posterior(.3, 0, 2, pf, rl), p0)
-        self.assertEqual(I.posterior(0, 3, 0, pf, rl), 0)   # Kim Khí không có hàng giả
-        self.assertGreater(I.posterior(.3, 0, 0, pf, rl, sure_fs=1), I.posterior(.3, 1, 0, pf, rl))
+        rl, s = self.rl, .75
+        self.assertAlmostEqual(I.posterior(.3, 0, 2, s, rl) > 0 and I.posterior(.3, 0, 2, s, rl) < .3, True)
+        self.assertGreater(I.posterior(.3, 1, 2, s, rl), .3)
+        self.assertEqual(I.posterior(0, 2, 2, s, rl), 0)   # Kim Khí không có hàng giả
+        self.assertEqual(I.posterior(.3, 2, 2, s, rl), 1.0)  # hai dấu giả: thật không thể có hai dấu lạ
+        self.assertEqual(I.posterior(.3, 1, 2, s, dict(rl, odd=0.0)), 1.0)  # không dấu lạ: thấy một dấu là chắc giả
 
-    def test_good_inspector_reads_better(self):
-        a_g, b_g = I.sign_probs(I.PROFILES["giỏi"], self.rl)
-        a_t, b_t = I.sign_probs(I.PROFILES["thường"], self.rl)
-        a_a, b_a = I.sign_probs(I.PROFILES["ẩu"], self.rl)
-        self.assertGreater(a_g / b_g, a_t / b_t)
-        self.assertGreater(a_t / b_t, a_a / b_a)
+    def test_hint_has_value_only_when_unsure(self):
+        pf, rl = I.PROFILES["giỏi"], self.rl
+        self.assertGreaterEqual(I.hint_voi(.3, 0, 2, .75, "X", rl["fine"], pf, rl, 2, 3, 1), -1e-9)
+        self.assertAlmostEqual(I.hint_voi(0.0, 0, 2, .75, "X", rl["fine"], pf, rl, 3, 3, 0), 0.0)
 
 
 class InspectBalance(unittest.TestCase):

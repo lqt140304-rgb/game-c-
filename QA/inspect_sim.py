@@ -1,36 +1,22 @@
-"""Sprint 5 phần 3 (Claude 2): cân bằng soi lỗi và trả giá trên nền 4 rương cơ bản đã chốt (chest_sim.FINAL).
+"""Sprint 5 phần 3 (Claude 2), BẢN 2: đo lại soi lỗi và trả giá theo LUẬT SOI MỚI (chủ dự án chốt 2026-11-24).
+Bản cũ (lượt soi, nhiễu, phí soi thêm) đã bị thay thế; xem Docs/Balance/Sprint5SoiLoi.md.
 
-Spec luật: docs/superpowers/specs/2026-11-23-soi-loi-tra-gia-design.md; số lỗi theo bậc: tier-do-trong-ruong mục 4.
-Spec cách đo và giả định: docs/superpowers/specs/2026-11-24-can-bang-soi-loi-design.md. Báo cáo: Docs/Balance/Sprint5SoiLoi.md.
-
-Cách làm: giữ nguyên lõi đã duyệt (chest_sim nạp bảng 5 bậc vào proposal_sim / clue_sim / swing_sim) và chỉ thay bước
-"mở xong thì bán" (P.handle5) bằng chuỗi soi lỗi -> phân loại -> trả giá. Rác và tạo tác đi như cũ.
-
-LUẬT ĐỀ XUẤT (RULES, các con số cần chốt; tiền theo đơn vị 10.000 đ, in qua currency.fmt_vnd):
-  - looks: lượt soi miễn phí theo bậc. Thường chỉ soi nhanh 1 lượt rồi bán nhanh (không trả giá).
-  - points: số điểm lỗi có nghĩa trên món (tier-do-trong-ruong mục 4: Thường 1-2, Hiếm 2-3, Rất hiếm 3, Huyền thoại 3-4).
-  - extra_fee / max_extra: phí mỗi lượt soi thêm theo bậc, tối đa bao nhiêu lượt thêm mỗi món.
-  - quick: bán nhanh = quick x giá thẩm định V (V = giá nền x tình trạng x hiệu ứng tạo tác, như giá bán của lõi cũ).
-  - open: giá chào mở màn trả giá (giá ép khi không có bằng chứng). Mỗi bằng chứng đưa đúng +up, đưa sai -down,
-    tối đa `rounds` vòng, giá chốt trong [floor, cap] x V.
-  - fake_x: món bị cho là giả (đúng hay sai) bán còn fake_x x V (mức lỗ "thật thành giả" = 1 - fake_x so với giá thật).
-  - fine: giả mà khai thật thì cửa hàng kiểm tra lại, trả fake_x x V rồi PHẠT thêm fine x V (thiếu thì thành nợ tồn).
-    Đề xuất fine = fake_x = 20%: món bị tịch thu, không nhận đồng nào.
-  - fine_T: mức phạt riêng cho món Thường (chỉ soi nhanh 1 lượt, bán nhanh); None = như fine.
-  - day1_fine: mức phạt ngày 1 (spec: ngày 1 giảm nhẹ hoặc miễn phạt).
-  - cert: giữ chứng nhận +25% của giám định cũ hay không. Mặc định False: soi lỗi THAY giám định bằng chữ; Giáo Sư Lẫm
-    chỉ bán "gợi ý một lỗi" (một bằng chứng chắc đúng), phí hint_rate x giá nền, tối thiểu 200.000 đ
-    (None = phí giám định cũ 15%). Combo CB3 vẫn cho một lần miễn phí mỗi ngày như lõi cũ.
-  - skip_quick: giá "bán không soi" nếu có tùy chọn bỏ qua hoàn toàn soi lỗi (None = như bán nhanh).
-  Bỏ trả giá giữa chừng = chốt giá chào hiện tại (không quay về giá bán nhanh), nên đưa sai bằng chứng có giá thật.
-
-MÔ HÌNH DẤU HIỆU (giả định nội dung, Claude 1 / Antigravity làm thật):
-  - Mỗi lượt soi: với xác suất h (kỹ năng) trúng một điểm lỗi có nghĩa chưa soi, còn lại soi vào chỗ nhiễu.
-  - Điểm có nghĩa: món giả hiện dấu giả với xác suất sig_fake; món thật hiện "dấu lạ" giống giả với xác suất sig_real.
-  - Chỗ nhiễu hiện dấu giả với xác suất noise_fake bất kể thật giả. Người chơi đọc nhầm (lật) với xác suất e.
-  - Người chơi tính xác suất giả theo Bayes với tỉ lệ hàng giả của rương (UI hiển thị) và kỹ năng của chính mình.
-
-HỒ SƠ NGƯỜI CHƠI (PROFILES, giả định về người): giỏi / thường (bot thường, không soi kỹ) / ẩu / bỏ qua soi.
+Luật soi mới: người chơi tự tìm chỗ lỗi (di chuột đúng chỗ mới hiện chữ, chỗ không lỗi không hiện gì), bấm vào lỗi thì giá
+trừ theo lỗi; bảng món đồ cho chọn thật hay giả, hiện giá trị và thông tin cơ bản.
+Mô hình dưới đây là GIẢ ĐỊNH của Claude 2 theo BanGiaoSprint5SoiLoi.md (chưa chốt, các con số là tham số RULES):
+  1. Lỗi tình trạng thay cho hệ số tình trạng: Nguyên không lỗi; Xước n lỗi nhẹ (T1 H2 X3 L3) tổng trừ 30%;
+     Hỏng n lỗi nhẹ + 1 vết hỏng lớn, tổng trừ 70% (nhẹ 30% + lớn 40%). Giá cuối vẫn là giá nền x hệ số tình trạng.
+  2. Món giả có `marks` dấu hàng giả (T1 H1 X2 L2); món thật có "dấu lạ" giống dấu giả với xác suất `odd`.
+     Người chơi suy ra xác suất giả theo Bayes từ số dấu đã thấy rồi chọn thật hay giả trên bảng.
+  3. Kỹ năng s = xác suất tìm ra mỗi lỗi hoặc dấu: giỏi 95%, thường 75%, ẩu 45%, bỏ qua soi 0%. Soi không giới hạn thời gian.
+  4. Lỗi bỏ sót: cửa hàng kiểm tra lại thì vẫn trừ giá, cộng phạt `miss_pen` x giá thẩm định mỗi lỗi sót.
+  5. Trả giá (Hiếm trở lên): mở màn ở giá bảng sau khi đã trừ lỗi (open = 1,0). Mỗi vòng thắng với xác suất
+     (kỹ năng trả giá c) x (tỉ lệ lỗi đã tìm); thắng +up, thua -down, giá chốt trong [floor, cap]. Dừng lúc nào cũng được.
+  6. Gợi ý của Giáo Sư Lẫm: chỉ ra một dấu hàng giả chưa tìm thấy (nếu món có), không thì một lỗi chưa tìm thấy;
+     phí hint_rate x giá nền, tối thiểu 200.000 đ; combo CB3 vẫn một lần miễn phí mỗi ngày.
+  Giữ nguyên luật thật: khai giả chỉ nhận giá hàng giả (fake_x), giả mà khai thật bị phạt `fine` (= fake_x thì tịch thu),
+  ngày 1 miễn phạt. Tiền tính theo đơn vị 10.000 đ, in qua currency.fmt_vnd.
+Không mô hình hóa: bỏ bấm một lỗi đã thấy (đề xuất: coi như lỗi bị sót, cùng khoản phạt nên không có lợi).
 """
 import math
 import chest_sim as CS
@@ -41,27 +27,24 @@ from currency import fmt_vnd
 
 TIERS = ("T", "H", "X", "L")
 RULES = dict(
-    looks=dict(T=1, H=3, X=4, L=4),           # lượt soi miễn phí; Thường chỉ soi nhanh 1 lượt
-    points=dict(T=2, H=3, X=3, L=4),          # số điểm lỗi có nghĩa (tier-do-trong-ruong mục 4)
-    extra_fee=dict(T=0, H=20, X=30, L=50),    # 200.000 / 300.000 / 500.000 đ mỗi lượt soi thêm
-    max_extra=2,
-    quick=1.0,                                # bán nhanh = 100% giá thẩm định (Thường luôn bán nhanh)
-    open=.95, up=.08, down=.05,               # giá chào mở màn 95% (bị ép khi chưa đưa bằng chứng), +8% / -5% mỗi lần
-    rounds=3, floor=.70, cap=1.12,            # 3 vòng, giá chốt trong 70% đến 112% giá thẩm định
-    fake_x=.20,                               # khai giả: bán bằng giá hàng giả (lỗ 80% nếu món thật)
-    fine=.20, fine_T=None, day1_fine=0.0,     # giả mà khai thật: phạt 20% = đúng giá hàng giả, tức bị tịch thu (0 đ); ngày 1 miễn phạt
-    hint_rate=.05,                            # gợi ý một lỗi của Giáo Sư Lẫm: 5% giá nền, tối thiểu 200.000 đ (None = phí giám định cũ 15%)
-    cert=False, skip_quick=None,              # skip_quick: giá "bán không soi" (None = như bán nhanh)
-    sig_fake=.85, sig_real=.10, noise_fake=.25,
+    n_light=dict(T=1, H=2, X=3, L=3),         # số lỗi nhẹ của món Xước (món Hỏng thêm 1 vết lớn)
+    light_cut=.30, big_cut=.40,               # Xước trừ 30%; Hỏng trừ 30% + 40% = 70%
+    marks=dict(T=1, H=1, X=2, L=2),           # số dấu hàng giả trên món giả
+    odd=.10,                                  # xác suất món thật có một "dấu lạ" giống dấu giả
+    miss_pen=.05,                             # phạt mỗi lỗi bị sót, theo giá thẩm định
+    open=1.0, up=.08, down=.05,               # giá chào mở màn = giá bảng đã trừ lỗi; thắng +8%, thua -5%
+    rounds=3, floor=.70, cap=1.12,
+    fake_x=.20, fine=.20, fine_T=None, day1_fine=0.0,
+    hint_rate=.05,                            # gợi ý của Giáo Sư Lẫm: 5% giá nền, tối thiểu 200.000 đ
+    cert=False,
 )
 PROFILES = {
-    # h: tỉ lệ lượt soi trúng điểm có nghĩa; e: đọc nhầm; c: đưa đúng bằng chứng khi trả giá; cond: nhầm tình trạng;
+    # s: xác suất tìm ra mỗi lỗi hoặc dấu; c: kỹ năng trả giá; hint: có mua gợi ý;
     # rule: "opt" quyết theo giá trị kỳ vọng, "half" khai giả khi xác suất giả > 50%, "real" luôn khai thật.
-    # looks_cap: số lượt soi tối đa người đó chịu dùng; extra: có mua lượt soi thêm; skip_haggle: luôn bán nhanh.
-    "giỏi": dict(h=.90, e=.03, c=.95, cond=0.0, rule="opt", looks_cap=9, extra=True, skip_haggle=False),
-    "thường": dict(h=.65, e=.10, c=.75, cond=.05, rule="half", looks_cap=9, extra=False, skip_haggle=False),
-    "ẩu": dict(h=.40, e=.20, c=.50, cond=.15, rule="half", looks_cap=1, extra=False, skip_haggle=False),
-    "bỏ qua soi": dict(h=0, e=0, c=0, cond=0.0, rule="real", looks_cap=0, extra=False, skip_haggle=True),
+    "giỏi": dict(s=.95, c=.95, rule="opt", hint=True, skip_haggle=False),
+    "thường": dict(s=.75, c=.75, rule="half", hint=False, skip_haggle=False),
+    "ẩu": dict(s=.45, c=.50, rule="half", hint=False, skip_haggle=False),
+    "bỏ qua soi": dict(s=0, c=0, rule="real", hint=False, skip_haggle=True),
 }
 CFG = dict(rules=RULES, profile="thường")
 TIER_OF = {}
@@ -90,24 +73,41 @@ def restore():
 
 
 # --- các phép tính một món -----------------------------------------------------------------------------
-def sign_probs(pf, rl):
-    """(P(dấu giả | giả), P(dấu giả | thật)) cho một lượt soi của người có hồ sơ pf."""
-    h, e = pf["h"], pf["e"]
-
-    def read(x):
-        return x * (1 - e) + (1 - x) * e
-    return (h * read(rl["sig_fake"]) + (1 - h) * read(rl["noise_fake"]),
-            h * read(rl["sig_real"]) + (1 - h) * read(rl["noise_fake"]))
+def n_defects(q, tier, rl):
+    """Số lỗi tình trạng: Nguyên 0; Xước n nhẹ; Hỏng n nhẹ + 1 lớn."""
+    if q >= 1.0:
+        return 0
+    return rl["n_light"][tier] + (1 if q <= .3 else 0)
 
 
-def posterior(prior, n_fs, n_cl, pf, rl, sure_fs=0, sure_cl=0):
-    """P(giả | n_fs dấu giả, n_cl dấu sạch) theo Bayes; sure_* là bằng chứng chắc đúng (gợi ý của Giáo Sư Lẫm)."""
+def binom(n, k, s):
+    return math.comb(n, k) * s ** k * (1 - s) ** (n - k) if 0 <= k <= n else 0.0
+
+
+def lik(prior, k, m, s, rl, hint=None):
+    """(độ hợp lý giả, thật) khi tự soi thấy k dấu giả trên món có m dấu; hint: None / 'shown' / 'none'
+    (gợi ý Giáo Sư Lẫm chỉ ra một dấu chưa tìm thấy nếu món có)."""
+    o = rl["odd"]
+    lf = binom(m, k, s)
+    if hint == "shown":
+        lf *= 1.0 if m > k else 0.0
+    elif hint == "none":
+        lf *= 1.0 if m == k else 0.0
+    if k == 0:
+        lr = {None: 1 - o * s, "shown": o * (1 - s), "none": 1 - o}[hint]
+    elif k == 1:
+        lr = 0.0 if hint == "shown" else o * s
+    else:
+        lr = 0.0
+    return prior * lf, (1 - prior) * lr
+
+
+def posterior(prior, k, m, s, rl, hint=None):
+    """P(giả | k dấu giả đã thấy) theo Bayes."""
     if prior <= 0:
         return 0.0
-    a, b = sign_probs(pf, rl)
-    lf = prior * a ** n_fs * (1 - a) ** n_cl * rl["sig_fake"] ** sure_fs * (1 - rl["sig_fake"]) ** sure_cl
-    lr = (1 - prior) * b ** n_fs * (1 - b) ** n_cl * rl["sig_real"] ** sure_fs * (1 - rl["sig_real"]) ** sure_cl
-    return lf / (lf + lr)
+    lf, lr = lik(prior, k, m, s, rl, hint)
+    return lf / (lf + lr) if lf + lr > 0 else prior
 
 
 def n_rounds(rl, tier):
@@ -115,110 +115,83 @@ def n_rounds(rl, tier):
     return r[tier] if isinstance(r, dict) else r
 
 
-def haggle_ev(good, pf, rl, tier="H"):
-    """Hệ số giá kỳ vọng khi trả giá với `good` bằng chứng tốt (người chơi tự ước lượng)."""
-    k = min(good, n_rounds(rl, tier))
-    m = rl["open"] + k * (pf["c"] * rl["up"] - (1 - pf["c"]) * rl["down"])
+def haggle_win(pf, found, total):
+    """Xác suất thắng một vòng trả giá = kỹ năng trả giá x tỉ lệ lỗi đã tìm (món không lỗi: đủ)."""
+    return pf["c"] * (found / total if total else 1.0)
+
+
+def haggle_ev(pw, rl, tier="H"):
+    """Hệ số giá kỳ vọng khi trả giá (dừng ngay nếu vòng không có lợi)."""
+    if pw * rl["up"] - (1 - pw) * rl["down"] <= 0:
+        return rl["open"]
+    m = rl["open"] + n_rounds(rl, tier) * (pw * rl["up"] - (1 - pw) * rl["down"])
     return max(rl["floor"], min(rl["cap"], m))
 
 
-def real_value(tier, good, pf, rl):
-    """Hệ số giá kỳ vọng nếu khai thật và món thật: bán nhanh hoặc trả giá, chọn cái tốt hơn."""
+def real_value(tier, pf, rl, found, total, missed):
+    """Hệ số giá kỳ vọng nếu khai thật và món thật: giá đã trừ lỗi, trả giá nếu có lợi, trừ phạt lỗi sót."""
     if tier == "T" or pf["skip_haggle"]:
-        return rl["quick"]
-    return max(rl["quick"], haggle_ev(good, pf, rl, tier))
+        m = rl["open"]
+    else:
+        m = haggle_ev(haggle_win(pf, found, total), rl, tier)
+    return m - rl["miss_pen"] * missed
 
 
-def decide_fake(p, tier, good, fine, pf, rl):
+def best_value(p, tier, fine, pf, rl, found, total, missed):
+    """(giá trị khai giả, giá trị khai thật) theo hệ số của V, với xác suất giả p."""
+    r = real_value(tier, pf, rl, found, total, missed)
+    return rl["fake_x"], (1 - p) * r + p * (rl["fake_x"] - fine)
+
+
+def decide_fake(p, tier, fine, pf, rl, found=0, total=0, missed=0):
     """True nếu người chơi khai giả."""
     if pf["rule"] == "real" or p <= 0:
         return False
     if pf["rule"] == "half":
         return p > .5
-    v_real = (1 - p) * real_value(tier, good, pf, rl) + p * (rl["fake_x"] - fine)
-    return v_real < rl["fake_x"]
+    vf, vr = best_value(p, tier, fine, pf, rl, found, total, missed)
+    return vr < vf
 
 
-class Look:
-    """Trạng thái soi của một món: số dấu giả / sạch đã thấy, bằng chứng tốt, điểm có nghĩa còn lại."""
-    def __init__(self, n_points):
-        self.fs = self.cl = self.sure_fs = self.sure_cl = 0
-        self.good = 0          # điểm có nghĩa đọc đúng chiều "thật" (dùng phản bác khi món thật)
-        self.noise = 0         # lượt soi vào chỗ nhiễu (người ẩu có thể đem ra trả giá và bị bắt bẻ)
-        self.left = n_points
-        self.n = 0
+def hint_voi(prior, k, m, s, tier, fine, pf, rl, found, total, missed):
+    """Giá trị thông tin (theo hệ số của V) của gợi ý Giáo Sư Lẫm, theo ước lượng của chính người chơi."""
+    opt = dict(pf, rule="opt")
+
+    def best(p):
+        vf, vr = best_value(p, tier, fine, opt, rl, found, total, missed)
+        return max(vf, vr)
+    p0 = posterior(prior, k, m, s, rl)
+    out = 0.0
+    n0 = sum(lik(prior, k, m, s, rl))
+    for h in ("shown", "none"):
+        lf, lr = lik(prior, k, m, s, rl, h)
+        if lf + lr > 0 and n0 > 0:
+            out += (lf + lr) / n0 * best(lf / (lf + lr))
+    return out - best(p0)
 
 
-def one_look(run, it, lk, pf, rl):
-    rng = run.rng
-    lk.n += 1
-    if lk.left > 0 and rng.random() < pf["h"]:
-        lk.left -= 1
-        x = rl["sig_fake"] if it["fake"] else rl["sig_real"]
-        shows = rng.random() < x
-        read = shows if rng.random() >= pf["e"] else not shows
-        if read:
-            lk.fs += 1
-        else:
-            lk.cl += 1
-            if not it["fake"]:
-                lk.good += 1
-    else:
-        lk.noise += 1
-        shows = rng.random() < rl["noise_fake"]
-        read = shows if rng.random() >= pf["e"] else not shows
-        if read:
-            lk.fs += 1
-        else:
-            lk.cl += 1
-
-
-def look_voi(prior, lk, tier, fine, pf, rl):
-    """Giá trị thông tin (theo hệ số của V) của thêm một lượt soi, theo ước lượng của chính người chơi."""
-    def best(p, good):
-        fake = decide_fake(p, tier, good, fine, dict(pf, rule="opt"), rl)
-        return rl["fake_x"] if fake else (1 - p) * real_value(tier, good, pf, rl) + p * (rl["fake_x"] - fine)
-    p = posterior(prior, lk.fs, lk.cl, pf, rl, lk.sure_fs, lk.sure_cl)
-    now = best(p, lk.good)
-    a, b = sign_probs(pf, rl)
-    pfs = p * a + (1 - p) * b
-    p1 = posterior(prior, lk.fs + 1, lk.cl, pf, rl, lk.sure_fs, lk.sure_cl)
-    p0 = posterior(prior, lk.fs, lk.cl + 1, pf, rl, lk.sure_fs, lk.sure_cl)
-    g_up = 1 if lk.left > 0 else 0   # một lượt "sạch" trên món thật có thể là bằng chứng thêm
-    after = pfs * best(p1, lk.good) + (1 - pfs) * best(p0, lk.good + g_up * pf["h"])
-    return after - now
-
-
-def haggle(run, it, lk, pf, rl, tier):
+def haggle(run, pf, rl, tier, found, total):
     """Trả giá kiểu Ace Attorney trên món thật được khai thật. Trả (hệ số giá, số vòng, đúng, sai)."""
     rng = run.rng
+    pw = haggle_win(pf, found, total)
     m, ok, bad, rounds = rl["open"], 0, 0, 0
-    good, noise = lk.good + lk.sure_cl, lk.noise
     for _ in range(n_rounds(rl, tier)):
-        if good > 0:
-            good -= 1
-            rounds += 1
-            if rng.random() < pf["c"]:
-                m += rl["up"]
-                ok += 1
-            else:
-                m -= rl["down"]
-                bad += 1
-        elif pf["rule"] != "opt" and noise > 0 and rng.random() > pf["c"]:
-            noise -= 1                 # đem "bằng chứng" nhiễu ra, bị bắt bẻ
-            rounds += 1
-            m -= rl["down"]
-            bad += 1
-        else:
+        if pw * rl["up"] - (1 - pw) * rl["down"] <= 0:
             break
-    return max(rl["floor"], min(rl["cap"], m)), rounds, ok, bad
+        rounds += 1
+        if rng.random() < pw:
+            m = min(rl["cap"], m + rl["up"])
+            ok += 1
+        else:
+            m = max(rl["floor"], m - rl["down"])
+            bad += 1
+    return m, rounds, ok, bad
 
 
 def stats(run):
     if not hasattr(run, "ins"):
-        run.ins = dict(items=0, looks=0, extra=0, extra_fee=0, hints=0, haggles=0, rounds=0, quick=0,
-                       real_as_fake=0, fake_as_real=0, fake_caught=0, fines=0, loss_real_as_fake=0, cond_err=0,
-                       revenue=0, fair=0)
+        run.ins = dict(items=0, hints=0, haggles=0, rounds=0, quick=0, defects=0, found=0, missed=0, pen=0,
+                       real_as_fake=0, fake_as_real=0, fines=0, loss_real_as_fake=0, revenue=0, fair=0)
     return run.ins
 
 
@@ -233,12 +206,13 @@ def _pay_hint(run, it, fee):
 
 # --- thay bước bán ------------------------------------------------------------------------------------
 def handle(run, it, r, smart):
-    """Thay P.handle5: hộp sắp sẵn, rác, tạo tác như cũ; hiện vật thì soi lỗi, phân loại, trả giá."""
+    """Thay P.handle5: hộp sắp sẵn, rác, tạo tác như cũ; hiện vật thì soi lỗi, chọn thật/giả, trả giá."""
     run.g.cash += CS.script_refund(run, it)
     if it["id"] in CS.JUNK or it["id"].startswith("AX_"):
         run.sell(it)
         return
     g, rl, pf = run.g, CFG["rules"], PROFILES[CFG["profile"]]
+    rng = run.rng
     st = stats(run)
     base = run.c.items[it["id"]][1]
     tier = TIER_OF.get(it["id"], "T")
@@ -246,7 +220,7 @@ def handle(run, it, r, smart):
     fine = rl["fine"] if tier != "T" or rl["fine_T"] is None else rl["fine_T"]
     if g.day == 1:
         fine = min(fine, rl["day1_fine"])
-    # phục chế như lõi cũ
+    # phục chế như lõi cũ (xóa lỗi tình trạng)
     pr = 1 - prior
     avg = pr + (1 - pr) * rl["fake_x"]
     if it["q"] < 1.0:
@@ -254,80 +228,69 @@ def handle(run, it, r, smart):
         fee = run.restore_fee(base)
         if (nq - it["q"]) * base * avg > fee and g.cash - fee >= r:
             run.restore(it)
-    # soi lỗi
-    lk = Look(rl["points"][tier])
-    for _ in range(min(rl["looks"][tier], pf["looks_cap"])):
-        one_look(run, it, lk, pf, rl)
-    if pf["extra"] and tier != "T":
-        V0 = run.known_price(it)
-        for _ in range(rl["max_extra"]):
-            fee = rl["extra_fee"][tier]
-            if g.cash - fee < r or look_voi(prior, lk, tier, fine, pf, rl) * V0 <= fee:
-                break
-            g.cash -= fee
-            st["extra"] += 1
-            st["extra_fee"] += fee
-            one_look(run, it, lk, pf, rl)
-    # gợi ý một lỗi của Giáo Sư Lẫm (thay giám định chọn lọc của lõi cũ)
-    if smart and tier != "T" and not pf["skip_haggle"]:
-        fee = run.appraise_fee(base) if rl["hint_rate"] is None else max(20, round(base * rl["hint_rate"]))
+    # soi: mỗi lỗi và mỗi dấu được tìm ra với xác suất s
+    s = pf["s"]
+    nd = n_defects(it["q"], tier, rl)
+    found = sum(rng.random() < s for _ in range(nd))
+    if it["fake"]:
+        m = rl["marks"][tier]
+        k = sum(rng.random() < s for _ in range(m))
+        odd_unfound = False
+    else:
+        m = rl["marks"][tier]
+        has_odd = rng.random() < rl["odd"]
+        k = 1 if has_odd and rng.random() < s else 0
+        odd_unfound = has_odd and k == 0
+    k_unfound = (m - k) if it["fake"] else (1 if odd_unfound else 0)
+    # gợi ý của Giáo Sư Lẫm: chỉ ra dấu chưa tìm thấy (nếu có), không thì một lỗi
+    hint = None
+    if smart and tier != "T" and pf["hint"]:
+        fee = max(20, round(base * rl["hint_rate"]))
         free = run.cb3() and run.free_cnt.get(g.day, 0) < P.CB3_FREE
         V0 = run.known_price(it)
-        p = posterior(prior, lk.fs, lk.cl, pf, rl, lk.sure_fs, lk.sure_cl)
-        gain = (1 - p) * pf["c"] * rl["up"] * V0 if lk.good + lk.sure_cl < n_rounds(rl, tier) else 0
-        gain += look_voi(prior, lk, tier, fine, dict(pf, h=1.0, e=0.0), rl) * V0
-        if (free or gain > fee) and g.cash - (0 if free else fee) >= r:
-            ok = run.appraise(it) if rl["hint_rate"] is None or free else _pay_hint(run, it, fee)
+        voi = hint_voi(prior, k, m, s, tier, fine, pf, rl, found, nd, nd - found) * V0
+        if (free or voi > fee) and g.cash - (0 if free else fee) >= r:
+            ok = run.appraise(it) if free else _pay_hint(run, it, fee)
             if ok:
                 st["hints"] += 1
-                shows = run.rng.random() < (rl["sig_fake"] if it["fake"] else rl["sig_real"])
-                if shows:
-                    lk.sure_fs += 1
+                if k_unfound > 0:
+                    hint = "shown"
+                    k_unfound -= 1
                 else:
-                    lk.sure_cl += 1
+                    hint = "none"
+                    if found < nd:
+                        found += 1
+    missed = nd - found
     st["items"] += 1
-    st["looks"] += lk.n
-    # phân loại
-    p = posterior(prior, lk.fs, lk.cl, pf, rl, lk.sure_fs, lk.sure_cl)
-    claim_fake = decide_fake(p, tier, lk.good + lk.sure_cl, fine, pf, rl)
-    q_true = it["q"]
-    q_paid = q_true
-    cred = 0.0
-    if pf["cond"] and run.rng.random() < pf["cond"]:
-        st["cond_err"] += 1
-        i = LEVELS.index(q_true)
-        j = min(2, max(0, i + run.rng.choice((-1, 1))))
-        if j < i:
-            q_paid = LEVELS[j]          # khai thấp hơn thật: bị trả theo mức khai
-        elif j > i:
-            cred = rl["down"]           # khai cao hơn thật: bị bắt bẻ, mất uy tín
-    it["q"] = q_paid
-    V = run.known_price(it)              # giá thẩm định: giá nền x tình trạng x hiệu ứng tạo tác (cert nếu còn)
-    it["q"] = q_true
-    fair = run.known_price(it)
-    st["fair"] += fair if not it["fake"] else math.floor(fair * rl["fake_x"])
+    st["defects"] += nd
+    st["found"] += found
+    st["missed"] += missed
+    # chọn thật hay giả: Bayes trên số dấu giả đã thấy (gợi ý chỉ thêm thông tin, dấu do gợi ý vẫn tính là đã thấy)
+    p = posterior(prior, k, m, s, rl, hint)
+    claim_fake = decide_fake(p, tier, fine, pf, rl, found, nd, missed)
+    V = run.known_price(it)              # giá thẩm định: giá nền x tình trạng x hiệu ứng tạo tác
+    st["fair"] += V if not it["fake"] else math.floor(V * rl["fake_x"])
+    pen_unit = math.ceil(V * rl["miss_pen"])
     if claim_fake:
         amount = math.floor(V * rl["fake_x"])
         st["quick"] += 1
         if not it["fake"]:
             st["real_as_fake"] += 1
-            st["loss_real_as_fake"] += fair - amount
+            st["loss_real_as_fake"] += V - amount
     elif it["fake"]:
         st["fake_as_real"] += 1
-        st["fake_caught"] += 1
         amount = math.floor(V * rl["fake_x"]) - math.ceil(V * fine)
         st["fines"] += math.ceil(V * fine)
     else:
-        if tier == "T" or pf["skip_haggle"] or real_value(tier, lk.good + lk.sure_cl, pf, rl) <= rl["quick"]:
-            m = rl["quick"]
-            if pf["looks_cap"] == 0 and rl["skip_quick"] is not None:
-                m = rl["skip_quick"]
+        if tier == "T" or pf["skip_haggle"] or haggle_ev(haggle_win(pf, found, nd), rl, tier) <= rl["open"]:
+            mult = rl["open"]
             st["quick"] += 1
         else:
-            m, rounds, ok, bad = haggle(run, it, lk, pf, rl, tier)
+            mult, rounds, ok_, bad = haggle(run, pf, rl, tier, found, nd)
             st["haggles"] += 1
             st["rounds"] += rounds
-        amount = math.floor(V * max(rl["floor"], m - cred))
+        amount = math.floor(V * mult) - missed * pen_unit
+        st["pen"] += missed * pen_unit
     st["revenue"] += amount
     if amount >= 0:
         g.cash += amount
@@ -362,8 +325,9 @@ def _play(content, strat, n, skilled=False):
 
 def summarize(agg, n):
     it = max(1, agg.get("items", 0))
-    return dict(looks_per_item=round(agg["looks"] / it, 2), extra_per_run=round(agg["extra"] / n, 2),
-                hints_per_run=round(agg["hints"] / n, 2), haggle_share=round(100 * agg["haggles"] / it),
+    return dict(found_rate=round(100 * agg["found"] / max(1, agg["defects"])), missed_per_item=round(agg["missed"] / it, 2),
+                pen_per_run=round(agg["pen"] / n), hints_per_run=round(agg["hints"] / n, 2),
+                haggle_share=round(100 * agg["haggles"] / it),
                 real_as_fake=round(100 * agg["real_as_fake"] / it, 1), fake_as_real=round(100 * agg["fake_as_real"] / it, 1),
                 fines_per_run=round(agg["fines"] / n), loss_per_run=round(agg["loss_real_as_fake"] / n),
                 rev_vs_fair=round(agg["revenue"] / max(1, agg["fair"]), 3))
@@ -408,10 +372,11 @@ def fmt(out):
     lines = []
     for grp in ("bot", "skilled"):
         for (k, prof), v in out[grp].items():
-            lines.append("%-8s %-24s %-10s thắng %5.1f%%  soi/món %.2f  thêm/ván %.2f  gợi ý/ván %.2f  trả giá %d%%  "
-                         "thật→giả %.1f%%  giả→thật %.1f%%  phạt/ván %s  lỗ/ván %s  thu/giá đúng %.3f" % (
-                             grp, k, prof, v["win"], v["looks_per_item"], v["extra_per_run"], v["hints_per_run"], v["haggle_share"],
-                             v["real_as_fake"], v["fake_as_real"], fmt_vnd(v["fines_per_run"]), fmt_vnd(v["loss_per_run"]), v["rev_vs_fair"]))
+            lines.append("%-8s %-24s %-10s thắng %5.1f%%  tìm lỗi %d%%  sót/món %.2f  phạt sót/ván %s  gợi ý/ván %.2f  trả giá %d%%  "
+                         "thật→giả %.1f%%  giả→thật %.1f%%  phạt giả/ván %s  lỗ/ván %s  thu/giá đúng %.3f" % (
+                             grp, k, prof, v["win"], v["found_rate"], v["missed_per_item"], fmt_vnd(v["pen_per_run"]),
+                             v["hints_per_run"], v["haggle_share"], v["real_as_fake"], v["fake_as_real"],
+                             fmt_vnd(v["fines_per_run"]), fmt_vnd(v["loss_per_run"]), v["rev_vs_fair"]))
     return "\n".join(lines)
 
 
