@@ -413,3 +413,13 @@ Hai tham số cuối là số mẫu Cycles và độ rộng mỗi ô ảnh. Bỏ
 - Cấu trúc: root `Chest_TheThao` gồm `Body` (510 tam giác: nửa dưới quả bóng, chân đế, viền chỉ), `Lid` (242 tam giác, **gốc ở bản lề phía sau**, mở bằng cách xoay âm quanh trục X của Blender), `Binding` (184 tam giác: đai thun và khóa), `Seal` (52 tam giác: huy hiệu) và `Glow` (80 tam giác, ẩn bằng scale). Không có `Key`.
 - Tổng 988 tam giác (chưa tính Glow), cao 0,38 m. Vật liệu đơn sắc, không có texture.
 - Ảnh `Art/Source/render_chest_the_thao_open.png`: hàng trên là đóng, hé và mở toang. Hàng dưới là hình bóng nhìn từ trước, từ cạnh và từ 3/4 phía sau. Ảnh dựng ngoại tuyến bằng Cycles, **chưa chạy trong Unity** (nếu nắp mở ngược thì đổi `lidOpenSign`).
+
+## Rương Trung Hoa cổ (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_TrungHoa.glb`, **bản tạm, chưa gán ID hay chủ đề**. Ý tưởng: [ruong-trung-hoa](../../docs/superpowers/specs/2026-11-24-ruong-trung-hoa-design.md). Hình dáng là đỉnh đồng ba chân, nắp vòm, núm mái ngói hai tầng, cao khoảng 0,49 m.
+
+- Lớp: root `Chest_TrungHoa` gồm `Body` (1.102 tam giác), `Lid` (342, gốc ở bản lề sau miệng (0; 0,165; 0,30), lật quanh X), `Seal` (nút thắt đỏ có tua, 128), `Binding` (dây gai vắt từ quai này sang quai kia, 128) và `Glow` (đĩa sáng ở miệng, 60). Tổng 1.700 tam giác (không tính Glow). Chân cùng màu đồng với thân, gốc chân loe ra và lẫn vào bụng đỉnh, có tấm mặt thú ở chỗ nối. Không có `Key`.
+- Vật liệu đơn sắc: đồng xanh rỉ, vàng đồng, ngói tối, điểm nhấn đỏ. Không dùng texture.
+- Chạy: `pip install bpy pillow`, rồi `python Tools/Blender/make_chest_trung_hoa.py -- Assets/_Project/Art/Chests`.
+- Ảnh xem trước (Cycles, dựng ngoại tuyến): `python Tools/Blender/render_chest_trung_hoa_preview.py -- Assets/_Project/Art/Chests/Chest_TrungHoa.glb Assets/_Project/Art/Source/render_chest_trung_hoa_open.png 32` → `Art/Source/render_chest_trung_hoa_open.png` (đóng, hé, mở, cùng 3 góc hình bóng).
+- Chưa chạy trong Unity, chưa tạo prefab. Nếu nắp mở ngược thì đổi `lidOpenSign`.

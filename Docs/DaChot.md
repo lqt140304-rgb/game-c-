@@ -15,6 +15,8 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 | Rương chủ đề | [ruong-chu-de](../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md) | Mở bằng thành tựu, có trong shop từ hôm sau; quay bậc rồi quay món; mỗi món thuộc một rương, Rác dùng chung; Rương Tổng Hợp ra đồ rương cơ bản; Huyền thoại chủ đề là biểu tượng có câu chuyện; nhại được, chỉ cần đổi nhỏ |
 | Rương Thể thao (tạm) | [ruong-the-thao](../docs/superpowers/specs/2026-11-24-ruong-the-thao-design.md) | Quả bóng đá tách đôi trên chân đế phát bóng; nắp là nửa trên, bản lề phía sau |
 
+| Rương Trung Hoa cổ (tạm) | [ruong-trung-hoa](../docs/superpowers/specs/2026-11-24-ruong-trung-hoa-design.md) | Đỉnh đồng ba chân, nắp vòm lật về sau; bản tạm |
+
 ## Mỹ thuật 3D
 
 | Chủ đề | File | Điểm chính đã chốt |
