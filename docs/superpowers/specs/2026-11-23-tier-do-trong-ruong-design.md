@@ -97,6 +97,26 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 
 Đã làm: Rác (9) và Thường (V01–V05, V09, quạt nan V11, máy game 8-bit V12) trong `Assets/_Project/Art/Items/LowPoly/Junk` và `Common`. **Bản dùng chính tạo bằng Meshy** (gộp ảnh có bóng đổ), vì bản dựng bằng code (`Junk_Blender`, `Common_Blender`) quá trừu tượng, người chơi không nhận ra món nếu không có chú thích. Nguyên tắc: mỗi món phải nhận ra ngay khi nhìn.
 
+## Nhóm nguồn gốc mới: Việt Nam và Nhại (cập nhật 2026-11-24)
+
+Theo yêu cầu của chủ dự án, thêm **hai nhóm nguồn gốc** vào 6 nhóm hiện có (Quá khứ, Hiện đại, Tương lai, Ngoài hành tinh, Cổ tích, Thần thoại), thành **8 nhóm**.
+
+- **Việt Nam (VN):** đồ và truyền thuyết Việt Nam, tạo cảm giác gần gũi.
+- **Nhại (NH):** đồ gợi nhắc phim, anime, văn hóa đại chúng, **không dùng tên hay hình ảnh thật** có bản quyền.
+
+**Gán món vào nhóm mới (đề xuất của tôi theo thẻ VN/NH đã dùng ở mục 2, chủ dự án chưa duyệt từng món):**
+
+| Nhóm | Món |
+|---|---|
+| **Việt Nam** | Dép tổ ong (R05), Quạt nan (V11), Băng cassette (H01), Nón lá (H02), Đàn thần (X01), Trống đồng (X02), Vé số độc đắc (L04), Nỏ thần, Roi sắt làng Gióng (hai món sau chưa có mô hình) |
+| **Nhại** | Áo đấu đội nhại (R07), Máy game 8-bit (V12), Túi thần kỳ (H03), Cục sạc chuột (H04), Mũ phù thủy (H05), Kiếm sáng (X03), Quả cầu ngọc (X04) |
+| Giữ nhóm cũ | Mọi món còn lại (ví dụ Bình sứ, Sách cổ: Quá khứ; Pin lượng tử: Tương lai; Tinh thể lam: Ngoài hành tinh) |
+
+**Hệ quả cần làm khi duyệt** (chưa việc nào được bắt đầu):
+- `content.json`: thêm 2 nhóm vào `origins`; mỗi nhóm cần **manh mối niêm phong** riêng trong `clue_vocabulary` (chưa viết).
+- Các luật đang gắn vào nhóm cần xét lại: ví dụ CP3 +10% giá bán Thần thoại, TC2 thêm dấu hiệu soi cho Hiện đại và Tương lai.
+- Cách các rương dùng hai nhóm mới: **chờ chủ dự án chọn**.
+
 ## Tình trạng mô hình (cập nhật 2026-11-24)
 
 Mô hình low-poly ở `Assets/_Project/Art/Items/LowPoly/` (`Junk`, `Common`, `Rare`, `VeryRare`, `Legendary`).
