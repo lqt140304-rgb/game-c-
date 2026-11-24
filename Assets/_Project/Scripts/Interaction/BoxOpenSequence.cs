@@ -17,6 +17,8 @@ namespace ChoDoLa.Interaction
     /// and the whole thing can wait for the player between stages.
     /// Optional "Key" layer (a key modelled in the inserted pose, shaft along its local Z): before stage 1 the key
     /// floats in from the front, slides into the lock, turns, clicks, and slides out (see the Key intro fields).
+    /// Optional bite intro (off by default, for a mimic chest with a "Lid"): before stage 1 the lid snaps open and slams shut,
+    /// the whole box jolts, once or several times, like a bite. Other boxes are unaffected unless biteIntro is ticked.
     /// The same stage data is mirrored by the three.js preview used for the reference screenshots.
     /// </summary>
     public class BoxOpenSequence : MonoBehaviour
@@ -71,6 +73,21 @@ namespace ChoDoLa.Interaction
         [Tooltip("Axis the key turns round, in the key's own space (its shaft).")]
         [SerializeField] private Vector3 keyTurnAxis = Vector3.forward;
 
+        [Header("Bite intro (off by default; for the Mimic chest)")]
+        [SerializeField] private bool biteIntro = false;
+        [Tooltip("How many times the lid snaps open and slams shut before the normal stages.")]
+        [SerializeField] private int biteCount = 1;
+        [Tooltip("Lid angle (degrees) at the top of each bite.")]
+        [SerializeField] private float biteOpenAngle = 32f;
+        [SerializeField] private float biteOpenTime = 0.16f;
+        [Tooltip("Pause with the mouth wide open, just before it slams shut.")]
+        [SerializeField] private float biteHoldOpen = 0.10f;
+        [SerializeField] private float biteSlamTime = 0.07f;
+        [Tooltip("Whole-box jolt (metres) on the slam.")]
+        [SerializeField] private float biteSlamShake = 0.012f;
+        [Tooltip("Pause with the lid shut between bites and before stage 1.")]
+        [SerializeField] private float biteRestTime = 0.45f;
+
         [Header("Light inside the box")]
         [SerializeField] private Light innerLight;
         [SerializeField] private float innerLightMaxIntensity = 2f;
@@ -81,6 +98,7 @@ namespace ChoDoLa.Interaction
         public UnityEvent onKeyApproach;         // the key starts floating in (play a jingle)
         public UnityEvent onKeyInserted;         // the key hits the lock (metal clink)
         public UnityEvent onKeyTurned;           // the key finishes turning (the lock click)
+        public UnityEvent onBite;                // the lid slams shut during the bite intro (play a chomp sound)
 
         private struct LayerState
         {
@@ -164,6 +182,7 @@ namespace ChoDoLa.Interaction
             int previous = -1;
 
             if (keyIntro && _key.transform != null) yield return RunKeyIntro();
+            if (biteIntro && _lid.transform != null) yield return RunBiteIntro();
 
             for (int i = 0; i < stages.Count; i++)
             {
@@ -220,6 +239,44 @@ namespace ChoDoLa.Interaction
             yield return KeyPhase(keyClickHold, u => SetKey(0f, 1f, 1f));
             yield return KeyPhase(keyRetractTime, u => SetKey(Mathf.Lerp(0f, keyHoverDistance, u * u), 1f, 1f - u * u * u));
             SetKey(0f, 0f, 0f);
+        }
+
+        // ---------------------------------------------------------------- Bite intro
+
+        private IEnumerator RunBiteIntro()
+        {
+            for (int i = 0; i < Mathf.Max(1, biteCount); i++)
+            {
+                yield return BitePhase(biteOpenTime, u => SetLidAngle(biteOpenAngle * Mathf.SmoothStep(0f, 1f, u)));
+                yield return BitePhase(biteHoldOpen, u => SetLidAngle(biteOpenAngle));
+                yield return BitePhase(biteSlamTime, u => SetLidAngle(biteOpenAngle * (1f - u * u)));
+                onBite?.Invoke();
+                yield return BitePhase(biteRestTime, u => SetLidAngle(0f), jolt: biteSlamShake);
+            }
+            SetLidAngle(0f);
+        }
+
+        private IEnumerator BitePhase(float duration, Action<float> step, float jolt = 0f)
+        {
+            float t = 0f;
+            duration = Mathf.Max(0.01f, duration);
+            while (t < duration)
+            {
+                t += Time.deltaTime;
+                float u = Mathf.Clamp01(t / duration);
+                step(u);
+                float amp = jolt * (1f - u) * (1f - u);   // the jolt dies away over the rest pause
+                transform.localPosition = amp > 0f
+                    ? _rootStart + new Vector3(Mathf.PerlinNoise(Time.time * 45f, 0.3f) - 0.5f, 0f, Mathf.PerlinNoise(0.7f, Time.time * 45f) - 0.5f) * 2f * amp
+                    : _rootStart;
+                yield return null;
+            }
+            transform.localPosition = _rootStart;
+        }
+
+        private void SetLidAngle(float degrees)
+        {
+            if (_lid.transform != null) _lid.transform.localRotation = _lid.rotation * Quaternion.AngleAxis(lidOpenSign * degrees, lidHingeAxis);
         }
 
         private IEnumerator KeyPhase(float duration, Action<float> step, float shakeAmplitude = 0f)

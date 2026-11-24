@@ -229,3 +229,21 @@ python cut_lid_from_meshy_fbx.py -- Assets/_Project/Art/Source/MeshyChests/Magic
 - Nắp mở 105° nhìn khá lớn vì nắp vòm dày (6,4 nghìn tam giác); nên chỉnh nhịp hoạt ảnh khi gắn vào game.
 - Mặt cắt thân là tấm lót phẳng che ~80% miệng rương, nên bên trong trông nông.
 - **Lưu ý cho chủ dự án:** phong cách Magic (tím rực, đá sáng, viền vàng bóng) khác hướng low-poly màu trung tính của repo; đặt cạnh các món low-poly có thể lệch tông, cần quyết định giữ hay đổi.
+
+## Rương Mimic (rương quái vật, thử nghiệm)
+
+`Assets/_Project/Art/Chests/Chest_Mimic.glb`, **chưa gán chủ đề hay ID rương** vì danh sách chủ đề chưa chốt. Nguồn: FBX Meshy do chủ dự án cung cấp (`Art/Source/MeshyChests/Mimic/`, 359 nghìn tam giác, texture 4K, không tốn credit mới). Tạo bằng `Tools/Blender/make_mimic_chest.py`, xem ảnh bằng `Tools/Blender/cycles_mimic_preview.py`:
+
+```
+python make_mimic_chest.py -- <thư mục fbx+png> Assets/_Project/Art/Chests/Chest_Mimic.glb Chest_Mimic 0.42 3500 3500 2048 33
+```
+
+- **Cấu trúc:** root `Chest_Mimic` gồm `Body` (3,5 nghìn tam giác), `Lid` (3,5 nghìn, **gốc ở bản lề phía sau**, xoay quanh trục X, mặt trước là -Y, mở bằng góc âm quanh X như Golden) và `Glow` (quầng đỏ cam trong miệng, ẩn bằng scale). **Tổng 7,0 nghìn tam giác**, kích thước đóng khoảng 0,51 x 0,44 x 0,42 m. Không có `Key`, `Seal`, `Binding` (rương quái không có ổ khóa; ổ khóa trên thân và nắp nằm trong texture).
+- **Cách tách nắp (phương án a):** FBX gốc đã mở sẵn (nắp mở khoảng 33° quanh bản lề), là một mesh liền. Nắp và thân nối nhau chỉ ở dải tiếp xúc rất mỏng nên tách theo **tính liên thông**: đỉnh cao hơn z = -0,2 (đơn vị nguồn) thuộc cùng khối lớn là nắp (gồm răng trên), mảnh còn lại là thân (răng nanh hai bên thân nhô cao), dải tiếp xúc chia theo lan từ hai phía. Gốc nắp đặt ở tâm hai đĩa bản lề (y = 0,625, z = -0,186 đơn vị nguồn). Sau đó xoay nắp **đóng lại 33°** để rương bắt đầu như rương thường. Ảnh so sánh cùng tư thế 33° cho thấy nắp khớp với mô hình gốc, tức tâm xoay đúng.
+- **Răng khi đóng:** răng trên và răng dưới đầu mút gần chạm nhau, có vài khe tối, nhìn không thấy xuyên rõ ràng; **chưa đo xuyên bằng số** (phép đo theo pháp tuyến không tin cậy vì thân rỗng). Nếu thấy xuyên trong Unity, cho `lidOpenSign` hé 1 đến 2° hoặc chạy lại với góc đóng 31°.
+- **Giảm tam giác:** Decimate Collapse riêng từng nửa (nắp 211 nghìn xuống 3,5 nghìn, thân 148 nghìn xuống 3,5 nghìn; thử 7, 5 rồi 3,5 nghìn mỗi nửa đều thấy răng vẫn rõ nên giảm dần theo yêu cầu). Răng vẫn rõ nét (ảnh `Art/Source/render_chest_mimic_decimate.png`: trước 359 nghìn, sau 7 nghìn, cùng tư thế). Bật "giữ biên UV" (`delimit UV`) cho kết quả y hệt nên không dùng. Một mảng gỗ mờ ở thân là do texture Meshy gốc.
+- **Texture:** 4096 ép xuống 2048, một vật liệu, chỉ màu cơ bản (nguồn không có normal hay roughness), xuất JPEG 88 nên file glb khoảng 1,1 MB. Cycles cho thấy 2048 còn rõ răng và đai sắt.
+- **Ảnh xem trước:** `Art/Source/render_chest_mimic_open.png` (đóng, hé 12°, há miệng 65°), dựng bằng Cycles ngoại tuyến, **không phải ảnh chụp từ Unity**; ánh sáng, vật liệu và chiều xoay nắp chưa kiểm chứng trong Unity. Glow trong ảnh hơi nhạt, ra màu cá hồi vì tông màu AgX.
+- **Gợi ý hiệu ứng riêng:** rung mạnh, rồi nắp **há ra và đóng sập một lần như cắn** (kèm rung cả hộp và âm thanh), sau đó mới chạy các giai đoạn mở thường: hé nắp, bật nắp, há toang với `Glow` đỏ cam. Góc há toang cuối nên khoảng 60° đến 75° thay vì 105°, vì nắp dày và răng dài. Đã thêm tuỳ chọn `biteIntro` vào `BoxOpenSequence` (mặc định tắt nên các rương khác không đổi hành vi): `biteCount`, `biteOpenAngle`, `biteOpenTime`, `biteHoldOpen`, `biteSlamTime`, `biteSlamShake`, `biteRestTime` và sự kiện `onBite` (đúng lúc nắp sập, gắn âm thanh). Đoạn mã này **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+- **Lưu ý cho chủ dự án (phong cách):** Mimic là mô hình thực tế, có răng chi tiết, texture 2048 và tông gỗ sẫm, sắt cũ, khác hướng low-poly màu trung tính của repo. Đặt cạnh các rương và đồ khác có thể lệch phong cách; cần chủ dự án quyết định giữ hay làm lại theo hướng low-poly.
+- Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity.
