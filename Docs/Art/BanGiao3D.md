@@ -379,3 +379,12 @@ python Tools/Blender/make_chest_robot.py -- Assets/_Project/Art/Chests
 - Cấu trúc: root `Chest_Robot` gồm `Body` (1.340 tam giác), `Lid` (910, **gốc ở bản lề sau**, xoay quanh X, mặt trước -Y), `Glow` (104, quầng xanh lam ở miệng, ẩn bằng scale). Tổng 2.250 tam giác không tính Glow. Không có `Seal`, `Binding`, `Key` (chìa cót sau lưng là một phần của `Body`).
 - Cao khoảng 0,49 m tính cả ăng-ten (thân + đầu khoảng 0,42 m). Vật liệu đơn sắc, không texture.
 - Ảnh xem trước Cycles (đóng, hé, mở toang; trước, cạnh, sau): `Art/Source/render_chest_robot_open.png`. Dựng ngoại tuyến, **chưa chạy trong Unity**.
+
+## Rương Không gian (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_KhongGian.glb`, **bản thử tạm, chưa gán ID hay chủ đề vào dữ liệu game, chưa chạy trong Unity**. Ý tưởng: [spec](../../docs/superpowers/specs/2026-11-24-ruong-khong-gian-design.md), khoang hạ cánh hình chuông đứng trên 3 chân, chóp lật ra sau.
+
+- Tam giác: 816 (Body 564, Lid 228, Binding 24; Glow 44 không tính). Cao ~0,52 m tính cả ăng-ten (thân ~0,41 m), đáy ở gốc.
+- Lớp: `Chest_KhongGian` → `Body`, `Lid` (gốc ở bản lề sau +Y, xoay quanh X), `Binding` (chốt trước + bản lề), `Glow` (đĩa sáng xanh ở miệng, ẩn bằng scale). Không có Seal, Key.
+- Vật liệu đơn sắc, không texture: vỏ trắng ngà, tấm chắn nhiệt cam, kim loại xám, kính xanh, điểm vàng.
+- Chạy: `pip install bpy pillow`, rồi từ gốc repo `python Tools/Blender/make_chest_khong_gian.py`; ảnh: `python Tools/Blender/render_chest_khong_gian.py <thư mục tạm> Assets/_Project/Art/Source/render_chest_khong_gian_open.png` (dựng ngoại tuyến bằng Cycles).
