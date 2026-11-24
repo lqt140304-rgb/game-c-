@@ -71,7 +71,7 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 
 | Nhánh | Mở ra | Ví dụ nút |
 |---|---|---|
-| Rương | Rương mới, rương xuất hiện sớm hơn | Rương Tổng Hợp (đủ 6 nhóm nguồn gốc), Rương Cổ Phong / Thiên Cơ (đủ 1 hệ tạo tác), Rương Rác Quý (đủ 5 loại rác), M3 Rương Đen sớm |
+| Rương | Rương mới, rương xuất hiện sớm hơn | Rương Tổng Hợp (đủ **8** nhóm nguồn gốc, nay gồm cả Việt Nam và Nhại), Rương Cổ Phong / Thiên Cơ (đủ 1 hệ tạo tác), Rương Rác Quý (đủ 5 loại rác), **Rương Việt Nam, Rương Nhại** (đồ hai nhóm mới với tỉ lệ cao, xem phần 6), M3 Rương Đen sớm |
 | Sưu tập | Trang Sổ Sưu Tập, bộ sưu tập mới | M1 chọn gia truyền, M2 vốn đầu ván, thưởng khi gom đủ một bộ |
 | Thần lực | Thêm phản ứng dí dỏm của đồ cổ (khi cầm và ngoài đời thật) | Món thần thoại mở thêm lời thì thầm, đồ cổ tích phản ứng với mèo chợ |
 | Câu chuyện | Cutscene, cảnh, NPC mới | Mở khóa chương mới khi sưu tập đủ một bộ đồ cổ |

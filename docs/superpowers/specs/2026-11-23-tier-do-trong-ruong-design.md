@@ -115,7 +115,10 @@ Theo yêu cầu của chủ dự án, thêm **hai nhóm nguồn gốc** vào 6 n
 **Hệ quả cần làm khi duyệt** (chưa việc nào được bắt đầu):
 - `content.json`: thêm 2 nhóm vào `origins`; mỗi nhóm cần **manh mối niêm phong** riêng trong `clue_vocabulary` (chưa viết).
 - Các luật đang gắn vào nhóm cần xét lại: ví dụ CP3 +10% giá bán Thần thoại, TC2 thêm dấu hiệu soi cho Hiện đại và Tương lai.
-- Cách các rương dùng hai nhóm mới: **chờ chủ dự án chọn**.
+- **Cách các rương dùng hai nhóm mới (đã chốt với chủ dự án: cả hai cách):**
+  1. **Trong rương cơ bản:** đồ nhóm Việt Nam và Nhại xuất hiện **ít** trong 4 rương cơ bản, xen với các nhóm sẵn có. Tỉ lệ cụ thể (đề xuất khởi điểm của tôi: khoảng 10–15% mỗi rương, chưa duyệt) do Claude 2 đo.
+  2. **Rương riêng mở khóa bằng cây phát triển:** **Rương Việt Nam** và **Rương Nhại**, nằm ở nhánh Rương, ra đồ hai nhóm này với **tỉ lệ cao hơn hẳn**. Chỉ có sau khi mở khóa, giữa các ván, nên không làm lệch cân bằng 4 rương đầu.
+  - Cả hai nhóm có **manh mối niêm phong riêng**, và các luật gắn nhóm (xem trên) cần xét lại. Chưa viết.
 
 ## Tình trạng mô hình (cập nhật 2026-11-24)
 
