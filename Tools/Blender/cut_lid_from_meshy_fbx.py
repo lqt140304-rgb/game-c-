@@ -2,10 +2,12 @@
 
 Result (GLB): root <name> -> Body, Lid (origin on the back hinge, rotates round X), Glow (light inside, hidden by scale)
 and, when a keyhole position is given, Key (a silver key already in the "inserted" pose, shaft along local Y, bow outside).
-Both cut faces get a dark-wood rim plus a bevelled burgundy lining pad (raised in Body, hung under the lid) instead of a bare filled cap.
+Both cut faces get a dark-wood rim plus a bevelled lining pad (raised in Body, hung under the lid) instead of a bare filled cap.
 There is no Seal or Binding layer: the lock and bands are baked into the Meshy texture (BoxOpenSequence skips missing layers).
 
-Run:  python cut_lid_from_meshy_fbx.py -- <dir with fbx + png maps> <out.glb> <root name> <seam z in source units> <target height m> [tex size] ["x,y,z" keyhole in source units]
+Run:  python cut_lid_from_meshy_fbx.py -- <dir with fbx + png maps> <out.glb> <root name> <seam z in source units> <target height m> [tex size] ["x,y,z" keyhole in source units] ["r,g,b" glow colour] ["r,g,b" lining colour] [key scale] [max tris]
+  Glow and lining colours are linear 0-1 and optional; the defaults (warm gold glow, burgundy lining) reproduce Chest_Golden exactly.
+  Magic example: ... 1024 "0,-0.70,-0.10" "0.62,0.28,1.0" "0.05,0.02,0.11" 2.0 4700   (source units for seam and keyhole; see Docs/Art/BanGiao3D.md)
   Source FBX imports Z-up, centred on the origin. The seam is the height (source units) where the lid meets the body;
   find it with a vertex-height histogram or a side render. Front of the chest must face -Y (lock side); the hinge is at +Y.
 Needs Blender (`pip install bpy` works) and Pillow.
@@ -17,8 +19,13 @@ import mathutils
 from PIL import Image
 
 src_dir, out, name, seam_src, target_h = sys.argv[sys.argv.index("--") + 1:][:5]
-_a = sys.argv[sys.argv.index("--") + 1:] + ["1024", ""]
+_a = sys.argv[sys.argv.index("--") + 1:] + ["1024", "", "", "", "", ""]
 tex_size = int(_a[5]); keyhole_arg = _a[6]
+def _rgb(txt, default):
+    return tuple(float(v) for v in txt.split(",")) + (1,) if txt else default
+glow_rgb = _rgb(_a[7], (1.0, 0.82, 0.45, 1)); lining_rgb = _rgb(_a[8], (0.16, 0.018, 0.03, 1))
+max_tris = int(_a[10]) if _a[10] else 0      # 0 = keep the source triangle count; else collapse-decimate to about this many before cutting
+key_scale = float(_a[9]) if _a[9] else 1.45   # Golden default; a big lock (Magic) wants a bigger key
 seam_src = float(seam_src); target_h = float(target_h)
 
 fbx = glob.glob(os.path.join(src_dir, "*.fbx"))[0]
@@ -30,6 +37,13 @@ obj.parent = None
 bpy.context.view_layer.objects.active = obj
 obj.select_set(True)
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+
+if max_tris:
+    n0 = sum(len(p.vertices) - 2 for p in obj.data.polygons)
+    if n0 > max_tris:
+        dm = obj.modifiers.new("dec", "DECIMATE"); dm.ratio = max_tris / n0
+        bpy.ops.object.modifier_apply(modifier="dec")
+        print("decimated", n0, "->", sum(len(p.vertices) - 2 for p in obj.data.polygons))
 
 zs = [v.co.z for v in obj.data.vertices]
 zmin, zmax = min(zs), max(zs)
@@ -83,19 +97,19 @@ def flat_mat(mname, color, rough, metal=0.0):
     b.inputs["Base Color"].default_value = color; b.inputs["Roughness"].default_value = rough; b.inputs["Metallic"].default_value = metal
     m.use_backface_culling = False   # lining is seen from inside: glTF doubleSided
     return m
-interior = flat_mat(name + "_Lining", (0.16, 0.018, 0.03, 1), 0.85)   # burgundy velvet lining
+interior = flat_mat(name + "_Lining", lining_rgb, 0.85)   # velvet lining (burgundy unless a colour was given)
 rim = flat_mat(name + "_Rim", (0.16, 0.085, 0.04, 1), 0.7)            # dark wood on the cut rim
 
 glow_mat = bpy.data.materials.new(name + "_Glow"); glow_mat.use_nodes = True
 gb = glow_mat.node_tree.nodes["Principled BSDF"]
-gb.inputs["Base Color"].default_value = (1.0, 0.82, 0.45, 1)
-gb.inputs["Emission Color"].default_value = (1.0, 0.82, 0.45, 1); gb.inputs["Emission Strength"].default_value = 3.0
+gb.inputs["Base Color"].default_value = glow_rgb
+gb.inputs["Emission Color"].default_value = glow_rgb; gb.inputs["Emission Strength"].default_value = 3.0
 
 obj.data.materials.clear(); obj.data.materials.append(mat); obj.data.materials.append(interior); obj.data.materials.append(rim)
 
 # ---- cut ---------------------------------------------------------------------
 def hollow(o, keep):
-    """The filled cut face becomes a dark-wood rim; on top of it goes a bevelled burgundy lining pad (raised in Body, hung under the lid in Lid)."""
+    """The filled cut face becomes a dark-wood rim; on top of it goes a bevelled lining pad (raised in Body, hung under the lid in Lid)."""
     cap = [p for p in o.data.polygons if all(abs(o.data.vertices[i].co.z - seam) < 1e-4 for i in p.vertices)]
     cv = [o.data.vertices[i].co for p in cap for i in p.vertices]
     x0, x1 = min(v.x for v in cv), max(v.x for v in cv); y0, y1 = min(v.y for v in cv), max(v.y for v in cv)
@@ -161,7 +175,7 @@ if keyhole_arg:
     bpy.context.view_layer.objects.active = parts[0]
     bpy.ops.object.join()
     key = bpy.context.active_object; key.name = "Key"
-    key.scale = (1.45, 1.45, 1.45)   # a readable size next to the lock
+    key.scale = (key_scale,) * 3   # a readable size next to the lock
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
     key.location = kpos
     for pl in key.data.polygons: pl.use_smooth = True
