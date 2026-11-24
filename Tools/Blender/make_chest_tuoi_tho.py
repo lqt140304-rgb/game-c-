@@ -192,15 +192,13 @@ for i, p in enumerate(star(R_OUT, R_IN, H_BODY - TIP_LIFT)):
                           0.003, "bamboo_dk", 4))
 body = join(body, "Body")
 
-# ---- Lid: chóp sao + gân tre + cán tre cầm (đi theo nắp)
+# ---- Lid: chóp sao + gân tre
 z0 = H_BODY + 0.004
 apex = (0, 0, z0 + H_RIM + H_APEX)
 lid = [mesh_obj("LidShell", build_lid, None)]
 for i, p in enumerate(star(R_OUT + 0.003, R_IN + 0.003, z0 + H_RIM, z0 + H_RIM - TIP_LIFT)):
     if i % 2 == 0:
         lid.append(stick(p, apex, 0.006, "bamboo"))
-lid.append(stick(apex, (0, 0.12, apex[2] + 0.17), 0.009, "bamboo_dk", 6))   # cán tre nghiêng ra sau
-lid.append(cone((0, 0.12, apex[2] + 0.17 + 0.012), 0.012, 0.025, "bamboo_dk", 6))
 lid = join(lid, "Lid")
 HINGE = (0, R_OUT * math.sin(math.radians(54)) + 0.003, H_BODY - TIP_LIFT)
 set_origin(lid, HINGE)
@@ -212,6 +210,14 @@ glow = mesh_obj("Glow", build_glow, None)
 set_origin(glow, (0, 0, H_BODY - 0.012))
 
 body2 = [body, stick((0, 0, 0.025), (0, 0, 0.11), 0.018, "candle", 6), cone((0, 0, 0.125), 0.008, 0.03, "glow", 5)]
+# Cán tre cầm như đèn thật: buộc vào đầu cánh sau bên trái, chĩa chéo ra ngoài và lên (gắn thân, nắp mở tự do)
+tip = star(R_OUT, R_IN, H_BODY / 2)[6]
+d = Vector((tip.x, tip.y, 0)).normalized()
+z_mid = (TIP_LIFT + H_BODY - TIP_LIFT) / 2
+base = Vector((tip.x, tip.y, z_mid)) - d * 0.03
+end = base + d * 0.30 + Vector((0, 0, 0.26))
+body2.append(stick(base, end, 0.009, "bamboo_dk", 6))
+body2.append(stick(base + d * 0.015 - Vector((0, 0, 0.012)), base + d * 0.015 + Vector((0, 0, 0.012)), 0.016, "tassel", 6))  # nút dây buộc
 body = join(body2, "Body")
 
 # ---- Seal: tem giấy dán ngang khe nắp ở mũi cánh trước

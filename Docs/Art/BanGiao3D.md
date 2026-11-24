@@ -195,7 +195,7 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 
 `Assets/_Project/Art/Chests/Chest_TuoiTho.glb`: **bản thử tạm**, hình đèn ông sao năm cánh nằm ngửa (ý tưởng: [ruong-tuoi-tho](../../docs/superpowers/specs/2026-11-24-ruong-tuoi-tho-design.md)). **Chưa gán ID hay chủ đề vào dữ liệu game.** Dựng hoàn toàn bằng script, không mô hình ngoài, không texture ảnh.
 
-- Số tam giác: **704** (Body 528, Lid 150, Glow 10, Seal 16). Cao khoảng 0,49 m tính cả cán tre (thân và chóp 0,32 m), rộng khoảng 0,6 m.
-- Lớp: root `Chest_TuoiTho` → `Body` (thân sao rỗng giấy đỏ, khung tre, tua vàng ở đầu cánh, cây nến bên trong), `Lid` (chóp sao đỏ vàng, gân tre, cán tre; **gốc ở bản lề sau**, xoay quanh X, mở ngửa ra sau), `Glow` (ngôi sao phát sáng ở miệng, ẩn bằng scale), `Seal` (tem giấy dán ngang khe nắp ở cánh trước, mặt trước -Y). Không có `Binding`, `Key`.
+- Số tam giác: **714** (Body 568, Lid 120, Glow 10, Seal 16). Cao khoảng 0,49 m tính cả cán tre (thân và chóp 0,32 m), rộng khoảng 0,6 m.
+- Lớp: root `Chest_TuoiTho` → `Body` (thân sao rỗng giấy đỏ, khung tre, tua vàng ở đầu cánh, cây nến bên trong, cán tre buộc ở đầu cánh sau bên trái chĩa chéo ra ngoài như đèn thật), `Lid` (chóp sao đỏ vàng, gân tre; **gốc ở bản lề sau**, xoay quanh X, mở ngửa ra sau), `Glow` (ngôi sao phát sáng ở miệng, ẩn bằng scale), `Seal` (tem giấy dán ngang khe nắp ở cánh trước, mặt trước -Y). Không có `Binding`, `Key`.
 - Chạy: `pip install bpy pillow`, rồi `python Tools/Blender/make_chest_tuoi_tho.py` (tham số tuỳ chọn `-- <file.glb>`). Ảnh xem trước Cycles: `python Tools/Blender/render_chest_tuoi_tho_preview.py -- 48 480` → `Art/Source/render_chest_tuoi_tho_open.png` (đóng, hé, mở toang, 3 góc hình bóng).
 - Ảnh là dựng ngoại tuyến, **chưa chạy trong Unity**; chưa kiểm chiều mở nắp (đổi `lidOpenSign` nếu ngược).
