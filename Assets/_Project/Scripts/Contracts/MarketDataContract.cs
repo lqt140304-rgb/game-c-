@@ -109,6 +109,8 @@ namespace ChoDoLa.Contracts
         public int MaxDailyBoxes;
         public int DebtDueToday;
         public int Arrears;
+        public int CarryDebt;
+        public bool PostponeAvailable;
         public bool IsDebtPaidToday;
         public bool IsRunEnded;
         public bool IsVictory;
@@ -202,7 +204,7 @@ namespace ChoDoLa.Contracts
         bool RequestOpenBox(string boxInstanceId);
         bool RequestSellArtifact(string artifactInstanceId);
         bool RequestKeepArtifact(string artifactInstanceId);
-        bool RequestEndDay(int expectedDay);
+        bool RequestEndDay(int expectedDay, bool postpone = false);
         bool RequestBuyClue(string offerId);
         void ResetRun();
 

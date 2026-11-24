@@ -4,7 +4,10 @@ using System.Linq;
 using ChoDoLa.Gameplay;
 using Newtonsoft.Json.Linq;
 
-var json = File.ReadAllText(args.Single());
+var originalJson = File.ReadAllText(args.Single());
+var baseline = JObject.Parse(originalJson);
+baseline["heirlooms"] = new JArray(baseline["heirlooms"][0].DeepClone());
+var json = baseline.ToString();
 string save = null;
 var run = new MarketRun(json, 123, null, data => save = data);
 void Check(bool condition, string label)
@@ -265,3 +268,34 @@ Check(kimKhuy.CurrentRunState.MaxEquipSlots == 5 && kimKhuy.ActiveCombos.Single(
     "Kim Khuy displays BK1 and active combo");
 Check(kimKhuy.RequestUnequipTactArtifact(1) && kimKhuy.CurrentRunState.MaxEquipSlots == 5, "unequip preserves slot five");
 Console.WriteLine("Kim Khuy checks passed.");
+
+var heirlooms = Enumerable.Range(0, 32).Select(seed => new MarketRun(originalJson, seed).ActiveHeirloomId).Distinct().ToArray();
+Check(heirlooms.Length == 2, "both heirlooms are available from deterministic seeds");
+var gt2Seed = Enumerable.Range(0, 32).First(seed => new MarketRun(originalJson, seed).ActiveHeirloomId == "GT2");
+var lamp = new MarketRun(originalJson, gt2Seed);
+Check(lamp.Shelf.Single(offer => offer.TypeId == "H1").Clues.Length == 2 &&
+    lamp.Shelf.Single(offer => offer.TypeId == "H2").Clues.Length == 1, "GT2 bonus only on H1");
+Check(!lamp.EndDay("lamp-postpone", 1, postpone: true).Success && lamp.Day == 1, "GT2 cannot postpone");
+
+var heirData = JObject.Parse(json);
+heirData["rules"]["start_cash"] = 100000;
+string heirSave = null;
+var book = new MarketRun(heirData.ToString(), 123, null, saveData => heirSave = saveData);
+for (int day = 1; day <= 3; day++) Check(book.EndDay($"book-day-{day}", day).Success, "reach GT1 example");
+var beforePostpone = book.Cash;
+Check(book.EndDay("book-postpone", 4, postpone: true).Success && book.Day == 5 &&
+    book.Cash == beforePostpone && book.CarryDebt == 863 && book.DueToday == 1913, "defer only current installment with premium");
+book = new MarketRun(heirData.ToString(), 999, heirSave);
+Check(book.ActiveHeirloomId == "GT1" && !book.PostponeAvailable && book.CarryDebt == 863, "reload deferred debt and used charge");
+Check(!book.EndDay("book-postpone-second", 5, postpone: true).Success, "cannot postpone twice");
+Check(book.EndDay("book-pay-carry", 5).Amount == 1913 && book.CarryDebt == 0, "carry collected exactly once");
+var finalDay = new MarketRun(heirData.ToString(), 123);
+for (int day = 1; day <= 6; day++) Check(finalDay.EndDay($"final-day-{day}", day).Success, "reach last day");
+Check(!finalDay.PostponeAvailable && !finalDay.EndDay("last-day-postpone", 7, postpone: true).Success, "no last-day postpone");
+Console.WriteLine("Heirloom checks passed.");
+heirData["rules"]["start_cash"] = 0;
+var arrearsBook = new MarketRun(heirData.ToString(), 123);
+Check(arrearsBook.EndDay("arrears-first", 1).Success && arrearsBook.Arrears == 240, "record existing arrears");
+var deferredReceipt = arrearsBook.EndDay("arrears-postpone", 2, postpone: true);
+Check(deferredReceipt.Penalty == 48 && arrearsBook.Arrears == 288 && arrearsBook.CarryDebt == 403,
+    "GT1 does not defer old arrears and deferred amount is not penalized that day");

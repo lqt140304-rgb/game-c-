@@ -40,6 +40,10 @@ namespace ChoDoLa.Sprint1
             MaxDailyBoxes = Run.DailyLimit,
             DebtDueToday = Run.DueToday,
             Arrears = Run.Arrears,
+            CarryDebt = Run.CarryDebt,
+            PostponeAvailable = Run.PostponeAvailable,
+            ActiveHeirloomId = Run.ActiveHeirloomId,
+            ActiveHeirloomName = Run.ActiveHeirloomName,
             IsRunEnded = Run.Status != "active",
             IsVictory = Run.Status == "won",
             EndReason = Run.EndReason switch
@@ -59,7 +63,7 @@ namespace ChoDoLa.Sprint1
         };
 
         public IReadOnlyList<HeirloomView> AvailableHeirlooms => Array.Empty<HeirloomView>();
-        public HeirloomView ActiveHeirloom => null;
+        public HeirloomView ActiveHeirloom => new HeirloomView { HeirloomId = Run.ActiveHeirloomId, DisplayName = Run.ActiveHeirloomName };
         public IReadOnlyList<TactArtifactView> TactCatalog
         {
             get
@@ -178,14 +182,13 @@ namespace ChoDoLa.Sprint1
 
         public bool RequestKeepArtifact(string artifactInstanceId) => Run.Inspect(artifactInstanceId) != null;
 
-        public bool RequestEndDay(int expectedDay)
+        public bool RequestEndDay(int expectedDay, bool postpone = false)
         {
-            var due = Run.DueToday;
-            if (!Try(() => Run.EndDay(NewTransaction(), expectedDay), out var result)) return false;
+            if (!Try(() => Run.EndDay(NewTransaction(), expectedDay, postpone), out var result)) return false;
             RefreshState();
-            var remaining = Math.Max(0, due - result.Amount) + result.Penalty;
-            OnDebtSettled?.Invoke(remaining == 0, Run.Cash);
-            OnNotice?.Invoke($"Ngày {expectedDay}: đã thu {result.Amount} xu · phạt {result.Penalty} xu · nợ tồn {remaining} xu.");
+            OnDebtSettled?.Invoke(Run.Arrears == 0, Run.Cash);
+            string deferred = postpone ? $" · chuyển kỳ {Run.CarryDebt} xu sang ngày mai" : "";
+            OnNotice?.Invoke($"Ngày {expectedDay}: đã thu {result.Amount} xu · phạt {result.Penalty} xu · nợ tồn {Run.Arrears} xu{deferred}.");
             return true;
         }
 
@@ -243,6 +246,7 @@ namespace ChoDoLa.Sprint1
                     "INVENTORY_FULL" => "Kho đầy. Hãy bán bớt hiện vật.",
                     "CLUE_LIMIT" => "Bạn đã mua lời mách cho hộp này.",
                     "STALE_DAY" => "Ngày này đã kết thúc.",
+                    "POSTPONE_NOT_AVAILABLE" => "Không thể hoãn kỳ nợ này.",
                     "RUN_ENDED" => "Ván chơi đã kết thúc.",
                     _ => "Thao tác không còn khả dụng."
                 });

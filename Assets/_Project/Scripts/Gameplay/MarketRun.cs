@@ -79,6 +79,9 @@ namespace ChoDoLa.Gameplay
             public int Cash { get; set; }
             public int Bought { get; set; }
             public int Arrears { get; set; }
+            public string HeirloomId { get; set; }
+            public int PostponementsUsed { get; set; }
+            public int CarryDebt { get; set; }
             public bool Bikhe1Unlocked { get; set; }
             public HashSet<string> OwnedTacts { get; set; } = new HashSet<string>();
             public Dictionary<int, string> TactSlots { get; set; } = new Dictionary<int, string>();
@@ -107,7 +110,7 @@ namespace ChoDoLa.Gameplay
         public int Cash => state.Cash;
         public int BoughtToday => state.Bought;
         public int Arrears => state.Arrears;
-        public int DueToday => Status == "active" ? ScheduledDebt(Day) + Arrears : 0;
+        public int DueToday => Status == "active" ? ScheduledDebt(Day) + Arrears + CarryDebt : 0;
         public int InventoryCapacity => (int)rules["inventory_slots"];
         public int TableCapacity => (int)rules["table_slots"];
         public int DailyLimit => (int)rules["max_boxes_per_day"];
@@ -145,6 +148,7 @@ namespace ChoDoLa.Gameplay
                 try
                 {
                     state = LoadState(savedState);
+                    state.HeirloomId ??= InitialHeirloom(state.Seed);
                     return;
                 }
                 catch (JsonException) when (recoverInvalidSave != null)
@@ -153,7 +157,7 @@ namespace ChoDoLa.Gameplay
                 }
             }
 
-            state = new State { Seed = seed, Cash = (int)rules["start_cash"] };
+            state = new State { Seed = seed, Cash = (int)rules["start_cash"], HeirloomId = InitialHeirloom(seed) };
             persist?.Invoke(JsonConvert.SerializeObject(state));
         }
 
@@ -169,7 +173,7 @@ namespace ChoDoLa.Gameplay
                 saved["Table"]?.Type != JTokenType.Array || saved["Inventory"]?.Type != JTokenType.Array ||
                 saved["AppliedTransactions"]?.Type != JTokenType.Array || saved["ExtraClues"]?.Type != JTokenType.Object ||
                 loaded.Day < 1 || loaded.Day > (int)rules["days"] || loaded.Cash < 0 || loaded.Arrears < 0 ||
-                !ValidTactSave(loaded) || loaded.Bought < 0 || loaded.Bought > DailyLimit ||
+                !ValidTactSave(loaded) || !ValidHeirloomSave(loaded) || loaded.Bought < 0 || loaded.Bought > DailyLimit ||
                 (loaded.Status != "active" && loaded.Status != "won" && loaded.Status != "lost") ||
                 loaded.Table.Concat(loaded.Inventory).Any(box => box == null || string.IsNullOrWhiteSpace(box.Id) ||
                     box.ItemId == null || !items.ContainsKey(box.ItemId) ||
@@ -242,10 +246,20 @@ namespace ChoDoLa.Gameplay
             return new Result(entityId: itemId, amount: price, wasFake: item.Fake);
         });
 
-        public Result EndDay(string transactionId, int expectedDay) => Apply(transactionId, next =>
+        public Result EndDay(string transactionId, int expectedDay, bool postpone = false) => Apply(transactionId, next =>
         {
             if (next.Day != expectedDay) return new Result("STALE_DAY");
-            var due = ScheduledDebt(next.Day) + next.Arrears;
+            var installment = ScheduledDebt(next.Day);
+            var due = installment + next.Arrears + next.CarryDebt;
+            next.CarryDebt = 0;
+            if (postpone)
+            {
+                var effect = PostponeEffect(next);
+                if (!CanPostpone(next, effect)) return new Result("POSTPONE_NOT_AVAILABLE");
+                next.PostponementsUsed++;
+                next.CarryDebt = (int)Math.Ceiling(installment * (decimal)effect["carry_multiplier"]);
+                due -= installment;
+            }
             var paid = Math.Min(next.Cash, due);
             next.Cash -= paid;
             var remaining = due - paid;
@@ -384,7 +398,7 @@ namespace ChoDoLa.Gameplay
                 FakeRate = fakeRate,
                 TodayPrice = todayPrice,
                 Price = (int)Math.Round(todayPrice * multiplier, MidpointRounding.ToEven),
-                Clues = clues.Take(FreeClueCount()).ToArray(),
+                Clues = clues.Take(FreeClueCount(typeId)).ToArray(),
                 CertainOrigin = state.ExtraClues.ContainsKey(id) ? origin : null
             };
             return (offer, box);

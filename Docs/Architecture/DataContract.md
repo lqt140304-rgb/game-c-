@@ -121,3 +121,9 @@ Nhấn **I** để mở Trang bị, hoặc tương tác với Kim Khuy để m�
 Prefab hiển thị được tra bằng mã `CP1–CP3` hoặc `TC1–TC3` tại `Resources/TactEquipment/Models/{id}`, với đường dẫn tương thích `Resources/Blender/Models/Artifact_{id}`. Sprite tùy chọn nằm tại `Resources/TactEquipment/Icons/{id}`. Khi thiếu sprite, UI dùng mã món.
 
 Đặt prefab nhân vật xem trước tại `Resources/TactEquipment/Character`. Dùng prefab chỉ phục vụ trình diễn, có điểm cầm `TactPreviewHand` hoặc xương tay phải Humanoid và trigger Animator `InspectTact` cho động tác cầm lên ngắm. Game gọi trigger sau khi giao dịch trang bị thành công. Nếu có model món mà thiếu prefab nhân vật, khung bên phải chỉ xoay món. Không gắn món lên người sau động tác.
+
+### Cổ Vật Gia Truyền
+
+`MarketRun` cấp một gia truyền theo seed đầu ván. Scene đọc `ActiveHeirloomId`, `ActiveHeirloomName`, `CarryDebt` và `PostponeAvailable`. GT2 thêm một manh mối miễn phí cho hộp H1, tuân theo giới hạn ba manh mối. GT1 cho phép gọi `EndDay(transactionId, expectedDay, postpone: true)` đúng một lần và trước ngày 7. Nợ tồn vẫn được xử lý cuối ngày. Phần kỳ được hoãn chuyển sang ngày sau với hệ số 1,15, làm tròn lên.
+
+Sổ nợ hiển thị gia truyền, kỳ hoãn còn phải thu và nút hoãn nếu còn khả dụng. Nút hoãn là một cách xác nhận kết thúc ngày, không tạo thao tác thu nợ riêng. Bản lưu giữ mã gia truyền, lượt hoãn đã dùng và số tiền chuyển kỳ. Bản lưu cũ nhận gia truyền ổn định từ seed đã lưu. Quyền chọn qua M1 sẽ nối khi hợp nhất với nhánh Cây Phát Triển.

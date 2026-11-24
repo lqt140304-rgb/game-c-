@@ -110,6 +110,7 @@ namespace ChoDoLa.Sprint1
         private Text _debtSummaryText;
         private int _ledgerConfirmedDay;
         private Button _endDayBtn;
+        private Button _postponeDayBtn;
         private RectTransform _tabInvRt;
         private RectTransform _tabTactRt;
         private RectTransform _tabBikheRt;
@@ -1009,6 +1010,8 @@ namespace ChoDoLa.Sprint1
             int[] schedule = marketService.DebtSchedule;
             _debtSummaryText.text = $"NGÀY {s.CurrentDay}: CẦN {s.DebtDueToday:N0} xu\n" +
                 $"Nợ tồn: {s.Arrears:N0} xu · Ví: {s.Cash:N0} xu";
+            if (s.CarryDebt > 0) _debtSummaryText.text += $"\nKỳ hoãn chuyển sang: {s.CarryDebt:N0} xu";
+            _debtSummaryText.text += $"\nGia truyền: {s.ActiveHeirloomName}";
 
             for (int i = 0; i < schedule.Length; i++)
             {
@@ -1031,6 +1034,7 @@ namespace ChoDoLa.Sprint1
             }
 
             _endDayBtn.interactable = !s.IsRunEnded;
+            _postponeDayBtn.gameObject.SetActive(s.PostponeAvailable);
         }
 
         private void SwitchLedgerTab(int tabIndex)
@@ -1718,6 +1722,13 @@ namespace ChoDoLa.Sprint1
             {
                 if (marketService == null || !_ledgerModal.activeSelf) return;
                 if (marketService.RequestEndDay(_ledgerConfirmedDay) && _ledgerModal.activeSelf) CloseAllModals();
+            });
+
+            _postponeDayBtn = CreateButton(debtActions.transform, "Hoãn kỳ nợ · +15%", ColBrassDark, 0f, 56f, () =>
+            {
+                if (marketService == null || !_ledgerModal.activeSelf) return;
+                if (marketService.RequestEndDay(_ledgerConfirmedDay, postpone: true) && _ledgerModal.activeSelf)
+                    CloseAllModals();
             });
 
             // Right Column (7-Day Rows)

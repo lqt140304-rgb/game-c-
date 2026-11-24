@@ -167,8 +167,8 @@ namespace ChoDoLa.Gameplay
                 (effect.Origins.Count == 0 || effect.Origins.Contains(origin)))
             .Sum(effect => effect.Value);
 
-        private int FreeClueCount() => Math.Min((int)rules["max_clues_per_box"],
-            (int)shelfRules["free_clues_base"] + Effects(state)
+        private int FreeClueCount(string boxType) => Math.Min((int)rules["max_clues_per_box"],
+            (int)shelfRules["free_clues_base"] + HeirloomFreeClues(boxType) + Effects(state)
                 .Where(effect => effect.Type == "extra_free_clue").Sum(effect => effect.Count));
     }
 }
