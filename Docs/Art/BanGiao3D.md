@@ -332,13 +332,38 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | R40 | Lạc đà bông (hư) | Ai Cập cổ đại | Có, lòi bông |
 | R45 | Bánh bao mốc (hư) | Trung Hoa cổ | Có |
 
-Còn 29 món Rác chủ đề (khoảng 3 lượt 12 món), 7 Thường và 5 Hiếm mới.
+Còn lại: xem danh sách làm lại; 7 Thường và 5 Hiếm mới chưa làm.
+
+## Rác theo chủ đề, đợt 2 (2026-11-24, thử 14 món một lượt)
+
+2 ảnh gộp 14 món (lưới 5×3, `gen_img.py ... 14`), 78 credit (số dư còn 495). Ảnh nguồn `Art/Source/ref_rac_chu_de_3.png` (đạt) và `ref_rac_chu_de_2_hong.png` (hỏng, giữ để đối chiếu); ảnh kiểm tra `render_rac_chu_de_2.png`. File ở `Items/LowPoly/Junk/`, cỡ thật (mét), đáy y=0. Cả hai ảnh đều ra 15 món (Meshy nhân đôi một món), đã xóa bản thừa khỏi ảnh trước khi dựng; cả hai có đường kẻ ô, đã làm phẳng bằng `Tools/Meshy/flatten.py vào.png ra.png 5 3`.
+
+- **Ảnh 3 đạt đủ 14 món.** Đũa, tóc giả, bàn cầu cơ tách mảnh nên đã gộp.
+- **Ảnh 2 hỏng: Meshy chỉ dựng 2 khối**, dùng được loa kẹo kéo, mất 13 món. Ảnh này ra kiểu tranh vẽ có nét viền và nhiều món phẳng (vé, sổ, poster, que kem); ảnh 3 cùng lưới vẫn đạt, nên lỗi do kiểu ảnh chứ không do số món. Lần sau: xem kỹ ảnh, kiểu tranh vẽ phẳng thì tạo lại ảnh (9 credit) trước khi dựng 3D.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| R27 | Thẻ nhớ mất save | Game | Có, dẹt, 3 cm |
+| R33 | Vé concert bị hủy | Âm nhạc | Có, mỏng, dấu đỏ |
+| R34 | Loa kẹo kéo (hư) | Âm nhạc | Có, chưa thấy móp rõ |
+| R35 | Lightstick vỡ | Âm nhạc | Có, đầu đục trắng (mất trong suốt) |
+| R36 | Bộ tóc giả (hư) | Phim kinh dị | Có, gộp mảnh tóc rời |
+| R38 | Bàn cầu cơ gãy đôi | Phim kinh dị | Có, kèm con trỏ hình tim |
+| R41 | Tượng nhân sư thạch cao gãy mũi | Ai Cập cổ đại | Có, trắng trơn |
+| R42 | Chai rỗng (hư) | Hải tặc | Có, chai gốm xanh bám hà |
+| R43 | Miếng bịt mắt rách | Hải tặc | Có, có dây |
+| R44 | Chân gỗ mọt | Hải tặc | Có, nằm ngang |
+| R46 | Bao lì xì rỗng | Trung Hoa cổ | Có, mỏng |
+| R47 | Đũa gãy | Trung Hoa cổ | Có, gộp hai mảnh |
+| R48 | Quẻ xăm "đại hung" | Nhật Bản cổ | Có, buộc vào cành khô |
+| R49 | Hộp bento nứt | Nhật Bản cổ | Có, nắp lệch |
+| R50 | Ô giấy rách | Nhật Bản cổ | Có, mở nửa |
 
 ## Danh sách làm lại
 
-Không làm lại riêng lẻ. Đủ 8 món hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi ảnh gộp 8 món).
+Không làm lại riêng lẻ. Đủ 8 món (rác: 14 món) hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi lượt).
 
-(Trống.)
+- Rác hỏng ở đợt 2 (13 món): R13 Que kem, R14 Sổ liên lạc, R15 Vỏ bim bim, R16 Gối ôm waifu, R17 Poster rách, R20 Mũi Pinocchio, R28 Đĩa game lậu, R29 Tay cầm đứt dây, R30 Vé bóng đá giả, R31 Còi méo, R32 Băng đội trưởng giãn chun, R37 Chuông gió, R39 Lọ cát. Cộng R26 Mảnh vệ tinh cháy (chưa làm) là đủ một lượt 14 món.
 
 Đã có mô hình cho mọi món trong bảng rương của spec (Thường V13–V41, Hiếm đủ).
 
