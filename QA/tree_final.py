@@ -93,7 +93,15 @@ def report(name, m, h):
 
 if __name__ == "__main__":
     mode = sys.argv[1]
-    if mode == "static":
+    if mode == "static10":   # sau đề xuất Tổng Hợp hàng giả 10%
+        keep = ("nền (4 rương cơ bản)", "+ Rác Quý, Tổng Hợp", "+ 4 rương mở khóa", "+ 4 mở khóa + 2 chủ đề",
+                "+ 4 mở khóa + 2 chủ đề + M2", "+ 4 mở khóa, shop 2 rương mới", "+ 4 mở khóa + 2 chủ đề, shop 2 rương mới")
+        for k in list(STATIC):
+            if k not in keep:
+                del STATIC[k]
+        STATIC["cả cây đề xuất (M1 = GT1, không M2, không M3)"] = dict(chests=ALL4, n_theme=2, gt="GT1")
+        static(int(sys.argv[2]) if len(sys.argv) > 2 else 1500)
+    elif mode == "static":
         static(int(sys.argv[2]) if len(sys.argv) > 2 else 1500)
     elif mode == "chain":
         p = int(sys.argv[2]) if len(sys.argv) > 2 else 400
