@@ -50,15 +50,78 @@ namespace ChoDoLa.Sprint1
                 _ => string.Empty
             },
             ActiveEvents = Array.Empty<ActiveEventView>(),
-            InventoryTotalValue = Run.Inventory.Sum(item => item.ListedPrice)
+            InventoryTotalValue = Run.Inventory.Sum(item => item.ListedPrice),
+            EquippedTactCount = Run.EquippedTacts.Count(id => id != null),
+            MaxEquipSlots = Run.EquipSlotCount,
+            ActiveComboCount = Run.ActiveCombos.Count,
+            TotalBikheCount = 1,
+            UnlockedBikheCount = Run.Bikhe1Unlocked ? 1 : 0
         };
 
         public IReadOnlyList<HeirloomView> AvailableHeirlooms => Array.Empty<HeirloomView>();
         public HeirloomView ActiveHeirloom => null;
-        public IReadOnlyList<TactArtifactView> TactCatalog => Array.Empty<TactArtifactView>();
-        public IReadOnlyList<TactArtifactView> EquippedArtifacts => Array.Empty<TactArtifactView>();
-        public IReadOnlyList<ComboView> ActiveCombos => Array.Empty<ComboView>();
-        public IReadOnlyList<BikheView> BikheProgressList => Array.Empty<BikheView>();
+        public IReadOnlyList<TactArtifactView> TactCatalog
+        {
+            get
+            {
+                var slots = Run.EquippedTacts.ToList();
+                return Run.TactCatalog.Select(item =>
+                {
+                    int slot = slots.IndexOf(item.Id);
+                    return new TactArtifactView
+                    {
+                        TactId = item.Id,
+                        DisplayName = item.Name,
+                        SystemType = item.System == "co_phong" ? TactSystemType.ChronoSteam : TactSystemType.ArcaneRift,
+                        Tier = item.Tier,
+                        Price = item.Price,
+                        IconModelName = item.Id,
+                        IsOwned = item.Owned,
+                        IsEquipped = slot >= 0,
+                        EquippedSlotIndex = slot
+                    };
+                }).ToArray();
+            }
+        }
+
+        public IReadOnlyList<TactArtifactView> EquippedArtifacts
+        {
+            get
+            {
+                var catalog = TactCatalog.ToDictionary(item => item.TactId);
+                return Run.EquippedTacts.Select(id => id == null ? null : catalog[id]).ToArray();
+            }
+        }
+
+        public IReadOnlyDictionary<string, int> TactResonance => Run.Resonance;
+        public IReadOnlyList<ComboView> ActiveCombos => Run.TactCombos.Select(combo => new ComboView
+        {
+            ComboId = combo.Id,
+            DisplayName = combo.Name,
+            ConditionSummary = string.Join(" · ", combo.RequiredIds),
+            EffectSummary = string.Join(" · ", combo.Effects.Select(DescribeComboEffect)),
+            MissingTactIds = combo.MissingIds,
+            IsActive = combo.MissingIds.Count == 0
+        }).ToArray();
+        public IReadOnlyList<BikheView> BikheProgressList => new[] { new BikheView
+        {
+            BikheId = "BK1",
+            Title = "Lời Thề Bảy Ngày",
+            ConditionSummary = "Hoàn thành một combo nhỏ trước ngày 5.",
+            RewardSummary = "Mở ô thứ 5 đến hết ván.",
+            CurrentProgress = Run.Bikhe1Unlocked ? 1 : 0,
+            TargetProgress = 1,
+            IsUnlocked = Run.Bikhe1Unlocked,
+            IsRewardClaimed = Run.Bikhe1Unlocked
+        } };
+
+        private static string DescribeComboEffect(MarketRun.TactEffect effect) => effect.Type switch
+        {
+            "sell_bonus" => $"+{effect.Value:P0} giá bán",
+            "extra_free_clue" => $"+{effect.Count} manh mối miễn phí",
+            "free_appraisal" => "Giám định miễn phí khi dịch vụ mở",
+            _ => effect.Type
+        };
 
         public event Action<RunStateSnapshot> OnRunStateChanged;
         public event Action<BoxInstanceView> OnBoxPurchased;
@@ -137,9 +200,31 @@ namespace ChoDoLa.Sprint1
         }
 
         public bool RequestSelectHeirloom(string heirloomId) => SprintTwo();
-        public bool RequestBuyTactArtifact(string tactId) => SprintTwo();
-        public bool RequestEquipTactArtifact(string tactId, int slotIndex = -1) => SprintTwo();
-        public bool RequestUnequipTactArtifact(int slotIndex) => SprintTwo();
+        public bool RequestBuyTactArtifact(string tactId)
+        {
+            if (!Try(() => Run.BuyTact(NewTransaction(), tactId), out var result)) return false;
+            RefreshState();
+            OnNotice?.Invoke($"Đã mua Tạo Tác · −{result.Amount} xu.");
+            return true;
+        }
+
+        public bool RequestEquipTactArtifact(string tactId, int slotIndex = -1)
+        {
+            if (slotIndex == -1) slotIndex = Run.EquippedTacts.ToList().IndexOf(null);
+            if (slotIndex < 0) return Reject("INVALID_SLOT", "Chọn một ô trang bị.");
+            bool hadBikhe = Run.Bikhe1Unlocked;
+            if (!Try(() => Run.EquipTact(NewTransaction(), tactId, slotIndex), out _)) return false;
+            RefreshState();
+            if (!hadBikhe && Run.Bikhe1Unlocked) OnNotice?.Invoke("Bí Khế BK1 đã mở ô trang bị thứ 5.");
+            return true;
+        }
+
+        public bool RequestUnequipTactArtifact(int slotIndex)
+        {
+            if (!Try(() => Run.UnequipTact(NewTransaction(), slotIndex), out _)) return false;
+            RefreshState();
+            return true;
+        }
 
         private bool SprintTwo() => Reject("NOT_AVAILABLE", "Tính năng này sẽ có ở Sprint 2.");
 

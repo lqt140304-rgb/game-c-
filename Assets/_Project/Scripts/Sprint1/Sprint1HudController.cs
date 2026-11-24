@@ -21,7 +21,7 @@ namespace ChoDoLa.Sprint1
     /// 5) Two-Page Open Ledger Book + Colored Side Ribbons
     /// 6) End-of-Run Receipt + Wax Stamp
     /// </summary>
-    public class Sprint1HudController : MonoBehaviour
+    public partial class Sprint1HudController : MonoBehaviour
     {
         [Header("Dependencies")]
         [SerializeField] private Sprint1MarketService marketService;
@@ -258,7 +258,12 @@ namespace ChoDoLa.Sprint1
 
             UpdateCompass();
 
-            if (IsTabPressed())
+            if (EquipmentKeyPressed() && (marketService == null || !marketService.CurrentRunState.IsRunEnded))
+            {
+                if (_equipmentModal != null && _equipmentModal.activeSelf) CloseAllModals();
+                else if (!IsAnyModalOpen()) OpenEquipment(atShop: false);
+            }
+            else if (IsTabPressed())
             {
                 if (_ledgerModal != null && _ledgerModal.activeSelf)
                 {
@@ -297,7 +302,8 @@ namespace ChoDoLa.Sprint1
             return (_counterModal != null && _counterModal.activeSelf)
                 || (_inspectModal != null && _inspectModal.activeSelf)
                 || (_ledgerModal != null && _ledgerModal.activeSelf)
-                || (_runEndModal != null && _runEndModal.activeSelf);
+                || (_runEndModal != null && _runEndModal.activeSelf)
+                || (_equipmentModal != null && _equipmentModal.activeSelf);
         }
 
         public void OpenCounterModal(string highlightOfferId)
@@ -372,7 +378,7 @@ namespace ChoDoLa.Sprint1
 
         public void OpenTactShopModal()
         {
-            ShowToast("Kho Tạo Tác sẽ mở ở Sprint 2.", isError: false);
+            OpenEquipment(atShop: true);
         }
 
         private void OpenLedgerTab(int tabIndex)
@@ -389,6 +395,7 @@ namespace ChoDoLa.Sprint1
 
         public void CloseAllModals()
         {
+            if (_equipmentModal != null) _equipmentModal.SetActive(false);
             if (_counterModal != null) _counterModal.SetActive(false);
             if (_inspectModal != null) _inspectModal.SetActive(false);
             if (_inspectHintsBar != null) _inspectHintsBar.SetActive(false);
@@ -1083,6 +1090,7 @@ namespace ChoDoLa.Sprint1
             BuildInspectModal(canvasGo.transform);
             BuildLedgerModal(canvasGo.transform);
             BuildRunEndModal(canvasGo.transform);
+            BuildEquipmentModal(canvasGo.transform);
         }
 
         private void BuildStatusCluster(Transform parent)

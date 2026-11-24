@@ -76,6 +76,7 @@ namespace ChoDoLa.Contracts
     public sealed class ComboView
     {
         public string ComboId;
+        public IReadOnlyList<string> MissingTactIds;
         public string DisplayName;
         public string ConditionSummary;
         public string EffectSummary;

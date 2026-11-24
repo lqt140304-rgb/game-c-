@@ -113,3 +113,11 @@ dotnet run --project QA/Gameplay -- Docs/Content/data/content.json
 Kho Kim Khuy có thể đọc `TactCatalog`, `EquippedTacts`, `EquipSlotCount`, `Resonance`, `ActiveCombos` và `Bikhe1Unlocked` từ `MarketRun`. Scene gọi `BuyTact(transactionId, tactId)`, `EquipTact(transactionId, tactId, slot)` và `UnequipTact(transactionId, slot)`. Ô đánh số từ 0. Gắn vào ô đang có món sẽ đưa món cũ về túi. Chuyển món sang ô khác chỉ giữ một bản trang bị.
 
 Mua Tạo Tác dùng tiền ván và túi riêng. Sở hữu, trang bị và BK1 được ghi cùng bản tự lưu. Có 4 ô ban đầu. Khi trang bị đủ CB1 hoặc CB2 trước ngày 5, BK1 mở ô thứ 5 đến hết ván, kể cả sau khi tháo combo. Mốc 3 của cùng một hệ thay mốc 2. Hiệu ứng cộng giá bán và manh mối miễn phí chạy trong gameplay. `ActiveTactEffects` cung cấp loại hiệu ứng, nguồn và phạm vi cho scene và các dịch vụ sẽ tích hợp sau.
+
+#### Màn Trang bị và Kho Kim Khuy
+
+Nhấn **I** để mở Trang bị, hoặc tương tác với Kim Khuy để mở cùng màn và mua Tạo Tác. Chọn món rồi chọn ô. Chuột phải vào ô để tháo. Hệ và combo chỉ hiện trên màn Trang bị. Icon sáng khi đủ điều kiện. Rê vào combo chưa đủ để xem các icon món cần gắn.
+
+Prefab hiển thị được tra bằng mã `CP1–CP3` hoặc `TC1–TC3` tại `Resources/TactEquipment/Models/{id}`, với đường dẫn tương thích `Resources/Blender/Models/Artifact_{id}`. Sprite tùy chọn nằm tại `Resources/TactEquipment/Icons/{id}`. Khi thiếu sprite, UI dùng mã món.
+
+Đặt prefab nhân vật xem trước tại `Resources/TactEquipment/Character`. Dùng prefab chỉ phục vụ trình diễn, có điểm cầm `TactPreviewHand` hoặc xương tay phải Humanoid và trigger Animator `InspectTact` cho động tác cầm lên ngắm. Game gọi trigger sau khi giao dịch trang bị thành công. Nếu có model món mà thiếu prefab nhân vật, khung bên phải chỉ xoay món. Không gắn món lên người sau động tác.

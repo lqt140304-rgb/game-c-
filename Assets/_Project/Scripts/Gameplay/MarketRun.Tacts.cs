@@ -28,6 +28,29 @@ namespace ChoDoLa.Gameplay
             public bool Unlimited { get; internal set; }
         }
 
+        public sealed class TactCombo
+        {
+            public string Id { get; internal set; }
+            public string Name { get; internal set; }
+            public IReadOnlyList<string> RequiredIds { get; internal set; }
+            public IReadOnlyList<string> MissingIds { get; internal set; }
+            public IReadOnlyList<TactEffect> Effects { get; internal set; }
+        }
+
+        public IReadOnlyList<TactCombo> TactCombos => ComboDefinitions.Select(combo =>
+        {
+            var id = (string)combo["id"];
+            var required = combo["requires"].Values<string>().ToArray();
+            return new TactCombo
+            {
+                Id = id,
+                Name = (string)combo["name"],
+                RequiredIds = required,
+                MissingIds = required.Where(tactId => !state.TactSlots.ContainsValue(tactId)).ToArray(),
+                Effects = combo["effects"].Select(effect => ViewEffect(id, effect)).ToArray()
+            };
+        }).ToArray();
+
         private JToken TactDefinitions => content["artifacts"];
         private JToken ComboDefinitions => content["combos"];
         public bool Bikhe1Unlocked => state.Bikhe1Unlocked;

@@ -251,3 +251,17 @@ Check(priceTactRun.EquipTact("price-tact-equip-4", "TC1", 3).Success &&
     priceTactRun.EquipTact("price-tact-equip-5", "TC2", 4).Success, "equip mixed five-slot layout");
 Check(priceTactRun.Shelf[0].Clues.Length == 3, "two free clue bonuses reach three clues");
 Check(priceTactRun.Sell("price-tact-sell", priceTactItem).Amount == 264, "same effects used for actual sale");
+
+var kimKhuy = new ChoDoLa.Sprint1.Sprint1MarketService();
+kimKhuy.Bind(new MarketRunHost { Run = new MarketRun(json, 271) });
+Check(kimKhuy.TactCatalog.Count == 6 && kimKhuy.EquippedArtifacts.Count == 4, "Kim Khuy reads gameplay catalogue");
+Check(kimKhuy.TactCatalog.Single(item => item.TactId == "CP1").IconModelName == "CP1", "model binding uses the gameplay ID");
+var kimCombo = kimKhuy.ActiveCombos.Single(combo => combo.ComboId == "CB1");
+Check(!kimCombo.IsActive && kimCombo.MissingTactIds.SequenceEqual(new[] { "CP1", "CP2" }), "inactive combo exposes missing icons");
+Check(kimKhuy.RequestBuyTactArtifact("CP1") && kimKhuy.RequestEquipTactArtifact("CP1", 0), "Kim Khuy buys and equips");
+Check(kimKhuy.ActiveCombos.Single(combo => combo.ComboId == "CB1").MissingTactIds.SequenceEqual(new[] { "CP2" }), "one icon stays missing");
+Check(kimKhuy.RequestBuyTactArtifact("CP2") && kimKhuy.RequestEquipTactArtifact("CP2", 1), "Kim Khuy finishes combo");
+Check(kimKhuy.CurrentRunState.MaxEquipSlots == 5 && kimKhuy.ActiveCombos.Single(combo => combo.ComboId == "CB1").IsActive,
+    "Kim Khuy displays BK1 and active combo");
+Check(kimKhuy.RequestUnequipTactArtifact(1) && kimKhuy.CurrentRunState.MaxEquipSlots == 5, "unequip preserves slot five");
+Console.WriteLine("Kim Khuy checks passed.");
