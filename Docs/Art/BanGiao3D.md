@@ -190,3 +190,13 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Cổ Phong (dựng bằng Blender, tạm)
+
+Hũ gốm men ngọc, nắp vòm núm đồng, đai tre, nhãn thư pháp, phong giấy đỏ. Ý tưởng: [ruong-co-phong](../../docs/superpowers/specs/2026-11-24-ruong-co-phong-design.md). Đây là bản thử tạm, chưa chạy trong Unity, chưa gán ID hay chủ đề vào dữ liệu game.
+
+- File: `Assets/_Project/Art/Chests/Chest_CoPhong.glb`. Cao khoảng 0,44 m (có núm), rộng khoảng 0,42 m (gồm quai).
+- Số tam giác: 1.916 (không tính Glow). Vật liệu đơn sắc, không có texture.
+- Lớp: `Chest_CoPhong` (gốc) gồm `Body`, `Lid` (gốc tọa độ ở bản lề sau, xoay quanh X, mặt trước là -Y), `Seal` (phong giấy đỏ), `Binding` (đai tre), `Glow` (đĩa sáng trong miệng hũ). Không có `Key`.
+- Chạy lại: `pip install bpy pillow` rồi `python Tools/Blender/make_chest_co_phong.py -- Assets/_Project/Art/Chests`
+- Ảnh xem trước (Cycles, dựng ngoại tuyến): `python Tools/Blender/render_chest_co_phong_preview.py -- Assets/_Project/Art/Chests/Chest_CoPhong.glb Assets/_Project/Art/Source/render_chest_co_phong_open.png 32 420` cho ra `Assets/_Project/Art/Source/render_chest_co_phong_open.png` (đóng nắp, hé nắp, mở toang, ba góc hình bóng).
