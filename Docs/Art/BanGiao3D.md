@@ -172,7 +172,7 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | L21 | Thần kiếm Kusanagi | Nhật Bản cổ |
 | L22 | Bản đồ cổ vẽ tay | Vải Niêm (rương cơ bản) |
 
-Lưu ý: găng tay L19 mất lớp kim tuyến (ra màu trắng trơn); kiếm L21 hơi cong. Chưa có: Đồng hồ bỏ túi (Kim Khí), Két sắt (Đen), gom vào [danh sách làm lại](#danh-sách-làm-lại).
+Lưu ý: găng tay L19 mất lớp kim tuyến (ra màu trắng trơn); kiếm L21 hơi cong. Đồng hồ bỏ túi (L23) và Két sắt (L24) làm ở [đợt làm lại 1](#đợt-làm-lại-1-2026-11-24).
 
 ## Rất hiếm theo rương (đợt 2026-11-24, low-poly)
 
@@ -181,8 +181,8 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | Mã | Món | Rương | Tình trạng |
 |---|---|---|---|
 | X07 | Tượng Di Lặc gỗ | Gỗ | Có |
-| X08 | Nhẫn kim cương không rõ nguồn | Đen | **Mất**, chờ làm lại |
-| X09 | Đèn ông sao | Tuổi thơ Việt Nam | **Mất**, chờ làm lại |
+| X08 | Nhẫn kim cương không rõ nguồn | Đen | Có (làm lại), cao 4 cm, đá có vệt đỏ do texture |
+| X09 | Đèn ông sao | Tuổi thơ Việt Nam | Có (làm lại) |
 | X10 | Đũa thủy thủ mặt trăng (nhại) | Wibu | **Mất**, chờ làm lại |
 | X11 | Sừng kỳ lân | Truyền thuyết Châu Âu | Có |
 | X12 | Đũa phép cậu bé phù thủy (nhại) | Truyền thuyết Châu Âu | Có, mất giá đỡ, bề mặt hơi thô |
@@ -190,7 +190,7 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | X14 | Lá cờ trên mặt trăng | Không gian | Có |
 | X15 | Khối kim cương vuông (nhại Minecraft) | Game | Có |
 | X16 | Kiếm thần của chàng áo xanh (nhại Zelda) | Game | Có, cắm trên bệ đá |
-| X17 | Áo đấu số 7 (nhại) | Thể thao | **Mất**, chờ làm lại |
+| X17 | Áo đấu số 7 (nhại) | Thể thao | Có (làm lại), không ma-nơ-canh |
 | X18 | Giày "biết bay" (nhại) | Thể thao | **Mất**, chờ làm lại |
 | X19 | Đàn bầu | Âm nhạc | Có, mất quả bầu (bầu bị tách rời, đã bỏ) |
 | X20 | Cây ghi-ta đập vỡ | Âm nhạc | Có, dáng đứng nghiêng |
@@ -199,29 +199,35 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | X23 | Mắt Horus | Ai Cập cổ đại | Có, trên giá đỡ |
 | X24 | Quan tài xác ướp mini | Ai Cập cổ đại | Có |
 | X25 | Bản đồ kho báu | Hải tặc | **Mất**, chờ làm lại |
-| X26 | Trái ác quỷ (nhại) | Hải tặc | **Mất**, chờ làm lại |
-| X27 | Thanh Long Yển Nguyệt Đao | Trung Hoa cổ | **Dính** với giá và đũa phép, chờ làm lại |
+| X26 | Trái ác quỷ (nhại) | Hải tặc | Có (làm lại) |
+| X27 | Thanh Long Yển Nguyệt Đao | Trung Hoa cổ | Có (làm lại), nằm ngang, dài 2,2 m |
 | X28 | Vòng kim cô | Trung Hoa cổ | Có |
 | X29 | Giáp samurai mini | Nhật Bản cổ | Có |
 | X30 | Tranh sóng lừng (nhại Hokusai) | Nhật Bản cổ | Có, trên giá vẽ |
 
 Ghi chú: ảnh gộp 2 chỉ còn 4/8 món (mất nhẫn trong hộp, áo trên ma-nơ-canh, bóng bay, trái ác quỷ). Giày đã xóa logo thật trong ảnh nguồn trước khi dựng.
 
+## Đợt làm lại 1 (2026-11-24)
+
+Một ảnh gộp 8 món, 39 credit. Ảnh nguồn `Art/Source/ref_lam_lai_1.png`, ảnh kiểm tra `render_lam_lai_1.png`. Đủ 8 món, không món nào dính.
+
+| Mã | Món | Rương | File |
+|---|---|---|---|
+| L23 | Đồng hồ bỏ túi không bao giờ hết pin | Kim Khí | `Legendary/L23_dong_ho_bo_tui.glb` (nắp mở, có dây xích) |
+| L24 | Két sắt chưa ai mở được | Đen | `Legendary/L24_ket_sat.glb` |
+| X08, X09, X17, X26, X27 | Xem bảng Rất hiếm ở trên | | `VeryRare/` |
+
+Găng tay lấp lánh (L19) làm lại vẫn ra trắng trơn: Meshy không giữ được kim tuyến. **Giữ bản L19 cũ**, phần lấp lánh làm bằng vật liệu (normal map hạt cườm, độ kim loại cao) hoặc hạt sáng trong Unity, không chạy Meshy thêm cho món này.
+
 ## Danh sách làm lại
 
 Không làm lại riêng lẻ. Đủ 8 món hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi ảnh gộp 8 món).
 
-1. Đồng hồ bỏ túi không bao giờ hết pin (Kim Khí, Huyền thoại)
-2. Két sắt chưa ai mở được (Đen, Huyền thoại)
-3. Găng tay lấp lánh L19 (Âm nhạc, mất kim tuyến)
-4. X08 Nhẫn kim cương không rõ nguồn
-5. X09 Đèn ông sao
-6. X10 Đũa thủy thủ mặt trăng (nhại)
-7. X17 Áo đấu số 7 (nhại)
-8. X18 Giày "biết bay" (nhại)
-9. X22 Bóng bay đỏ (nhại)
-10. X25 Bản đồ kho báu
-11. X26 Trái ác quỷ (nhại)
-12. X27 Thanh Long Yển Nguyệt Đao
+1. X10 Đũa thủy thủ mặt trăng (nhại)
+2. X18 Giày "biết bay" (nhại), nhớ xóa logo thật trong ảnh nguồn
+3. X22 Bóng bay đỏ (nhại)
+4. X25 Bản đồ kho báu
 
-Hiện 12 món, đủ 1 ảnh gộp 8 món (+4 món dư, hoặc 2 ảnh 6 món ~78 credit). **Chờ chủ dự án cho phép.**
+Còn 4 món, chờ gom đủ 8.
+
+Kinh nghiệm: món đặt trong hộp, trên ma-nơ-canh hoặc giá đỡ dễ bị mất hay dính; để món đứng riêng, không đế thì Meshy giữ tốt hơn.

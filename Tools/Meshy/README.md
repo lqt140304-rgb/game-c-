@@ -11,3 +11,5 @@ Chạy trong thư mục làm việc tạm (scratchpad), không trong repo:
 5. Xem 4 góc: chép glb vào `preview/glb/`, `npm i three` trong `preview/`, rồi `node preview/shot.js X07_ten ...` → `ht_<id>.png`.
 
 Món lỗi (mất, dính nhau, không nhận ra): **không làm lại riêng lẻ**; ghi vào danh sách làm lại trong `Docs/Art/BanGiao3D.md`, chỉ chạy khi đủ 8 món hoặc không còn món nào khác.
+
+Mẹo: để mỗi món đứng riêng, không hộp, không ma-nơ-canh, không giá đỡ (dễ bị mất hoặc dính). Logo thật trong ảnh nguồn thì xóa (inpaint) trước khi dựng 3D. Kim tuyến, đồ trong suốt không giữ được.
