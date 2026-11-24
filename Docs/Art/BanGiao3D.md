@@ -190,3 +190,12 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Việt Nam (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_VietNam.glb`: **thúng tre đội nón lá** (ý tưởng ở [spec](../../docs/superpowers/specs/2026-11-24-ruong-viet-nam-design.md)). Bản thử tạm, **chưa gán ID hay chủ đề** vào dữ liệu game.
+
+- Lớp: root `Chest_VietNam` gồm `Body` (thúng, 996 tam giác), `Lid` (nón lá, 654, **gốc ở mép sau vành nón**, xoay quanh X, mặt trước -Y), `Binding` (quai lụa đỏ, 68), `Seal` (tem giấy đỏ hình thoi, 24), `Glow` (quầng sáng trong thúng, 20, ẩn bằng scale). Tổng 1.742 tam giác không tính Glow. Cao khoảng 0,37 m.
+- Vật liệu đơn sắc, không texture. Không có `Key`.
+- Chạy lại: `pip install bpy pillow`, rồi `python Tools/Blender/make_chest_viet_nam.py -- Assets/_Project/Art/Chests`.
+- Ảnh xem trước: `python Tools/Blender/render_chest_viet_nam_preview.py <thư mục>` (Cycles, đóng, hé, mở toang và 3 góc hình bóng), bảng ghép ở `Art/Source/render_chest_viet_nam_open.png`. Ảnh dựng ngoại tuyến, **chưa chạy trong Unity** (đổi `lidOpenSign` nếu nón lật ngược).
