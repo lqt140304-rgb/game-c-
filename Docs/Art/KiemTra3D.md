@@ -20,9 +20,9 @@ Script ghi `report.json` (số tam giác, kích thước, cạnh hở, mặt suy
 
 ## Lỗi cần sửa
 
-1. **8 file LowPoly nặng 37–45 MB** vì nhúng texture 4096×4096: L01–L06, X05, X06. Bốn trong số này còn quá ngân sách tam giác: L05 nỏ thần (67 nghìn), X05 trái tim robot (51 nghìn), X06 phi thuyền (25 nghìn), L01 ấn ngọc tỷ và L06 gậy sắt (24 nghìn). Nên decimate xuống dưới 10 nghìn và hạ texture xuống 1024.
+1. *(Đã sửa, xem cuối file)* **8 file LowPoly nặng 37–45 MB** vì nhúng texture 4096×4096: L01–L06, X05, X06. Bốn trong số này còn quá ngân sách tam giác: L05 nỏ thần (67 nghìn), X05 trái tim robot (51 nghìn), X06 phi thuyền (25 nghìn), L01 ấn ngọc tỷ và L06 gậy sắt (24 nghìn). Nên decimate xuống dưới 10 nghìn và hạ texture xuống 1024.
 2. **Texture atlas bị lặp trong từng file.** Mỗi nhóm được cắt từ một ảnh gộp, nên mọi món trong nhóm nhúng nguyên tấm atlas chung (ví dụ 8 món Legendary L07–L14 dùng chung một ảnh), dù mỗi món chỉ dùng 4–45% diện tích. Ví dụ L10 mũ đỏ và L20 băng video chỉ dùng khoảng 4%. Cách sửa: trong Unity, cho các món cùng nhóm dùng chung một texture và material (tiết kiệm nhất), hoặc bake lại texture riêng cho từng món.
-3. **L21 kiếm Kusanagi nằm chéo trong mặt phẳng XZ**, khác L07 và L17 dựng thẳng theo trục Y. Khi cầm bằng `HeldItemViewmodel` sẽ bị lệch hướng. Cần xoay cho thẳng trục.
+3. *(Đã sửa)* **L21 kiếm Kusanagi nằm chéo trong mặt phẳng XZ**, khác L07 và L17 dựng thẳng theo trục Y. Khi cầm bằng `HeldItemViewmodel` sẽ bị lệch hướng. Cần xoay cho thẳng trục.
 4. **Lỗ hở và pháp tuyến lật** ở bản Meshy, nặng nhất ở X05 (209 cạnh biên, 7 cạnh lật), L05 (112, 4), CP1 (90, 4), TC2 (85, 6), V02 sách cổ (91, 8) và R08 bao thuốc (87, 5). Lỗ thường nằm ở đáy hoặc mặt khuất nên không thấy khi render. Nếu bật backface culling mà thấy lỗ khi xoay hiện vật, chạy *Recalculate Outside* và *Fill Holes* trong Blender.
 
 ## Không phải lỗi (đã kiểm lại)
@@ -35,3 +35,15 @@ Script ghi `report.json` (số tam giác, kích thước, cạnh hở, mặt suy
 ## Màu sắc theo bậc
 
 Các bậc được phân biệt rõ qua độ bão hòa trung bình của texture: Rác 0,20–0,39 (bạc, cũ), Thường 0,31–0,49, Hiếm 0,26, Rất hiếm 0,38, Huyền thoại 0,18–0,51. Bậc Hiếm (0,26) trầm hơn bậc Thường. Nếu muốn người chơi nhận bậc qua màu thì nên nâng màu bậc Hiếm, hoặc dựa vào viền hay ánh sáng bậc trong UI.
+
+## Đã sửa (2026-11-24)
+
+Chạy `Tools/Blender/fix_lowpoly_meshy.py` trên 61 file LowPoly tạo bằng Meshy (Artifacts, Boxes_Meshy, Common, Junk, Legendary, Rare, VeryRare). Không động tới bản `_Blender`, `LowPoly/Boxes` và bản photoreal.
+
+- Giảm tam giác xuống ≤ 9.000 cho 15 file vượt 10.000 (L05 từ 67 nghìn, X05 từ 51 nghìn, X06, L01, L06, L04, V04, V11, R01, X02, L13, V10, CP1…).
+- Hạ texture xuống 1024×1024, lưu JPEG chất lượng 90. Mỗi file còn 0,2–1 MB, cả thư mục `LowPoly/` từ khoảng 400 MB còn 26 MB.
+- Hàn đỉnh trùng, tính lại pháp tuyến hướng ra ngoài (còn 1 cạnh không nhất quán ở CP1 và X06, so với 1–8 cạnh ở hầu hết file trước đó), làm mịn theo góc 35°.
+- L21 Kusanagi dựng thẳng theo trục Y, lưỡi hướng lên.
+- Giữ đáy y=0, tâm ở gốc và kích thước thật.
+
+Lỗ hở lớn (miệng bình, khe giữa các chi tiết Meshy) **không** tự trám, vì trám tự động dễ sinh mặt xấu. Các lỗ này nằm ở mặt khuất và không thấy khi render. Ảnh sau khi sửa: `KiemTra3D/sheet_sau_khi_sua.png`.
