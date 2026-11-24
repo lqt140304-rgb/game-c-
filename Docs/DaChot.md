@@ -14,7 +14,7 @@ Bản tóm tắt toàn bộ kế hoạch: [TongQuanKeHoach.md](TongQuanKeHoach.m
 | Thần lực | [than-luc](../docs/superpowers/specs/2026-11-23-than-luc-design.md) | Chỉ phản ứng dí dỏm; chữ chạy kiểu light novel, không lồng tiếng |
 | Soi lỗi và trả giá | [soi-loi-tra-gia](../docs/superpowers/specs/2026-11-23-soi-loi-tra-gia-design.md) | Soi lỗi lấy bằng chứng, trả giá kiểu Ace Attorney; biến thể chất lượng là lớp phủ, không làm mô hình riêng |
 | Bậc đồ trong rương | [tier-do-trong-ruong](../docs/superpowers/specs/2026-11-23-tier-do-trong-ruong-design.md) | 5 bậc: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại |
-| Rương chủ đề | [ruong-chu-de](../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md) | Mở bằng thành tựu, có trong shop từ hôm sau; quay bậc rồi quay món; mỗi món thuộc một rương, Rác dùng chung; Rương Tổng Hợp ra đồ rương cơ bản; Huyền thoại chủ đề là biểu tượng có câu chuyện; nhại được, chỉ cần đổi nhỏ |
+| Rương chủ đề | [ruong-chu-de](../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md) | Mở bằng thành tựu, có trong shop từ hôm sau; quay bậc rồi quay món; mỗi món thuộc một rương, Rác dùng chung; Rương Tổng Hợp ra đồ rương cơ bản; Huyền thoại chủ đề là biểu tượng có câu chuyện; nhại được, chỉ cần đổi nhỏ; rương chủ đề có rác riêng (châm biếm) cộng kho rác chung; cho phép cặp bản nguyên (bậc cao) và bản hư hỏng nặng (Rác) là hai mô hình riêng |
 
 ## Mỹ thuật 3D
 

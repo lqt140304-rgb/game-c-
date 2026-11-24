@@ -27,7 +27,8 @@ Bản gạch đầu dòng toàn bộ kế hoạch tới 2026-11-24. Chi tiết v
 - **Rương chủ đề:** Việt Nam, Tuổi thơ Việt Nam, Wibu, Truyền thuyết Châu Âu, Robot, Không gian, Game, Thể thao, Âm nhạc, Phim kinh dị, Ai Cập, Hải tặc, Trung Hoa, Nhật Bản (còn thêm sau).
   - Mở khóa **chỉ bằng thành tựu**; mở xong thì **có trong shop từ hôm sau**.
 - **Cách mở:** quay **bậc** trước, rồi quay **món** trong bộ sưu tập của chính rương đó.
-- **Mỗi món chỉ thuộc một rương**; riêng **Rác dùng chung** mọi rương.
+- **Mỗi món chỉ thuộc một rương**; **Rác có kho chung** mọi rương, rương chủ đề có thêm **rác riêng** mang tính châm biếm.
+- Một món có thể có **bản nguyên** (bậc cao) và **bản hư hỏng nặng** (Rác), hai mô hình riêng; chỉ khi vết hư đổi hình khối.
 
 ## Bậc đồ
 - 5 bậc: **Rác, Thường, Hiếm, Rất hiếm, Huyền thoại**.
@@ -61,7 +62,7 @@ Bản gạch đầu dòng toàn bộ kế hoạch tới 2026-11-24. Chi tiết v
 
 ## Mô hình 3D (tình trạng)
 - Rương: 4 rương cơ bản làm bằng Blender, có lớp nắp mở được.
-- Đồ: Rác 9, Thường 37 (đủ), Hiếm 37 (đủ), Rất hiếm 32 (đủ), Huyền thoại 24 (găng tay L19 cần hiệu ứng lấp lánh trong Unity). Chi tiết: [BanGiao3D](Art/BanGiao3D.md).
+- Đồ: Rác 9 (còn 41 rác chủ đề mới), Thường 37 (còn 7 món mới), Hiếm 37 (còn 5 món mới), Rất hiếm 32 (đủ), Huyền thoại 24 (găng tay L19 cần hiệu ứng lấp lánh trong Unity). Chi tiết: [BanGiao3D](Art/BanGiao3D.md).
 - Meshy: gộp 8 món một lượt; món lỗi gom làm lại một đợt khi đủ 8 món.
 - Chưa chạy thử trong Unity (cần glTFast để đọc .glb).
 
