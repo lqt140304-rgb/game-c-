@@ -183,7 +183,7 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | X07 | Tượng Di Lặc gỗ | Gỗ | Có |
 | X08 | Nhẫn kim cương không rõ nguồn | Đen | Có (làm lại), cao 4 cm, đá có vệt đỏ do texture |
 | X09 | Đèn ông sao | Tuổi thơ Việt Nam | Có (làm lại) |
-| X10 | Đũa thủy thủ mặt trăng (nhại) | Wibu | **Mất**, chờ làm lại |
+| X10 | Đũa thủy thủ mặt trăng (nhại) | Wibu | Có (làm lại 2) |
 | X11 | Sừng kỳ lân | Truyền thuyết Châu Âu | Có |
 | X12 | Đũa phép cậu bé phù thủy (nhại) | Truyền thuyết Châu Âu | Có, mất giá đỡ, bề mặt hơi thô |
 | X13 | Đầu mô hình Gundam (nhại) | Robot | Có |
@@ -191,14 +191,14 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | X15 | Khối kim cương vuông (nhại Minecraft) | Game | Có |
 | X16 | Kiếm thần của chàng áo xanh (nhại Zelda) | Game | Có, cắm trên bệ đá |
 | X17 | Áo đấu số 7 (nhại) | Thể thao | Có (làm lại), không ma-nơ-canh |
-| X18 | Giày "biết bay" (nhại) | Thể thao | **Mất**, chờ làm lại |
+| X18 | Giày "biết bay" (nhại) | Thể thao | Có (làm lại 2), đã xóa logo thật, cánh vàng bên hông |
 | X19 | Đàn bầu | Âm nhạc | Có, mất quả bầu (bầu bị tách rời, đã bỏ) |
 | X20 | Cây ghi-ta đập vỡ | Âm nhạc | Có, dáng đứng nghiêng |
 | X21 | Búp bê ma (nhại) | Phim kinh dị | Có |
-| X22 | Bóng bay đỏ (nhại) | Phim kinh dị | **Mất**, chờ làm lại |
+| X22 | Bóng bay đỏ (nhại) | Phim kinh dị | Có (làm lại 2) |
 | X23 | Mắt Horus | Ai Cập cổ đại | Có, trên giá đỡ |
 | X24 | Quan tài xác ướp mini | Ai Cập cổ đại | Có |
-| X25 | Bản đồ kho báu | Hải tặc | **Mất**, chờ làm lại |
+| X25 | Bản đồ kho báu | Hải tặc | Có (làm lại 2), cuộn tròn |
 | X26 | Trái ác quỷ (nhại) | Hải tặc | Có (làm lại) |
 | X27 | Thanh Long Yển Nguyệt Đao | Trung Hoa cổ | Có (làm lại), nằm ngang, dài 2,2 m |
 | X28 | Vòng kim cô | Trung Hoa cổ | Có |
@@ -219,15 +219,31 @@ Một ảnh gộp 8 món, 39 credit. Ảnh nguồn `Art/Source/ref_lam_lai_1.png
 
 Găng tay lấp lánh (L19) làm lại vẫn ra trắng trơn: Meshy không giữ được kim tuyến. **Giữ bản L19 cũ**, phần lấp lánh làm bằng vật liệu (normal map hạt cườm, độ kim loại cao) hoặc hạt sáng trong Unity, không chạy Meshy thêm cho món này.
 
+## Hiếm theo rương, đợt 1 (2026-11-24, kèm làm lại 2)
+
+2 ảnh gộp 8 món, 78 credit. Ảnh nguồn `Art/Source/ref_hiem_chu_de_1.png`, `_2.png` (ảnh 2 đã xóa logo giày); ảnh kiểm tra `render_hiem_chu_de_1.png`, `_2.png`. File ở `Items/LowPoly/Rare/` (H) và `VeryRare/` (X10, X18, X22, X25). Mã H06–H17 cấp theo thứ tự spec.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| H06 | Ấm trà đất nứt | Gỗ | Có |
+| H07 | Hộp nữ trang gỗ khảm | Gỗ | Có |
+| H08 | Tranh cuộn thủy mặc | Vải Niêm | Có, cuộn lại nằm ngang |
+| H09 | Con dấu đồng | Vải Niêm | Có, núm rồng |
+| H10 | Máy ảnh phim cổ | Kim Khí | Có |
+| H11 | Bật lửa mạ vàng | Đen | Có, nắp mở |
+| H12 | Đồng hồ "xách tay" | Đen | Có |
+| H13 | Bánh chưng Lang Liêu | Việt Nam | **Mất**, chờ làm lại |
+| H14 | Hộp bút hai tầng | Tuổi thơ Việt Nam | Có |
+| H15 | Máy nuôi gà ảo | Tuổi thơ Việt Nam | Có |
+| H16 | Cánh cửa thần kỳ | Wibu | Có, mỏng |
+| H17 | Robot vòm tròn bíp bíp (nhại R2) | Robot | Có, sọc cam |
+
 ## Danh sách làm lại
 
 Không làm lại riêng lẻ. Đủ 8 món hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi ảnh gộp 8 món).
 
-1. X10 Đũa thủy thủ mặt trăng (nhại)
-2. X18 Giày "biết bay" (nhại), nhớ xóa logo thật trong ảnh nguồn
-3. X22 Bóng bay đỏ (nhại)
-4. X25 Bản đồ kho báu
+1. H13 Bánh chưng Lang Liêu
 
-Còn 4 món, chờ gom đủ 8.
+Còn lại chưa làm: 18 món Hiếm (từ Chó robot trở đi theo spec) và 29 món Thường.
 
 Kinh nghiệm: món đặt trong hộp, trên ma-nơ-canh hoặc giá đỡ dễ bị mất hay dính; để món đứng riêng, không đế thì Meshy giữ tốt hơn.
