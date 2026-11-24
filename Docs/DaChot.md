@@ -13,19 +13,13 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 | Soi lỗi và trả giá | [soi-loi-tra-gia](../docs/superpowers/specs/2026-11-23-soi-loi-tra-gia-design.md) | Soi lỗi lấy bằng chứng, trả giá kiểu Ace Attorney; biến thể chất lượng là lớp phủ, không làm mô hình riêng |
 | Bậc đồ trong rương | [tier-do-trong-ruong](../docs/superpowers/specs/2026-11-23-tier-do-trong-ruong-design.md) | 5 bậc: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại |
 | Rương chủ đề | [ruong-chu-de](../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md) | Mở bằng thành tựu, có trong shop từ hôm sau; quay bậc rồi quay món; mỗi món thuộc một rương, Rác dùng chung; Rương Tổng Hợp ra đồ rương cơ bản; Huyền thoại chủ đề là biểu tượng có câu chuyện; nhại được, chỉ cần đổi nhỏ |
-| Rương Thể thao (tạm) | [ruong-the-thao](../docs/superpowers/specs/2026-11-24-ruong-the-thao-design.md) | Quả bóng đá tách đôi trên chân đế phát bóng; nắp là nửa trên, bản lề phía sau |
-
-| Rương Trung Hoa cổ (tạm) | [ruong-trung-hoa](../docs/superpowers/specs/2026-11-24-ruong-trung-hoa-design.md) | Đỉnh đồng ba chân, nắp vòm lật về sau; bản tạm |
 
 ## Mỹ thuật 3D
 
 | Chủ đề | File | Điểm chính đã chốt |
 |---|---|---|
-| Rương Thiên Cơ (tạm) | [ruong-thien-co](../docs/superpowers/specs/2026-11-24-ruong-thien-co-design.md) | Tên lửa cơ khí tách đôi đứng trên ba vây, mũi lật ra sau; bản thử Blender |
 | Bàn giao mô hình | [BanGiao3D](Art/BanGiao3D.md) | Low-poly, màu trung tính; bậc cao chi tiết hơn; Meshy gộp tối đa 8 món một lượt; món lỗi gom làm lại một đợt, không làm riêng lẻ; Gậy sắt làng Gióng để thẳng |
-| Rương Tuổi thơ (tạm) | [ruong-tuoi-tho](../docs/superpowers/specs/2026-11-24-ruong-tuoi-tho-design.md) | Bản thử: đèn ông sao nằm ngửa, nắp chóp sao bản lề sau; chưa chốt, chưa gán dữ liệu |
-
-| Rương Robot (tạm) | [ruong-robot](../docs/superpowers/specs/2026-11-24-ruong-robot-design.md) | Bản thử: robot dây cót ngồi, nắp là đầu vòm; chưa duyệt |
+| Rương đã duyệt (2026-11-24) | [DanhSachRuong](Art/DanhSachRuong.md) | Chủ dự án đã duyệt mô hình từng rương; GLB ở `Assets/_Project/Art/Chests/`, cách dựng ở [BanGiao3D](Art/BanGiao3D.md). Meshy (cắt nắp từ FBX): Golden (`Chest_Golden.glb`, không có spec riêng); Magic (`Chest_Magic.glb`, không có spec riêng); Mimic (`Chest_Mimic.glb`, không có spec riêng); Miner (`Chest_Miner.glb`, không có spec riêng). Dựng bằng Blender: Rác Quý (`Chest_RacQuy.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-rac-quy-design.md)); Hải tặc (`Chest_HaiTac.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-hai-tac-design.md)); Âm nhạc (`Chest_AmNhac.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-am-nhac-design.md)); Việt Nam (`Chest_VietNam.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-viet-nam-design.md)); Tuổi thơ (`Chest_TuoiTho.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-tuoi-tho-design.md)); Robot (`Chest_Robot.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-robot-design.md)); Không gian (`Chest_KhongGian.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-khong-gian-design.md)); Game (`Chest_Game.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-game-design.md)); Thể thao (`Chest_TheThao.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-the-thao-design.md)); Trung Hoa cổ (`Chest_TrungHoa.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-trung-hoa-design.md)); Nhật Bản cổ (`Chest_NhatBan.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-nhat-ban-design.md)); Cổ Phong (`Chest_CoPhong.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-co-phong-design.md)); Thiên Cơ (`Chest_ThienCo.glb`, [spec](../docs/superpowers/specs/2026-11-24-ruong-thien-co-design.md)). **Chưa gán ID chính thức hay chủ đề vào dữ liệu game** (`Docs/Content/data/content.json`). |
 
 ## Quy tắc làm việc
 

@@ -191,21 +191,6 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
 
-## Rương Thiên Cơ (dựng bằng Blender, tạm)
-
-`Assets/_Project/Art/Chests/Chest_ThienCo.glb`, **bản thử tạm**, chưa gán ID hay chủ đề vào dữ liệu game. Ý tưởng: [spec](../../docs/superpowers/specs/2026-11-24-ruong-thien-co-design.md). Dáng **tên lửa cơ khí tách đôi**: thân dưới nửa cầu có loa phụt và ba vây xuôi (đứng trên vây, không đế), nắp là mũi tên lửa thuôn nhọn có chóp ăng-ten, xích đạo là vành răng đồng, mặt trước nắp có mắt máy cyan (gợi TC2), bên trong có lõi cyan (gợi TC3).
-
-```
-pip install bpy pillow
-python Tools/Blender/make_chest_thien_co.py -- Assets/_Project/Art/Chests/Chest_ThienCo.glb Assets/_Project/Art/Source/render_chest_thien_co_open.png 48 640
-```
-(Bỏ hai tham số cuối và đường dẫn ảnh nếu chỉ cần GLB.)
-
-- Lớp: root `Chest_ThienCo` gồm `Body` (1.036 tam giác), `Lid` (1.056, **gốc ở bản lề phía sau**, xoay quanh X, mặt trước là -Y), `Glow` (60, đĩa cyan ở miệng, ẩn bằng scale), `Seal` (68, núm khóa xoay ở mặt trước xích đạo). Tổng **2.220 tam giác**, cao ~0,52 m (kể cả chóp ăng-ten), vật liệu đơn sắc, cyan dùng emission, không texture.
-- Không có `Key`, `Binding`.
-- Ảnh `Art/Source/render_chest_thien_co_open.png`: đóng, hé, mở toang, và 3 góc hình bóng; dựng ngoại tuyến bằng Cycles, **không phải ảnh từ Unity**. Chưa tạo prefab, chưa chạy trong Unity (đổi `lidOpenSign` nếu nắp mở ngược).
-- Điểm còn yếu: mặt trong nắp khi mở toang còn sáng xám, đĩa Glow phẳng và to.
-
 ## Rương Magic (đá và tinh thể tím, khóa lục giác)
 
 `Assets/_Project/Art/Chests/Chest_Magic.glb`, **chưa gán chủ đề hay ID rương** vì danh sách chủ đề chưa chốt. Nguồn: FBX Meshy do chủ dự án cung cấp ở `Art/Source/MeshyChests/Magic/` (10,1 nghìn tam giác, Git LFS; bản game giảm còn ≈5 nghìn; chạy `git lfs pull`), không tốn credit mới. Tạo bằng cùng script với Golden, thêm bốn tham số tùy chọn (màu glow, màu lót, cỡ chìa, số tam giác tối đa; bỏ trống thì ra y như Golden):
@@ -441,3 +426,18 @@ Hũ gốm men ngọc, nắp vòm núm đồng, đai tre, nhãn thư pháp, phong
 - Lớp: `Chest_CoPhong` (gốc) gồm `Body`, `Lid` (gốc tọa độ ở bản lề sau, xoay quanh X, mặt trước là -Y), `Seal` (phong giấy đỏ), `Binding` (đai tre), `Glow` (đĩa sáng trong miệng hũ). Không có `Key`.
 - Chạy lại: `pip install bpy pillow` rồi `python Tools/Blender/make_chest_co_phong.py -- Assets/_Project/Art/Chests`
 - Ảnh xem trước (Cycles, dựng ngoại tuyến): `python Tools/Blender/render_chest_co_phong_preview.py -- Assets/_Project/Art/Chests/Chest_CoPhong.glb Assets/_Project/Art/Source/render_chest_co_phong_open.png 32 420` cho ra `Assets/_Project/Art/Source/render_chest_co_phong_open.png` (đóng nắp, hé nắp, mở toang, ba góc hình bóng).
+
+## Rương Thiên Cơ (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_ThienCo.glb`, **bản thử tạm**, chưa gán ID hay chủ đề vào dữ liệu game. Ý tưởng: [spec](../../docs/superpowers/specs/2026-11-24-ruong-thien-co-design.md). Dáng **tên lửa cơ khí tách đôi**: thân dưới nửa cầu có loa phụt và ba vây xuôi (đứng trên vây, không đế), nắp là mũi tên lửa thuôn nhọn có chóp ăng-ten, xích đạo là vành răng đồng, mặt trước nắp có mắt máy cyan (gợi TC2), bên trong có lõi cyan (gợi TC3).
+
+```
+pip install bpy pillow
+python Tools/Blender/make_chest_thien_co.py -- Assets/_Project/Art/Chests/Chest_ThienCo.glb Assets/_Project/Art/Source/render_chest_thien_co_open.png 48 640
+```
+(Bỏ hai tham số cuối và đường dẫn ảnh nếu chỉ cần GLB.)
+
+- Lớp: root `Chest_ThienCo` gồm `Body` (1.036 tam giác), `Lid` (1.056, **gốc ở bản lề phía sau**, xoay quanh X, mặt trước là -Y), `Glow` (60, đĩa cyan ở miệng, ẩn bằng scale), `Seal` (68, núm khóa xoay ở mặt trước xích đạo). Tổng **2.220 tam giác**, cao ~0,52 m (kể cả chóp ăng-ten), vật liệu đơn sắc, cyan dùng emission, không texture.
+- Không có `Key`, `Binding`.
+- Ảnh `Art/Source/render_chest_thien_co_open.png`: đóng, hé, mở toang, và 3 góc hình bóng; dựng ngoại tuyến bằng Cycles, **không phải ảnh từ Unity**. Chưa tạo prefab, chưa chạy trong Unity (đổi `lidOpenSign` nếu nắp mở ngược).
+- Điểm còn yếu: mặt trong nắp khi mở toang còn sáng xám, đĩa Glow phẳng và to.
