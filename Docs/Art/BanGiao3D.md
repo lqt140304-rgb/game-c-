@@ -190,3 +190,26 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Hải tặc (dựng bằng Blender)
+
+`Assets/_Project/Art/Chests/Chest_HaiTac.glb`, **chưa gán ID hay chủ đề vào dữ liệu game**. Dựng hoàn toàn bằng script, không dùng Meshy. Ý tưởng và lý do chọn dáng: [ruong-hai-tac](../../docs/superpowers/specs/2026-11-24-ruong-hai-tac-design.md).
+
+- **Dáng "Đầu lâu thuyền trưởng"**: hộp sọ đội mũ ba góc viền vàng, bịt một mắt, răng vàng, ngồi trên đống xu vàng đặt trên hai xương bắt chéo. Không có mặt hộp vuông nào; hình bóng là lá cờ Jolly Roger dựng thành khối. Mở rương là "mở não": đỉnh sọ cùng cái mũ lật ra sau.
+- **Số tam giác:** 2.844 (không tính Glow): Body 1.514, Lid 894, Binding 292, Key 96, Seal 48; Glow 260. Cao 0,49 m. Vật liệu đơn sắc, không texture.
+- **Cấu trúc lớp** (con của root `Chest_HaiTac`):
+
+| Lớp | Nội dung |
+|---|---|
+| `Body` | Phần sọ dưới đường cắt ngang trán, hàm, răng, miếng bịt mắt, đống vàng, xương chéo, miệng tối |
+| `Lid` | Đỉnh sọ và mũ ba góc, **gốc ở bản lề sau gáy**, xoay quanh trục X, mặt trước là -Y |
+| `Seal` | Dấu sáp đỏ trên dây thừng, bên trái trán |
+| `Binding` | Vòng dây thừng quanh đường cắt (nút ở gáy) và ổ khóa đồng treo giữa trán |
+| `Glow` | Quầng vàng ở miệng sọ kèm 5 đồng xu, ẩn bằng scale |
+| `Key` | Chìa sắt đã cắm sẵn vào ổ khóa, thân chìa dọc trục Y của Blender, gốc ở chỗ chìa vào ổ |
+
+- **Chạy lại:** `pip install bpy pillow` (Python 3.13, Blender 5.3), rồi
+  - `python Tools/Blender/make_chest_hai_tac.py` (ra GLB, in số tam giác và chiều cao; thêm `-- <đường dẫn .glb>` để xuất chỗ khác),
+  - `python Tools/Blender/render_chest_hai_tac_preview.py -- 64 640` (số mẫu Cycles, bề rộng mỗi khung).
+- **Ảnh xem trước:** `Art/Source/render_chest_hai_tac_open.png`, dựng ngoại tuyến bằng Cycles (ánh sáng theo `cycles_chest_preview_setup.py`): hàng trên đóng nắp, hé nắp, mở toang; hàng dưới nhìn trước, bên cạnh, sau 3/4.
+- **Dùng 5 giai đoạn sẵn có của `BoxOpenSequence`, không sửa C#.** Chưa chạy trong Unity, chưa tạo prefab. Nắp có thể mở ngược sau khi nhập: đổi `lidOpenSign`. Ổ khóa nằm cao trên trán và dây thừng là vòng kín, nên khi `Binding` rơi (dịch xuống và xoay quanh trục bản lề) cần xem trong Unity có xuyên qua mặt sọ không.
