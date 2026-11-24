@@ -15,6 +15,7 @@ Giả định (spec chưa có, xem docs/superpowers/specs/2026-11-24-can-bang-ru
 Dùng: import chest_unlock as U; c = U.apply(U.scenario("tat_ca")); ...; U.restore()
 """
 import copy
+import random
 import chest_sim as CS
 import clue_sim as C
 import proposal_sim as P
@@ -45,10 +46,10 @@ EXTRA_ITEMS = {
     # Thiên Cơ: đồ máy móc (Tương lai, Ngoài hành tinh)
     "PT1": (TL, AVG["T"], "đồ Thường Thiên Cơ"), "PT2": (NHT, AVG["T"], "đồ Thường Thiên Cơ 2"),
     "PT3": (TL, AVG["H"], "đồ Hiếm Thiên Cơ"), "PT4": (NHT, AVG["X"], "đồ Rất hiếm Thiên Cơ"),
-    # Rác Quý: "rác" hóa ra có giá (Hiện đại, Cổ tích)
-    "PR1": (HD, AVG["T"], "rác quý Thường"), "PR2": (CT, AVG["T"], "rác quý Thường 2"),
-    "PR3": (CT, AVG["H"], "rác quý Hiếm"), "PR4": (CT, AVG["X"], "rác quý Rất hiếm"),
-    "PR5": (CT, AVG["L"], "rác quý Huyền thoại"),
+    # Rác Quý: "rác" hóa ra có giá, trông như rác nên mang nhóm của rác (Hiện đại, Quá khứ): manh mối không tách được
+    "PR1": (HD, AVG["T"], "rác quý Thường"), "PR2": (QK, AVG["T"], "rác quý Thường 2"),
+    "PR3": (HD, AVG["H"], "rác quý Hiếm"), "PR4": (QK, AVG["X"], "rác quý Rất hiếm"),
+    "PR5": (HD, AVG["L"], "rác quý Huyền thoại"),
 }
 
 
@@ -74,16 +75,16 @@ def union_pools():
 
 # Bảng ĐỀ XUẤT (Claude 2, Docs/Balance/Sprint5RuongMoKhoa.md). Chưa chốt: chờ chủ dự án duyệt.
 UNLOCK = {
-    "Tổng Hợp": dict(price=600, fake=.20, ntrue=2, tiers=dict(R=.18, T=.40, H=.25, X=.14, L=.03), pools=union_pools()),
-    "Cổ Phong": dict(price=350, fake=.10, ntrue=2, tiers=dict(R=.10, T=.25, H=.12, X=.03, L=0), art_sys="CP",
+    "Tổng Hợp": dict(price=600, fake=.20, ntrue=2, tiers=dict(R=.14, T=.38, H=.28, X=.16, L=.04), pools=union_pools()),
+    "Cổ Phong": dict(price=400, fake=.10, ntrue=2, tiers=dict(R=.10, T=.25, H=.12, X=.03, L=0), art_sys="CP",
                      art_mix=(.60, .35, .05), pools=dict(T=["PC1", "PC2"], H=["PC3"], X=["PC4"])),
-    "Thiên Cơ": dict(price=350, fake=.10, ntrue=2, tiers=dict(R=.10, T=.25, H=.12, X=.03, L=0), art_sys="TC",
+    "Thiên Cơ": dict(price=400, fake=.10, ntrue=2, tiers=dict(R=.10, T=.25, H=.12, X=.03, L=0), art_sys="TC",
                      art_mix=(.60, .35, .05), pools=dict(T=["PT1", "PT2"], H=["PT3"], X=["PT4"])),
-    "Rác Quý": dict(price=60, fake=.05, ntrue=2, tiers=dict(R=.82, T=.12, H=.03, X=.02, L=.01),
+    "Rác Quý": dict(price=60, fake=.05, ntrue=2, tiers=dict(R=.86, T=.11, H=.025, X=0, L=.005),
                     pools=dict(T=["PR1", "PR2"], H=["PR3"], X=["PR4"], L=["PR5"])),
 }
 # Khung chung của một rương chủ đề (mọi chủ đề dùng chung bảng này, chỉ khác bộ sưu tập).
-THEME = dict(price=800, fake=.20, ntrue=1, tiers=dict(R=.15, T=.40, H=.27, X=.15, L=.03))
+THEME = dict(price=800, fake=.20, ntrue=1, tiers=dict(R=.13, T=.30, H=.30, X=.24, L=.03))
 
 
 def theme_chest(tag, **over):
@@ -94,7 +95,7 @@ def theme_chest(tag, **over):
     return ch
 
 
-def scenario(name, unlock=None, theme=None, n_theme=None, from_day=1, base=None, **top):
+def scenario(name, unlock=None, theme=None, n_theme=None, from_day=1, base=None, shop_extra=None, **top):
     """Cấu hình đo. name: 'co_ban' (chỉ 4 rương), một tên trong UNLOCK, 'mo_khoa' (cả 4 rương mở khóa),
     'chu_de_k' (k rương chủ đề), 'tat_ca' (4 mở khóa + 2 chủ đề)."""
     unlock = UNLOCK if unlock is None else unlock
@@ -110,7 +111,7 @@ def scenario(name, unlock=None, theme=None, n_theme=None, from_day=1, base=None,
         items, pools = theme_items(tag, theme.get("leg"), theme.get("group"))
         extra["Chủ đề %d" % (j + 1)] = dict({a: b for a, b in theme.items() if a not in ("leg", "group")}, pools=pools, items=items)
     d = dict(base or CS.FINAL, **top)
-    return dict(base=d, extra=copy.deepcopy(extra), from_day=from_day)
+    return dict(base=d, extra=copy.deepcopy(extra), from_day=from_day, shop_extra=shop_extra)
 
 
 def weights(chest):
@@ -130,10 +131,18 @@ _ORIG = dict(ladder5=P.ladder5, ladder_turns=C.ladder_turns, ladder_skill=C.ladd
 FROM = {}
 
 
+SHOP = dict(extra=None)   # None: bày mọi rương đã mở; k: mỗi ngày chỉ bày k rương mở khóa (xoay vòng theo hạt giống ván và ngày)
+
+
 def available(run):
     """Rương có trong shop hôm nay, xếp theo giá gốc giảm dần (Rương Đen từ ngày RD_FROM_DAY)."""
     d = run.g.day
     ks = [k for k in BOXES if not (k == "RD" and d < sm.RD_FROM_DAY) and d >= FROM.get(k, 1)]
+    k = SHOP["extra"]
+    ext = [x for x in ks if x.startswith("U")]
+    if k is not None and len(ext) > k:
+        keep = set(random.Random(f"{run.g.seed}-shop-{d}").sample(sorted(ext), k))
+        ks = [x for x in ks if not x.startswith("U") or x in keep]
     return tuple(sorted(ks, key=lambda k: -S.SW["base"][k]))
 
 
@@ -185,6 +194,7 @@ def apply(sc):
         design["chests"][name] = ch
         keys.append(k)
     CS.STATE["design"] = design
+    SHOP["extra"] = sc.get("shop_extra")
     S.TIERS = tuple(keys)
     P.ladder5, C.ladder_turns = ladder5, ladder_turns
     return Content(box_price={k: v[0] for k, v in BOXES.items()})
@@ -193,6 +203,7 @@ def apply(sc):
 def restore():
     CS.restore()
     FROM.clear()
+    SHOP["extra"] = None
     P.ladder5, C.ladder_turns, C.ladder_skill, S.TIERS = (_ORIG[k] for k in ("ladder5", "ladder_turns", "ladder_skill", "TIERS"))
 
 
@@ -250,6 +261,42 @@ def bot_mix(content, n, strat="thận trọng"):
     return {CS.STATE["name"][k]: round(100 * v / tot, 1) for k, v in mix.items()}
 
 
+HUNT_SET = {"CP": ("CP1", "CP2"), "TC": ("TC1", "TC2")}
+
+
+def hunt_strategy(name, bold=False):
+    """Người chơi giỏi 'săn hệ': ngày 1 đến 5, chưa đủ cặp combo của hệ (CB1 hoặc CB2) thì ưu tiên mua rương hệ `name`,
+    rồi chơi như người chơi giỏi (chọn rương theo lời kỳ vọng, đọc manh mối, giám định)."""
+    def strat(run):
+        g = run.g
+        k = CS.STATE["key"].get(name)
+        need = HUNT_SET[CS.STATE["design"]["chests"][name]["art_sys"]] if k else ()
+        while k and g.day <= 5 and g.day >= FROM.get(k, 1) and g.bought_today < 3 and not all(a in run.owned for a in need):
+            r = 0 if bold else P.reserve5(run)
+            if g.cash - run.c.box_price[k] < r:
+                break
+            it = run.buy_open(k)
+            if not it:
+                break
+            P.handle5(run, it, r, True)
+        ladder_turns(run, not bold, True)
+    return strat
+
+
+def measure_hunt(content, name, n):
+    old = dict(C.SKILL)
+    C.SKILL.update(lam=.75, tau=1.0, per_box=True)
+    try:
+        out = {}
+        for lbl, bold in (("săn hệ thận trọng", False), ("săn hệ liều", True)):
+            st = hunt_strategy(name, bold)
+            out[lbl] = round(100 * sum(P.play5(s, content, st).g.status == "won" for s in range(n)) / n, 1)
+        return out
+    finally:
+        C.SKILL.clear()
+        C.SKILL.update(old)
+
+
 def evaluate(sc, n=1000, with_mix=True):
     c = apply(sc)
     C.setup_done = True
@@ -259,6 +306,9 @@ def evaluate(sc, n=1000, with_mix=True):
         out["bot"] = {k: v["win"] for k, v in lad.items()}
         sk = C.measure_turns(c, n, lam=.75, tau=1.0)
         out["skilled"] = {k.replace(" + giám định", ""): v for k, v in sk.items() if not k.endswith("[mua]")}
+        for name, ch in sc["extra"].items():
+            if ch.get("art_sys"):
+                out.setdefault("hunt", {}).update({"%s %s" % (k, name): v for k, v in measure_hunt(c, name, n).items()})
         if with_mix:
             out["mix"] = mix_of(c, min(n, 600))
             out["mix_lieu"] = mix_of(c, min(n, 600), "liều + giám định")
