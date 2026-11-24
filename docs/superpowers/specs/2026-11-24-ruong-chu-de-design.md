@@ -12,7 +12,19 @@ Mỗi chủ đề là một **hệ sinh thái riêng**: một rương, một nh�
 2. **Sau khi mở khóa, rương xuất hiện trong shop rương vào ngày hôm sau.**
 3. **Rương Nhại tách ra, không gộp chung.** Nhóm Nhại cũ chia thành các chủ đề rõ ràng.
 4. **Mỗi chủ đề có món Huyền thoại riêng**, chỉ ra từ rương chủ đề đó.
-5. Các chủ đề chủ dự án nêu: **Wibu, truyền thuyết Châu Âu, mô hình, robot**. Danh sách có thể còn thêm.
+5. **Mọi loại rương đều có bộ sưu tập riêng** (cả 4 rương cơ bản, rương mở khóa và rương chủ đề).
+6. **Cơ chế mở rương: chọn bậc trước, rồi mới quay ra món** (xem mục dưới).
+7. Các chủ đề chủ dự án nêu: **Wibu, truyền thuyết Châu Âu, mô hình, robot**. Danh sách có thể còn thêm.
+
+## Cơ chế mở rương (đã chốt)
+
+1. **Bước 1, quay bậc:** mỗi rương có bảng tỉ lệ bậc riêng (Rác, Thường, Hiếm, Rất hiếm, Huyền thoại). Quay ra một bậc.
+2. **Bước 2, quay món:** trong bộ sưu tập của **chính rương đó**, lấy các món thuộc bậc vừa quay, quay ra một món.
+3. Rương nào cũng có bộ sưu tập riêng, nên cùng một món có thể nằm ở nhiều rương hay chỉ một rương là do danh sách của từng rương quyết định.
+4. Món Huyền thoại riêng của chủ đề chỉ nằm trong bộ sưu tập của rương chủ đề đó.
+5. Cả hai bước dùng hạt giống ván, để lưu và tải lại cho kết quả không đổi.
+
+Tỉ lệ bậc của từng rương và trọng số từng món: Claude 2.
 
 ## Khung chung của một rương chủ đề
 
@@ -50,4 +62,5 @@ Dấu "?" là gợi ý ghép đồ đã có mô hình, **chưa chốt**. Món Hu
 2. Món Huyền thoại riêng của từng chủ đề là gì, và đồ hiện có thuộc chủ đề nào.
 3. Thành tựu mở khóa từng rương.
 4. Rương Tổng Hợp còn ra Huyền thoại không.
-5. Tỉ lệ và giá: Claude 2.
+5. Một món có được nằm trong bộ sưu tập của nhiều rương không, hay mỗi món chỉ thuộc một rương (4 rương cơ bản có chung kho Thường và Rác không).
+6. Tỉ lệ và giá: Claude 2.
