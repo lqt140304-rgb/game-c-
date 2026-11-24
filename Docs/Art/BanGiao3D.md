@@ -315,7 +315,7 @@ Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` (món T
 
 Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md) (mục "Rác riêng của rương chủ đề"). **Thử gộp 12 món một lượt** (lưới 4×3, `gen_img.py ... 12`): đủ 12 món, không mất, không dính, cùng giá 39 credit (số dư còn 573), ~30 nghìn tam giác chia cho 12 món (0,6–5,5 nghìn mỗi món), đủ cho bậc Rác. Ảnh nguồn `Art/Source/ref_rac_chu_de_1.png` (chữ "DANGER" trên biển đã thay bằng "CẤM ĐỔ RÁC"); ảnh kiểm tra `render_rac_chu_de_1.png`. File ở `Items/LowPoly/Junk/`, cỡ thật (mét), đáy y=0.
 
-**Mã Rác R10–R50** cấp theo thứ tự bảng rác chủ đề trong spec cho cả 41 món: R10 Mũ "nồi cơm điện", R11 Biển "Cấm đổ rác", R12 Hóa đơn tiền điện, R13 Que kem, R14 Sổ liên lạc, R15 Vỏ bim bim, R16 Gối ôm waifu, R17 Poster rách, R18 Figure gãy, R19 Ếch bông, R20 Mũi Pinocchio, R21 Bát cháo nguội, R22 Dây cáp rối, R23 Sạc dự phòng phồng, R24 Bàn phím hỏng, R25 Mũ giấy bạc, R26 Mảnh vệ tinh cháy, R27 Thẻ nhớ mất save, R28 Đĩa game lậu, R29 Tay cầm đứt dây, R30 Vé bóng đá giả, R31 Còi méo, R32 Băng đội trưởng giãn chun, R33 Vé concert hủy, R34 Loa kẹo kéo, R35 Lightstick vỡ, R36 Tóc giả, R37 Chuông gió, R38 Bàn cầu cơ gãy, R39 Lọ cát, R40 Lạc đà bông, R41 Tượng nhân sư gãy mũi, R42 Chai rỗng, R43 Bịt mắt rách, R44 Chân gỗ mọt, R45 Bánh bao mốc, R46 Bao lì xì rỗng, R47 Đũa gãy, R48 Quẻ xăm đại hung, R49 Hộp bento nứt, R50 Ô giấy rách.
+**Mã Rác R10–R50** cấp theo thứ tự bảng rác chủ đề trong spec cho cả 41 món (nay 40: R20 Mũi Pinocchio bỏ 2026-11-24, giữ nguyên mã các món khác): R10 Mũ "nồi cơm điện", R11 Biển "Cấm đổ rác", R12 Hóa đơn tiền điện, R13 Que kem, R14 Sổ liên lạc, R15 Vỏ bim bim, R16 Gối ôm waifu, R17 Poster rách, R18 Figure gãy, R19 Ếch bông, R21 Bát cháo nguội, R22 Dây cáp rối, R23 Sạc dự phòng phồng, R24 Bàn phím hỏng, R25 Mũ giấy bạc, R26 Mảnh vệ tinh cháy, R27 Thẻ nhớ mất save, R28 Đĩa game lậu, R29 Tay cầm đứt dây, R30 Vé bóng đá giả, R31 Còi méo, R32 Băng đội trưởng giãn chun, R33 Vé concert hủy, R34 Loa kẹo kéo, R35 Lightstick vỡ, R36 Tóc giả, R37 Chuông gió, R38 Bàn cầu cơ gãy, R39 Lọ cát, R40 Lạc đà bông, R41 Tượng nhân sư gãy mũi, R42 Chai rỗng, R43 Bịt mắt rách, R44 Chân gỗ mọt, R45 Bánh bao mốc, R46 Bao lì xì rỗng, R47 Đũa gãy, R48 Quẻ xăm đại hung, R49 Hộp bento nứt, R50 Ô giấy rách.
 
 | Mã | Món | Rương | Tình trạng |
 |---|---|---|---|
@@ -369,19 +369,18 @@ Còn lại: xem danh sách làm lại; 7 Thường và 5 Hiếm mới chưa làm
 | R13 | Que kem đã liếm sạch | Tuổi thơ Việt Nam | Có; dựng lại bằng Blender (que gỗ trơn 11,4 cm, 2 vết cắn, vệt kem sót), 84 tam giác |
 | R14 | Sổ liên lạc | Tuổi thơ Việt Nam | Có, bìa xanh nhàu; mép giấy bạc đã tô ngà; chưa có chữ ký |
 | R15 | Vỏ bim bim | Tuổi thơ Việt Nam | Có, nhàu, xé miệng, không nhãn hãng |
-| R16 | Gối ôm waifu bạc màu | Wibu | Có; Blender xoay thẳng, làm dày 1 m × 34 × 20 cm; vệt bóng bạc tô kem; hình in mờ (không nhân vật thật) |
+| R16 | Gối ôm waifu bạc màu | Wibu | Có; Blender xoay thẳng, làm dày 1 m × 34 × 20 cm; mặt trên in cô gái anime bạc màu (nhân vật tự nghĩ, `retex/in_goi_om.py`); mặt bên đã xóa vệt sọc đỏ xanh |
 | R17 | Poster rách | Wibu | Có, hai ống cuộn |
-| R20 | Mũi Pinocchio gãy | Truyền thuyết Châu Âu | Có; dựng lại bằng Blender (mũi gỗ thuôn 8 cạnh, gãy đôi lởm chởm, chóp hồng), 218 tam giác |
 | R26 | Mảnh vệ tinh cháy | Không gian | Có, tấm pin cong cháy mép, lòi dây (gộp 3 mảnh); dây tô đỏ và đen |
 | R28 | Đĩa game lậu (hư) | Game | Có, đĩa nứt trong hộp vỡ, dẹt |
 | R29 | Tay cầm đứt dây | Game | Có, gộp dây đứt; thân trắng bạc tô xám |
-| R30 | Vé bóng đá giả | Thể thao | Có, vo viên (gộp 4 mảnh); Blender giảm lưới 9,9 → 2,5 nghìn tam giác |
+| R30 | Vé bóng đá giả | Thể thao | Có; dựng lại bằng Blender (`dung_mon.py R30`): tấm vé 15 × 6 cm hơi cong, gấp một góc, chữ in nhòe "Rồng Lửa FC vs Cá Mập Xanh United" (tên giả), dấu đỏ "FAKE", mặt sau điều lệ chữ nhỏ; 1,6 nghìn tam giác |
 | R31 | Còi méo | Thể thao | Có; đoạn dây trắng tô đỏ |
 | R32 | Băng đội trưởng giãn chun | Thể thao | Có, cuộn xoắn, chữ C; mặt trong bạc tô vàng |
 | R37 | Chuông gió | Phim kinh dị | Có, nằm, dây rối (gộp ống rời) |
 | R39 | Lọ cát | Ai Cập cổ đại | Có, lọ gốm nút bần |
 
-**Sửa sau kiểm tra (không tốn credit):** hình dáng sửa bằng Blender (`Tools/Meshy/blender/sua_rac.py <mã> vào.glb ra.glb`, cần `pip install bpy`): R13, R20 dựng mới; R16 xoay và làm dày; R30 giảm lưới. Màu sửa theo vùng trong `retex/fix_rac.py` (chọn điểm ảnh trắng bạc, theo mảnh rời hoặc theo vùng mặt bằng): R14, R16, R26, R29, R31, R32. Thứ tự: Blender trước, `fix_rac.py` sau. Đã rà màu cả 14 món: R15 mặt trong bạc là giấy bạc thật, R28 hộp xám bạc, R37 dây trắng mảnh, giữ nguyên.
+**Sửa sau kiểm tra (không tốn credit):** hình dáng sửa bằng Blender (`Tools/Meshy/blender/sua_rac.py <mã> vào.glb ra.glb`, cần `pip install bpy`): R13 dựng mới (R20 đã bỏ); R16 xoay và làm dày; R30 giảm lưới. Màu sửa theo vùng trong `retex/fix_rac.py` (chọn điểm ảnh trắng bạc, theo mảnh rời hoặc theo vùng mặt bằng): R14, R16, R26, R29, R31, R32. Thứ tự: Blender trước, `fix_rac.py` sau. Đã rà màu cả 14 món: R15 mặt trong bạc là giấy bạc thật, R28 hộp xám bạc, R37 dây trắng mảnh, giữ nguyên.
 
 ## Thường và Hiếm mới, 12 món một lượt (2026-11-24)
 
@@ -396,18 +395,18 @@ Cứu không tốn credit:
 
 | Mã | Món | Rương | Tình trạng |
 |---|---|---|---|
-| V42 | Sổ hộ khẩu giấy | Việt Nam | Có (Meshy), bìa đỏ nâu trơn, mở hé |
-| V43 | Tay cầm game kiểu cũ | Game | Có (Meshy), dây cuộn gọn; đã tô xám |
+| V42 | Sổ hộ khẩu giấy | Việt Nam | Có (Blender, `dung_mon.py V42`), 13 × 19 cm, bìa hồng cam có quốc hiệu, chữ "SỔ HỘ KHẨU", hình tròn trang trí (không dùng quốc huy), mở hé |
+| V43 | Tay cầm game kiểu cũ | Game | Có (Meshy), dây cuộn gọn; thân và dây cùng màu xám, đã xóa vết lem (`fix_thuong.py V43b`) |
 | V44 | Lightstick | Âm nhạc | Có (Blender), đầu tròn hồng phát sáng nhẹ, cán xám có gân |
 | V45 | Tượng nhân sư bằng đá | Ai Cập cổ đại | Có (làm lại 2026-11-24: Meshy, đủ thân, có đế, giảm lưới còn 6 nghìn tam giác) |
-| V46 | Đũa đỏ đầu mạ vàng | Trung Hoa cổ | Có (Meshy, chiếc thẳng nhân đôi thành đôi) |
+| V46 | Đũa đỏ đầu mạ vàng | Trung Hoa cổ | Có (Meshy, chiếc thẳng nhân đôi thành đôi); tô lại đỏ sơn mài đều, đầu vàng 17% chiều dài (`fix_thuong.py V46`) |
 | V47 | Hộp bento sơn mài | Nhật Bản cổ | Có (Blender), 2 tầng đen, viền đỏ, huy hiệu vàng |
-| V48 | Ô giấy dầu | Nhật Bản cổ | Có (tán Meshy + cán tre Blender), nằm nghiêng, dài 85 cm |
+| V48 | Ô giấy dầu | Nhật Bản cổ | Có (tán Meshy + cán tre Blender), nằm nghiêng, dài 85 cm; đã xóa mảnh thừa của hộp bento dưới tán, thêm khoen tre có nan che chóp dưới (`retex/xoa_manh_o.py`) |
 | H36 | Ảnh Polaroid "người ngoài hành tinh" | Không gian | Có (Meshy), hơi cong |
 | H37 | Mảnh vệ tinh thật | Không gian | Có (Blender), thân giấy vàng, 2 tấm pin, chảo, ăng-ten; rộng 82 cm |
 | H38 | Băng đội trưởng có chữ ký | Thể thao | Có (Blender), vòng vải vàng, chữ C, chữ ký bút dạ |
 | H39 | Bàn cầu cơ nguyên vẹn | Phim kinh dị | Có (Blender), chữ khắc cháy, con trỏ hình tim |
-| H40 | Chân gỗ thuyền trưởng | Hải tặc | Có (Meshy, tách chiếc đũa xuyên qua), vòng đồng, dây da |
+| H40 | Chân gỗ thuyền trưởng | Hải tặc | Có (Meshy, tách chiếc đũa xuyên qua); tô lại gỗ nâu bóng, vòng đồng, dây da nâu sẫm (`fix_thuong.py H40`) |
 
 Món Blender có ít tam giác (150–220) và màu phẳng hơn món Meshy; nếu lệch phong cách khi đặt cạnh nhau trong Unity thì gom vào danh sách làm lại.
 
@@ -416,13 +415,14 @@ Món Blender có ít tam giác (150–220) và màu phẳng hơn món Meshy; n�
 Làm lại bằng Meshy ở phiên này: 1 ảnh gộp 8 ô (nhân sư ×3, mũ ×3, gối ôm ×2; `Art/Source/ref_lam_lai_2.png`), tô nền đè 3 ô mũ (chủ dự án quyết R10 giữ bản cũ), dựng 3D. **Meshy coi cả ảnh là một vật**: chỉ dựng 1 con nhân sư (đẹp, đủ thân), mất 2 gối ôm. Có lẽ do các ô chỉ còn 5 món thưa, cùng tông nền, nên Meshy chọn một vật nổi bật. Thêm một lần tạo ảnh bị dừng giữa chừng vẫn tính 9 credit. Tổng 48 credit, số dư còn 369. V45 đã thay (`render_V45_lam_lai.png`).
 
 Chuyển sang phiên sửa (không tốn credit):
-- R16 Gối ôm: in hình cô gái anime (ảnh mẫu `Art/Source/ref_goi_om_anime.png`, nhân vật tự nghĩ) lên mặt trên của gối hiện có.
-- R20 Mũi Pinocchio: bỏ (xóa file, bỏ khỏi spec và bảng mã).
-- R30 Vé bóng đá giả: làm lại thành một tấm vé phẳng có chữ và dấu "FAKE" (Blender).
-- V42 Sổ hộ khẩu: giống sổ Việt Nam hơn, bìa có chữ "SỔ HỘ KHẨU".
-- V43 Tay cầm: tô dây cùng màu thân, xóa chỗ lem.
-- V46 Đũa, H40 Chân gỗ: tô lại màu.
-- V48 Ô giấy dầu: làm sạch mảnh thừa ngay dưới tán.
+**Đã xử lý (2026-11-24, không tốn credit).** Ảnh kiểm tra từng món: `Art/Source/render_sua_<mã>.png` (trên: 4 góc; dưới: cận cảnh).
+- [x] R16 Gối ôm: in hình cô gái anime (ảnh mẫu `Art/Source/ref_goi_om_anime.png`, nhân vật tự nghĩ) lên mặt trên của gối hiện có. Ảnh mẫu chụp nghiêng được nắn phối cảnh, tách nét mực rồi nhân lên màu vải; texture mới ghép bên phải texture cũ.
+- [x] R20 Mũi Pinocchio: bỏ (xóa file, bỏ khỏi spec và bảng mã; không đánh lại mã món khác). Rác còn 49.
+- [x] R30 Vé bóng đá giả: làm lại thành một tấm vé phẳng có chữ và dấu "FAKE" (Blender).
+- [x] V42 Sổ hộ khẩu: giống sổ Việt Nam hơn, bìa có chữ "SỔ HỘ KHẨU" (dựng lại bằng Blender).
+- [x] V43 Tay cầm: tô dây cùng màu thân, xóa chỗ lem.
+- [x] V46 Đũa, H40 Chân gỗ: tô lại màu. Dây da H40 chọn tay theo vùng (vòng dây tách khỏi thân), một mảng sát cối chân cũng thành da.
+- [x] V48 Ô giấy dầu: làm sạch mảnh thừa ngay dưới tán. Mảnh dính sát mặt dưới tán không tách sạch được, nên che bằng khoen tre hình nón có nan (giống cụm gọng trong của ô giấy thật).
 
 ## Danh sách làm lại
 

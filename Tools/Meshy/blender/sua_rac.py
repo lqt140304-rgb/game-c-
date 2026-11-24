@@ -2,9 +2,9 @@
 # Chay: python3 sua_rac.py <ma> vao.glb ra.glb   (vao.glb bo qua voi mon dung moi: R13, R20)
 # Can: pip install bpy (Blender dang module Python).
 #  R13 que kem: dung lai que go da liem sach (Meshy ve ca cay kem), dau bo tron, vet can, vet kem sot.
-#  R20 mui Pinocchio: dung lai mui go thuon nhon gay doi, mat gay lom chom, dau hong (ban Meshy giong que diem).
+#  R20 mui Pinocchio (DA BO 2026-11-24, giu de tham khao): dung lai mui go thuon nhon gay doi, mat gay lom chom, dau hong (ban Meshy giong que diem).
 #  R16 goi om: xoay thang theo truc dai, lam day (ban Meshy det, nam cheo).
-#  R30 ve vo vien: giam luoi con ~1/4 (ban Meshy ~9,9 nghin tam giac).
+#  R30 ve vo vien: giam luoi con ~1/4 (cu; nay dung lai bang dung_mon.py R30).
 #  V45 tuong nhan su (Thuong): giam luoi con ~6 nghin tam giac.
 import sys, math, random, bpy, bmesh, numpy as np
 from mathutils import Vector, Matrix

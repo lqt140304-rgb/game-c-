@@ -5,6 +5,8 @@
 #  V48 O giay dau: lap can tre vao tan o lay tu Meshy (vao.glb), nam nghieng tren san
 #  H37 Manh ve tinh that: than boc giay vang, 2 tam pin xanh, chao, ang-ten
 #  H38 Bang doi truong co chu ky: vong vai vang dung, chu C den, chu ky but da
+#  R30 Ve bong da gia (Rac): tam ve 15 x 6 cm hoi cong, gap mot goc, chu in nhoe, dau do FAKE
+#  V42 So ho khau giay: bia hong cam, chu SO HO KHAU, hinh tron trang tri (khong dung quoc huy), mo he
 #  H39 Ban cau co nguyen ven: bang go chu cai khac chay, con tro hinh tim
 # Kich thuoc that (met), tam giua, day y=0 (glTF).
 import sys, math, random, bpy, bmesh, numpy as np
@@ -278,6 +280,174 @@ elif code == "H38":  # bang doi truong: vong r 5,2 cm, cao 8 cm, vai 3 mm
     m.thickness = 0.003
     bpy.context.view_layer.objects.active = ob
     bpy.ops.object.modifier_apply(modifier="day")
+    finish(ob)
+
+elif code == "R30":  # ve bong da gia: 15 x 6 cm, giay 0,5 mm, hoi cong, gap mot goc
+    L, Wd, TH = 0.15, 0.06, 0.0005
+    FS = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+    FC = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+    paper = (214, 204, 176)
+    W, H = 1500, 600
+    fr = Image.new("RGB", (W, H), paper)  # mat truoc
+    d = ImageDraw.Draw(fr)
+    d.rectangle((0, 0, W, 95), fill=(40, 95, 60))          # dai xanh tren
+    d.rectangle((0, H - 40, W, H), fill=(40, 95, 60))
+    d.text((40, 48), "VÉ VÀO SÂN · GIẢI GIAO HỮU AO LÀNG", font=ImageFont.truetype(FS, 52), fill=(235, 235, 220), anchor="lm")
+    d.text((560, 180), "RỒNG LỬA FC", font=ImageFont.truetype(FS, 78), fill=(30, 30, 35), anchor="mm")
+    d.text((560, 262), "vs", font=ImageFont.truetype(FC, 50), fill=(30, 30, 35), anchor="mm")
+    d.text((560, 340), "CÁ MẬP XANH UNITED", font=ImageFont.truetype(FS, 70), fill=(30, 30, 35), anchor="mm")
+    fc = ImageFont.truetype(FC, 40)
+    d.text((60, 430), "SVĐ Ao Làng · 19:30 · 31/02", font=fc, fill=(50, 50, 55))
+    d.text((60, 490), "Khán đài Z · Cửa 13 · Ghế 0", font=fc, fill=(50, 50, 55))
+    d.text((740, 490), "Giá: 500.000đ", font=ImageFont.truetype(FS, 44), fill=(50, 50, 55))
+    for x in range(1080, 1110, 3):  # duong xe cuong ve
+        d.line([(x, 100), (x, H - 45)], fill=(150, 145, 130), width=1) if x % 9 == 0 else None
+    d.text((1290, 150), "CUỐNG VÉ", font=ImageFont.truetype(FS, 40), fill=(30, 30, 35), anchor="mm")
+    xx = 1150
+    while xx < 1440:  # ma vach
+        w = rng.choice((3, 5, 8)); d.rectangle((xx, 210, xx + w, 380), fill=(30, 30, 35)); xx += w + rng.choice((4, 6, 9))
+    d.text((1290, 420), "No 000000", font=fc, fill=(50, 50, 55), anchor="mm")
+    # nhoe: in lech mau (bong ma) + lam mo
+    from PIL import ImageFilter, ImageChops
+    ghost = ImageChops.offset(fr, 6, 3)
+    fr = Image.blend(fr, ImageChops.darker(fr, ghost), 0.45).filter(ImageFilter.GaussianBlur(3.0))
+    # vet loang muc/o vang
+    fr = np.asarray(fr).astype(float)
+    yy, xg = np.mgrid[0:H, 0:W]
+    for _ in range(5):
+        cx, cy, r = rng.randrange(W), rng.randrange(H), rng.randrange(80, 220)
+        fr *= 1 - 0.08 * np.exp(-((xg - cx) ** 2 + (yy - cy) ** 2) / (2 * r * r))[..., None] * np.array((0.2, 0.6, 1.4))
+    fr = Image.fromarray(np.clip(fr, 0, 255).astype(np.uint8))
+    # dau do FAKE (xoay, net vien kep, mat muc lom dom)
+    st = Image.new("L", (560, 240), 0)
+    ds = ImageDraw.Draw(st)
+    ds.rounded_rectangle((10, 10, 550, 230), 22, outline=255, width=14)
+    ds.rounded_rectangle((34, 34, 526, 206), 14, outline=255, width=5)
+    ds.text((280, 122), "FAKE", font=ImageFont.truetype(FS, 150), fill=255, anchor="mm")
+    noise = np.asarray(Image.effect_noise((560, 240), 90).filter(ImageFilter.GaussianBlur(1.5)))
+    st = Image.fromarray(((np.asarray(st) > 0) & (noise > 95)).astype(np.uint8) * 215).rotate(17, expand=True, resample=Image.BICUBIC)
+    red = Image.new("RGB", st.size, (200, 25, 30))
+    fr.paste(red, (640, 120), st)
+    bk = Image.new("RGB", (W, H), paper)  # mat sau: dieu le chu nho mo
+    d = ImageDraw.Draw(bk)
+    fs = ImageFont.truetype(FC, 26)
+    for i, line in enumerate(["ĐIỀU LỆ: Vé không hoàn, không đổi, không có thật.",
+                              "Khán giả tự mang ghế. Cấm mang trống, kèn, gà.",
+                              "Ban tổ chức không chịu trách nhiệm nếu trận đấu không diễn ra."]):
+        d.text((60, 90 + i * 48), line, font=fs, fill=(110, 105, 95))
+    bk = bk.filter(ImageFilter.GaussianBlur(1.6))
+    im = Image.new("RGB", (W, 2 * H)); im.paste(fr, (0, 0)); im.paste(bk, (0, H))
+    nx, ny = 30, 12
+    fold_a, fold_b = Vector((L / 2 - 0.025, -Wd / 2, 0)), Vector((L / 2, -Wd / 2 + 0.025, 0))  # gap goc phai duoi, theo duong cheo o luoi 5 mm
+    Rf = Matrix.Rotation(math.radians(-150), 3, (fold_b - fold_a).normalized())
+    bm = bmesh.new()
+    grid = {}  # (i, j) -> (dinh, uv theo vi tri phang ban dau)
+    for j in range(ny + 1):
+        for i in range(nx + 1):
+            x, y = (i / nx - 0.5) * L, (j / ny - 0.5) * Wd
+            p = Vector((x, y, 0))
+            side = (fold_b - fold_a).cross(p - fold_a).z
+            if side < 0:
+                p = fold_a + Rf @ (p - fold_a) + Vector((0, 0, 0.0012))
+            p.z += 0.006 * (1 - (2 * x / L) ** 2) + 0.0015 * math.sin(3.1 * y / Wd)
+            grid[i, j] = (bm.verts.new(p), (i / nx, j / ny))
+    uv = bm.loops.layers.uv.verify()
+    for j in range(ny):
+        for i in range(nx):
+            for ks in (((i, j), (i + 1, j), (i + 1, j + 1)), ((i, j), (i + 1, j + 1), (i, j + 1))):  # chia cheo de nep gap thang
+                f = bm.faces.new([grid[k][0] for k in ks])
+                for lp, k in zip(f.loops, ks):
+                    u, v = grid[k][1]
+                    lp[uv].uv = (u, 0.5 + 0.5 * v)  # mat truoc: nua tren anh
+    # mat sau: lui theo phap tuyen 0,5 mm, dao chieu mat, lay nua duoi anh (lat ngang); vien giay quanh mep
+    bm.normal_update()
+    back = {}
+    for k, (v, _) in grid.items():
+        back[k] = bm.verts.new(v.co - v.normal * TH)
+    for j in range(ny):
+        for i in range(nx):
+            for ks in (((i, j), (i + 1, j + 1), (i + 1, j)), ((i, j), (i, j + 1), (i + 1, j + 1))):
+                f = bm.faces.new([back[k] for k in ks])
+                for lp, k in zip(f.loops, ks):
+                    u, v = grid[k][1]
+                    lp[uv].uv = (1 - u, 0.5 * v)
+    ring = [(i, 0) for i in range(nx)] + [(nx, j) for j in range(ny)] + [(i, ny) for i in range(nx, 0, -1)] + [(0, j) for j in range(ny, 0, -1)]
+    for a_, b_ in zip(ring, ring[1:] + ring[:1]):
+        f = bm.faces.new((grid[b_][0], grid[a_][0], back[a_], back[b_]))
+        for lp in f.loops:
+            lp[uv].uv = (0.02, 0.48)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    ob = add_obj(bm, "ve", mat("giay", im=im, rough=0.85))
+    ob.data.transform(Matrix.Rotation(math.radians(20), 4, "Z"))
+    finish(ob)
+
+elif code == "V42":  # so ho khau 13 x 19 cm, day 7 mm, bia truoc mo he 14 do
+    from PIL import ImageFilter
+    BW, BH, CT, PT = 0.13, 0.19, 0.0009, 0.005
+    FB = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
+    FN = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
+    cover = (192, 92, 84)  # hong cam bac mau
+    red = (170, 30, 30)
+    W, H = 650, 950
+    im = Image.new("RGB", (W, H), cover)
+    d = ImageDraw.Draw(im)
+    d.rectangle((22, 22, W - 22, H - 22), outline=(165, 70, 62), width=4)
+    d.text((W / 2, 90), "CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM", font=ImageFont.truetype(FB, 24), fill=red, anchor="mm")
+    d.text((W / 2, 132), "Độc lập - Tự do - Hạnh phúc", font=ImageFont.truetype(FN, 26), fill=red, anchor="mm")
+    d.line([(W / 2 - 120, 155), (W / 2 + 120, 155)], fill=red, width=2)
+    cx, cy = W / 2, 360  # hinh tron trang tri: vong kep, hoa van canh tia, khong co sao
+    for r, w in ((130, 6), (112, 3)):
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(225, 175, 60), width=w)
+    for k in range(24):
+        a = 2 * math.pi * k / 24
+        d.line([(cx + 40 * math.cos(a), cy + 40 * math.sin(a)), (cx + 100 * math.cos(a), cy + 100 * math.sin(a))], fill=(225, 175, 60), width=4)
+    d.ellipse((cx - 36, cy - 36, cx + 36, cy + 36), fill=(225, 175, 60))
+    d.text((W / 2, 590), "SỔ HỘ KHẨU", font=ImageFont.truetype(FB, 78), fill=red, anchor="mm")
+    d.text((W / 2, 700), "Số: ............................", font=ImageFont.truetype(FN, 30), fill=red, anchor="mm")
+    a = np.asarray(im.filter(ImageFilter.GaussianBlur(0.8))).astype(float)  # cu, mon goc, o vang
+    yy, xx = np.mgrid[0:H, 0:W]
+    wear = np.minimum.reduce([xx, W - xx, yy, H - yy]) / 40.0
+    a *= (0.86 + 0.14 * np.clip(wear, 0, 1))[..., None]
+    n = np.asarray(Image.effect_noise((W, H), 25).filter(ImageFilter.GaussianBlur(6))).astype(float)
+    a *= (0.95 + 0.1 * (n / 255))[..., None]
+    front = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
+    plain = Image.new("RGB", (64, 64), tuple(int(c * 0.92) for c in cover))
+    pg = Image.new("RGB", (64, 64), (212, 200, 172))  # canh giay: soc ngang
+    dp = ImageDraw.Draw(pg)
+    for y in range(0, 64, 4):
+        dp.line([(0, y), (63, y)], fill=(180, 168, 140))
+    inner = Image.new("RGB", (W, H), (218, 208, 182))  # trang dau: ke dong
+    di = ImageDraw.Draw(inner)
+    di.text((W / 2, 80), "TRANG 1", font=ImageFont.truetype(FN, 28), fill=(90, 80, 70), anchor="mm")
+    for y in range(150, H - 60, 46):
+        di.line([(50, y), (W - 50, y)], fill=(170, 160, 140), width=2)
+    inner = inner.filter(ImageFilter.GaussianBlur(0.8))
+    m_front, m_plain = mat("bia", im=front, rough=0.8), mat("bia_tron", im=plain, rough=0.8)
+    m_page, m_inner = mat("giay", im=pg, rough=0.9), mat("trang", im=inner, rough=0.9)
+    # bia sau
+    bm = box((BW, BH, CT), (BW / 2, 0, CT / 2), 0.0004); uv_box(bm, 4)
+    parts = [add_obj(bm, "bia_sau", m_plain)]
+    # khoi giay (hoi nho hon bia)
+    bm = box((BW - 0.004, BH - 0.006, PT), (BW / 2 - 0.001, 0, CT + PT / 2)); uv_box(bm, 30)
+    parts.append(add_obj(bm, "giay", m_page))
+    bm = box((BW - 0.004, BH - 0.006, 0.0002), (BW / 2 - 0.001, 0, CT + PT + 0.0001))
+    uv_top(bm, (0.001, -BH / 2 + 0.003), (BW - 0.003, BH / 2 - 0.003))
+    parts.append(add_obj(bm, "trang1", m_inner))
+    # gay so
+    bm = box((CT * 1.2, BH, PT + 2 * CT), (0, 0, (PT + 2 * CT) / 2), 0.0004); uv_box(bm, 4)
+    parts.append(add_obj(bm, "gay", m_plain))
+    # bia truoc: mat ngoai co chu, xoay quanh gay (truc Y tai x=0, z=PT+CT) 14 do
+    z0 = CT + PT
+    bm = box((BW, BH, CT), (BW / 2, 0, z0 + CT / 2), 0.0004)
+    uvl = bm.loops.layers.uv.verify()
+    for f in bm.faces:
+        for lp in f.loops:
+            c = lp.vert.co
+            lp[uvl].uv = (c.x / BW, (c.y + BH / 2) / BH) if f.normal.z > 0.5 else (0.02, 0.02)
+    bmesh.ops.rotate(bm, verts=bm.verts, cent=(0, 0, z0), matrix=Matrix.Rotation(math.radians(-14), 3, "Y"))
+    parts.append(add_obj(bm, "bia_truoc", m_front))
+    ob = join(parts)
+    ob.data.transform(Matrix.Rotation(math.radians(-90), 4, "Z"))  # chu doc dung khi nhin tu phia truoc (glTF +Z)
     finish(ob)
 
 elif code == "H39":  # ban cau co 30 x 20 x 1,5 cm, con tro tim 9 cm

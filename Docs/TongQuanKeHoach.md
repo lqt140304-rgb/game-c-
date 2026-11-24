@@ -62,7 +62,7 @@ Bản gạch đầu dòng toàn bộ kế hoạch tới 2026-11-24. Chi tiết v
 
 ## Mô hình 3D (tình trạng)
 - Rương: 4 rương cơ bản làm bằng Blender, có lớp nắp mở được.
-- Đồ: Rác 50 (đủ), Thường 44 (đủ), Hiếm 42 (đủ), Rất hiếm 32 (đủ), Huyền thoại 24 (găng tay L19 cần hiệu ứng lấp lánh trong Unity). Chi tiết: [BanGiao3D](Art/BanGiao3D.md).
+- Đồ: Rác 49 (đủ; R20 đã bỏ), Thường 44 (đủ), Hiếm 42 (đủ), Rất hiếm 32 (đủ), Huyền thoại 24 (găng tay L19 cần hiệu ứng lấp lánh trong Unity). Chi tiết: [BanGiao3D](Art/BanGiao3D.md).
 - Mẫu tải từ thư viện cộng đồng Meshy (CC0) dùng được, xem [Tools/Meshy/README](../Tools/Meshy/README.md).
 - Meshy: gộp 8 món một lượt (chỉ rác nhỏ gộp được 12–14 món; Thường trở lên gộp 12 món thì hỏng nặng); món lỗi gom làm lại một đợt khi đủ 8 món. Món hình khối đơn giản Meshy làm hỏng thì dựng bằng Blender (`Tools/Meshy/blender/`), không tốn credit.
 - Chưa chạy thử trong Unity (cần glTFast để đọc .glb).

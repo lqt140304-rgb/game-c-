@@ -98,7 +98,7 @@ Chủ dự án đồng ý danh sách rương chủ đề gợi ý (2026-11-24). 
 
 ### Rác riêng của rương chủ đề (chốt 2026-11-24)
 
-Mã R10–R50 theo thứ tự bảng (xem [BanGiao3D](../../../Docs/Art/BanGiao3D.md)); đã có mô hình 12 món đợt 1. "(hư)" là dạng hư hỏng nặng, nhìn là biết đồ bỏ. "(cặp: X)" là bản hư của món X ở bậc cao (mục 14). Món phẳng (tờ, vé, ảnh, quẻ) cho cuộn, gấp hoặc nhàu để Meshy giữ được độ dày; đồ thủy tinh làm bằng gốm.
+Mã R10–R50 theo thứ tự bảng (R20 Mũi Pinocchio đã bỏ 2026-11-24, không đánh lại mã; xem [BanGiao3D](../../../Docs/Art/BanGiao3D.md)); đã có mô hình 12 món đợt 1. "(hư)" là dạng hư hỏng nặng, nhìn là biết đồ bỏ. "(cặp: X)" là bản hư của món X ở bậc cao (mục 14). Món phẳng (tờ, vé, ảnh, quẻ) cho cuộn, gấp hoặc nhàu để Meshy giữ được độ dày; đồ thủy tinh làm bằng gốm.
 
 | Rương | Rác riêng | Hình dáng |
 |---|---|---|
@@ -107,7 +107,7 @@ Mã R10–R50 theo thứ tự bảng (xem [BanGiao3D](../../../Docs/Art/BanGiao3
 | | Hóa đơn tiền điện tháng 6 | Giấy in nhiệt dài cuộn quăn, số tiền khoanh bút đỏ |
 | Tuổi thơ Việt Nam | Que kem đã liếm sạch; Sổ liên lạc chữ ký giả của bố; Vỏ gói bim bim không có quà | Que gỗ dẹt có vết cắn; sổ mỏng bìa xanh, chữ ký nguệch ngoạc; gói nilon sặc sỡ xé toạc, không nhãn hãng |
 | Wibu | Gối ôm in waifu bạc màu; Poster anime rách đôi; Figure (hư) | Gối dài ố màu; cuộn giấy rách hai nửa; tượng nhựa trên đế tròn, gãy tay, mất đầu, lem sơn |
-| Truyền thuyết Châu Âu | Ếch bông hôn mãi không thành hoàng tử; Mũi Pinocchio gãy; Bát cháo nguội của cô bé tóc vàng | Thú bông đội vương miện giấy méo; que gỗ gãy đôi đầu hồng; bát gỗ thìa cắm đứng |
+| Truyền thuyết Châu Âu | Ếch bông hôn mãi không thành hoàng tử; Bát cháo nguội của cô bé tóc vàng | Thú bông đội vương miện giấy méo; bát gỗ thìa cắm đứng |
 | Robot | Mớ dây cáp rối; Sạc dự phòng (hư); Bàn phím (hư) | Cáp đen rối nhiều đầu cắm; hộp phồng, cháy sém một góc; bàn phím ngả vàng rụng nhiều phím |
 | Không gian | Mũ giấy bạc chống sóng não; Mảnh vệ tinh cháy nát (cặp: Mảnh vệ tinh thật) | Mũ chóp giấy nhôm nhăn; tấm pin mặt trời cháy sém, cong, lòi dây |
 | Game | Thẻ nhớ mất save; Đĩa game lậu (hư); Tay cầm đứt dây (cặp: Tay cầm game kiểu cũ) | Thẻ nhựa nhãn viết tay "ĐỪNG XÓA"; đĩa nứt trong hộp vỡ; tay cầm xám dây đứt tưa |
