@@ -190,3 +190,12 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Game (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_Game.glb`. Đây là bản thử tạm, **chưa gán ID hay chủ đề vào dữ liệu game**. Ý tưởng: [ruong-game](../../docs/superpowers/specs/2026-11-24-ruong-game-design.md). Rương hình **cây nấm đỏ chấm trắng** (nhại nấm trong game), cả mũ nấm là nắp. Thân màu kem có mặt cười, khe cắm băng game, nút D-pad và hai nút bấm, đứng trên một khóm cỏ.
+
+- Chạy lại: `python Tools/Blender/make_chest_game.py -- Assets/_Project/Art/Chests [--render Assets/_Project/Art/Source/render_chest_game_open.png 32]` (cần `pip install bpy pillow`).
+- Lớp: root `Chest_Game` gồm `Body` (544 tam giác), `Lid` (386, mũ nấm, **gốc ở bản lề phía sau** (0; 0,133; 0,20), xoay quanh X), `Binding` (36, băng game cắm ở khe trước), `Seal` (64, nhãn tròn nút A xanh), `Glow` (20, quầng vàng ở miệng). Tổng **1.030 tam giác** (không tính Glow). Cao 0,36 m.
+- Vật liệu đơn sắc, không texture. Mặt trước là -Y.
+- Ảnh `Art/Source/render_chest_game_open.png` dựng bằng Cycles ngoại tuyến: hàng trên là đóng, hé, mở toang; hàng dưới là hình bóng chính diện, cạnh bên, chéo 45°. **Chưa chạy trong Unity**: chưa có prefab, chưa kiểm tra chiều mở (đổi `lidOpenSign` nếu ngược).
