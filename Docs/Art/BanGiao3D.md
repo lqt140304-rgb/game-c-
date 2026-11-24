@@ -232,18 +232,41 @@ Găng tay lấp lánh (L19) làm lại vẫn ra trắng trơn: Meshy không gi�
 | H10 | Máy ảnh phim cổ | Kim Khí | Có |
 | H11 | Bật lửa mạ vàng | Đen | Có, nắp mở |
 | H12 | Đồng hồ "xách tay" | Đen | Có |
-| H13 | Bánh chưng Lang Liêu | Việt Nam | **Mất**, chờ làm lại |
+| H13 | Bánh chưng Lang Liêu | Việt Nam | Có (làm lại ở đợt 2) |
 | H14 | Hộp bút hai tầng | Tuổi thơ Việt Nam | Có |
 | H15 | Máy nuôi gà ảo | Tuổi thơ Việt Nam | Có |
 | H16 | Cánh cửa thần kỳ | Wibu | Có, mỏng |
 | H17 | Robot vòm tròn bíp bíp (nhại R2) | Robot | Có, sọc cam |
 
+## Hiếm theo rương, đợt 2 (2026-11-24, kèm làm lại H13)
+
+2 ảnh gộp 8 món, 78 credit (số dư còn 768). Ảnh nguồn `Art/Source/ref_hiem_chu_de_3.png`, `_4.png` (ảnh 4 đã tô mờ đường kẻ ô); ảnh kiểm tra `render_hiem_chu_de_3.png`, `_4.png`. File ở `Items/LowPoly/Rare/`, 1–11 nghìn tam giác mỗi món, cỡ thật (mét), đáy y=0. Mã H18–H32 cấp theo thứ tự spec.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| H13 | Bánh chưng Lang Liêu | Việt Nam | Có |
+| H18 | Chó robot | Robot | Có, gộp thân và đầu |
+| H19 | Mũ phi hành gia | Không gian | Có, kính vàng đặc; đỉnh mũ có vệt hồng cam do texture |
+| H20 | Nấm đỏ (nhại) | Game | Có |
+| H21 | Khối gạch dấu hỏi (nhại) | Game | Có |
+| H22 | Găng thủ môn | Thể thao | Có, mỏng |
+| H23 | Bóng rổ số 23 (nhại) | Thể thao | Có; mặt sau texture nhòe trắng |
+| H24 | Micro cổ | Âm nhạc | Có, chân đế là một phần của micro |
+| H25 | Kính tròn ca sĩ tứ quái (nhại) | Âm nhạc | Có, tròng tối đặc, gộp tròng và gọng |
+| H26 | Mặt nạ khúc côn cầu (nhại) | Phim kinh dị | Có, đã bỏ giá đỡ |
+| H27 | Hộp nhạc tự kêu | Phim kinh dị | Có, nắp mở, có búp bê múa |
+| H28 | Tượng mèo Bastet | Ai Cập cổ đại | Có |
+| H29 | Kim tự tháp mini | Ai Cập cổ đại | Có |
+| H30 | Móc tay thuyền trưởng | Hải tặc | Có |
+| H31 | Cờ đầu lâu | Hải tặc | Có, cờ mỏng |
+| H32 | Bàn tính | Trung Hoa cổ | Có, gộp khung và hạt |
+
 ## Danh sách làm lại
 
 Không làm lại riêng lẻ. Đủ 8 món hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi ảnh gộp 8 món).
 
-1. H13 Bánh chưng Lang Liêu
+(Trống. H13 đã làm lại ở đợt 2.)
 
-Còn lại chưa làm: 18 món Hiếm (từ Chó robot trở đi theo spec) và 29 món Thường.
+Còn lại chưa làm: 3 món Hiếm (Bình gốm Thanh Hoa, Mặt nạ quỷ Oni, Búp bê Daruma) và 29 món Thường.
 
-Kinh nghiệm: món đặt trong hộp, trên ma-nơ-canh hoặc giá đỡ dễ bị mất hay dính; để món đứng riêng, không đế thì Meshy giữ tốt hơn.
+Kinh nghiệm: món đặt trong hộp, trên ma-nơ-canh hoặc giá đỡ dễ bị mất hay dính; để món đứng riêng, không đế thì Meshy giữ tốt hơn. Meshy có thể xếp lại vị trí các món (không theo lưới ảnh) hoặc nhân đôi một món: xuất từng mảnh ra ảnh 4 góc để nhận diện trước khi đặt tên.
