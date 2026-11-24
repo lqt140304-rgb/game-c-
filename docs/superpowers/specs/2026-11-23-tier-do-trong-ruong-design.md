@@ -11,7 +11,7 @@ Chốt rương ra **loại đồ nào** và **cụ thể là món gì**, để n
 ## Mục tiêu
 
 - Khung **5 bậc**: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại.
-- Danh sách **35 món** (mỗi bậc 6–8 món), trải đều 6 nhóm nguồn gốc.
+- Danh sách **36 món** (Rác 9, Thường 8, Hiếm 7, Rất hiếm 8, Huyền thoại 6), trải đều 6 nhóm nguồn gốc.
 - Bảng phân bổ bậc theo từng loại rương.
 
 ## Không phải mục tiêu
@@ -48,10 +48,8 @@ Nguyên tắc nội dung: **gần gũi, người chơi nhận ra ngay**. Pha **c
 | **Rác (9)** | Giày cũ, Tất thối, Trứng thối, Xương cá (4 món bạn nêu từ đầu), Đôi dép tổ ong (một chiếc đứt quai), Lon nước ngọt bẹp, Áo đấu cũ đội nhại, Bao thuốc lá hình rồng (nhại kiểu Thăng Long, không dùng tên hay logo hãng), Vé cược nhàu |
 | **Thường (8)** | **V01** Bình sứ men xanh, **V02** Sách cổ bìa da, **V03** Đồng hồ quả lắc cũ, **V04** Mảnh kính đồng hồ thiên văn, **V05** Thiết bị liên lạc hỏng, **V09** Lá bùa giấy vàng, Quạt nan cũ (VN), Máy game cầm tay 8-bit (NH) |
 | **Hiếm (7)** | **V06** Bộ pin lượng tử, **V08** Gương thủy tinh cổ tích, Băng cassette và máy phát (VN), Nón lá thêu hoa (VN), Cái túi thần kỳ 4 chiều (NH), Cục sạc hình chuột vàng (NH), Mũ phù thủy học việc (NH) |
-| **Rất hiếm (6)** | **V07** Tinh thể lam cầm tay, **V10** Mảnh vảy long, Đàn thần (VN, truyền thuyết Thạch Sanh), Trống đồng nhỏ (VN), Kiếm sáng ba màu (NH), Quả cầu ngọc 7 sao (NH) |
-| **Huyền thoại (6)** | Nỏ thần (VN, An Dương Vương), Roi sắt của vị anh hùng làng Gióng (VN), Ấn Ngọc Tỷ (VN), Chiếc nhẫn duy nhất (NH), Quyển sổ định mệnh (NH), Tấm vé số độc đắc "chưa đổi" (VN, hài) |
-
-Trong 25 món mới có khoảng nửa VN, nửa NH. **Nhóm nguồn gốc** (Quá khứ, Hiện đại, Tương lai, Ngoài hành tinh, Cổ tích, Thần thoại) của từng món mới sẽ gán lại khi chốt danh sách, để rương Vải Niêm (ra theo bộ) vẫn có nghĩa.
+| **Rất hiếm (8)** | **V07** Tinh thể lam cầm tay, **V10** Mảnh vảy long, Đàn thần (VN, truyền thuyết Thạch Sanh), Trống đồng nhỏ (VN), Kiếm sáng ba màu (NH), Quả cầu ngọc 7 sao (NH), Trái tim robot (hạ từ Huyền thoại), Phi thuyền mini của phi hành gia (hạ từ Huyền thoại) |
+| **Huyền thoại (6)** | Ấn Ngọc Tỷ (VN), Tấm vé số độc đắc "chưa đổi" (VN, hài), Giày thủy tinh nguyên bản (cổ tích), Quả táo vàng (thần thoại), **Nỏ thần** (VN, An Dương Vương, *chưa làm mô hình*), **Roi sắt của vị anh hùng làng Gióng** (VN, *chưa làm mô hình*) |
 
 ## 3. Rương ra bậc nào (đề xuất)
 
@@ -101,6 +99,10 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 
 ## Tình trạng mô hình (cập nhật 2026-11-24)
 
-Đủ mô hình low-poly cho 5 bậc, ở `Assets/_Project/Art/Items/LowPoly/` (`Junk`, `Common`, `Rare`, `VeryRare`, `Legendary`). Bậc **Hiếm** và **Rất hiếm** khớp đúng danh sách ở mục 2.
+Mô hình low-poly ở `Assets/_Project/Art/Items/LowPoly/` (`Junk`, `Common`, `Rare`, `VeryRare`, `Legendary`).
 
-**Lệch cần quyết, ở bậc Huyền thoại:** danh sách ở mục 2 (đã cân bằng Việt Nam và nhại) là Nỏ thần, Roi sắt làng Gióng, Ấn Ngọc Tỷ, Chiếc nhẫn duy nhất, Quyển sổ định mệnh, Vé số độc đắc. Nhưng mô hình **đã làm** theo danh sách cũ: Trái tim robot, Ấn Ngọc Tỷ, Quả táo vàng, Giày thủy tinh, Phi thuyền mini, Vé số độc đắc. Chỉ **Ấn Ngọc Tỷ và Vé số độc đắc** trùng. Chưa món nào bị xóa hay đổi; chờ chủ dự án chọn danh sách chính thức (xem tin nhắn).
+**Đã chốt với chủ dự án về bậc Huyền thoại:** tận dụng các mô hình đã dựng bằng cách **hạ những món hình chưa đẹp xuống bậc thấp hơn** và thêm đồ Việt Nam vào Huyền thoại.
+- **Hạ xuống Rất hiếm:** Trái tim robot (`X05`), Phi thuyền mini (`X06`).
+- **Giữ ở Huyền thoại:** Ấn Ngọc Tỷ (`L01`), Quả táo vàng (`L02`), Giày thủy tinh (`L03`), Vé số độc đắc (`L04`).
+- **Thêm vào Huyền thoại, chưa có mô hình:** Nỏ thần, Roi sắt làng Gióng. Việc làm cần **dùng credit Meshy**, chờ chủ dự án cho phép.
+- **Bỏ khỏi danh sách:** Chiếc nhẫn duy nhất, Quyển sổ định mệnh (hai món nhại, thay bằng hai món Việt Nam). Đây là tôi suy ra từ "thêm các món Việt Nam vào", chủ dự án chưa xác nhận từng món.

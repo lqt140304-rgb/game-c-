@@ -139,10 +139,10 @@ Lưu ý: tất thối và trứng thối có vạch mùi xanh nổi trên đầu
 
 ## Hiện vật Rất hiếm low-poly (6 món)
 
-`Assets/_Project/Art/Items/LowPoly/VeryRare/`, tạo bằng Meshy từ **một ảnh gộp 6 món** (`Art/Source/ref_rat_hiem.png`), chi tiết hơn bậc Hiếm (4–23 nghìn tam giác mỗi món): `V07_tinh_the_lam`, `V10_manh_vay_long`, `X01_dan_than`, `X02_trong_dong`, `X03_kiem_sang`, `X04_qua_cau_ngoc`. Mã `X01`–`X04` là tạm. **X04 (quả cầu ngọc) và X03 (kiếm sáng) gợi nhắc rất rõ nhân vật và tác phẩm nổi tiếng, cần chủ dự án duyệt về bản quyền trước khi phát hành.** Cỡ thật (mét), đáy y=0.
+`Assets/_Project/Art/Items/LowPoly/VeryRare/`, tạo bằng Meshy từ **một ảnh gộp 6 món** (`Art/Source/ref_rat_hiem.png`), chi tiết hơn bậc Hiếm (4–23 nghìn tam giác mỗi món): `V07_tinh_the_lam`, `V10_manh_vay_long`, `X01_dan_than`, `X02_trong_dong`, `X03_kiem_sang`, `X04_qua_cau_ngoc`, cộng `X05_trai_tim_robot` và `X06_phi_thuyen_mini` (hạ từ Huyền thoại). Mã `X01`–`X06` là tạm. **X04 (quả cầu ngọc) và X03 (kiếm sáng) gợi nhắc rất rõ nhân vật và tác phẩm nổi tiếng, cần chủ dự án duyệt về bản quyền trước khi phát hành.** Cỡ thật (mét), đáy y=0.
 
-## Hiện vật Huyền thoại low-poly (6 món)
+## Hiện vật Huyền thoại low-poly (4/6 món)
 
-`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly cao nhất (khoảng 3,6–50 nghìn tam giác) và texture PBR: `L01_trai_tim_robot`, `L02_an_ngoc_ty`, `L03_qua_tao_vang`, `L04_giay_thuy_tinh`, `L05_phi_thuyen_mini`, `L06_ve_so_doc_dac`. Mã `L01`–`L06` là tạm. Ảnh nguồn: `Art/Source/ref_huyen_thoai.png` (phi thuyền, vé số) và `ref_huyen_thoai2.png` (4 món còn lại).
+`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly và texture cao nhất: `L01_an_ngoc_ty`, `L02_qua_tao_vang`, `L03_giay_thuy_tinh`, `L04_ve_so_doc_dac`. **Còn thiếu 2 món Việt Nam: Nỏ thần và Roi sắt làng Gióng** (chưa làm, chờ cho phép dùng credit). Hai món Trái tim robot và Phi thuyền mini đã **hạ xuống Rất hiếm** (`VeryRare/X05_trai_tim_robot`, `X06_phi_thuyen_mini`). Mã tạm. Ảnh nguồn: `Art/Source/ref_huyen_thoai.png`, `ref_huyen_thoai2.png`.
 
-Lưu ý: **Meshy không giữ vật trong suốt**, nên chuông thủy tinh của trái tim robot (L01) không có, chỉ còn trái tim trên đế đồng; thêm chuông kính bằng một mặt cầu thủy tinh trong Unity nếu muốn. Giày thủy tinh (L04) là khối pha lê đặc màu xanh nhạt, đệm có một vệt đỏ do texture, có thể chỉnh. Lượt đầu gộp 6 món chỉ ra 3 món, lượt hai gộp 4 món ra đủ.
+Lưu ý: **Meshy không giữ vật trong suốt**, nên trái tim robot không có chuông kính, chỉ còn trái tim trên đế đồng. Đệm của giày thủy tinh có một vệt đỏ do texture.
