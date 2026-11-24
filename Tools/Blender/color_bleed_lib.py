@@ -111,6 +111,25 @@ def uv_mask(UV, h, w):
     return m
 
 
+def dilate(tex, mask, steps):
+    """Loang mau texel trong mat na ra ngoai `steps` vong (trung binh lang gieng da biet)."""
+    t = np.where(mask[..., None], tex, 0).astype(np.float32)
+    k = mask.astype(np.float32)
+    for _ in range(steps):
+        if k.all():
+            break
+        pt = np.pad(t * k[..., None], ((1, 1), (1, 1), (0, 0))); pk = np.pad(k, 1)
+        st = sum(pt[1 + dy:pt.shape[0] - 1 + dy, 1 + dx:pt.shape[1] - 1 + dx]
+                 for dy in (-1, 0, 1) for dx in (-1, 0, 1))
+        sk = sum(pk[1 + dy:pk.shape[0] - 1 + dy, 1 + dx:pk.shape[1] - 1 + dx]
+                 for dy in (-1, 0, 1) for dx in (-1, 0, 1))
+        new = (k == 0) & (sk > 0)
+        t[new] = st[new] / sk[new][:, None]
+        k = np.where(new, 1.0, k)
+    # phan con lai (xa moi dao) giu mau that: khong anh huong vi khong bao gio duoc lay mau
+    return np.where(k[..., None] > 0, t, tex)
+
+
 def sample_points(UV):
     """(F,7,2) diem lay mau trong moi tam giac UV."""
     return np.einsum("kj,fjd->fkd", BARY, UV)
@@ -161,8 +180,9 @@ def analyze(P, T, UV, tex, levels=(1, 2, 4, 8)):
 
     - outlier: mat co mau lech manh (dE76 > 20) voi MOI mat ke, mat ke >= 2.
     - stretch: tam giac UV gian > 25 lan trung vi (UV vat qua khe giua cac dao) va phu > 40 texel.
-    - bleed[s]: o muc mipmap 1/s, sai khac giua mau loc thuong va mau chi lay texel trong dao UV
-      cua mon nay. Lon -> GPU lay mau cua dao ben canh / nen atlas (thieu padding).
+    - bleed[s]: o muc mipmap 1/s, sai khac giua mau loc tu texture that va tu texture "dem ly tuong"
+      (texel ngoai cac dao UV cua mon nay duoc loang ra tu chinh dao gan nhat). Lon -> GPU dang lay
+      mau cua dao ben canh / nen atlas (thieu padding hoac dilation).
     """
     h, w = tex.shape[:2]
     weld = weld_index(P)
@@ -186,21 +206,23 @@ def analyze(P, T, UV, tex, levels=(1, 2, 4, 8)):
     st = np.where((ratio > 25 * med) & (auv > 40))[0]
     res["stretch_idx"] = st.tolist(); res["stretch"] = int(len(st))
 
-    mask = uv_mask(UV, h, w).astype(np.float32)
+    mask = uv_mask(UV, h, w)
     res["uv_cover_pct"] = round(float(mask.mean()) * 100, 1)
+    # texel cat bien dao (tam nam ngoai) van chua mau cua dao -> coi la thuoc dao
+    m1 = np.pad(mask, 1)
+    edge = np.zeros_like(mask)
+    for dy in (-1, 0, 1):
+        for dx in (-1, 0, 1):
+            edge |= m1[1 + dy:m1.shape[0] - 1 + dy, 1 + dx:m1.shape[1] - 1 + dx]
+    ideal = dilate(tex, edge, 24)
     pts = sample_points(UV).reshape(-1, 2)
-    # tham them cac dinh tam giac: loang mau thuong o sat bien dao
+    # them diem sat cac dinh tam giac: loang mau thuong o sat bien dao
     edge_pts = np.concatenate([pts, (0.92 * UV + 0.08 * UV.mean(1, keepdims=True)).reshape(-1, 2)])
-    nper = 10
     bleed = {}
     for s in levels:
-        t = box_down(tex, s); m = box_down(mask, s)
-        tm = box_down(tex * mask[..., None], s)
-        c = bilinear(t, edge_pts)
-        num = bilinear(tm, edge_pts); den = bilinear(m, edge_pts)
-        ok = den[:, 0] > 1e-4
-        cm = np.where(ok[:, None], num / np.maximum(den, 1e-4), c)
-        d = delta_e(srgb_to_lab(c), srgb_to_lab(cm))
+        c = bilinear(box_down(tex, s), edge_pts)
+        ci = bilinear(box_down(ideal, s), edge_pts)
+        d = delta_e(srgb_to_lab(c), srgb_to_lab(ci))
         d = np.concatenate([d[:len(pts)].reshape(-1, 7), d[len(pts):].reshape(-1, 3)], 1).max(1)
         bleed[s] = d
         res[f"bleed_mip{int(np.log2(s))}"] = int((d > 10).sum())

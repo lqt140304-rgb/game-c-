@@ -7,8 +7,9 @@ Ghi de <file.glb>. <ban_goc_texture_cao.glb> la ban truoc khi ha texture (commit
 Hai ban cung bo cuc atlas, nen UV hien tai tro dung vao texture goc 2048/4096.
 
 1. Sua UV mat tram lo: mat co UV vat qua khe giua cac dao (gian > 25 lan) hoac mau lech manh voi
-   moi mat ke ma UV khong noi voi mat ke nao -> chep UV cua mat ke lon nhat (dinh chung lay dung UV,
-   dinh con lai lay trong tam tam giac UV cua mat ke). Mau mat tram khop mat ke.
+   moi mat ke ma UV khong noi voi mat ke nao, hoac nam trong dao UV ti hon (< 6 texel goc, sau bake
+   khong trung tam texel nao nen an mau dem cua dao ben canh) -> chep UV cua mat ke lon nhat (dinh
+   chung lay dung UV, dinh con lai lay trong tam tam giac UV cua mat ke). Mau khop mat ke.
 2. Chi giu cac dao UV cua mon nay (dao that cua Meshy sau khi han dinh trung), xep lai (pack)
    cach nhau 16 px o 1024 (giam dan toi 4 px neu nhieu dao nho lam dien tich phu < 40%), xoay tu do.
 3. Bake mau tu texture goc sang UV moi o 2048 (Cycles, EMIT), margin 32 px kieu EXTEND (dilation),
@@ -27,13 +28,20 @@ BAKE = 2048
 OUT = 1024
 PACK_MARGINS = (0.016, 0.012, 0.008, 0.006, 0.004)  # ~16..4 px o 1024
 MIN_COVER = 0.40
+TINY_ISLAND_PX = 6.0  # texel o texture goc (2048/4096)
 BAKE_MARGIN = 32
 
 
-def uv_continuous_edges(T, UV, weld, nb_edges):
-    """So canh moi mat co UV lien tuc voi mat ke (cung UV o ca hai dinh)."""
+def uv_islands(T, UV, weld, nb_edges):
+    """So canh lien tuc UV cua moi mat va nhan dao UV (thanh phan lien thong qua canh lien tuc)."""
     W = weld[T]
     cont = np.zeros(len(T), int)
+    parent = list(range(len(T)))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]; x = parent[x]
+        return x
     for (a, b), fs in nb_edges.items():
         if len(fs) != 2:
             continue
@@ -42,7 +50,9 @@ def uv_continuous_edges(T, UV, weld, nb_edges):
             return UV[face][list(W[face]).index(v)]
         if (np.abs(uvat(f, a) - uvat(g, a)).max() < 1e-4 and np.abs(uvat(f, b) - uvat(g, b)).max() < 1e-4):
             cont[f] += 1; cont[g] += 1
-    return cont
+            parent[find(f)] = find(g)
+    island = np.array([find(f) for f in range(len(T))])
+    return cont, island
 
 
 def fix_bad_uvs(P, T, UV, tex):
@@ -50,8 +60,16 @@ def fix_bad_uvs(P, T, UV, tex):
     weld = weld_index(P)
     nb, edges = face_neighbors(T, weld)
     r = analyze(P, T, UV, tex, levels=())
-    cont = uv_continuous_edges(T, UV, weld, edges)
+    cont, island = uv_islands(T, UV, weld, edges)
     bad = set(r["stretch_idx"]) | {f for f in r["outlier_idx"] if cont[f] == 0}
+    # dao UV ti hon (< TINY_ISLAND_PX texel o texture goc): sau khi bake khong trung tam texel nao,
+    # mau se lay tu phan dem cua dao ben canh -> gop vao dao cua mat ke
+    auv = tri_area(UV) * tex.shape[0] * tex.shape[1]
+    isl_area = np.bincount(island, weights=auv)
+    tiny = {int(f) for f in np.where(isl_area[island] < TINY_ISLAND_PX)[0]} - bad
+    wrong = set(bad)  # mau cua chinh mat da sai -> lay mat ke lon nhat
+    bad |= tiny       # mau cua mat ti hon van dung (lay tai 1 diem) -> lay mat ke cung mau nhat
+    col = r["_col"]
     kept = [f for f in r["outlier_idx"] if f not in bad]
     a3 = tri_area(P[T])
     W = weld[T]
@@ -64,7 +82,10 @@ def fix_bad_uvs(P, T, UV, tex):
             good = [g for g in nb[f] if g not in todo]
             if not good:
                 continue
-            g = max(good, key=lambda x: a3[x])
+            if f in wrong:
+                g = max(good, key=lambda x: a3[x])
+            else:
+                g = min(good, key=lambda x: (round(float(delta_e(col[x], col[f])) / 5), -a3[x]))
             cen = UV[g].mean(0)
             for k in range(3):
                 hit = np.where(W[g] == W[f][k])[0]
@@ -72,7 +93,7 @@ def fix_bad_uvs(P, T, UV, tex):
             todo.discard(f); fixed.append(int(f)); progress = True
         if not progress:
             break
-    return UV, fixed, kept, sorted(todo), r
+    return UV, fixed, kept, sorted(todo), tiny
 
 
 def set_loop_uvs(me, layer, T_loops, UV):
@@ -106,7 +127,7 @@ def process(path, src_glb, report=None):
     before = analyze(P, T, UV, src_tex, levels=())
 
     # 1. sua UV mat tram lo
-    UVf, fixed, kept, unfixed, _ = fix_bad_uvs(P, T, UV, src_tex)
+    UVf, fixed, kept, unfixed, tiny = fix_bad_uvs(P, T, UV, src_tex)
     set_loop_uvs(me, old, L, UVf)
 
     # 2. UV moi: chi cac dao cua mon nay, xep lai co khoang cach. Khoang cach lon nhat ma cac dao
@@ -198,7 +219,7 @@ def process(path, src_glb, report=None):
     strip = lambda r: {k: v for k, v in r.items() if not k.startswith("_") and not k.endswith("_idx")}
     rep = {"file": path.split("Items/LowPoly/")[-1], "src_tex": list(src.size),
            "pack_margin_px": round(margin_used * OUT), "uv_cover_pct": round(cover * 100, 1),
-           "fixed_uv_faces": fixed, "unfixed": unfixed, "outlier_kept": kept,
+           "fixed_uv_faces": fixed, "tiny_island_faces": len(tiny), "unfixed": unfixed, "outlier_kept": kept,
            "before_src": strip(before), "after": strip(after),
            "fidelity_dE_p50": round(float(np.median(fid)), 2),
            "fidelity_dE_p99": round(float(np.percentile(fid, 99)), 2),
