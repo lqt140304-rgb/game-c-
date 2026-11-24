@@ -4,7 +4,7 @@ Tốn ~9 credit (ảnh) + ~30 credit (3D) mỗi lượt. Không chạy khi chủ
 
 Chạy trong thư mục làm việc tạm (scratchpad), không trong repo:
 
-1. Ảnh gộp: `python3 Tools/Meshy/gen_img.py out.png "1) ..., 2) ..., ... 8) ..."` (8 món, hàng trên trái→phải rồi hàng dưới). Món nhỏ (rác) gộp được **12 hoặc 14 món** một lượt cùng giá: thêm tham số `12` (lưới 4×3, ảnh 4:3) hoặc `14` (lưới 5×3, ảnh 16:9) ở cuối. Xem ảnh; có đường kẻ ô (mỗi ô nền một tông) thì chạy `python3 Tools/Meshy/flatten.py vào.png ra.png <số cột> <số hàng>` (làm phẳng nền từng ô, tô mờ đường nối) trước khi dựng 3D. Ảnh ra kiểu tranh vẽ có nét viền, nhiều món phẳng thì tạo lại ảnh (9 credit) thay vì dựng 3D: Meshy có thể mất gần hết món. Món bị nhân đôi thì tô nền đè bản thừa trước khi dựng.
+1. Ảnh gộp: `python3 Tools/Meshy/gen_img.py out.png "1) ..., 2) ..., ... 8) ..."` (8 món, hàng trên trái→phải rồi hàng dưới). Món nhỏ (rác) gộp được **12 hoặc 14 món** (chỉ rác: thử 12 món Thường/Hiếm thì Meshy dính và mất 7/12 món) một lượt cùng giá: thêm tham số `12` (lưới 4×3, ảnh 4:3) hoặc `14` (lưới 5×3, ảnh 16:9) ở cuối. Xem ảnh; có đường kẻ ô (mỗi ô nền một tông) thì chạy `python3 Tools/Meshy/flatten.py vào.png ra.png <số cột> <số hàng>` (làm phẳng nền từng ô, tô mờ đường nối) trước khi dựng 3D. Ảnh ra kiểu tranh vẽ có nét viền, nhiều món phẳng thì tạo lại ảnh (9 credit) thay vì dựng 3D: Meshy có thể mất gần hết món. Món bị nhân đôi thì tô nền đè bản thừa trước khi dựng.
 2. Dựng 3D low-poly: `python3 Tools/Meshy/img_to_3d.py out.png TAG` → `TAG_all.glb` (30 nghìn tam giác, như các bậc khác).
 3. Liệt kê mảnh: `python3 Tools/Meshy/comps.py TAG` (cần `pip install trimesh scipy`). Mảnh lớn = món; thường x tăng theo cột, z âm là hàng trên, nhưng Meshy có lúc xếp lại vị trí hoặc dựng hai hàng đứng: xuất mọi mảnh ra rồi xem 4 góc để nhận diện.
 4. Xuất từng món: `python3 Tools/Meshy/export.py TAG '{"<mảnh>":["X07_ten",kich_thuoc_m],...}'` → `items_ht/*.glb` (tâm giữa, đáy y=0, cạnh dài nhất = kích thước). Món tách mảnh thì ghi khóa `"1+2"` để gộp. Cần `comps.py` cùng thư mục chạy.
@@ -14,7 +14,7 @@ Món lỗi (mất, dính nhau, không nhận ra): **không làm lại riêng l�
 
 Mẹo: để mỗi món đứng riêng, không hộp, không ma-nơ-canh, không giá đỡ (dễ bị mất hoặc dính). Logo thật trong ảnh nguồn thì xóa (inpaint) trước khi dựng 3D. Kim tuyến, đồ trong suốt không giữ được.
 
-Lỗi hình dáng (món sai dáng, dẹt, nằm chéo, quá nhiều tam giác): sửa bằng Blender dạng module Python (`pip install bpy`), script `Tools/Meshy/blender/sua_rac.py` làm mẫu (dựng mới món đơn giản, xoay, co giãn, giảm lưới), không tốn credit. Chạy trước bước tô màu.
+Lỗi hình dáng (món sai dáng, dẹt, nằm chéo, quá nhiều tam giác): sửa bằng Blender dạng module Python (`pip install bpy`), script `Tools/Meshy/blender/sua_rac.py` làm mẫu (dựng mới món đơn giản, xoay, co giãn, giảm lưới), không tốn credit. Chạy trước bước tô màu. Món hình khối đơn giản bị hỏng (hộp, vòng, bảng, que, cầu) dựng mới bằng `blender/dung_mon.py`; món dính nhau thì tách bằng chọn mặt theo vùng và màu (mẫu: `tach_dot_thuong_hiem_moi.py`).
 
 Lỗi màu nhỏ (vệt, nhòe texture): tô lại tại chỗ bằng `Tools/Meshy/retex/` (`python3 fix_helm.py vao.glb ra.glb`, xem `fix_ball.py` làm mẫu), không tốn credit.
 

@@ -383,13 +383,41 @@ Còn lại: xem danh sách làm lại; 7 Thường và 5 Hiếm mới chưa làm
 
 **Sửa sau kiểm tra (không tốn credit):** hình dáng sửa bằng Blender (`Tools/Meshy/blender/sua_rac.py <mã> vào.glb ra.glb`, cần `pip install bpy`): R13, R20 dựng mới; R16 xoay và làm dày; R30 giảm lưới. Màu sửa theo vùng trong `retex/fix_rac.py` (chọn điểm ảnh trắng bạc, theo mảnh rời hoặc theo vùng mặt bằng): R14, R16, R26, R29, R31, R32. Thứ tự: Blender trước, `fix_rac.py` sau. Đã rà màu cả 14 món: R15 mặt trong bạc là giấy bạc thật, R28 hộp xám bạc, R37 dây trắng mảnh, giữ nguyên.
 
+## Thường và Hiếm mới, 12 món một lượt (2026-11-24)
+
+7 Thường và 5 Hiếm mới theo spec (đoạn "Thêm 2026-11-24"), mã V42–V48, H36–H40. 1 ảnh gộp 12 món (lưới 4×3), 39 credit (số dư còn 417). Ảnh nguồn `Art/Source/ref_thuong_hiem_moi.png` (đã xóa quốc huy và chữ trên bìa sổ hộ khẩu, đã làm phẳng ô); ảnh kiểm tra `render_thuong_hiem_moi.png`. File ở `Items/LowPoly/Common/` và `Items/LowPoly/Rare/`, cỡ thật (mét), đáy y=0.
+
+**Meshy hỏng nặng với 12 món cỡ lớn:** xếp lại vị trí, dính món (nhân sư + cán lightstick, ô + hộp bento, chân gỗ + một chiếc đũa), mất băng đội trưởng, bàn cầu cơ méo, vệ tinh mất tấm pin, đầu lightstick rỗng. Ảnh gộp vẫn đẹp (kiểu render, không nét viền), nên lỗi do số món lớn. **Gộp 12–14 món chỉ dùng cho Rác nhỏ; món Thường trở lên giữ 8 món một lượt.**
+
+Cứu không tốn credit:
+- Tách món dính bằng chọn mặt theo vùng và màu (`Tools/Meshy/tach_dot_thuong_hiem_moi.py`, làm mẫu cho đợt sau): nhân sư, chân gỗ, tán ô.
+- Dựng bằng Blender món hình khối đơn giản (`Tools/Meshy/blender/dung_mon.py <mã> ra.glb [vào.glb]`): lightstick, bento, cán tre của ô, vệ tinh, băng đội trưởng, bàn cầu cơ. Chữ trên bàn cầu cơ và chữ ký trên băng vẽ bằng PIL (font DejaVu).
+- Tô màu (`retex/fix_thuong.py`): V43 thân trắng → xám, V45 xóa đốm vàng, V48 xóa mảnh tối của hộp ở tâm ô.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| V42 | Sổ hộ khẩu giấy | Việt Nam | Có (Meshy), bìa đỏ nâu trơn, mở hé |
+| V43 | Tay cầm game kiểu cũ | Game | Có (Meshy), dây cuộn gọn; đã tô xám |
+| V44 | Lightstick | Âm nhạc | Có (Blender), đầu tròn hồng phát sáng nhẹ, cán xám có gân |
+| V45 | Tượng nhân sư bằng đá | Ai Cập cổ đại | Có (Meshy, tách khỏi cán lightstick) |
+| V46 | Đũa đỏ đầu mạ vàng | Trung Hoa cổ | Có (Meshy, chiếc thẳng nhân đôi thành đôi) |
+| V47 | Hộp bento sơn mài | Nhật Bản cổ | Có (Blender), 2 tầng đen, viền đỏ, huy hiệu vàng |
+| V48 | Ô giấy dầu | Nhật Bản cổ | Có (tán Meshy + cán tre Blender), nằm nghiêng, dài 85 cm |
+| H36 | Ảnh Polaroid "người ngoài hành tinh" | Không gian | Có (Meshy), hơi cong |
+| H37 | Mảnh vệ tinh thật | Không gian | Có (Blender), thân giấy vàng, 2 tấm pin, chảo, ăng-ten; rộng 82 cm |
+| H38 | Băng đội trưởng có chữ ký | Thể thao | Có (Blender), vòng vải vàng, chữ C, chữ ký bút dạ |
+| H39 | Bàn cầu cơ nguyên vẹn | Phim kinh dị | Có (Blender), chữ khắc cháy, con trỏ hình tim |
+| H40 | Chân gỗ thuyền trưởng | Hải tặc | Có (Meshy, tách chiếc đũa xuyên qua), vòng đồng, dây da |
+
+Món Blender có ít tam giác (150–220) và màu phẳng hơn món Meshy; nếu lệch phong cách khi đặt cạnh nhau trong Unity thì gom vào danh sách làm lại.
+
 ## Danh sách làm lại
 
 Không làm lại riêng lẻ. Đủ 8 món (rác: 14 món) hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi lượt).
 
 - Rác: đủ (đợt 3 làm xong 13 món hỏng ở đợt 2 và R26).
-- Chưa làm: 7 Thường và 5 Hiếm mới (spec, đoạn "Thêm 2026-11-24"), 12 món = 2 lượt (8 + 4); chờ chủ dự án duyệt credit.
+- Thường và Hiếm: đủ (12 món mới làm xong, xem mục trên).
 
-Đã có mô hình cho mọi món trong bảng rương của spec (Thường V13–V41, Hiếm đủ).
+Đã có mô hình cho mọi món trong bảng rương của spec (Thường V13–V48, Hiếm đủ đến H40).
 
 Kinh nghiệm: món đặt trong hộp, trên ma-nơ-canh hoặc giá đỡ dễ bị mất hay dính; để món đứng riêng, không đế thì Meshy giữ tốt hơn. Meshy có thể xếp lại vị trí các món (không theo lưới ảnh) hoặc nhân đôi một món: xuất từng mảnh ra ảnh 4 góc để nhận diện trước khi đặt tên.

@@ -1,5 +1,5 @@
 # To lai loi mau nho cho mon Thuong (khong ton credit).
-# Chay: python3 fix_thuong.py <ma> vao.glb ra.glb   (ma: V13 V14 V17 V24 V25 V26)
+# Chay: python3 fix_thuong.py <ma> vao.glb ra.glb   (ma: V13 V14 V17 V24 V25 V26 V43 V45 V48)
 from recolor import *
 import sys
 code,src,dst=sys.argv[1:4]
@@ -26,4 +26,15 @@ elif code=="V26": # tui giay bac: tang tuong phan cho ra anh kim loai
     tex=tone(tex,0.6,(1.0,1.0,1.03),2.5)
 elif code=="V17": # bi ve: tang do bao hoa
     g=tex.mean(2,keepdims=True);tex=g+(tex-g)*3.0;tex=tex*0.9
+elif code=="V43": # tay cam kieu cu: than trang bac -> xam
+    def f(px):
+        a=px/255.;mx=a.max(1);sa=(mx-a.min(1))/np.maximum(mx,1e-6);sel=(sa<0.2)&(mx>0.45)
+        out=px.copy();out[sel]=np.array((150,150,155))*(0.6+0.45*mx[sel,None]);return out
+    tex=paint(tex,P,f)
+elif code=="V45": # nhan su da: dom vang sot tu can lightstick -> mau sa thach
+    h,sa,v=hsv(cols);stone=np.median(cols,0);bad=np.where((h>35)&(h<65)&(sa>0.45))[0];print("faces",len(bad))
+    tex=paint(tex,[P[i] for i in bad],lambda px:np.tile(stone,(len(px),1)))
+elif code=="V48": # tan o (truoc khi lap can): manh toi sot tu hop bento o giua tan -> mau tre
+    l=cols.mean(1);bad=np.where(l<70)[0];print("faces",len(bad))
+    tex=paint(tex,[P[i] for i in bad],lambda px:np.tile((200,160,100),(len(px),1)))
 save(m,np.clip(tex,0,255),dst)
