@@ -20,7 +20,6 @@ namespace ChoDoLa.Sprint1
         private AudioClip _rarityUncommonClip;
         private AudioClip _rarityRareClip;
         private AudioClip _rarityMythicClip;
-        private AudioClip _fanfareClip;
         private AudioClip _debtClip;
         private AudioClip _rejectClip;
 
@@ -67,11 +66,9 @@ namespace ChoDoLa.Sprint1
 
             marketService.OnBoxPurchased += HandleBoxPurchased;
             marketService.OnBoxOpened += HandleBoxOpened;
-            marketService.OnRunStateChanged += HandleRunStateChanged;
             marketService.OnDebtSettled += HandleDebtSettled;
+            marketService.OnRunStateChanged += HandleRunStateChanged;
             marketService.OnActionRejected += HandleActionRejected;
-            marketService.OnTactLoadoutChanged += HandleTactLoadoutChanged;
-            marketService.OnBikheUnlocked += HandleBikheUnlocked;
         }
 
         private void Unsubscribe()
@@ -81,11 +78,9 @@ namespace ChoDoLa.Sprint1
 
             marketService.OnBoxPurchased -= HandleBoxPurchased;
             marketService.OnBoxOpened -= HandleBoxOpened;
-            marketService.OnRunStateChanged -= HandleRunStateChanged;
             marketService.OnDebtSettled -= HandleDebtSettled;
+            marketService.OnRunStateChanged -= HandleRunStateChanged;
             marketService.OnActionRejected -= HandleActionRejected;
-            marketService.OnTactLoadoutChanged -= HandleTactLoadoutChanged;
-            marketService.OnBikheUnlocked -= HandleBikheUnlocked;
         }
 
         private void HandleBoxPurchased(BoxInstanceView _)
@@ -120,16 +115,6 @@ namespace ChoDoLa.Sprint1
             PlayClip(_rejectClip, 0.75f);
         }
 
-        private void HandleTactLoadoutChanged()
-        {
-            PlayClip(_rarityUncommonClip, 0.55f);
-        }
-
-        private void HandleBikheUnlocked(BikheView _)
-        {
-            PlayClip(_fanfareClip, 1.0f);
-        }
-
         private IEnumerator PlayDelayedRarityChord(RarityTier rarity, float delay)
         {
             yield return new WaitForSeconds(delay);
@@ -159,7 +144,6 @@ namespace ChoDoLa.Sprint1
             _rarityUncommonClip = BuildChordClip("SFX_RarityUncommon", new[] { 523.25f, 659.25f, 783.99f }, 0.38f, 0.28f);
             _rarityRareClip = BuildArpeggioClip("SFX_RarityRare", new[] { 587.33f, 739.99f, 880.00f }, 0.06f, 0.32f, 0.32f);
             _rarityMythicClip = BuildArpeggioClip("SFX_RarityMythic", new[] { 523.25f, 659.25f, 783.99f, 1046.50f }, 0.07f, 0.48f, 0.36f);
-            _fanfareClip = BuildArpeggioClip("SFX_BikheFanfare", new[] { 523.25f, 659.25f, 783.99f, 1046.50f, 1318.51f }, 0.075f, 0.45f, 0.38f);
             _debtClip = BuildArpeggioClip("SFX_DebtPaid", new[] { 293.66f, 440f, 587.33f }, 0.07f, 0.26f, 0.34f);
             _rejectClip = BuildArpeggioClip("SFX_Reject", new[] { 196f, 155.56f }, 0.08f, 0.12f, 0.30f);
         }

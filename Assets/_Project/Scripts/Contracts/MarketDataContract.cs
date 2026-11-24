@@ -107,6 +107,7 @@ namespace ChoDoLa.Contracts
         public int DailyBoxesPurchased;
         public int MaxDailyBoxes;
         public int DebtDueToday;
+        public int Arrears;
         public bool IsDebtPaidToday;
         public bool IsRunEnded;
         public bool IsVictory;
@@ -131,6 +132,9 @@ namespace ChoDoLa.Contracts
         public string BoxTypeId;
         public string DisplayName;
         public int Price;
+        public int TodayPrice;
+        public decimal FakeRate;
+        public string CertainOrigin;
         public string PotentialCategory;
         public string ClueText;
         public string VisualVariantKey;
@@ -185,31 +189,25 @@ namespace ChoDoLa.Contracts
         IReadOnlyList<TactArtifactView> EquippedArtifacts { get; }
         IReadOnlyList<ComboView> ActiveCombos { get; }
         IReadOnlyList<BikheView> BikheProgressList { get; }
-        bool HasSavedRun { get; }
 
         event Action<RunStateSnapshot> OnRunStateChanged;
         event Action<BoxInstanceView> OnBoxPurchased;
         event Action<BoxInstanceView, ArtifactInstanceView> OnBoxOpened;
         event Action OnInventoryChanged;
-        event Action<bool, int> OnDebtSettled;
         event Action<string, string> OnActionRejected;
         event Action<string> OnNotice;
-        event Action OnTactLoadoutChanged;
-        event Action<BikheView> OnBikheUnlocked;
 
         bool RequestBuyBox(string offerId);
         bool RequestOpenBox(string boxInstanceId);
         bool RequestSellArtifact(string artifactInstanceId);
         bool RequestKeepArtifact(string artifactInstanceId);
-        bool RequestPayDebt();
-        bool RequestEndDay();
+        bool RequestEndDay(int expectedDay);
+        bool RequestBuyClue(string offerId);
         void ResetRun();
 
         bool RequestSelectHeirloom(string heirloomId);
         bool RequestBuyTactArtifact(string tactId);
         bool RequestEquipTactArtifact(string tactId, int slotIndex = -1);
         bool RequestUnequipTactArtifact(int slotIndex);
-        bool SaveRun();
-        bool LoadRun();
     }
 }

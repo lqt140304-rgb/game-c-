@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using ChoDoLa.Contracts;
 using ChoDoLa.Interaction;
@@ -84,6 +85,12 @@ namespace ChoDoLa.Sprint1
             marketService.OnRunStateChanged += HandleRunStateChanged;
         }
 
+        private void Start()
+        {
+            if (marketService == null) return;
+            foreach (var box in marketService.UnopenedBoxes) PlaceCarriedBoxOnTable(box);
+        }
+
         private void OnDisable()
         {
             if (marketService == null) return;
@@ -138,7 +145,7 @@ namespace ChoDoLa.Sprint1
                     break;
                 }
             }
-            if (targetSlot == null) targetSlot = boxSlots[0];
+            if (targetSlot == null || _spawnedBoxes.ContainsKey(box.BoxInstanceId)) return;
 
             GameObject boxGo = new GameObject($"PurchasedBox_{box.BoxInstanceId}");
             boxGo.transform.SetParent(targetSlot, false);
@@ -181,7 +188,7 @@ namespace ChoDoLa.Sprint1
         private void HandleInventoryChanged()
         {
             if (_restingArtifactProp == null) return;
-            if (!_restingArtifactProp.CanInteract)
+            if (!marketService.InventoryItems.Any(item => item.InstanceId == _restingArtifactProp.ArtifactInstanceId))
             {
                 ClearRestingArtifact();
             }

@@ -46,3 +46,8 @@ sysinfo.txt
 # Python
 __pycache__/
 *.pyc
+
+# Standalone gameplay checks
+!/QA/Gameplay/GameplayChecks.csproj
+/QA/Gameplay/bin/
+/QA/Gameplay/obj/

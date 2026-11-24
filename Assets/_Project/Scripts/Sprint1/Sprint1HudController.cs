@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -72,6 +73,7 @@ namespace ChoDoLa.Sprint1
         private Text _counterQuotaText;
         private Text _dialogueQuoteText;
         private Button _dialogueBuyBtn;
+        private Button _tipButton;
         private string _highlightedOfferId;
         private int _activeLedgerTab;
 
@@ -106,9 +108,8 @@ namespace ChoDoLa.Sprint1
         private ScrollRect _tactScroll;
         private ScrollRect _bikheScroll;
         private Text _debtSummaryText;
-        private Button _payDebtBtn;
+        private int _ledgerConfirmedDay;
         private Button _endDayBtn;
-        private Button _loadRunBtn;
         private RectTransform _tabInvRt;
         private RectTransform _tabTactRt;
         private RectTransform _tabBikheRt;
@@ -120,7 +121,6 @@ namespace ChoDoLa.Sprint1
         private Text _runEndBody;
         private Image _runEndStampRing;
         private Text _runEndStampText;
-        private Button _endLoadRunBtn;
 
         // "Gỗ · Đồng · Giấy dó" Palette
         private static readonly Color ColWalnut = new Color(0.169f, 0.106f, 0.067f, 0.95f);
@@ -177,8 +177,6 @@ namespace ChoDoLa.Sprint1
                 marketService.OnInventoryChanged += HandleInventoryChanged;
                 marketService.OnActionRejected += HandleActionRejected;
                 marketService.OnNotice += HandleNotice;
-                marketService.OnTactLoadoutChanged += HandleTactLoadoutChanged;
-                marketService.OnBikheUnlocked += HandleBikheUnlocked;
             }
 
             if (playerInteractor != null)
@@ -201,8 +199,6 @@ namespace ChoDoLa.Sprint1
                 marketService.OnInventoryChanged -= HandleInventoryChanged;
                 marketService.OnActionRejected -= HandleActionRejected;
                 marketService.OnNotice -= HandleNotice;
-                marketService.OnTactLoadoutChanged -= HandleTactLoadoutChanged;
-                marketService.OnBikheUnlocked -= HandleBikheUnlocked;
             }
 
             if (playerInteractor != null)
@@ -286,8 +282,7 @@ namespace ChoDoLa.Sprint1
             }
             else if (_ledgerModal != null && _ledgerModal.activeSelf)
             {
-                if (IsKeyQPressed()) SwitchLedgerTab((_activeLedgerTab + 3) % 4);
-                else if (IsKeyEPressed()) SwitchLedgerTab((_activeLedgerTab + 1) % 4);
+                if (IsKeyQPressed() || IsKeyEPressed()) SwitchLedgerTab(_activeLedgerTab == 0 ? 3 : 0);
             }
             else if (_counterModal != null && _counterModal.activeSelf)
             {
@@ -326,18 +321,16 @@ namespace ChoDoLa.Sprint1
             _insQuality.text = FormatQuality(artifact.Quality);
             _insQuality.color = artifact.Quality == QualityTier.Damaged ? ColWaxRed : (artifact.Quality == QualityTier.Pristine ? ColJade : ColInk);
 
-            _insAuth.text = artifact.Authenticity == AuthenticityState.Authentic ? "Đã kiểm tra" : "Nghi hàng giả";
-            _insAuth.color = artifact.Authenticity == AuthenticityState.Authentic ? ColJade : ColWaxRed;
+            _insAuth.text = "Chưa giám định";
+            _insAuth.color = ColInkMuted;
 
             _insRarity.text = FormatRarity(artifact.Rarity);
             _insRarity.color = GetInkRarityColor(artifact.Rarity);
             _insClue.text = artifact.InspectClueText;
 
-            bool isReal = artifact.Authenticity == AuthenticityState.Authentic;
-            Color stampCol = isReal ? ColJade : ColWaxRed;
-            _insStampRing.color = stampCol;
-            _insStampText.color = stampCol;
-            _insStampText.text = isReal ? "HÀNG\nTHẬT" : "HÀNG\nGIẢ";
+            _insStampRing.color = ColInkMuted;
+            _insStampText.color = ColInkMuted;
+            _insStampText.text = "CHƯA\nRÕ";
 
             if (_insBasePrice != null)
             {
@@ -346,7 +339,7 @@ namespace ChoDoLa.Sprint1
             _insPrice.text = $"{artifact.CurrentSellPrice:N0} xu";
 
             Text sellBtnText = _insSellBtn.GetComponentInChildren<Text>();
-            if (sellBtnText != null) sellBtnText.text = $"Bán ngay · +{artifact.CurrentSellPrice:N0} xu";
+            if (sellBtnText != null) sellBtnText.text = $"Bán ngay · niêm yết {artifact.CurrentSellPrice:N0} xu";
 
             _insSellBtn.onClick.RemoveAllListeners();
             _insSellBtn.onClick.AddListener(() =>
@@ -362,6 +355,7 @@ namespace ChoDoLa.Sprint1
             {
                 if (marketService != null && marketService.RequestKeepArtifact(_inspectingArtifact.InstanceId))
                 {
+                    _inspectingArtifact.IsKeptInInventory = true;
                     inspector3D.EndInspect();
                 }
             });
@@ -378,13 +372,14 @@ namespace ChoDoLa.Sprint1
 
         public void OpenTactShopModal()
         {
-            OpenLedgerTab(1);
+            ShowToast("Kho Tạo Tác sẽ mở ở Sprint 2.", isError: false);
         }
 
         private void OpenLedgerTab(int tabIndex)
         {
             CloseAllModals();
             RefreshAllLedgerTabs();
+            _ledgerConfirmedDay = marketService != null ? marketService.CurrentRunState.CurrentDay : 0;
             _ledgerModal.SetActive(true);
             SwitchLedgerTab(tabIndex);
             ResetLedgerScrollPositions();
@@ -552,7 +547,6 @@ namespace ChoDoLa.Sprint1
 
             bool carrying = boxCarrier != null && boxCarrier.IsCarryingBox;
             bool boughtAny = s.DailyBoxesPurchased > 0;
-            bool debtDone = s.IsDebtPaidToday;
 
             _objStep1.text = boughtAny
                 ? "✓  Đã mua hòm"
@@ -564,10 +558,8 @@ namespace ChoDoLa.Sprint1
                 : (boughtAny ? "✓  Đã sang Tiệm Mở Hòm" : "◇  Sang Tiệm Mở Hòm");
             _objStep2.color = carrying ? ColGold : (boughtAny ? ColJade : ColMuted);
 
-            _objStep3.text = debtDone
-                ? $"✓  Đã trả {s.DebtDueToday:N0} xu nợ"
-                : $"◇  Trả nợ {s.DebtDueToday:N0} xu [Tab]";
-            _objStep3.color = debtDone ? ColJade : ColCream;
+            _objStep3.text = $"◇  Kết thúc ngày · Nợ {s.DebtDueToday:N0} xu [Tab]";
+            _objStep3.color = ColCream;
         }
 
         private void HandleInventoryChanged()
@@ -576,29 +568,6 @@ namespace ChoDoLa.Sprint1
             {
                 RefreshInventoryTab();
                 RefreshDebtTab();
-            }
-        }
-
-        private void HandleTactLoadoutChanged()
-        {
-            if (_ledgerModal != null && _ledgerModal.activeSelf)
-            {
-                RefreshTactTab();
-                RefreshBikheTab();
-                RefreshDebtTab();
-            }
-        }
-
-        private void HandleBikheUnlocked(BikheView bikhe)
-        {
-            if (bikhe != null)
-            {
-                ShowToast($"BÍ KHẾ MỞ KHÓA: {bikhe.Title} ({bikhe.RewardSummary})", isError: false);
-            }
-
-            if (_ledgerModal != null && _ledgerModal.activeSelf)
-            {
-                RefreshBikheTab();
             }
         }
 
@@ -615,21 +584,22 @@ namespace ChoDoLa.Sprint1
         public void InspectDisplayOffer(string offerId, string displayName, int price)
         {
             _highlightedOfferId = offerId;
-            string clue = string.Empty;
-            if (marketService != null)
+            string typeId = offerId switch
             {
-                foreach (var o in marketService.CurrentOffers)
-                {
-                    if (o.OfferId == offerId)
-                    {
-                        clue = o.ClueText;
-                        break;
-                    }
-                }
+                "offer_h1_wood" or "offer_h1_evening" => "H1",
+                "offer_h2_metal" or "offer_h2_port" => "H2",
+                "offer_h3_cloth" => "H3",
+                "offer_rd_black" => "RD",
+                _ => offerId
+            };
+            var offer = marketService?.CurrentOffers.FirstOrDefault(o => o.BoxTypeId == typeId);
+            if (offer == null)
+            {
+                ShowToast("Hộp mẫu. Xem các hộp đang bán tại quầy Dì Mận.", isError: false);
+                return;
             }
-            string msg = string.IsNullOrEmpty(clue)
-                ? $"[{displayName} — {price} xu] Lại quầy gặp Dì Mận để chốt mua!"
-                : $"[{displayName} — {price} xu] {clue} → Gặp Dì Mận tại quầy để mua!";
+            _highlightedOfferId = offer.OfferId;
+            string msg = $"[{offer.DisplayName} · {offer.Price:N0} xu] {offer.ClueText}";
             ShowToast(msg, isError: false);
         }
 
@@ -654,20 +624,9 @@ namespace ChoDoLa.Sprint1
             _runEndStampText.text = s.IsVictory ? "ĐÃ TRẢ\nĐỦ NỢ" : "VỠ\nNỢ";
 
             string reason = string.IsNullOrEmpty(s.EndReason) ? "Ván chơi đã kết thúc." : s.EndReason;
-            string heirloomName = string.IsNullOrEmpty(s.ActiveHeirloomName) ? "Chưa mang" : s.ActiveHeirloomName;
             _runEndBody.text =
-                $"{reason}\n\n" +
-                $"• Ngày hoàn tất: {s.CurrentDay}/{s.MaxDays}\n" +
-                $"• Tiền mặt còn lại: {s.Cash:N0} xu\n" +
-                $"• Tổng giá trị kho: {s.InventoryTotalValue:N0} xu\n" +
-                $"• Gia bảo: {heirloomName}\n" +
-                $"• Tạo Tác gắn: {s.EquippedTactCount}/{s.MaxEquipSlots}  ·  Combo: {s.ActiveComboCount}\n" +
-                $"• Bí Khế đạt được: {s.UnlockedBikheCount}/{s.TotalBikheCount}";
-
-            if (_endLoadRunBtn != null)
-            {
-                _endLoadRunBtn.interactable = marketService != null && marketService.HasSavedRun;
-            }
+                $"{reason}\n\nNgày {s.CurrentDay}/{s.MaxDays}\n" +
+                $"Tiền mặt: {s.Cash:N0} xu\nNợ tồn: {s.Arrears:N0} xu";
 
             _runEndModal.SetActive(true);
             RefreshHudVisibility();
@@ -676,13 +635,8 @@ namespace ChoDoLa.Sprint1
 
         private BoxOfferView GetSelectedOffer()
         {
-            if (marketService == null || marketService.CurrentOffers == null || marketService.CurrentOffers.Count == 0)
-                return null;
-            foreach (BoxOfferView o in marketService.CurrentOffers)
-            {
-                if (o.OfferId == _highlightedOfferId) return o;
-            }
-            return marketService.CurrentOffers[0];
+            var offers = marketService?.CurrentOffers;
+            return offers?.FirstOrDefault(o => o.OfferId == _highlightedOfferId) ?? offers?.FirstOrDefault();
         }
 
         private void TryBuyHighlightedOffer()
@@ -704,7 +658,10 @@ namespace ChoDoLa.Sprint1
         {
             BoxOfferView sel = GetSelectedOffer();
             if (sel == null) return;
-            ShowToast($"{sel.DisplayName}: {sel.ClueText}", isError: false);
+            if (string.IsNullOrEmpty(sel.CertainOrigin))
+                marketService.RequestBuyClue(sel.OfferId);
+            else
+                ShowToast($"Dì Mận mách: {sel.CertainOrigin}", isError: false);
         }
 
         private void RefreshCounterModal()
@@ -714,7 +671,11 @@ namespace ChoDoLa.Sprint1
 
             RunStateSnapshot s = marketService.CurrentRunState;
             if (_counterWalletText != null) _counterWalletText.text = $"Ví: {s.Cash:N0} xu";
-            if (_counterQuotaText != null) _counterQuotaText.text = $"LÔ HÒM HÔM NAY · {s.DailyBoxesPurchased}/{s.MaxDailyBoxes} lượt";
+            if (_counterQuotaText != null)
+            {
+                var today = string.Join(" · ", marketService.TodayPrices.Select(entry => $"{entry.Key} {entry.Value:N0} xu"));
+                _counterQuotaText.text = $"GIÁ HÔM NAY · {today}\n{s.DailyBoxesPurchased}/{s.MaxDailyBoxes} lượt đã mua";
+            }
 
             BoxOfferView selected = GetSelectedOffer();
             if (selected != null) _highlightedOfferId = selected.OfferId;
@@ -751,15 +712,25 @@ namespace ChoDoLa.Sprint1
 
                 GameObject info = CreateInfoColumn(tag.transform);
                 CreateText(info.transform, offer.DisplayName, 19, FontStyle.Bold, ColInk);
-                CreateText(info.transform, offer.PotentialCategory, 14, FontStyle.Bold, ColInkMuted);
-                CreateText(info.transform, $"{offer.Price:N0} xu", 21, FontStyle.Bold, ColWaxRed);
+                CreateText(info.transform, $"Giá hôm nay {offer.TodayPrice:N0} xu · Hàng giả {offer.FakeRate:P0}", 14, FontStyle.Bold, ColInkMuted);
+                CreateText(info.transform, $"Niêm yết {offer.Price:N0} xu", 21, FontStyle.Bold, ColWaxRed);
             }
 
             if (_dialogueQuoteText != null && selected != null)
             {
-                _dialogueQuoteText.text = $"\"{selected.DisplayName} ({selected.Price:N0} xu) — {selected.ClueText}\"";
+                _dialogueQuoteText.text = $"\"{selected.DisplayName} ({selected.Price:N0} xu) — {selected.ClueText}\"" +
+                    (string.IsNullOrEmpty(selected.CertainOrigin) ? "" : $" · Lời mách: {selected.CertainOrigin}");
             }
 
+            if (_dialogueQuoteText != null && selected == null) _dialogueQuoteText.text = "Hết lượt mua hôm nay.";
+            if (_tipButton != null)
+            {
+                _tipButton.interactable = selected != null &&
+                    (s.Cash >= marketService.ExtraCluePrice || !string.IsNullOrEmpty(selected.CertainOrigin));
+                _tipButton.GetComponentInChildren<Text>().text = string.IsNullOrEmpty(selected?.CertainOrigin)
+                    ? $"2 · Lời mách ({marketService.ExtraCluePrice} xu)" : "2 · Xem lời mách";
+            }
+            if (_dialogueBuyBtn != null) _dialogueBuyBtn.interactable = selected != null;
             if (_dialogueBuyBtn != null && selected != null)
             {
                 bool canAfford = s.Cash >= selected.Price && s.DailyBoxesPurchased < s.MaxDailyBoxes;
@@ -818,7 +789,7 @@ namespace ChoDoLa.Sprint1
                 CreateText(info.transform, $"{FormatQuality(item.Quality)} · {FormatAuth(item.Authenticity)} · {FormatRarity(item.Rarity)}", 13, FontStyle.Normal, ColInkMuted);
 
                 string capturedId = item.InstanceId;
-                CreateButton(row.transform, $"Bán (+{item.CurrentSellPrice:N0} xu)", ColJade, 175f, 44f, () =>
+                CreateButton(row.transform, $"Bán (niêm yết {item.CurrentSellPrice:N0} xu)", ColJade, 175f, 44f, () =>
                 {
                     marketService.RequestSellArtifact(capturedId);
                 });
@@ -1029,16 +1000,8 @@ namespace ChoDoLa.Sprint1
 
             RunStateSnapshot s = marketService.CurrentRunState;
             int[] schedule = marketService.DebtSchedule;
-            string discountNote = string.Empty;
-            if (s.CurrentDay >= 1 && s.CurrentDay <= schedule.Length && s.DebtDueToday < schedule[s.CurrentDay - 1])
-            {
-                int saved = schedule[s.CurrentDay - 1] - s.DebtDueToday;
-                discountNote = $" (Đã giảm -{saved} xu nhờ Cổ Vật / Tạo Tác)";
-            }
-
-            _debtSummaryText.text = s.IsDebtPaidToday
-                ? $"NGÀY {s.CurrentDay}: ĐÃ TRẢ ({s.DebtDueToday:N0} xu){discountNote}\nVí: {s.Cash:N0} xu  ·  Kho: {s.InventoryTotalValue:N0} xu"
-                : $"NGÀY {s.CurrentDay}: CẦN {s.DebtDueToday:N0} xu{discountNote}\nVí: {s.Cash:N0} xu  ·  Kho: {s.InventoryTotalValue:N0} xu";
+            _debtSummaryText.text = $"NGÀY {s.CurrentDay}: CẦN {s.DebtDueToday:N0} xu\n" +
+                $"Nợ tồn: {s.Arrears:N0} xu · Ví: {s.Cash:N0} xu";
 
             for (int i = 0; i < schedule.Length; i++)
             {
@@ -1046,7 +1009,7 @@ namespace ChoDoLa.Sprint1
                 bool isToday = dayNum == s.CurrentDay;
                 bool isPast = dayNum < s.CurrentDay || (isToday && s.IsDebtPaidToday);
 
-                string status = isPast ? "Đã trả" : (isToday ? "HÔM NAY" : "Chưa tới");
+                string status = isPast ? "Đã qua kỳ" : (isToday ? "HÔM NAY" : "Chưa tới");
                 Color col = isPast ? ColJade : (isToday ? ColWaxRed : ColInkMuted);
 
                 GameObject row = CreateChamferedPanel(_debtListRoot, $"DebtDay_{dayNum}", isToday ? ColPaperHighlight : ColPaperDark, isToday ? ColWaxRed : ColBrassDark, 0f, 54f, small: true);
@@ -1060,11 +1023,7 @@ namespace ChoDoLa.Sprint1
                 stT.alignment = TextAnchor.MiddleRight;
             }
 
-            _payDebtBtn.interactable = !s.IsDebtPaidToday;
-            if (_loadRunBtn != null)
-            {
-                _loadRunBtn.interactable = marketService.HasSavedRun;
-            }
+            _endDayBtn.interactable = !s.IsRunEnded;
         }
 
         private void SwitchLedgerTab(int tabIndex)
@@ -1540,7 +1499,7 @@ namespace ChoDoLa.Sprint1
             dbh.childForceExpandWidth = false;
 
             _dialogueBuyBtn = CreateButton(dBtns.transform, "1 · Mua", ColJade, 220f, 46f, TryBuyHighlightedOffer);
-            CreateButton(dBtns.transform, "2 · Gợi ý", ColWalnutLight, 155f, 46f, ShowSelectedOfferClue);
+            _tipButton = CreateButton(dBtns.transform, "2 · Lời mách", ColWalnutLight, 155f, 46f, ShowSelectedOfferClue);
             CreateButton(dBtns.transform, "3 · Đóng [Esc]", ColWalnutLight, 165f, 46f, CloseAllModals);
 
             _counterModal.SetActive(false);
@@ -1682,6 +1641,8 @@ namespace ChoDoLa.Sprint1
             _tabInvRt = CreateRibbonButton(ribbons.transform, "KHO ĐỒ", ColTeal, () => SwitchLedgerTab(0));
             _tabTactRt = CreateRibbonButton(ribbons.transform, "TẠO TÁC", ColBrassDark, () => SwitchLedgerTab(1));
             _tabBikheRt = CreateRibbonButton(ribbons.transform, "BÍ KHẾ", ColPurple, () => SwitchLedgerTab(2));
+            _tabTactRt.gameObject.SetActive(false);
+            _tabBikheRt.gameObject.SetActive(false);
             _tabDebtRt = CreateRibbonButton(ribbons.transform, "SỔ NỢ", ColWaxRed, () => SwitchLedgerTab(3));
 
             // Paper Inner Page Frame
@@ -1745,15 +1706,10 @@ namespace ChoDoLa.Sprint1
             dGrid.cellSize = new Vector2(188f, 56f);
             dGrid.spacing = new Vector2(12f, 12f);
 
-            _payDebtBtn = CreateButton(debtActions.transform, "Trả Nợ", ColJade, 0f, 56f, () => marketService?.RequestPayDebt());
-            _endDayBtn = CreateButton(debtActions.transform, "Hết Ngày", ColBrassDark, 0f, 56f, () => marketService?.RequestEndDay());
-            CreateButton(debtActions.transform, "Lưu Ván", ColTeal, 0f, 56f, () =>
+            _endDayBtn = CreateButton(debtActions.transform, "Kết thúc ngày", ColJade, 0f, 56f, () =>
             {
-                if (marketService != null && marketService.SaveRun()) RefreshDebtTab();
-            });
-            _loadRunBtn = CreateButton(debtActions.transform, "Tải Ván", ColPurple, 0f, 56f, () =>
-            {
-                if (marketService != null && marketService.LoadRun()) RefreshAllLedgerTabs();
+                if (marketService == null || !_ledgerModal.activeSelf) return;
+                if (marketService.RequestEndDay(_ledgerConfirmedDay) && _ledgerModal.activeSelf) CloseAllModals();
             });
 
             // Right Column (7-Day Rows)
@@ -1827,11 +1783,6 @@ namespace ChoDoLa.Sprint1
                 marketService?.ResetRun();
                 CloseAllModals();
             });
-            _endLoadRunBtn = CreateButton(actions.transform, "Tải Ván Đã Lưu", ColPurple, 0f, 44f, () =>
-            {
-                if (marketService != null && marketService.LoadRun()) CloseAllModals();
-            });
-
             _runEndModal.SetActive(false);
         }
 

@@ -35,7 +35,7 @@ namespace ChoDoLa.Sprint1
             {
                 if (isCounterDisplay)
                 {
-                    return $"Xem mẫu {displayLabel} ({displayPrice} xu) — Gặp Dì Mận để chốt mua";
+                    return $"Xem mẫu {displayLabel} — Gặp Dì Mận để xem giá";
                 }
                 return _isOpened ? string.Empty : $"Tháo niêm phong & Mở {displayLabel}";
             }
