@@ -2,7 +2,8 @@
 Dùng (chạy song song 4 tiến trình, nên chạy nền với nohup):
   python3 chest_final.py final   # bảng cuối n=2.000 không sắp sẵn + 3 chế độ hộp ngày 1 sắp sẵn n=1.500, kèm số đo ngày 1 (~10 phút)
   python3 chest_final.py sens    # độ nhạy n=1.000: 3/5 ô, tạo tác trùng, giá trị tạo tác, Kim Khí chỉ tạo tác, giá món mới ±15% (~10 phút)
-  python3 chest_final.py slots   # tỉ lệ đạt CB1/CB3/BK1 theo 3/4/5 ô, n=800 (~2 phút)"""
+  python3 chest_final.py slots   # tỉ lệ đạt CB1/CB3/BK1 theo 3/4/5 ô, n=800 (~2 phút)
+Bảng "table" trong JSON in theo đơn vị cân bằng (1 = 10.000 đ); đổi sang đồng bằng currency.fmt_vnd."""
 import json
 import multiprocessing as mp
 import sys

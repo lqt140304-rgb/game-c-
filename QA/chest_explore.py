@@ -4,6 +4,7 @@ import copy
 import multiprocessing as mp
 import sys
 import chest_sim as CS
+from currency import fmt_vnd
 
 
 def mk(mods, top=None):
@@ -29,7 +30,8 @@ def run_all(designs, n=1000):
         for label, r in p.imap(_ev, [(l, d, n) for l, d in designs]):
             t = r["table"]
             print("== %s" % label)
-            print("   " + " | ".join("%s %d: EV %d lời %d (%.2f)" % (k, v["price"], v["ev"], v["profit"], v["ratio"]) for k, v in t.items()))
+            print("   " + " | ".join("%s %s: thu %s lời %s (%.2f)" % (k, fmt_vnd(v["price"]), fmt_vnd(round(v["ev"])), fmt_vnd(round(v["profit"])), v["ratio"])
+                                     for k, v in t.items()))
             print("   bot", r["bot"])
             print("   skilled", r["skilled"])
             print("   chọn", r.get("mix"))

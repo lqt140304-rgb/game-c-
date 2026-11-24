@@ -2,8 +2,6 @@
 
 > **Tiền tệ:** số tiền trong tài liệu này đã đổi sang **đồng Việt Nam** ngày 2026-11-24 (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ, `QA/currency.py` đổi sang đồng khi in.
 
-> **Tiền tệ:** số trong tài liệu này tính theo đơn vị cân bằng cũ, **1 đơn vị = 10.000 đ** (Rương Đen 15.000.000 đ = 15.000.000 đ). Xem [bảng quy đổi](README.md#tiền-tệ).
-
 Chủ dự án chọn phương án C ([DieuChinhSauCanBang.md](../Content/DieuChinhSauCanBang.md) mục K): mỗi ngày giá mỗi loại hộp lệch ngẫu nhiên đều trong ±a (công bố đầu ngày, xác định theo seed, ngày, loại hộp, áp dụng từ ngày 1), E3 giảm thêm 20% giá H2 sau dao động, giá niêm yết đi theo manh mối đầu (λ = 0,75), lời mách Dì Mận 150.000 đ chắc đúng. Claude 1 nhờ đo lại bằng bộ chiến thuật đầy đủ, luật dịch vụ, biên độ ±15% và ±20%, và kết hợp hạ giá Rương Đen xuống 12.500.000 đ. Số đo ban đầu của Claude 1 chỉ là sơ bộ.
 
 Cấu hình cơ sở: gói đã duyệt (giá nền G1 nhân 1,10, hàng giả theo hộp, tạo tác và combo đã chốt). 1.500 seed mỗi ô, sai số khoảng ±1,3 điểm.

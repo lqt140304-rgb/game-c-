@@ -2,46 +2,46 @@
 
 Viết ngày 2026-11-24. Phần 1 của việc cân bằng Sprint 5: giá và tỉ lệ ra bậc của 4 rương cơ bản (Gỗ, Vải Niêm, Kim Khí, Đen), tỉ lệ rác, 4 ô tạo tác. **Bảng dưới đây là ĐỀ XUẤT, chưa chốt**: chờ chủ dự án duyệt, các điểm cần quyết ghi ở mục "Câu hỏi mở". Bàn giao giữa phiên trước đó: [BanGiaoSprint5Ruong.md](BanGiaoSprint5Ruong.md).
 
-> **Tiền tệ:** đồng Việt Nam. Mô phỏng tính theo đơn vị cân bằng **1 đơn vị = 10.000 đ** (Rương Đen 1.200 = 12.000.000 đ), in bằng `QA/currency.py`. Bảng dưới ghi cả hai.
+> **Tiền tệ:** mọi số tiền trong tài liệu này ghi bằng **đồng Việt Nam** (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng và `QA/chest_sim.py` vẫn tính theo đơn vị cân bằng 10.000 đ (Rương Đen `price=1200` là 12.000.000 đ); `QA/currency.py` đổi sang đồng khi in.
 
 ## Kết luận ngắn
 
 1. **Nghiệm thu đạt** trên ván thường (n = 2.000): bot thường thắng **18,1% (thận trọng) và 19,4% (liều)**, người chơi tính toán hoàn hảo thắng **37,4% đến 44,0%** (trần 47%), không rương nào trên 38% lượt chọn, Rương Đen được chọn 17%.
-2. **Ngày 1 không thua ngay** ở mọi cách chơi và mọi chế độ hộp sắp sẵn: 0 ván thua trước ngày 3 trên 2.000 ván (không sắp sẵn) và 1.500 ván mỗi chế độ sắp sẵn. Nợ tồn cuối ngày 1 xấu nhất 239 đơn vị (2.390.000 đ), xa ngưỡng thua 1.000 (10.000.000 đ).
+2. **Ngày 1 không thua ngay** ở mọi cách chơi và mọi chế độ hộp sắp sẵn: 0 ván thua trước ngày 3 trên 2.000 ván (không sắp sẵn) và 1.500 ván mỗi chế độ sắp sẵn. Nợ tồn cuối ngày 1 xấu nhất 2.390.000 đ, xa ngưỡng thua 10.000.000 đ.
 3. **Đường thắng vẫn tồn tại ở lần chơi đầu** (hộp sắp sẵn, spec mo-man: "chỉ cho riêng lần chơi đầu"), nhưng ván đó khó hơn rõ: bot thường 6,5% đến 15%, người chơi giỏi 19% đến 36% tùy cách sắp sẵn. Cách ít thiệt nhất: ngày 1 của lần chơi đầu chỉ bán Rương Gỗ cho 2 hộp đầu. Chủ dự án chọn.
-4. **Bảng khởi đầu của spec là bẫy**: Kim Khí chỉ ra tạo tác thu về 0,46 lần giá, Đen 0,60 lần giá; bot thường (mua rương đắt nhất mua được) thắng 0,0% đến 0,2%. Bảng đề xuất sửa bằng cách cho Kim Khí ra cả đồ lẫn tạo tác (như bảng bộ sưu tập của `ruong-chu-de`), hạ Kim Khí xuống 450 và đẩy Rất hiếm của Đen lên 55%.
+4. **Bảng khởi đầu của spec là bẫy**: Kim Khí chỉ ra tạo tác thu về 0,46 lần giá, Đen 0,60 lần giá; bot thường (mua rương đắt nhất mua được) thắng 0,0% đến 0,2%. Bảng đề xuất sửa bằng cách cho Kim Khí ra cả đồ lẫn tạo tác (như bảng bộ sưu tập của `ruong-chu-de`), hạ Kim Khí xuống 4.500.000 đ và đẩy Rất hiếm của Đen lên 55%.
 5. **4 ô tạo tác không phá cân bằng kinh tế**: 3, 4 hay 5 ô chênh dưới 1 điểm thắng. 4 ô làm bot combo lớn đạt CB3 gấp đôi (12% lên 25%), tức là vấn đề nằm ở **thiết kế** (combo thành mặc định, ít quyết định chọn hệ), không ở tiền. Giữ 4 ô được về số; việc có thêm tạo tác hay không là của Claude 1 và chủ dự án.
 6. **Điểm nhạy nhất là giá nền 25 món mới**: ±15% làm bot thường đổi từ 10% lên 24%. Khi Claude 1 hoặc chủ dự án chốt giá món mới, phải đo lại (chạy `test_chest_balance`).
 
 ## 1. Bảng đề xuất
 
-Tỉ lệ ra bậc: **R** Rác, **T** Thường, **H** Hiếm, **X** Rất hiếm, **L** Huyền thoại. Luật quay hai bước của `ruong-chu-de`: quay bậc, rồi quay đều một món trong bộ sưu tập của rương ở bậc đó. Rác dùng chung 9 món, bán 3 đơn vị (30.000 đ), không giả.
+Tỉ lệ ra bậc: **R** Rác, **T** Thường, **H** Hiếm, **X** Rất hiếm, **L** Huyền thoại. Luật quay hai bước của `ruong-chu-de`: quay bậc, rồi quay đều một món trong bộ sưu tập của rương ở bậc đó. Rác dùng chung 9 món, bán 30.000 đ, không giả.
 
 | Rương | Giá | R | T | H | X | L | Tạo tác | Hàng giả | Manh mối đúng |
 |---|---|---|---|---|---|---|---|---|---|
-| Gỗ | 140 (1.400.000 đ) | 15% | 83% | 1,5% | 0% | 0,5% | — | 10% | 2 trên 3 |
-| Vải Niêm | 350 (3.500.000 đ) | 22% | 49% | 23% | 5% | 1% | — | 15% | 2 trên 3 |
-| Kim Khí | 450 (4.500.000 đ) | 10% | 25% | 22% | 8% | 1% | **34%** (bậc 1: 60%, bậc 2: 35%, bậc 3: 5%) | 0% | 1 trên 3 |
-| Đen | 1.200 (12.000.000 đ) | 25% | 5% | 10% | 55% | 5% | — | 30% | 1 trên 3 |
+| Gỗ | 1.400.000 đ | 15% | 83% | 1,5% | 0% | 0,5% | — | 10% | 2 trên 3 |
+| Vải Niêm | 3.500.000 đ | 22% | 49% | 23% | 5% | 1% | — | 15% | 2 trên 3 |
+| Kim Khí | 4.500.000 đ | 10% | 25% | 22% | 8% | 1% | **34%** (bậc 1: 60%, bậc 2: 35%, bậc 3: 5%) | 0% | 1 trên 3 |
+| Đen | 12.000.000 đ | 25% | 5% | 10% | 55% | 5% | — | 30% | 1 trên 3 |
 
-So với bảng khởi đầu của spec: Gỗ 120 lên **140**, Kim Khí 500 xuống **450** và ra cả đồ, Đen giữ **1.200** nhưng Rất hiếm 25% lên **55%**, rác của Đen 30% xuống 25%, Vải Niêm rác 15% lên 22%. Huyền thoại có ở cả 4 rương nhưng hiếm (0,5% đến 5%), theo `ruong-chu-de`.
+So với bảng khởi đầu của spec: Gỗ 1.200.000 đ lên **1.400.000 đ**, Kim Khí 5.000.000 đ xuống **4.500.000 đ** và ra cả đồ, Đen giữ **12.000.000 đ** nhưng Rất hiếm 25% lên **55%**, rác của Đen 30% xuống 25%, Vải Niêm rác 15% lên 22%. Huyền thoại có ở cả 4 rương nhưng hiếm (0,5% đến 5%), theo `ruong-chu-de`.
 
 Rác theo thứ tự của `ruong-suu-tap`: Gỗ ít (15%), Vải Niêm vừa (22%), Kim Khí vài món máy móc hỏng (10%), Đen nhiều nhất (25%).
 
 **Tạo tác từ Kim Khí** (giả định, spec chưa chốt): tạo tác chưa có thì vào ô trống; trùng hoặc hết ô thì đổi **50% giá Kho**. Tính theo giá Kho Tạo Tác.
 
-**Giá nền dùng để đo** (đề xuất của Claude 2, nằm trong khoảng giá bậc của spec; món đã có giữ giá X110 đang dùng). Đầy đủ ở `chest_sim.NEW_ITEMS`. Huyền thoại cơ bản: Vé số độc đắc 4.000 (40 triệu đ), Bản đồ cổ vẽ tay 5.000 (50 triệu đ), Đồng hồ bỏ túi 5.000 (50 triệu đ), Két sắt chưa ai mở được 7.000 (70 triệu đ). Món mới bậc Hiếm 1.500 đến 1.900 (15 đến 19 triệu đ), Rất hiếm 2.700 đến 3.000 (27 đến 30 triệu đ), Thường 220 đến 350 (2,2 đến 3,5 triệu đ).
+**Giá nền dùng để đo** (đề xuất của Claude 2, nằm trong khoảng giá bậc của spec; món đã có giữ giá X110 đang dùng). Đầy đủ ở `chest_sim.NEW_ITEMS`. Huyền thoại cơ bản: Vé số độc đắc 40.000.000 đ, Bản đồ cổ vẽ tay 50.000.000 đ, Đồng hồ bỏ túi 50.000.000 đ, Két sắt chưa ai mở được 70.000.000 đ. Món mới bậc Thường 2.200.000 đến 3.500.000 đ, Hiếm 15.000.000 đến 19.000.000 đ, Rất hiếm 27.000.000 đến 30.000.000 đ.
 
 ### Giá trị kỳ vọng mỗi hộp (chưa tính dao động giá ±20%)
 
 | Rương | Giá | Thu kỳ vọng | Lời kỳ vọng | Thu / giá |
 |---|---|---|---|---|
-| Gỗ | 140 | 320 (3,2 triệu đ) | 180 | 2,28 |
-| Vải Niêm | 350 | 535 (5,35 triệu đ) | 185 | 1,53 |
-| Kim Khí | 450 | 687 (6,87 triệu đ) | 237 | 1,53 |
-| Đen | 1.200 | 1.303 (13 triệu đ) | 103 | 1,09 |
+| Gỗ | 1.400.000 đ | 3.200.000 đ | 1.800.000 đ | 2,28 |
+| Vải Niêm | 3.500.000 đ | 5.350.000 đ | 1.850.000 đ | 1,53 |
+| Kim Khí | 4.500.000 đ | 6.870.000 đ | 2.370.000 đ | 1,53 |
+| Đen | 12.000.000 đ | 13.030.000 đ | 1.030.000 đ | 1,09 |
 
-Gỗ an toàn nhất (tỉ lệ cao) nhưng không lời tuyệt đối nhiều nhất; Đen lời ít nhất so với giá nhưng phương sai lớn (Huyền thoại 5%, Rất hiếm 55%), đúng vai "đánh cược lớn". Mô hình cũ đã duyệt có lời mỗi hộp H1 150, H2 208, H3 190, RD 15.
+Gỗ an toàn nhất (tỉ lệ cao) nhưng không lời tuyệt đối nhiều nhất; Đen lời ít nhất so với giá nhưng phương sai lớn (Huyền thoại 5%, Rất hiếm 55%), đúng vai "đánh cược lớn". Mô hình cũ đã duyệt có lời mỗi hộp H1 1.500.000 đ, H2 2.080.000 đ, H3 1.900.000 đ, Rương Đen 150.000 đ.
 
 ## 2. Số đo trên ván thường (không sắp sẵn)
 
@@ -67,12 +67,12 @@ Khoảng cách kỹ năng (người chơi giỏi thận trọng trừ bot thận
 
 | Chế độ | Bot thận trọng | Bot liều | Người chơi giỏi (liều) | Thua trước ngày 3 | Ván có nợ tồn cuối ngày 1 | Nợ tồn ngày 1 xấu nhất |
 |---|---|---|---|---|---|---|
-| không (n = 2.000) | 18,1 | 19,4 | 44,0 | 0% | 9,9% (bot liều) | 238 (2.380.000 đ) |
-| any (n = 1.500) | 6,5 | 7,1 | 25,5 | 0% | 16,9% (bot liều) | 239 (2.390.000 đ) |
-| free1 | 8,5 | 10,3 | 33,9 | 0% | 1,2% | 208 |
-| cheap | 10,1 | 14,9 | 35,7 | 0% | 0,1% | 134 |
+| không (n = 2.000) | 18,1 | 19,4 | 44,0 | 0% | 9,9% (bot liều) | 2.380.000 đ |
+| any (n = 1.500) | 6,5 | 7,1 | 25,5 | 0% | 16,9% (bot liều) | 2.390.000 đ |
+| free1 | 8,5 | 10,3 | 33,9 | 0% | 1,2% | 2.080.000 đ |
+| cheap | 10,1 | 14,9 | 35,7 | 0% | 0,1% | 1.340.000 đ |
 
-Ngày thua sớm nhất ở mọi chế độ là cuối ngày 3. Nợ ngày 1 chỉ 200 (2.000.000 đ), có phạt 20% thì nợ tồn tối đa 240, dưới ngưỡng thua 1.000, nên **theo luật ngày 1 không thể thua**, và mô phỏng xác nhận.
+Ngày thua sớm nhất ở mọi chế độ là cuối ngày 3. Nợ ngày 1 chỉ 2.000.000 đ, có phạt 20% thì nợ tồn tối đa 2.400.000 đ, dưới ngưỡng thua 10.000.000 đ, nên **theo luật ngày 1 không thể thua**, và mô phỏng xác nhận.
 
 Hộp sắp sẵn tốn nhiều vì nó lấy 2 trên 3 lượt mua của ngày 1 và trả thấp hơn kỳ vọng. Nếu muốn lần chơi đầu cũng ở mức 15% đến 20% cho bot thường, cần thêm một điều mo-man chưa có (ví dụ "cheap" kèm vốn đầu ván cao hơn chút), đó là việc của chủ dự án.
 
@@ -88,7 +88,7 @@ Hộp sắp sẵn tốn nhiều vì nó lấy 2 trên 3 lượt mua của ngày 
 | Tạo tác chỉ đáng nửa giá Kho | 16,3 / 17,0 | 37,9 / 44,3 / 39,5 / 38,9 | 18% |
 | Giá món mới −15% | 10,2 / 10,2 | 33,8 / 41,4 / 34,8 / 34,2 | 10% |
 | Giá món mới +15% | 20,6 / **24,1** | 39,6 / 44,7 / 39,4 / 38,7 | 22% |
-| Kim Khí chỉ ra tạo tác, giá 500 (spec) | **0,3 / 0,1** | 36,5 / 43,6 / 43,3 / 41,6 | 18% (Kim Khí 0%) |
+| Kim Khí chỉ ra tạo tác, giá 5.000.000 đ (spec) | **0,3 / 0,1** | 36,5 / 43,6 / 43,3 / 41,6 | 18% (Kim Khí 0%) |
 | Bảng khởi đầu của spec | **0,2 / 0,0** | 56,0 / **63,1** / 62,6 / 58,5 | 4% (Gỗ 63%) |
 
 Số ô và tỉ lệ đạt combo (bot, n = 800; thắng / CB1 / CB3 / BK1):
@@ -101,7 +101,7 @@ Số ô và tỉ lệ đạt combo (bot, n = 800; thắng / CB1 / CB3 / BK1):
 
 Đọc bảng:
 
-- **Bảng khởi đầu của spec vừa quá khó cho bot thường vừa quá dễ cho người chơi giỏi** (Gỗ 120 thu 3,02 lần giá, người chơi giỏi chỉ mua Gỗ và thắng 63%). Không dùng được.
+- **Bảng khởi đầu của spec vừa quá khó cho bot thường vừa quá dễ cho người chơi giỏi** (Gỗ 1.200.000 đ thu 3,02 lần giá, người chơi giỏi chỉ mua Gỗ và thắng 63%). Không dùng được.
 - **Kim Khí chỉ ra tạo tác là bẫy**: không người chơi giỏi nào mua, bot mua thì gần như chắc thua. Kim Khí cần ra cả đồ.
 - **Số ô và luật tạo tác trùng** chỉ lệch 1 đến 3 điểm: chọn theo thiết kế, không vướng cân bằng.
 - **Giá món mới** là đòn bẩy lớn nhất. Giá chốt nên giữ trung bình theo bậc gần mức đo ở đây, hoặc đo lại.
@@ -119,18 +119,18 @@ python3 chest_explore.py                         # dò cấu hình ứng viên G
 
 Mã: `QA/chest_sim.py` (bộ chuyển đổi: nạp bảng 5 bậc, rác, tạo tác, 4 ô, hộp sắp sẵn vào lõi đã duyệt; `FINAL` là bảng đề xuất; `day1_stats` đo ngày 1; `restore()` trả lõi về như cũ để test khác không bị ảnh hưởng). Bộ chuyển đổi đã được kiểm chứng ở phiên trước: nạp lại bảng cũ cho kết quả khớp [GiaHopDaoDong.md](GiaHopDaoDong.md) trong sai số.
 
-Đường dò: G1..G4 (Gỗ 140, Kim Khí 500, Đen Rất hiếm 46% đến 50%) cho bot 13% đến 16%, người chơi giỏi liều 46% đến 54%; Vải Niêm tốt hơn (G4) đẩy người chơi giỏi lên 54%, nên Vải Niêm là đòn bẩy của người chơi giỏi, còn Đen là đòn bẩy của bot. H1..H4 đẩy Đen lên Rất hiếm 55%; H2 (thêm Kim Khí 450 và Vải Niêm kém đi một chút) là bảng cuối.
+Đường dò: G1..G4 (Gỗ 1.400.000 đ, Kim Khí 5.000.000 đ, Đen 12.000.000 đ với Rất hiếm 46% đến 50%) cho bot 13% đến 16%, người chơi giỏi liều 46% đến 54%; Vải Niêm tốt hơn (G4) đẩy người chơi giỏi lên 54%, nên Vải Niêm là đòn bẩy của người chơi giỏi, còn Đen là đòn bẩy của bot. H1..H4 đẩy Đen lên Rất hiếm 55%; H2 (thêm Kim Khí 4.500.000 đ và Vải Niêm kém đi một chút) là bảng cuối.
 
 ## 6. Câu hỏi mở cho chủ dự án
 
-1. **Duyệt bảng đề xuất** ở mục 1 (giá Gỗ 140, Kim Khí 450, Đen 1.200; tỉ lệ bậc; Kim Khí ra cả đồ lẫn tạo tác 34%).
+1. **Duyệt bảng đề xuất** ở mục 1 (giá Gỗ 1.400.000 đ, Kim Khí 4.500.000 đ, Đen 12.000.000 đ; tỉ lệ bậc; Kim Khí ra cả đồ lẫn tạo tác 34%).
 2. **Xung đột tỉ lệ rác giữa hai spec:** `tier-do-trong-ruong` ghi Gỗ 20%, Vải Niêm 15%; `ruong-suu-tap` ghi "Gỗ ít, Vải Niêm vừa". Bản đo theo `ruong-suu-tap`. Chọn spec nào thì sửa spec còn lại.
 3. **Huyền thoại ở rương cơ bản:** `tier-do-trong-ruong` ghi 0%, `ruong-chu-de` nói có. Bản đo theo `ruong-chu-de` (0,5% đến 5%).
 4. **Tạo tác trùng từ Kim Khí** đổi tiền không, bao nhiêu (bản đo 50% giá Kho; 0% hay 100% chỉ lệch 1 đến 2 điểm).
 5. **Hộp sắp sẵn ở lần chơi đầu:** chấp nhận ván đầu khó hơn (đúng spec, bot 6,5%), hay ngày 1 của lần chơi đầu chỉ bán Gỗ (bot 10% đến 15%, đo tốt nhất), hay tặng hộp đầu.
 6. **Giá nền 25 món mới và nhóm nguồn gốc** (Claude 1): bản đo dùng giá đề xuất trong `chest_sim.NEW_ITEMS`. Giá lệch trung bình quá ±5% thì cần đo lại. Nhóm nguồn gốc nên phân sao cho bậc cao trong một rương khác nhóm bậc thấp, để kỹ năng đọc manh mối còn giá trị.
 7. **4 ô tạo tác:** về kinh tế không sao; về thiết kế, combo gần như mặc định (BanGiaoSprint5.md mục 2). Thêm tạo tác hay giữ 6 là quyết định của Claude 1 và chủ dự án.
-8. **Rương Đen 1.200 hay 1.500:** phương án C cũ giữ 1.500 trên bảng cũ. Với 5 bậc và rác, Đen 1.500 (Thường 5%, Hiếm 5%, Huyền thoại 5%) cần Rất hiếm 75% và rác chỉ 10% mới đạt thu 1,08 lần giá như 1.200 ở đây (Rất hiếm 70% mới hòa vốn), trái với "Đen nhiều rác nhất"; đề xuất 1.200.
+8. **Rương Đen 12.000.000 đ hay 15.000.000 đ:** phương án C cũ giữ 15.000.000 đ trên bảng cũ. Với 5 bậc và rác, Đen 15.000.000 đ (Thường 5%, Hiếm 5%, Huyền thoại 5%) cần Rất hiếm 75% và rác chỉ 10% mới đạt thu 1,08 lần giá như mức 12.000.000 đ ở đây (Rất hiếm 70% mới hòa vốn), trái với "Đen nhiều rác nhất"; đề xuất 12.000.000 đ.
 
 ## 7. Chưa làm (phần sau của Sprint 5)
 
