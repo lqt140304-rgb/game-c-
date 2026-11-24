@@ -1,6 +1,6 @@
 # Sprint 2 — Kiểm thử lịch nợ, combo, Bí Khế, tải ván (Claude 2)
 
-> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+> **Tiền tệ:** số tiền trong tài liệu này đã đổi sang **đồng Việt Nam** ngày 2026-11-24 (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ, `QA/currency.py` đổi sang đồng khi in.
 
 Mở rộng mô hình tham chiếu của [Sprint 1](Sprint1.md). Kết quả Sprint 1 (bảng dòng tiền 6 ván) **đã lỗi thời** vì mô hình nay dùng luật nợ tồn của Claude 1.
 
@@ -25,9 +25,9 @@ python3 variants.py                                # so sánh phương án chỉ
 | Nhóm | Mã | Nội dung |
 | --- | --- | --- |
 | Lịch nợ | DL-1 đến DL-7 | Bảy ca của Claude 1: trả đúng hạn, thiếu một phần, nợ tồn cộng kỳ mới, thua vì nợ tồn vượt ngưỡng, thua ngày 7, thắng ngày 7, hiện vật chưa bán không tính |
-| | DL-8 | Phạt làm tròn lên (tồn 1 xu phạt 1 xu) |
-| | DL-9 | Hai kỳ liên tiếp không trả: tồn 708 xu |
-| | DL-10 | Ngưỡng thua là **lớn hơn** 1.000: tồn đúng 1.000 chơi tiếp, 1.001 thua |
+| | DL-8 | Phạt làm tròn lên (tồn 10.000 đ phạt 10.000 đ) |
+| | DL-9 | Hai kỳ liên tiếp không trả: tồn 7.080.000 đ |
+| | DL-10 | Ngưỡng thua là **lớn hơn** 10.000.000 đ: tồn đúng 10.000.000 đ chơi tiếp, 10.010.000 đ thua |
 | | DL-11 | Trả hết nợ tồn kỳ sau thì tồn về 0 |
 | | DL-12 | Thiếu tiền rồi tiền về 0, không mua được hộp (xem D-05) |
 | | DL-13 | Trả trước kỳ chưa đến hạn bị từ chối |
@@ -39,9 +39,9 @@ python3 variants.py                                # so sánh phương án chỉ
 
 | Mã | Mức | Mô tả | Đề xuất | Chủ xử lý |
 | --- | --- | --- | --- | --- |
-| D-05 | Cao | **Vòng xoáy thiếu tiền.** Luật hiện thu hết tiền mặt khi thiếu. Người chơi về 0 xu nên không mua được hộp để gỡ lại. Trong 20.000 ván mô phỏng, **không ván nào** đã từng thiếu tiền mà thắng | Chừa lại một mức tối thiểu hoặc cho giữ hiện vật đã có để bán. Phương án chừa 100 xu ít tác dụng (bảng bên dưới), nên gốc vấn đề là lợi nhuận hộp thấp | Claude 1, chủ dự án |
+| D-05 | Cao | **Vòng xoáy thiếu tiền.** Luật hiện thu hết tiền mặt khi thiếu. Người chơi về 0 đ nên không mua được hộp để gỡ lại. Trong 20.000 ván mô phỏng, **không ván nào** đã từng thiếu tiền mà thắng | Chừa lại một mức tối thiểu hoặc cho giữ hiện vật đã có để bán. Phương án chừa 1.000.000 đ ít tác dụng (bảng bên dưới), nên gốc vấn đề là lợi nhuận hộp thấp | Claude 1, chủ dự án |
 | D-06 | Trung bình | Tải bản lưu cũ hoàn tác được giao dịch (SL-9). Tải lại kết quả hộp thì không đổi, vì kết quả đã xác định lúc mua | Chốt chính sách lưu (GDD mục 6 còn [MỞ]), ví dụ chỉ lưu tự động ở đầu ngày | Claude 1, Codex |
-| D-07 | Thấp | Phạt tính trên cả phần tồn nhỏ (tồn 1 xu bị phạt 1 xu, gấp đôi) | Chấp nhận hoặc đặt phạt tối thiểu | Claude 1 |
+| D-07 | Thấp | Phạt tính trên cả phần tồn nhỏ (tồn 10.000 đ bị phạt 10.000 đ, gấp đôi) | Chấp nhận hoặc đặt phạt tối thiểu | Claude 1 |
 | D-08 | Thấp | Luật hiện không cho trả nợ tồn ngoài kỳ thu. Người dư tiền không thể giảm tồn sớm để tránh phạt | Chốt có cho trả tồn trước hay không | Claude 1 |
 | O-02 | Cân bằng | Nợ tồn khiến tỷ lệ thắng giảm mạnh so với Sprint 0 (xem bảng dưới) | Xem phương án chỉnh | Claude 2, chủ dự án |
 
@@ -49,7 +49,7 @@ python3 variants.py                                # so sánh phương án chỉ
 
 20.000 ván, bán ngay mọi hiện vật, không giám định, không tạo tác, không gia truyền. Là **sàn** của người chơi mới chứ không phải mức cuối.
 
-| Chiến thuật | Thắng | Thua vì nợ tồn vượt 1.000 | Thua ngày 7 | Từng thiếu tiền |
+| Chiến thuật | Thắng | Thua vì nợ tồn vượt 10.000.000 đ | Thua ngày 7 | Từng thiếu tiền |
 | --- | --- | --- | --- | --- |
 | Thận trọng | 1,4% | 97,2% | 1,4% | 98,6% |
 | Cân bằng | 8,9% | 89,5% | 1,6% | 91,1% |
@@ -64,14 +64,14 @@ So với Sprint 0 (12,9% / 28,5% / 39,9%), luật mới đẩy tỷ lệ thắng
 | Phương án | Thận trọng | Cân bằng | Liều |
 | --- | --- | --- | --- |
 | A. Luật Claude 1 nguyên bản | 1,2% | 8,8% | 18,8% |
-| B. Chừa lại 100 xu | 1,1% | 8,5% | 18,5% |
-| C. Vốn 1.500 xu | 2,3% | 18,6% | 27,4% |
+| B. Chừa lại 1.000.000 đ | 1,1% | 8,5% | 18,5% |
+| C. Vốn 15.000.000 đ | 2,3% | 18,6% | 27,4% |
 | D. Giá bán nhân 1,3 | 8,8% | 25,5% | 48,6% |
-| E. Chừa 100 xu và giá bán nhân 1,3 | 8,1% | 25,1% | 48,3% |
-| F. Chừa 100 xu và vốn 1.500 | 2,0% | 18,3% | 27,0% |
-| G. Chừa 100 xu, vốn 1.500, giá bán nhân 1,3 | 14,1% | 46,6% | 61,6% |
+| E. Chừa 1.000.000 đ và giá bán nhân 1,3 | 8,1% | 25,1% | 48,3% |
+| F. Chừa 1.000.000 đ và vốn 15.000.000 đ | 2,0% | 18,3% | 27,0% |
+| G. Chừa 1.000.000 đ, vốn 15.000.000 đ, giá bán nhân 1,3 | 14,1% | 46,6% | 61,6% |
 
-**Đề xuất của Claude 2, chưa áp dụng:** tăng giá bán trong bảng [Balance mục 2](README.md) lên 1,3 lần (phương án D). Đây là chỉnh nhỏ nhất đem lại tác dụng lớn. Phương án G tốt hơn cho người chơi mới nhưng đổi ba thứ cùng lúc. Chưa nên áp dụng ngay vì mô phỏng này chưa có giám định, tạo tác và gia truyền, nên đo lại ở Sprint 3. Việc chừa lại 100 xu gần như không đổi gì, không nên dùng riêng.
+**Đề xuất của Claude 2, chưa áp dụng:** tăng giá bán trong bảng [Balance mục 2](README.md) lên 1,3 lần (phương án D). Đây là chỉnh nhỏ nhất đem lại tác dụng lớn. Phương án G tốt hơn cho người chơi mới nhưng đổi ba thứ cùng lúc. Chưa nên áp dụng ngay vì mô phỏng này chưa có giám định, tạo tác và gia truyền, nên đo lại ở Sprint 3. Việc chừa lại 1.000.000 đ gần như không đổi gì, không nên dùng riêng.
 
 Chiến thuật liều vẫn thắng nhiều nhất ở mọi phương án (xem O-01). Hộp có kỳ vọng lãi dương nên không có chi phí cho việc liều. Cần thêm hộp lỗ kỳ vọng hoặc chi phí thật cho rủi ro.
 
@@ -81,15 +81,15 @@ Claude 1 đã soạn danh mục hộp và hiện vật ([Docs/Content/NoiDungMau
 
 | Hộp | Giá | Giá nền kỳ vọng | Lần giá hộp | Khoảng giá nền |
 | --- | --- | --- | --- | --- |
-| H1 Hộp Gỗ Nhỏ | 100 | 457 | **4,58** | 300 đến 650 |
-| H2 Hộp Kim Loại Mờ | 350 | 390 | 1,11 | 150 đến 900 |
-| H3 Hộp Vải Dày | 800 | 920 | 1,15 | 400 đến 1.800 |
-| RD Rương Đen | 1.500 | 1.340 | **0,89** | 1.000 đến 1.800 |
+| H1 Hộp Gỗ Nhỏ | 1.000.000 đ | 4.570.000 đ | **4,58** | 3.000.000 đến 6.500.000 đ |
+| H2 Hộp Kim Loại Mờ | 3.500.000 đ | 3.900.000 đ | 1,11 | 1.500.000 đến 9.000.000 đ |
+| H3 Hộp Vải Dày | 8.000.000 đ | 9.200.000 đ | 1,15 | 4.000.000 đến 18.000.000 đ |
+| RD Rương Đen | 15.000.000 đ | 13.400.000 đ | **0,89** | 10.000.000 đến 18.000.000 đ |
 
 Nhận xét:
 
-1. **H1 quá lời.** Mỗi hộp 100 xu cho trung bình 457 xu, thấp nhất 300 xu, nên không bao giờ lỗ. Chỉ cần mua 3 hộp H1 mỗi ngày là đủ trả nợ nhiều ngày đầu. Cần hạ giá nền ba hiện vật quá khứ (V01 đến V03) khoảng một nửa hoặc tăng giá hộp.
-2. **Rương Đen lỗ kỳ vọng** (0,89), không tính phí giám định. Nếu đây là chủ ý thì cần lý do để người chơi mua, ví dụ cơ hội ra hiện vật duy nhất. Nếu không thì tăng giá nền hoặc hạ giá rương. Xuất hiện từ ngày 4 khi nợ là 750 xu nên người chơi dễ bị cám dỗ vào hộp lỗ.
+1. **H1 quá lời.** Mỗi hộp 1.000.000 đ cho trung bình 4.570.000 đ, thấp nhất 3.000.000 đ, nên không bao giờ lỗ. Chỉ cần mua 3 hộp H1 mỗi ngày là đủ trả nợ nhiều ngày đầu. Cần hạ giá nền ba hiện vật quá khứ (V01 đến V03) khoảng một nửa hoặc tăng giá hộp.
+2. **Rương Đen lỗ kỳ vọng** (0,89), không tính phí giám định. Nếu đây là chủ ý thì cần lý do để người chơi mua, ví dụ cơ hội ra hiện vật duy nhất. Nếu không thì tăng giá nền hoặc hạ giá rương. Xuất hiện từ ngày 4 khi nợ là 7.500.000 đ nên người chơi dễ bị cám dỗ vào hộp lỗ.
 3. **H2 và H3 khá sát 1,1 đến 1,15 lần**, thấp hơn mức 1,5 lần của bảng Balance sau khi tính hàng giả. Đúng hướng "rủi ro cao hơn" nhưng với luật nợ tồn, người chơi sẽ ít dám mua.
 4. Hộp chỉ ra **một** hiện vật và các món trong hộp giống nhau về giá. Mức đa dạng này thấp hơn bảng 5 mức hiếm của Balance, nên cần thống nhất một trong hai.
 

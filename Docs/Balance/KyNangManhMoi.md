@@ -1,12 +1,12 @@
 # Kỹ năng đọc manh mối niêm phong (Claude 2)
 
-> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+> **Tiền tệ:** số tiền trong tài liệu này đã đổi sang **đồng Việt Nam** ngày 2026-11-24 (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ, `QA/currency.py` đổi sang đồng khi in.
 
 Đo xem người chơi biết đọc manh mối thắng cao hơn bot không đọc bao nhiêu, theo yêu cầu "người biết tính toán phải thắng cao hơn bot" của Claude 1 và mục tiêu "ván khó" của chủ dự án. Đo trên cấu hình đã duyệt: gói giá hệ số 0,85 và phạt rủi ro G1 (hàng giả theo hộp, giá x1,10).
 
 ## Cập nhật theo luật chốt của Claude 1 (D-26 đóng)
 
-Claude 1 đã trả lời các câu hỏi mở: manh mối **có gắn với hiện vật** bên trong hộp. H1 và H2 có 2 manh mối đúng, 1 sai. **H3 và Rương Đen chỉ 1 đúng, 2 sai** (hộp đắt hay bị đánh lạc hướng). **M = 1**: mỗi lượt mua (tối đa 3 lượt mỗi ngày) Dì Mận bày **1 hộp mỗi loại**, người chơi mua 1 hộp hoặc dừng trong ngày, không đổi hộp trong cùng lượt. Giá niêm yết đi theo manh mối đầu tiên (λ = 0,75). Mua thêm manh mối 15 xu. Phần đo bên dưới (mục "Kết quả theo luật chốt") dùng đúng các luật này. Phần đo cũ ở các mục sau dùng giả định trước đó (M = 3, mọi hộp 2 đúng 1 sai) và chỉ còn giá trị tham khảo.
+Claude 1 đã trả lời các câu hỏi mở: manh mối **có gắn với hiện vật** bên trong hộp. H1 và H2 có 2 manh mối đúng, 1 sai. **H3 và Rương Đen chỉ 1 đúng, 2 sai** (hộp đắt hay bị đánh lạc hướng). **M = 1**: mỗi lượt mua (tối đa 3 lượt mỗi ngày) Dì Mận bày **1 hộp mỗi loại**, người chơi mua 1 hộp hoặc dừng trong ngày, không đổi hộp trong cùng lượt. Giá niêm yết đi theo manh mối đầu tiên (λ = 0,75). Mua thêm manh mối 150.000 đ. Phần đo bên dưới (mục "Kết quả theo luật chốt") dùng đúng các luật này. Phần đo cũ ở các mục sau dùng giả định trước đó (M = 3, mọi hộp 2 đúng 1 sai) và chỉ còn giá trị tham khảo.
 
 ### Kết luận theo luật chốt
 
@@ -14,7 +14,7 @@ Claude 1 đã trả lời các câu hỏi mở: manh mối **có gắn với hi�
 2. **Tác động lớn hơn đến từ luật "mỗi lượt có 1 hộp mỗi loại":** chọn loại hộp có lời kỳ vọng cao nhất mỗi lượt (không cần đọc manh mối) cộng 5 đến 17 điểm so với cách mua hộp đắt nhất. Phần lớn lợi thế mà Claude 1 đo ("không đọc 22/23/38 so với 34/38/44") là lợi thế **chọn loại hộp**, không phải đọc manh mối.
 3. **Người chơi tính toán hoàn hảo thắng 38% đến 46%** ở luật chốt (λ = 0,75). Đây là cận trên: bot chọn tối ưu và tính Bayes chính xác. Người chơi thật sẽ thấp hơn.
 4. **Không đổi λ được nhiều nữa:** từ λ = 0,75 lên 1,0 chỉ giảm thêm khoảng 1,5 đến 2 điểm. Từ λ = 0,5 xuống 0,75 giảm 1 đến 2 điểm. λ = 0,75 đã đủ.
-5. **Mua thêm manh mối không có lời ở 15 xu** theo đo của Claude 2, trái với nhận xét "hơi có lợi" của Claude 1. Giá trị tối đa của 2 manh mối thêm miễn phí chỉ là +1,4 đến +1,8 điểm ở λ = 0,75, nên giá phải gần 5 xu hoặc manh mối trả phí phải đáng tin hơn.
+5. **Mua thêm manh mối không có lời ở 150.000 đ** theo đo của Claude 2, trái với nhận xét "hơi có lợi" của Claude 1. Giá trị tối đa của 2 manh mối thêm miễn phí chỉ là +1,4 đến +1,8 điểm ở λ = 0,75, nên giá phải gần 50.000 đ hoặc manh mối trả phí phải đáng tin hơn.
 
 ### Kết quả theo luật chốt
 
@@ -44,11 +44,11 @@ Tách các tác động (so với cùng luật không đọc, 35,0 / 40,8 / 42,6
 | Giá manh mối | Thận trọng | Liều | Combo nhỏ | Combo lớn |
 | --- | --- | --- | --- | --- |
 | Chỉ manh mối miễn phí | 38,5 | 45,2 | 45,8 | 46,4 |
-| 30 xu | 37,0 (−1,5) | 42,0 (−3,2) | 44,5 (−1,3) | 46,1 (−0,3) |
-| 15 xu | 37,2 (−1,3) | 43,7 (−1,5) | 45,2 (−0,6) | 45,7 (−0,7) |
+| 300.000 đ | 37,0 (−1,5) | 42,0 (−3,2) | 44,5 (−1,3) | 46,1 (−0,3) |
+| 150.000 đ | 37,2 (−1,3) | 43,7 (−1,5) | 45,2 (−0,6) | 45,7 (−0,7) |
 | Cận trên: 3 manh mối đều miễn phí | 40,2 (+1,7) | 46,8 (+1,6) | 47,2 (+1,4) | 48,2 (+1,8) |
 
-Giá trị tối đa của việc xem đủ 3 manh mối chỉ +1,4 đến +1,8 điểm ở λ = 0,75 (+3,9 đến +5,9 ở λ = 0). Một lần mua 2 manh mối 15 xu tốn 30 xu mỗi hộp, lớn hơn mức lợi. Nếu muốn mua thêm manh mối thành quyết định thật, có hai hướng chưa đo: giảm giá xuống khoảng 5 xu, hoặc làm manh mối trả phí **chắc đúng** (trong khi manh mối miễn phí có thể sai) để người chơi trả tiền mua sự chắc chắn.
+Giá trị tối đa của việc xem đủ 3 manh mối chỉ +1,4 đến +1,8 điểm ở λ = 0,75 (+3,9 đến +5,9 ở λ = 0). Một lần mua 2 manh mối 150.000 đ tốn 300.000 đ mỗi hộp, lớn hơn mức lợi. Nếu muốn mua thêm manh mối thành quyết định thật, có hai hướng chưa đo: giảm giá xuống khoảng 50.000 đ, hoặc làm manh mối trả phí **chắc đúng** (trong khi manh mối miễn phí có thể sai) để người chơi trả tiền mua sự chắc chắn.
 
 ### Hai hướng cho manh mối trả phí
 
@@ -57,17 +57,17 @@ Claude 1 cần chọn giữa: **A** hạ giá manh mối thêm (vẫn có thể 
 | Phương án | Thận trọng | Liều | Combo nhỏ | Combo lớn |
 | --- | --- | --- | --- | --- |
 | Chỉ manh mối miễn phí | 38,5 | 45,2 | 45,8 | 46,4 |
-| A. thêm có thể sai, 10 xu | 37,5 \| 3,9 | 44,4 \| 5,6 | 45,6 \| 3,9 | 46,4 \| 3,0 |
-| A. thêm có thể sai, 5 xu | 37,9 \| 4,0 | 44,9 \| 5,7 | 45,9 \| 3,9 | 46,8 \| 3,0 |
-| B. chắc đúng, 30 xu | 39,0 \| 3,6 | 47,1 \| 4,2 | 47,6 \| 3,6 | 48,2 \| 2,9 |
-| **B. chắc đúng, 15 xu** | **40,8 \| 3,7** | **47,9 \| 4,2** | **48,5 \| 3,7** | **48,9 \| 3,0** |
-| B. chắc đúng, 10 xu | 39,5 \| 10,1 | 47,8 \| 11,8 | 48,8 \| 10,2 | 49,4 \| 7,1 |
-| B. chắc đúng, 5 xu | 41,5 \| 10,3 | 49,4 \| 11,9 | 49,5 \| 10,4 | 50,2 \| 7,2 |
+| A. thêm có thể sai, 100.000 đ | 37,5 \| 3,9 | 44,4 \| 5,6 | 45,6 \| 3,9 | 46,4 \| 3,0 |
+| A. thêm có thể sai, 50.000 đ | 37,9 \| 4,0 | 44,9 \| 5,7 | 45,9 \| 3,9 | 46,8 \| 3,0 |
+| B. chắc đúng, 300.000 đ | 39,0 \| 3,6 | 47,1 \| 4,2 | 47,6 \| 3,6 | 48,2 \| 2,9 |
+| **B. chắc đúng, 150.000 đ** | **40,8 \| 3,7** | **47,9 \| 4,2** | **48,5 \| 3,7** | **48,9 \| 3,0** |
+| B. chắc đúng, 100.000 đ | 39,5 \| 10,1 | 47,8 \| 11,8 | 48,8 \| 10,2 | 49,4 \| 7,1 |
+| B. chắc đúng, 50.000 đ | 41,5 \| 10,3 | 49,4 \| 11,9 | 49,5 \| 10,4 | 50,2 \| 7,2 |
 
-- **Hướng A không đáng ở mọi mức giá:** dù 5 xu, kết quả hòa vốn (−0,6 đến +0,4 điểm) vì manh mối thêm có thể sai nên thông tin ít. Thêm manh mối kiểu này không thành quyết định.
-- **Hướng B có lợi ở mọi mức giá đã thử** (+0,5 đến +4,2 điểm) và là **quyết định thật**: ở 15 đến 30 xu bot chỉ mua khoảng 3 đến 4 lần mỗi ván trong khoảng 16 lượt, tức là chỉ khi hộp nằm sát ngưỡng và thông tin sẽ đổi quyết định. Ở 10 xu trở xuống bot mua khoảng 10 đến 12 lần mỗi ván, gần như mua mọi lượt, nên không còn là cân nhắc.
-- **Đề xuất: hướng B, giá 15 đến 20 xu.** Lợi cho người dùng (+2,3 đến +2,7 điểm ở 15 xu), đủ rẻ để dám mua, đủ đắt để phải chọn lúc mua. Trần thắng vẫn quanh 49%, chưa tăng đáng kể so với 46% khi chỉ dùng manh mối miễn phí.
-- Đề xuất này thay nhận xét "15 xu hơi có lợi" của Claude 1: đúng với manh mối chắc đúng, sai với manh mối thêm có thể sai.
+- **Hướng A không đáng ở mọi mức giá:** dù 50.000 đ, kết quả hòa vốn (−0,6 đến +0,4 điểm) vì manh mối thêm có thể sai nên thông tin ít. Thêm manh mối kiểu này không thành quyết định.
+- **Hướng B có lợi ở mọi mức giá đã thử** (+0,5 đến +4,2 điểm) và là **quyết định thật**: ở 150.000 đến 300.000 đ bot chỉ mua khoảng 3 đến 4 lần mỗi ván trong khoảng 16 lượt, tức là chỉ khi hộp nằm sát ngưỡng và thông tin sẽ đổi quyết định. Ở 100.000 đ trở xuống bot mua khoảng 10 đến 12 lần mỗi ván, gần như mua mọi lượt, nên không còn là cân nhắc.
+- **Đề xuất: hướng B, giá 150.000 đến 200.000 đ.** Lợi cho người dùng (+2,3 đến +2,7 điểm ở 150.000 đ), đủ rẻ để dám mua, đủ đắt để phải chọn lúc mua. Trần thắng vẫn quanh 49%, chưa tăng đáng kể so với 46% khi chỉ dùng manh mối miễn phí.
+- Đề xuất này thay nhận xét "150.000 đ hơi có lợi" của Claude 1: đúng với manh mối chắc đúng, sai với manh mối thêm có thể sai.
 
 ### Kết luận về mục tiêu ván khó
 
@@ -82,7 +82,7 @@ Claude 1 cần chọn giữa: **A** hạ giá manh mối thêm (vẫn có thể 
 | --- | --- | --- | --- |
 | D-26 | Đã đóng | Manh mối gắn hiện vật, H1 và H2 2 đúng 1 sai, H3 và Rương Đen 1 đúng 2 sai, M = 1, giá theo manh mối đầu | Claude 1 đã chốt |
 | D-27 | Đã giải | Bot đọc tối ưu thắng 57% đến 62% với M = 3, giá cố định. Với luật chốt còn 38% đến 46% | Luật chốt đủ |
-| D-28 | Đã giải | Mua thêm manh mối có thể sai không đáng ở mọi giá (hướng A). Manh mối trả phí chắc đúng (hướng B) có lời và là quyết định thật ở 15 đến 30 xu | Đề xuất hướng B, 15 đến 20 xu. Claude 1 chốt |
+| D-28 | Đã giải | Mua thêm manh mối có thể sai không đáng ở mọi giá (hướng A). Manh mối trả phí chắc đúng (hướng B) có lời và là quyết định thật ở 150.000 đến 300.000 đ | Đề xuất hướng B, 150.000 đến 200.000 đ. Claude 1 chốt |
 | O-04 | Cân bằng | Phần lớn lợi thế của "người biết tính" đến từ chọn loại hộp (+5 đến +17 điểm) chứ không từ đọc manh mối (+2 đến +4) | Quyết định có thể hiện giá trị kỳ vọng hộp trên UI không |
 
 ---
@@ -97,7 +97,7 @@ Các mục dưới đây là bản đo trước khi Claude 1 chốt luật. Kế
 2. **Quyền từ chối hộp xấu là nguồn sức mạnh chính.** Chỉ cần xem 1 hộp và được bỏ qua nếu manh mối xấu đã cộng 14 đến 28 điểm. Xem nhiều hộp để chọn (M) cộng thêm 5 đến 10 điểm.
 3. **Cách hạ hiệu quả nhất là giá hộp đi theo manh mối.** Nếu quầy cũng đọc manh mối và nâng giá hộp tốt (hệ số λ), lợi thế biến mất khi λ = 1 (chênh dưới 2 điểm so với bot không đọc) và còn +5 đến +24 điểm khi λ từ 0,5 đến 0,75 tùy ngưỡng mua. Đề xuất **λ khoảng 0,75 đến 0,9**.
 4. **Làm manh mối kém tin cậy cũng giảm mạnh** (−14 điểm khi chỉ 1 trên 3 manh mối đúng) nhưng chưa đủ một mình.
-5. **Hai thứ không có tác dụng:** bắt buộc mua ít nhất một hộp mỗi ngày (chênh dưới 2 điểm) và mua thêm manh mối 30 xu (lỗ 7 điểm so với chỉ dùng manh mối miễn phí).
+5. **Hai thứ không có tác dụng:** bắt buộc mua ít nhất một hộp mỗi ngày (chênh dưới 2 điểm) và mua thêm manh mối 300.000 đ (lỗ 7 điểm so với chỉ dùng manh mối miễn phí).
 6. **Cần Claude 1 làm rõ** manh mối của một hộp vật lý gắn với hiện vật bên trong thế nào (mục Giả định). Toàn bộ kết quả phụ thuộc vào điểm này.
 
 Bot ở đây tính xác suất hậu nghiệm **chính xác** (Bayes) và dùng ngưỡng mua tối ưu. Người chơi thật sẽ kém hơn, nên số liệu là **cận trên** của lợi thế đọc manh mối.
@@ -117,7 +117,7 @@ python3 -m unittest -v test_clues                            # 9 test mô hình 
 
 [NoiDungMau.md](../Content/NoiDungMau.md) mục 4 liệt kê manh mối theo **loại hộp** nhưng chưa nói manh mối của một hộp vật lý có liên quan hiện vật bên trong hay không. Claude 2 giả định:
 
-- Mỗi hộp vật lý có 3 manh mối: **2 đúng** (gợi nhóm nguồn gốc thật của hiện vật) và **1 sai** (gợi một nhóm khác trong 5 nhóm còn lại). Người chơi thấy **1 manh mối ngẫu nhiên miễn phí**, mua thêm mỗi manh mối **30 xu**, tối đa 3.
+- Mỗi hộp vật lý có 3 manh mối: **2 đúng** (gợi nhóm nguồn gốc thật của hiện vật) và **1 sai** (gợi một nhóm khác trong 5 nhóm còn lại). Người chơi thấy **1 manh mối ngẫu nhiên miễn phí**, mua thêm mỗi manh mối **300.000 đ**, tối đa 3.
 - Người chơi xem được tối đa **M** hộp cùng loại ở quầy rồi chọn hộp tốt nhất, hoặc bỏ qua tất cả. M là tham số thiết kế **chưa chốt**.
 - Hộp H1 không có thông tin vì cả ba hiện vật cùng nhóm Quá khứ. H2, H3 và Rương Đen phân biệt được hiện vật theo nhóm (ví dụ H2: nhóm Hiện đại chỉ ra V04 giá thấp, nhóm Tương lai chỉ ra V05 hoặc V06).
 - Bot tính giá trị kỳ vọng của hộp sau khi đọc manh mối rồi **mua nếu giá trị kỳ vọng chia giá hộp ≥ τ**, không thì thử loại hộp rẻ hơn hoặc dừng. Nếu không dùng manh mối, bot mua mọi hộp theo bậc thang như các sprint trước.
@@ -140,7 +140,7 @@ python3 -m unittest -v test_clues                            # 9 test mô hình 
 
 **Gói trước phạt rủi ro** (hàng giả 15% mọi hộp) cho kết quả cùng hướng: thận trọng + giám định 24,1 lên 35,3 (M=3), combo lớn + giám định 32,6 lên 48,1.
 
-Đọc manh mối miễn phí cộng 7 đến 14 điểm ở M=3. **Mua thêm manh mối 30 xu không đáng**: margin hộp quá mỏng so với 30 xu mỗi manh mối.
+Đọc manh mối miễn phí cộng 7 đến 14 điểm ở M=3. **Mua thêm manh mối 300.000 đ không đáng**: margin hộp quá mỏng so với 300.000 đ mỗi manh mối.
 
 ## 2. Ngưỡng mua τ là đòn bẩy lớn nhất
 
@@ -201,7 +201,7 @@ Thắng% của thận trọng + giám định, liều + giám định, combo l�
 | Giá hộp | Giá hộp đi theo manh mối nhìn thấy với λ khoảng 0,75 đến 0,9. Cần Claude 1 thiết kế cách thể hiện (giá niêm yết trên quầy thay đổi theo hộp, Dì Mận hét giá) |
 | Độ tin cậy manh mối | 2 đúng 1 sai là quá tin cậy với người đọc giỏi. Cân nhắc 1 đúng 2 sai ở hộp đắt (H3, Rương Đen) |
 | Số hộp xem được M | Giữ M ≤ 2 để người chơi không có quá nhiều lựa chọn. M=1 vẫn đủ để có kỹ năng |
-| Mua thêm manh mối | Đang không đáng ở 30 xu. Nếu muốn người chơi mua thì giảm xuống khoảng 10 xu hoặc làm manh mối trả phí chính xác hơn manh mối miễn phí |
+| Mua thêm manh mối | Đang không đáng ở 300.000 đ. Nếu muốn người chơi mua thì giảm xuống khoảng 100.000 đ hoặc làm manh mối trả phí chính xác hơn manh mối miễn phí |
 | Bắt buộc mua mỗi ngày | Bỏ ý này, không có tác dụng |
 
 Sau khi Claude 1 chọn cách thể hiện, Claude 2 sẽ đo lại: λ = 0,75 kết hợp manh mối 1 trên 3 đúng chưa được đo.
@@ -212,7 +212,7 @@ Sau khi Claude 1 chọn cách thể hiện, Claude 2 sẽ đo lại: λ = 0,75 k
 | --- | --- | --- | --- | --- |
 | D-26 | Cao | NoiDungMau.md chưa nói manh mối của hộp vật lý gắn với hiện vật bên trong thế nào, nên mọi kết quả ở đây dựa trên giả định | Claude 1 chốt cách gắn manh mối với hiện vật và số manh mối đúng, sai | Claude 1 |
 | D-27 | Cao | Bot đọc đúng và chỉ mua hộp lời thắng 57% đến 62%, vượt xa mục tiêu "không thắng dễ" | Giá hộp theo manh mối (mục 4) | Claude 1, chủ dự án |
-| D-28 | Thấp | Mua thêm manh mối 30 xu làm lỗ 7 điểm so với chỉ dùng manh mối miễn phí | Giảm giá xuống khoảng 10 xu hoặc làm manh mối trả phí đáng tin hơn | Claude 1 |
+| D-28 | Thấp | Mua thêm manh mối 300.000 đ làm lỗ 7 điểm so với chỉ dùng manh mối miễn phí | Giảm giá xuống khoảng 100.000 đ hoặc làm manh mối trả phí đáng tin hơn | Claude 1 |
 | T-04 | Thấp | Số hộp xem được M và cách từ chối hộp chưa có trong GDD | Chốt trong luật Quầy Niêm Phong | Claude 1 |
 
 ## 7. Giới hạn

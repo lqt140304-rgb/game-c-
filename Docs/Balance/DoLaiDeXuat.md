@@ -1,6 +1,6 @@
 # Đo lại đề xuất của Claude 1: TC3, CB3, GT1, chứng nhận giám định (Claude 2)
 
-> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+> **Tiền tệ:** số tiền trong tài liệu này đã đổi sang **đồng Việt Nam** ngày 2026-11-24 (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ, `QA/currency.py` đổi sang đồng khi in.
 
 Claude 1 đề xuất điều chỉnh để ván khó và nhiều đánh đổi hơn ([DieuChinhSauCanBang.md](https://github.com/lqt140304-rgb/game-c-/blob/claude/relaxed-cerf-wgnu7l/Docs/Content/DieuChinhSauCanBang.md), commit `6dc386a`, nhánh `claude/relaxed-cerf-wgnu7l`) và nhờ Claude 2 đo bốn thay đổi chưa được đo: **TC3, CB3, GT1 mới và chứng nhận giám định +25%**. Tài liệu này đo chúng, đo luôn đấu giá và cầm tạo tác theo luật dịch vụ bản mới, rồi đề xuất một gói số liệu.
 
@@ -10,7 +10,7 @@ Nhánh của Claude 1 chưa gộp vào nhánh này nên Claude 2 đo theo mô t�
 
 1. **Chứng nhận giám định là đòn bẩy rất mạnh.** Nguyên văn đề xuất (phí 10%, +25%) nâng bot từ 15% lên 30% (thận trọng) và 42% (liều). Giám định gần như luôn có lời nên không còn là quyết định. Đề xuất **phí 15%**, khi đó giám định có lời nhưng phải chọn món.
 2. **CP1 +10% và CB1 +20% cho mọi hiện vật quá mạnh khi cộng cùng chứng nhận.** Combo nhỏ thắng 40% so với 15% của bot không đầu tư, nên đầu tư thành bắt buộc. Đề xuất **CP1 +5%, CB1 +10%**.
-3. **TC3 và CB3 hiện là bẫy.** Đi tới combo lớn tốn thêm 1.900 xu cho CP3 và TC3 nhưng thắng ít hơn combo nhỏ ở mọi mức thưởng đã thử. Cần **hạ giá tier 3 xuống khoảng 500 xu** và cho CB3 thưởng giá bán, như mục 3.
+3. **TC3 và CB3 hiện là bẫy.** Đi tới combo lớn tốn thêm 19.000.000 đ cho CP3 và TC3 nhưng thắng ít hơn combo nhỏ ở mọi mức thưởng đã thử. Cần **hạ giá tier 3 xuống khoảng 5.000.000 đ** và cho CB3 thưởng giá bán, như mục 3.
 4. **GT1 mới gần như không đổi tỷ lệ thắng** (+0,1 đến +1,8 điểm), trừ khi săn combo dùng sớm để có vốn mua tạo tác (+3,8). Đây là lựa chọn nhẹ chứ không áp đảo, ổn với mục tiêu.
 5. **Đấu giá k kỳ vọng 1,40 quá mạnh** (+17 điểm). Đề xuất **k kỳ vọng 1,16** (+3 đến +6 điểm), khớp với kết luận ở [DoKho.md](DoKho.md).
 6. **Cầm tạo tác vô hại** (−0,1 đến +0,9 điểm). **Trả nợ tồn sớm không đổi gì** về kinh tế (mục 5).
@@ -31,7 +31,7 @@ python3 -m unittest -v test_proposal   # khóa gói đề xuất
 
 Luật chưa nói rõ nên Claude 2 đặt giả định. Mọi giả định cần Claude 1 xác nhận.
 
-- **GT1:** chỉ hoãn **kỳ của ngày đó** (không hoãn nợ tồn). Kỳ hoãn thành khoản `kỳ x 1,15` trả cùng kỳ ngày sau, **không bị phạt 20%** và **không tính vào ngưỡng thua 1.000 xu**. Bot dùng khi sắp thiếu tiền và chưa dùng.
+- **GT1:** chỉ hoãn **kỳ của ngày đó** (không hoãn nợ tồn). Kỳ hoãn thành khoản `kỳ x 1,15` trả cùng kỳ ngày sau, **không bị phạt 20%** và **không tính vào ngưỡng thua 10.000.000 đ**. Bot dùng khi sắp thiếu tiền và chưa dùng.
 - **Chứng nhận:** hiện vật thật đã giám định cộng 25% giá bán, cộng theo phép cộng cùng các hiệu ứng giá bán. Hàng giả vẫn bán 20%.
 - **Phục chế:** nâng một bậc chất lượng (0,3, 0,7, 1,0), phí 25% giá nền. Bot phục chế khi lợi kỳ vọng lớn hơn phí.
 - **Giám định chọn lọc:** bot giám định khi `thưởng chứng nhận x giá nền x chất lượng x xác suất thật > phí`. Chỉ cần đọc chất lượng (đã thấy khi soi), không cần đọc manh mối, nên đây là cận dưới của "người biết tính toán".
@@ -74,7 +74,7 @@ Thắng% của bốn chiến thuật khi đổi phí giám định và thưởng
 
 ## 3. TC3 và CB3
 
-Với giá tier 3 gốc (CP3 900, TC3 1.000) và CP1 +5%, CB1 +10%, phí 15%:
+Với giá tier 3 gốc (CP3 9.000.000 đ, TC3 10.000.000 đ) và CP1 +5%, CB1 +10%, phí 15%:
 
 | Phương án | Thắng |
 | --- | --- |
@@ -93,16 +93,16 @@ Thử làm TC3 và CB3 mạnh hơn (đo trên cùng cấu hình, combo lớn + g
 | CB3 +30% giá bán, miễn phí không giới hạn, TC3 +20% | 30,2% | −1,9 |
 | CB3 +40% giá bán, miễn phí không giới hạn, TC3 +20% | 30,2% | −1,9 |
 
-**Dù nâng thưởng thế nào, combo lớn vẫn thua combo nhỏ**, và thưởng +30% đến +40% đã bão hòa. Nguyên nhân là **thời gian hoàn vốn**: CP3 và TC3 cộng 1.900 xu, bot chỉ mua được vào khoảng ngày 4 đến 5, nên chỉ còn 2 đến 3 ngày để thu lại. Tăng hiệu ứng không đủ, cần hạ giá.
+**Dù nâng thưởng thế nào, combo lớn vẫn thua combo nhỏ**, và thưởng +30% đến +40% đã bão hòa. Nguyên nhân là **thời gian hoàn vốn**: CP3 và TC3 cộng 19.000.000 đ, bot chỉ mua được vào khoảng ngày 4 đến 5, nên chỉ còn 2 đến 3 ngày để thu lại. Tăng hiệu ứng không đủ, cần hạ giá.
 
 | Giá CP3 / TC3 | Combo lớn + giám định |
 | --- | --- |
-| 900 / 1.000 (gốc) | 27,1% |
-| **500 / 500 và CB3 +15% giá bán, miễn phí không giới hạn** | **32,4%** (ngang combo nhỏ 32,1%) |
+| 9.000.000 / 10.000.000 đ (gốc) | 27,1% |
+| **5.000.000 / 5.000.000 đ và CB3 +15% giá bán, miễn phí không giới hạn** | **32,4%** (ngang combo nhỏ 32,1%) |
 
-Với giá 500 và CB3 như trên, đi combo nhỏ hay combo lớn cho kết quả ngang nhau. Đây là đánh đổi thật: combo nhỏ rẻ và chắc, combo lớn tốn thêm nhưng mở ô thứ 4 qua BK1 và có thêm phần thưởng cuối ván.
+Với giá 5.000.000 đ và CB3 như trên, đi combo nhỏ hay combo lớn cho kết quả ngang nhau. Đây là đánh đổi thật: combo nhỏ rẻ và chắc, combo lớn tốn thêm nhưng mở ô thứ 4 qua BK1 và có thêm phần thưởng cuối ván.
 
-**TC3 +10% cho nhóm Hiện đại, Tương lai, Ngoài hành tinh:** tăng giá chỉ chạm ba trong sáu nhóm nguồn gốc, nên tác động nhỏ. Nâng lên +20% hoặc +30% chỉ thêm 0,5 đến 1,1 điểm. TC3 vẫn là món kém nhất. Đề xuất giữ +10%, hạ giá xuống 500 và coi nó là bước đệm đến CB3.
+**TC3 +10% cho nhóm Hiện đại, Tương lai, Ngoài hành tinh:** tăng giá chỉ chạm ba trong sáu nhóm nguồn gốc, nên tác động nhỏ. Nâng lên +20% hoặc +30% chỉ thêm 0,5 đến 1,1 điểm. TC3 vẫn là món kém nhất. Đề xuất giữ +10%, hạ giá xuống 5.000.000 đ và coi nó là bước đệm đến CB3.
 
 ## 4. GT1 mới (hoãn nợ)
 
@@ -134,7 +134,7 @@ Dùng GT1 sớm thay vì chờ thiếu tiền:
 - **Cầm tạo tác:** combo nhỏ + giám định 48,5% (−0,1), combo lớn + giám định 45,1% (+0,9). Vô hại, nhưng cũng không thành lựa chọn lớn vì cầm tạo tác chỉ có ích khi sắp thiếu tiền mà lúc đó thường đã quá muộn.
 - **Kho 8 ô, bàn mở 3 hộp, lưu tự động:** không mô phỏng được (bot bán ngay). Tác động thật chỉ đo được khi người chơi giữ hàng.
 
-## 6. Đấu giá bản mới (k kỳ vọng 1,40, món từ 1.300 xu, sàn 1,2 G)
+## 6. Đấu giá bản mới (k kỳ vọng 1,40, món từ 13.000.000 đ, sàn 1,2 G)
 
 | k kỳ vọng | Thận trọng | Liều | Combo nhỏ + giám định |
 | --- | --- | --- | --- |
@@ -143,7 +143,7 @@ Dùng GT1 sớm thay vì chờ thiếu tiền:
 | 1,26 | 23,5% (+8,8) | 23,2% (+6,5) | 50,0% (+1,0) |
 | 1,40 (bản mới của Claude 1) | 32,1% (+17,4) | 33,5% (+16,8) | 54,0% (+5,0) |
 
-Ở ván khó với món từ 1.300 xu, k = 1,40 gần như tăng gấp đôi tỷ lệ thắng của bot thường. Bản mới này dựa trên kết quả Sprint 4 đo ở cấu hình dễ, trước khi chủ dự án đặt mục tiêu ván khó. Đề xuất **k kỳ vọng 1,16** (ví dụ k = 0,7 / 1,0 / 1,3 / 1,6 với xác suất 15% / 35% / 35% / 15% cho kỳ vọng khoảng 1,16).
+Ở ván khó với món từ 13.000.000 đ, k = 1,40 gần như tăng gấp đôi tỷ lệ thắng của bot thường. Bản mới này dựa trên kết quả Sprint 4 đo ở cấu hình dễ, trước khi chủ dự án đặt mục tiêu ván khó. Đề xuất **k kỳ vọng 1,16** (ví dụ k = 0,7 / 1,0 / 1,3 / 1,6 với xác suất 15% / 35% / 35% / 15% cho kỳ vọng khoảng 1,16).
 
 ## 7. Gói đề xuất của Claude 2
 
@@ -154,11 +154,11 @@ Dùng GT1 sớm thay vì chờ thiếu tiền:
 | Chứng nhận | +25% hiện vật thật | **Giữ** |
 | CP1 | +10% mọi hiện vật | **+5%** |
 | CB1 | +20% mọi hiện vật | **+10%** |
-| CP3 và TC3 | Giá 900 và 1.000 | **Giá 500 và 500** |
+| CP3 và TC3 | Giá 9.000.000 và 10.000.000 đ | **Giá 5.000.000 và 5.000.000 đ** |
 | TC3 | +10% ba nhóm | Giữ |
 | CB3 | Giám định miễn phí 1 hiện vật mỗi ngày | **Miễn phí không giới hạn, thêm +15% giá bán mọi hiện vật** |
 | GT1 hoãn nợ | Theo đề xuất | **Giữ** (cần chốt ba điểm ở mục 4) |
-| Đấu giá | k 1,40, món từ 1.300 | **k 1,16**, món từ 1.300 |
+| Đấu giá | k 1,40, món từ 13.000.000 đ | **k 1,16**, món từ 13.000.000 đ |
 | Cầm tạo tác | Cho phép | Giữ |
 | Trả nợ tồn sớm | Cho phép | Giữ (tiện thao tác, không đổi cân bằng) |
 
@@ -193,7 +193,7 @@ Các tiêu chí này được khóa trong `QA/test_proposal.py`.
 | --- | --- | --- | --- | --- |
 | D-20 | Cao | Phí giám định 10% làm giám định gần như luôn có lời, bot thắng 30% đến 42% chưa cần đọc manh mối | Phí 15% | Claude 1, chủ dự án |
 | D-21 | Cao | CP1 +10% và CB1 +20% cùng chứng nhận làm combo nhỏ thắng 40%, đầu tư thành bắt buộc | CP1 +5%, CB1 +10% | Claude 1 |
-| D-22 | Trung bình | Tier 3 (CP3, TC3, CB3) không hoàn vốn trong 7 ngày, combo lớn thua combo nhỏ ở mọi mức thưởng đã thử | Hạ giá còn 500, CB3 thưởng giá bán +15% | Claude 1 |
+| D-22 | Trung bình | Tier 3 (CP3, TC3, CB3) không hoàn vốn trong 7 ngày, combo lớn thua combo nhỏ ở mọi mức thưởng đã thử | Hạ giá còn 5.000.000 đ, CB3 thưởng giá bán +15% | Claude 1 |
 | D-23 | Trung bình | Đấu giá k 1,40 làm bot thường thắng gấp đôi | k kỳ vọng 1,16 | Claude 1 |
 | D-24 | Thấp | GT1 chưa nói rõ: kỳ hoãn có bị phạt, có vào ngưỡng thua, có hoãn được nợ tồn không | Chốt ba điểm | Claude 1 |
 | O-01 | Cân bằng | Liều vẫn không bị phạt khi có giám định | Cơ chế phạt rủi ro | Claude 1, chủ dự án |
@@ -234,10 +234,10 @@ Kết quả:
 
 ## 11. Xác nhận và cập nhật mô hình theo gói đã chốt
 
-**GT1:** ba điểm Claude 1 chốt (kỳ hoãn thành kỳ x 1,15 trả cùng kỳ sau, không bị phạt 20% và không tính ngưỡng thua 1.000 xu, chỉ hoãn kỳ của ngày đó và không hoãn kỳ 7) **khớp đúng giả định mô phỏng đã đo** ở mục 4. Không cần đo lại. Mô hình `QA/economy_model.py` có thêm `use_gt1()` và `carry`, 10 test trong `QA/test_gt1.py` cho các ca 8 đến 11 của Claude 1 cùng các ca biên (hoãn nợ tồn không được, carry bỏ qua thì bị phạt kỳ sau, thắng ngày 7 cần trả hết carry, lưu và tải).
+**GT1:** ba điểm Claude 1 chốt (kỳ hoãn thành kỳ x 1,15 trả cùng kỳ sau, không bị phạt 20% và không tính ngưỡng thua 10.000.000 đ, chỉ hoãn kỳ của ngày đó và không hoãn kỳ 7) **khớp đúng giả định mô phỏng đã đo** ở mục 4. Không cần đo lại. Mô hình `QA/economy_model.py` có thêm `use_gt1()` và `carry`, 10 test trong `QA/test_gt1.py` cho các ca 8 đến 11 của Claude 1 cùng các ca biên (hoãn nợ tồn không được, carry bỏ qua thì bị phạt kỳ sau, thắng ngày 7 cần trả hết carry, lưu và tải).
 
-**Luật dịch vụ bản chốt** đã chuyển vào `QA/services_model.py`: đấu giá chỉ món từ 1.300 xu, sòng bạc cược 100/250/500 và 2 lượt mỗi ngày, cầm được cả tạo tác (60% giá mua, tạo tác bị tháo khỏi ô nên mất combo, chuộc về kho phải trang bị lại). Ca số trong tài liệu của Claude 1 (V10 G 2.600) đều là test. Thêm 7 test cầm tạo tác và test từ chối đấu giá món dưới 1.300 xu.
+**Luật dịch vụ bản chốt** đã chuyển vào `QA/services_model.py`: đấu giá chỉ món từ 13.000.000 đ, sòng bạc cược 1.000.000 / 2.500.000 / 5.000.000 đ và 2 lượt mỗi ngày, cầm được cả tạo tác (60% giá mua, tạo tác bị tháo khỏi ô nên mất combo, chuộc về kho phải trang bị lại). Ca số trong tài liệu của Claude 1 (V10 G 26.000.000 đ) đều là test. Thêm 7 test cầm tạo tác và test từ chối đấu giá món dưới 13.000.000 đ.
 
-**Tổng số test:** 129, tất cả đạt. Ví dụ dịch vụ đã cập nhật theo bảng giá đã duyệt (nhân 1,10): V10 G 2.860 (phí đấu giá 143, tiền cầm 1.716, chuộc 1.974), V06 G 1.845 (tiền cầm 1.107, đủ trả kỳ ngày 5), V09 G 895 dưới ngưỡng đấu giá 1.300.
+**Tổng số test:** 129, tất cả đạt. Ví dụ dịch vụ đã cập nhật theo bảng giá đã duyệt (nhân 1,10): V10 G 28.600.000 đ (phí đấu giá 1.430.000 đ, tiền cầm 17.160.000 đ, chuộc 19.740.000 đ), V06 G 18.450.000 đ (tiền cầm 11.070.000 đ, đủ trả kỳ ngày 5), V09 G 8.950.000 đ dưới ngưỡng đấu giá 13.000.000 đ.
 
-**D-25 đã đóng:** Claude 1 đã sửa ca 7 (CP3 giá 500, nhận 300 xu, chuộc 345) và rà lại ví dụ theo bảng giá mới.
+**D-25 đã đóng:** Claude 1 đã sửa ca 7 (CP3 giá 5.000.000 đ, nhận 3.000.000 đ, chuộc 3.450.000 đ) và rà lại ví dụ theo bảng giá mới.

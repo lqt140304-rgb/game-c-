@@ -1,6 +1,6 @@
 # Sprint 4 — Ảnh hưởng của dịch vụ và chống giao dịch lặp (Claude 2)
 
-> **Tiền tệ (quyết định 2026-11-24):** game dùng **đồng Việt Nam**. Các số "xu" trong tài liệu này là **đơn vị cân bằng cũ, 1 xu = 10.000 đ** (ví dụ vốn 1.000 xu = 10.000.000 đ). Tỉ lệ và phần trăm không đổi. Xem [bảng quy đổi](README.md#tiền-tệ).
+> **Tiền tệ:** số tiền trong tài liệu này đã đổi sang **đồng Việt Nam** ngày 2026-11-24 (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ, `QA/currency.py` đổi sang đồng khi in.
 
 > **Cập nhật theo mục tiêu độ khó:** số liệu dưới đây đo trên cấu hình dễ của Sprint 3. Với ván khó ở [DoKho.md](DoKho.md), **đừng nâng k đấu giá lên 1,33** (đề xuất ở mục 3 sẽ làm tỷ lệ thắng tăng 8 đến 13 điểm). Giữ k = 1,16. Các kết luận về cầm cố bị át, sòng bạc ít ảnh hưởng và biến cố trung tính vẫn đúng, và DoKho.md đo lại chúng ở ván khó.
 
@@ -30,7 +30,7 @@ python3 sprint4_sim.py                     # số liệu mục 2, khoảng 4 ph�
 
 | Nhóm | Mã | Nội dung |
 | --- | --- | --- |
-| Biến cố | EV-1 đến EV-6 | Ngày 1 không có biến cố. E4 chặn giám định, hôm sau giám định được. E1 +15% cho Quá khứ, E2 −15%, E6 +10% cho Rất hiếm. E3 giảm giá H2 còn 280 xu và giữ nguyên sau tải lại. Biến cố không phụ thuộc thao tác khác. Tần suất xấp xỉ 50% |
+| Biến cố | EV-1 đến EV-6 | Ngày 1 không có biến cố. E4 chặn giám định, hôm sau giám định được. E1 +15% cho Quá khứ, E2 −15%, E6 +10% cho Rất hiếm. E3 giảm giá H2 còn 2.800.000 đ và giữ nguyên sau tải lại. Biến cố không phụ thuộc thao tác khác. Tần suất xấp xỉ 50% |
 | Cầm cố | PW-1 đến PW-10 | V10 cầm nhận 1.080, chuộc ngày 4 tốn 1.242. Quá hạn ngày 5 mất món. Món thứ 3 bị từ chối. Cầm trước kỳ nợ dùng trả nợ cùng ngày. Tải lại không nhận tiền lần hai. Chuộc hai lần, chuộc thiếu tiền bị từ chối. Hết ván mất món chưa chuộc. Món đang cầm bị khóa với mọi dịch vụ |
 | Đấu giá | AU-1 đến AU-10 | Phí 90 và nhận 2.340 khi k = 1,3. Sàn 1,3 mà k = 1,1 thì trả món, mất phí. Ngày 7 bị từ chối. Tiền chưa về không trả nợ. Tải lại không trừ phí lần hai. Một lô mỗi ngày. Tiền về đầu ngày sau. Kết quả không đổi khi tải lại. Sàn không hợp lệ bị từ chối. Kỳ vọng k đúng 1,16 |
 | Sòng bạc | CS-1 đến CS-8 | Thắng cộng đúng mức cược, thua trừ đúng mức cược. Lượt thứ 4 bị từ chối, sang ngày đặt lại. Thiếu tiền hoặc sai mức cược bị từ chối. Tải lại không đổi kết quả. Không mở ngày 1. Phát lại mã giao dịch bị chặn. Kỳ vọng −10% |
@@ -60,15 +60,15 @@ Chiến thuật đăng **món đầu tiên đạt ngưỡng giá** trong ngày.
 
 | Ngưỡng đăng | Giá sàn | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- | --- |
-| 400 xu | không | −3,5 | −5,8 | −4,4 |
-| 400 xu | 1,0 G | −1,6 | −5,0 | −2,3 |
-| 400 xu | 1,3 G | −4,9 | −8,3 | −6,4 |
-| 1.000 xu | không | +0,3 | −1,7 | −3,2 |
-| 1.000 xu | 1,0 G | +2,0 | −0,8 | −1,1 |
-| 1.000 xu | 1,3 G | −1,6 | −3,8 | −4,3 |
-| 1.500 xu | 1,0 G | +1,6 | +0,4 | −0,9 |
+| 4.000.000 đ | không | −3,5 | −5,8 | −4,4 |
+| 4.000.000 đ | 1,0 G | −1,6 | −5,0 | −2,3 |
+| 4.000.000 đ | 1,3 G | −4,9 | −8,3 | −6,4 |
+| 10.000.000 đ | không | +0,3 | −1,7 | −3,2 |
+| 10.000.000 đ | 1,0 G | +2,0 | −0,8 | −1,1 |
+| 10.000.000 đ | 1,3 G | −1,6 | −3,8 | −4,3 |
+| 15.000.000 đ | 1,0 G | +1,6 | +0,4 | −0,9 |
 
-Tăng kỳ vọng k (món từ 1.000 xu, sàn 1,0 G):
+Tăng kỳ vọng k (món từ 10.000.000 đ, sàn 1,0 G):
 
 | k kỳ vọng | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- |
@@ -83,9 +83,9 @@ Tăng kỳ vọng k (món từ 1.000 xu, sàn 1,0 G):
 | 45% (đề xuất) | +0,3 | +0,3 | +0,8 |
 | 50% | +0,4 | +0,4 | +0,8 |
 | 55% | +0,4 | +0,4 | +1,0 |
-| 45%, cược tối đa 500 | +1,0 | +0,8 | +1,4 |
+| 45%, cược tối đa 5.000.000 đ | +1,0 | +0,8 | +1,4 |
 
-### Cầm cố so với bán (giữ một món từ 600 xu làm đệm mỗi ngày, khi thiếu tiền thì dùng)
+### Cầm cố so với bán (giữ một món từ 6.000.000 đ làm đệm mỗi ngày, khi thiếu tiền thì dùng)
 
 | Cách dùng đệm | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- |
@@ -98,14 +98,14 @@ Cả hai cách đều thua cơ sở vì món giữ lại làm tiền chưa về 
 
 | Mở khóa | Thận trọng | Săn combo | Liều |
 | --- | --- | --- | --- |
-| M2 vốn +100 xu | +2,9 | +4,0 | +2,4 |
+| M2 vốn +1.000.000 đ | +2,9 | +4,0 | +2,4 |
 | M3 Rương Đen từ ngày 1 | −0,4 | +2,5 | +0,6 |
 
 ## 3. Trả lời câu hỏi của Claude 1
 
-**Đấu giá có đủ hấp dẫn không?** Chưa. Kỳ vọng 1,16 G trừ phí 5% còn +11%, đổi lấy chậm một ngày và rủi ro, kết quả là **trung tính đến lỗ** (−8 đến +2 điểm tùy ngưỡng và giá sàn). Bán ngay luôn an toàn hơn. Đề xuất đổi bảng k thành 1,0 / 1,25 / 1,5 / 1,75 với xác suất 20% / 40% / 30% / 10% (kỳ vọng 1,33). Khi đó đấu giá món từ 1.000 xu với sàn 1,0 G lời 5 đến 10 điểm, vẫn có rủi ro cho chiến thuật liều vì tiền về chậm.
+**Đấu giá có đủ hấp dẫn không?** Chưa. Kỳ vọng 1,16 G trừ phí 5% còn +11%, đổi lấy chậm một ngày và rủi ro, kết quả là **trung tính đến lỗ** (−8 đến +2 điểm tùy ngưỡng và giá sàn). Bán ngay luôn an toàn hơn. Đề xuất đổi bảng k thành 1,0 / 1,25 / 1,5 / 1,75 với xác suất 20% / 40% / 30% / 10% (kỳ vọng 1,33). Khi đó đấu giá món từ 10.000.000 đ với sàn 1,0 G lời 5 đến 10 điểm, vẫn có rủi ro cho chiến thuật liều vì tiền về chậm.
 
-**Sòng bạc kỳ vọng −10% có đủ rủi ro không, hay nên tăng tỷ lệ thắng?** Đủ, đừng tăng. Dù nâng xác suất thắng lên 55% hay cược tối đa lên 500 xu, tác động lên tỷ lệ thắng ván vẫn dưới 1,5 điểm. Sòng bạc là trò giải trí rủi ro, không phải công cụ cứu ván. Cược tối đa 200 xu quá nhỏ so với khoản thiếu (vài trăm đến vài nghìn xu), nên sòng bạc không giải vòng xoáy thiếu tiền (D-05).
+**Sòng bạc kỳ vọng −10% có đủ rủi ro không, hay nên tăng tỷ lệ thắng?** Đủ, đừng tăng. Dù nâng xác suất thắng lên 55% hay cược tối đa lên 5.000.000 đ, tác động lên tỷ lệ thắng ván vẫn dưới 1,5 điểm. Sòng bạc là trò giải trí rủi ro, không phải công cụ cứu ván. Cược tối đa 2.000.000 đ quá nhỏ so với khoản thiếu (vài trăm đến vài nghìn xu), nên sòng bạc không giải vòng xoáy thiếu tiền (D-05).
 
 **Cầm cố 60% G, phí 15%, hạn 2 ngày có cứu ván mà không quá rẻ không?** Nó không cứu ván tốt hơn việc **bán ngay**, vì người chơi luôn bán được món với G trước kỳ nợ, còn cầm chỉ được 0,6 G và phải trả thêm 0,09 G nếu chuộc. Cầm thua bán 3 đến 13 điểm (mục 2). Không ai có lý do chọn cầm, trừ khi muốn giữ món vì lý do ngoài tiền. Đề xuất một trong các hướng:
 
@@ -113,7 +113,7 @@ Cả hai cách đều thua cơ sở vì món giữ lại làm tiền chưa về 
 2. Làm cho bán ngay kém hơn trong lúc thiếu tiền, ví dụ giá bán vội 85% G hoặc hạn mức bán mỗi ngày.
 3. Chấp nhận cầm là công cụ phụ, nhưng cần lý do giữ món: Sổ Sưu Tầm, chờ biến cố giá cao, hoặc đấu giá hôm sau.
 
-**Vốn +100 xu của M2 có làm ván sau quá dễ không?** Không, nếu bảng giá nền đã được cân bằng. M2 cộng thêm 2,4 đến 4,0 điểm. Điều kiện là H1 không còn lời 4,6 lần như nội dung gốc: ở nội dung gốc cả ván đều bất khả thi hoặc đều dễ tùy hộp. Giới hạn +100 xu tổng cộng của Claude 1 nằm trong ngân sách đã đo ở bản trước (khoảng 2,5 điểm mỗi 100 xu, tổng meta không quá khoảng +10 điểm).
+**Vốn +1.000.000 đ của M2 có làm ván sau quá dễ không?** Không, nếu bảng giá nền đã được cân bằng. M2 cộng thêm 2,4 đến 4,0 điểm. Điều kiện là H1 không còn lời 4,6 lần như nội dung gốc: ở nội dung gốc cả ván đều bất khả thi hoặc đều dễ tùy hộp. Giới hạn +1.000.000 đ tổng cộng của Claude 1 nằm trong ngân sách đã đo ở bản trước (khoảng 2,5 điểm mỗi 1.000.000 đ, tổng meta không quá khoảng +10 điểm).
 
 **Tần suất biến cố 50% mỗi ngày có hợp lý không?** Có. Tác động trung bình lên tỷ lệ thắng dưới 1 điểm, nên không làm ván khó hơn hay dễ hơn. Trung bình 3 ngày mỗi ván có biến cố, tức khác biệt rõ giữa các ván nhưng không dày. Có thể tăng độ ảnh hưởng của biến cố: ±15% hiện chỉ đổi ván khi người chơi thích nghi theo thông tin sổ, mà mô phỏng chưa đo.
 
