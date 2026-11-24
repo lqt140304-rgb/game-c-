@@ -1,4 +1,6 @@
-# Bàn giao giữa phiên: Sprint 5 phần 1 (rương cơ bản), đang làm dở
+# Bàn giao giữa phiên: Sprint 5 phần 1 (rương cơ bản)
+
+> **Đã xong (2026-11-24).** Kết quả cuối ở [Sprint5Ruong.md](Sprint5Ruong.md). File này chỉ còn giá trị lịch sử.
 
 Viết ngày 2026-11-24 khi chuyển phiên. Phiên trước đã dựng mô phỏng và có số liệu sơ bộ; phiên mới **làm tiếp đến khi xong phần 1**. Đọc trước: [DaChot.md](../DaChot.md), [BanGiaoSprint5.md](BanGiaoSprint5.md), mục Claude 2 của Sprint 5 trong [TASKS.md](../../TASKS.md).
 

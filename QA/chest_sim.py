@@ -58,8 +58,40 @@ CHESTS = {  # tên rương -> mô tả. tiers = tỉ lệ bậc (R,T,H,X,L). poo
                 pools=dict(T=["N08", "N09"], H=["N10", "N11"], X=["N12"], L=["N15"])),
 }
 DEFAULT = dict(chests=CHESTS, slots=4, dup_frac=.5, art_value=1.0, script=True, rd_from_day=4, amp=.20)
+# Bảng ĐỀ XUẤT cuối của phần 1 (Claude 2, Docs/Balance/Sprint5Ruong.md). Chưa chốt: chờ chủ dự án duyệt.
+FINAL_CHESTS = {
+    "Gỗ": dict(price=140, fake=.10, ntrue=2, tiers=dict(R=.15, T=.83, H=.015, X=0, L=.005), pools=CHESTS["Gỗ"]["pools"]),
+    "Vải Niêm": dict(price=350, fake=.15, ntrue=2, tiers=dict(R=.22, T=.49, H=.23, X=.05, L=.01), pools=CHESTS["Vải Niêm"]["pools"]),
+    "Kim Khí": dict(price=450, fake=0.0, ntrue=1, tiers=dict(R=.10, T=.25, H=.22, X=.08, L=.01), art_mix=(.60, .35, .05),
+                    pools=CHESTS["Kim Khí"]["pools"]),   # 34% còn lại là tạo tác
+    "Đen": dict(price=1200, fake=.30, ntrue=1, tiers=dict(R=.25, T=.05, H=.10, X=.55, L=.05), pools=CHESTS["Đen"]["pools"]),
+}
+FINAL = dict(DEFAULT, chests=FINAL_CHESTS, script=False)
 KEYS = ("H1", "H2", "H3", "RD")
 STATE = {}
+# Ảnh chụp trạng thái lõi cũ lúc nạp module, để restore() trả lại (các test khác dùng chung biến toàn cục).
+_SNAP = dict(ITEMS=dict(ITEMS), BOXES=copy.deepcopy(BOXES), ART=dict(ART), NTRUE=dict(C.NTRUE), SW=copy.deepcopy(S.SW),
+             RD_FROM_DAY=sm.RD_FROM_DAY, CFG=dict(S.E.CFG), PKG={k: getattr(P, k) for k in F.PKG},
+             fns=[(R, "fake_rate", R.fake_rate), (C, "fake_rate", C.fake_rate), (P.Run5, "buy_open", P.Run5.__dict__.get("buy_open")),
+                  (P.Run5, "p_real", P.Run5.__dict__.get("p_real")), (P.Run5, "sell", P.Run5.__dict__.get("sell")),
+                  (sm.Run, "slots", sm.Run.__dict__.get("slots")), (C, "make_candidate", C.make_candidate), (P, "handle5", P.handle5)])
+
+
+def restore():
+    """Trả lõi mô phỏng về trạng thái trước apply()."""
+    for name, tgt in (("ITEMS", ITEMS), ("BOXES", BOXES), ("ART", ART), ("NTRUE", C.NTRUE), ("SW", S.SW), ("CFG", S.E.CFG)):
+        tgt.clear()
+        tgt.update(copy.deepcopy(_SNAP[name]))
+    sm.RD_FROM_DAY = _SNAP["RD_FROM_DAY"]
+    for k, v in _SNAP["PKG"].items():
+        setattr(P, k, v)
+    for obj, attr, val in _SNAP["fns"]:
+        if val is None:
+            if attr in obj.__dict__:
+                delattr(obj, attr)
+        else:
+            setattr(obj, attr, val)
+    STATE.clear()
 
 
 def key_of(design):
@@ -95,8 +127,9 @@ def apply(design):
     ART["CP3"], ART["TC3"] = ("CP", 500), ("TC", 500)
     ITEMS.clear()
     qm = sum(p * f for _, p, f in sm.QUALITY)
+    nm = design.get("new_mult", 1.0)   # độ nhạy: nhân giá nền các món mới (mã N.., L04), món đã có giữ nguyên
     for i, (o, b, _) in NEW_ITEMS.items():
-        ITEMS[i] = (o, b)
+        ITEMS[i] = (o, round(b * nm) if i[0] in "NL" else b)
     for i, (o, _) in JUNK.items():
         ITEMS[i] = (o, JUNK_BASE)
     for a in ART_IDS:
@@ -299,3 +332,34 @@ def evaluate(design, n=1000, with_mix=True):
     if with_mix:
         out["mix"] = mix_of(c, min(n, 700))
     return out
+
+
+def day1_stats(content, strat, n=1000):
+    """Đo ván đầu: tỉ lệ thua trước ngày 3, nợ tồn cuối ngày 1 (trung bình, xấu nhất), tiền mặt cuối ngày 1 (xấu nhất),
+    ngày thua sớm nhất, tỉ lệ thắng. strat là hàm chiến thuật của proposal_sim (STRATS hoặc clue_sim.TURN_NAMES)."""
+    lost_early = wins = 0
+    arr1, cash1, lose_days = [], [], []
+    for s in range(n):
+        run = P.Run5(s, content, strat, None, None)
+        g = run.g
+        while g.status == "playing":
+            P.start_hooks(run)
+            strat(run)
+            run.refresh()
+            P.end_hooks(run)
+            d = g.day
+            g.end_day()
+            if g.arrears > 0 or g.carry > 0:
+                run.shortfall_days += 1
+            if d == 1:
+                arr1.append(g.arrears)
+                cash1.append(g.cash)
+            if g.status == "lost":
+                lose_days.append(d)
+        wins += g.status == "won"
+        lost_early += g.status == "lost" and lose_days and lose_days[-1] <= 2
+    return dict(win=round(100 * wins / n, 1), lost_before_day3=round(100 * lost_early / n, 2),
+                lost_day1=sum(1 for d in lose_days if d == 1),
+                arrears1_mean=round(sum(arr1) / len(arr1), 1), arrears1_max=max(arr1),
+                arrears1_pos=round(100 * sum(1 for a in arr1 if a > 0) / len(arr1), 1),
+                cash1_min=min(cash1), first_loss_day=min(lose_days) if lose_days else None)
