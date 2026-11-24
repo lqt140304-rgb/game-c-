@@ -14,6 +14,6 @@ namespace ChoDoLa.Gameplay
     public sealed class MarketRunHost
     {
         public MarketRun Run { get; set; }
-        public bool StartNextRun() => false;
+        public bool StartNextRun(bool earlyBlackChest = false) => false;
     }
 }

@@ -126,14 +126,27 @@ namespace ChoDoLa.Sprint1
             return true;
         }
 
-        public void ResetRun()
+        public int DevelopmentPoints => Run.DevelopmentPoints;
+        public bool CanStartWithEarlyBlackChest => Run.CanStartWithEarlyBlackChest;
+        public IReadOnlyList<MarketRun.SkillNode> SkillNodes => Run.SkillNodes;
+        public IReadOnlyList<string> CollectedItems => Run.CollectedItems;
+
+        public void RecordInspection(string itemId) => Try(() => Run.RecordInspection(NewTransaction(), itemId), out _);
+
+        public bool UnlockSkill(string id) => Try(() => Run.UnlockSkill(NewTransaction(), id), out _);
+
+        public void ResetRun() => StartNextRun(false);
+
+        public bool StartNextRun(bool earlyBlackChest)
         {
             try
             {
-                if (host.StartNextRun()) RefreshState(inventoryChanged: true);
+                if (!host.StartNextRun(earlyBlackChest)) return false;
+                RefreshState(inventoryChanged: true);
+                return true;
             }
-            catch (IOException) { Reject("SAVE_FAILED", "Không thể ghi bản lưu mới."); }
-            catch (UnauthorizedAccessException) { Reject("SAVE_FAILED", "Không thể ghi bản lưu mới."); }
+            catch (IOException) { return Reject("SAVE_FAILED", "Không thể ghi bản lưu mới."); }
+            catch (UnauthorizedAccessException) { return Reject("SAVE_FAILED", "Không thể ghi bản lưu mới."); }
         }
 
         public bool RequestSelectHeirloom(string heirloomId) => SprintTwo();

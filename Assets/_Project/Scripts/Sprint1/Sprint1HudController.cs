@@ -121,6 +121,8 @@ namespace ChoDoLa.Sprint1
         private Text _runEndBody;
         private Image _runEndStampRing;
         private Text _runEndStampText;
+        private Transform _runEndSkillRoot;
+        private Button _earlyChestButton;
 
         // "Gỗ · Đồng · Giấy dó" Palette
         private static readonly Color ColWalnut = new Color(0.169f, 0.106f, 0.067f, 0.95f);
@@ -282,7 +284,8 @@ namespace ChoDoLa.Sprint1
             }
             else if (_ledgerModal != null && _ledgerModal.activeSelf)
             {
-                if (IsKeyQPressed() || IsKeyEPressed()) SwitchLedgerTab(_activeLedgerTab == 0 ? 3 : 0);
+                if (IsKeyQPressed()) SwitchLedgerTab(_activeLedgerTab == 0 ? 3 : _activeLedgerTab == 3 ? 2 : 0);
+                else if (IsKeyEPressed()) SwitchLedgerTab(_activeLedgerTab == 0 ? 2 : _activeLedgerTab == 2 ? 3 : 0);
             }
             else if (_counterModal != null && _counterModal.activeSelf)
             {
@@ -315,6 +318,7 @@ namespace ChoDoLa.Sprint1
             _counterModal.SetActive(false);
             _ledgerModal.SetActive(false);
             _inspectingArtifact = artifact;
+            marketService?.RecordInspection(artifact.InstanceId);
 
             _insName.text = artifact.DisplayName;
             _insCategory.text = $"PHIẾU THẨM ĐỊNH · {artifact.Category.ToUpper()}";
@@ -628,6 +632,7 @@ namespace ChoDoLa.Sprint1
                 $"{reason}\n\nNgày {s.CurrentDay}/{s.MaxDays}\n" +
                 $"Tiền mặt: {s.Cash:N0} xu\nNợ tồn: {s.Arrears:N0} xu";
 
+            RefreshRunEndSkills();
             _runEndModal.SetActive(true);
             RefreshHudVisibility();
             SetPlayerLocked(true);
@@ -963,34 +968,54 @@ namespace ChoDoLa.Sprint1
             }
         }
 
-        private void RefreshBikheTab()
+        private void RefreshBikheTab() => RenderSkillTree(_bikheListRoot);
+
+        private void RefreshRunEndSkills()
         {
-            ClearChildren(_bikheListRoot);
-            if (marketService == null) return;
+            RenderSkillTree(_runEndSkillRoot);
+            _earlyChestButton.gameObject.SetActive(marketService != null && marketService.CanStartWithEarlyBlackChest);
+        }
 
-            RunStateSnapshot s = marketService.CurrentRunState;
-            AddSectionBanner(_bikheListRoot, $"BÍ KHẾ CHỢ ĐỒ LẠ ({s.UnlockedBikheCount}/{s.TotalBikheCount} đã hoàn thành — thưởng 1 lần/ván)");
+        private void RenderSkillTree(Transform root)
+        {
+            if (root == null || marketService == null) return;
+            ClearChildren(root);
+            var nodes = marketService.SkillNodes;
+            CreateText(root, $"Điểm phát triển: {marketService.DevelopmentPoints}", 19, FontStyle.Bold, ColInk);
+            if (!marketService.CurrentRunState.IsRunEnded)
+                CreateText(root, "Mở nút sau khi kết thúc ván.", 14, FontStyle.Normal, ColInkMuted);
 
-            foreach (BikheView b in marketService.BikheProgressList)
+            foreach (var branch in nodes.GroupBy(node => node.Branch))
             {
-                GameObject card = CreateAutoCard(_bikheListRoot, $"Bikhe_{b.BikheId}", b.IsUnlocked ? ColPaperHighlight : ColPaperDark, 78f);
-                HorizontalLayoutGroup row = card.AddComponent<HorizontalLayoutGroup>();
-                row.padding = new RectOffset(14, 14, 10, 10);
-                row.spacing = 12f;
-                row.childAlignment = TextAnchor.MiddleLeft;
-                row.childControlWidth = true;
-                row.childControlHeight = true;
-                row.childForceExpandWidth = false;
+                CreateText(root, branch.Key, 18, FontStyle.Bold, ColWaxRed);
+                foreach (var node in branch)
+                {
+                    string state = node.Unlocked ? "Đã mở" : $"{node.Cost} điểm";
+                    CreateText(root, $"{node.Name} · {state}", 16, FontStyle.Bold, ColInk);
+                    if (node.Parent != null)
+                    {
+                        var prerequisite = nodes.First(parent => parent.Id == node.Parent);
+                        CreateText(root, $"Sau {prerequisite.Name}", 14, FontStyle.Normal, ColInkMuted);
+                    }
 
-                GameObject info = CreateInfoColumn(row.transform);
-                string statusText = b.IsUnlocked ? "[HOÀN THÀNH · ĐÃ TRAO THƯỞNG]" : $"[Tiến độ: {b.CurrentProgress}/{b.TargetProgress}]";
-                Color titleCol = b.IsUnlocked ? ColJade : ColInk;
-                CreateText(info.transform, $"{b.Title}   {statusText}", 16, FontStyle.Bold, titleCol);
-                CreateText(info.transform, $"Điều kiện: {b.ConditionSummary}", 14, FontStyle.Normal, ColInk);
-                CreateText(info.transform, $"Phần thưởng: {b.RewardSummary}", 13, FontStyle.Bold, b.IsUnlocked ? ColJade : ColWaxRed);
+                    CreateText(root, $"{node.Condition} ({Mathf.Min(node.Progress, node.Target)}/{node.Target})",
+                        14, FontStyle.Normal, ColInkMuted);
+                    if (node.Unlocked)
+                        CreateText(root, node.Reward, 14, FontStyle.Normal, ColInk);
+                    else if (node.Available)
+                        CreateButton(root, "Mở nút", ColJade, 125f, 35f, () =>
+                        {
+                            if (marketService.UnlockSkill(node.Id)) RefreshRunEndSkills();
+                        });
+                }
             }
 
-            RebuildScrollLayout(_bikheListRoot);
+            if (nodes.Any(node => node.Id == "S01" && node.Unlocked))
+            {
+                CreateText(root, "Món đã soi", 18, FontStyle.Bold, ColWaxRed);
+                foreach (var name in marketService.CollectedItems)
+                    CreateText(root, name, 14, FontStyle.Normal, ColInk);
+            }
         }
 
         private void RefreshDebtTab()
@@ -1640,9 +1665,8 @@ namespace ChoDoLa.Sprint1
 
             _tabInvRt = CreateRibbonButton(ribbons.transform, "KHO ĐỒ", ColTeal, () => SwitchLedgerTab(0));
             _tabTactRt = CreateRibbonButton(ribbons.transform, "TẠO TÁC", ColBrassDark, () => SwitchLedgerTab(1));
-            _tabBikheRt = CreateRibbonButton(ribbons.transform, "BÍ KHẾ", ColPurple, () => SwitchLedgerTab(2));
+            _tabBikheRt = CreateRibbonButton(ribbons.transform, "PHÁT TRIỂN", ColPurple, () => SwitchLedgerTab(2));
             _tabTactRt.gameObject.SetActive(false);
-            _tabBikheRt.gameObject.SetActive(false);
             _tabDebtRt = CreateRibbonButton(ribbons.transform, "SỔ NỢ", ColWaxRed, () => SwitchLedgerTab(3));
 
             // Paper Inner Page Frame
@@ -1734,7 +1758,7 @@ namespace ChoDoLa.Sprint1
             _runEndModal.AddComponent<Image>().color = new Color(0.05f, 0.03f, 0.02f, 0.62f);
 
             GameObject receipt = CreateChamferedPanel(_runEndModal.transform, "Receipt", ColPaper, ColBrass, 500f, 460f, small: false);
-            CenterRect(receipt, 500f, 460f);
+            CenterRect(receipt, 660f, 680f);
 
             GameObject stampGo = new GameObject("EndStamp");
             stampGo.transform.SetParent(receipt.transform, false);
@@ -1768,6 +1792,8 @@ namespace ChoDoLa.Sprint1
             _runEndBody = CreateText(receipt.transform, "...", 15, FontStyle.Normal, ColInk);
             _runEndBody.GetComponent<LayoutElement>().flexibleHeight = 1f;
 
+            CreateScrollArea(receipt.transform, "SkillTree", 375f, out _runEndSkillRoot, out _);
+
             GameObject actions = new GameObject("RunEndActions");
             actions.transform.SetParent(receipt.transform, false);
             actions.AddComponent<LayoutElement>().preferredHeight = 46f;
@@ -1780,8 +1806,11 @@ namespace ChoDoLa.Sprint1
 
             CreateButton(actions.transform, "Chơi Lại Ván Mới", ColJade, 0f, 44f, () =>
             {
-                marketService?.ResetRun();
-                CloseAllModals();
+                if (marketService != null && marketService.StartNextRun(false)) CloseAllModals();
+            });
+            _earlyChestButton = CreateButton(actions.transform, "Ván mới · Rương Đen sớm", ColPurple, 0f, 44f, () =>
+            {
+                if (marketService != null && marketService.StartNextRun(true)) CloseAllModals();
             });
             _runEndModal.SetActive(false);
         }

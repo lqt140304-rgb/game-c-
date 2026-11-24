@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ChoDoLa.Gameplay
 {
-    public sealed class MarketRun
+    public sealed partial class MarketRun
     {
         public sealed class Offer
         {
@@ -76,6 +76,8 @@ namespace ChoDoLa.Gameplay
             public int Schema { get; set; } = 1;
             public int Seed { get; set; }
             public int Day { get; set; } = 1;
+            public Development Meta { get; set; } = new Development();
+            public bool EarlyBlackChest { get; set; }
             public int Cash { get; set; }
             public int Bought { get; set; }
             public int Arrears { get; set; }
@@ -166,6 +168,8 @@ namespace ChoDoLa.Gameplay
                 saved["Table"]?.Type != JTokenType.Array || saved["Inventory"]?.Type != JTokenType.Array ||
                 saved["AppliedTransactions"]?.Type != JTokenType.Array || saved["ExtraClues"]?.Type != JTokenType.Object ||
                 loaded.Day < 1 || loaded.Day > (int)rules["days"] || loaded.Cash < 0 || loaded.Arrears < 0 ||
+                loaded.Meta == null || loaded.Meta.Points < 0 || loaded.Meta.Wins < 0 ||
+                loaded.Meta.Collection == null || loaded.Meta.Unlocked == null ||
                 loaded.Bought < 0 || loaded.Bought > DailyLimit ||
                 (loaded.Status != "active" && loaded.Status != "won" && loaded.Status != "lost") ||
                 loaded.Table.Concat(loaded.Inventory).Any(box => box == null || string.IsNullOrWhiteSpace(box.Id) ||
@@ -267,17 +271,19 @@ namespace ChoDoLa.Gameplay
                 next.ExtraClues.Clear();
             }
 
+            AwardRunDevelopment(next);
             return new Result(amount: paid, penalty: penalty);
         });
 
-        private Result Apply(string transactionId, Func<State, Result> change)
+        private Result Apply(string transactionId, Func<State, Result> change, bool betweenRuns = false)
         {
             Result result;
             lock (writeLock)
             {
                 if (string.IsNullOrWhiteSpace(transactionId)) return new Result("INVALID_TRANSACTION");
                 if (state.AppliedTransactions.Contains(transactionId)) return new Result("DUPLICATE_TRANSACTION");
-                if (Status != "active") return new Result("RUN_ENDED");
+                if (betweenRuns && Status == "active") return new Result("RUN_ACTIVE");
+                if (!betweenRuns && Status != "active") return new Result("RUN_ENDED");
 
                 var next = JsonConvert.DeserializeObject<State>(JsonConvert.SerializeObject(state));
                 result = change(next);
@@ -300,7 +306,7 @@ namespace ChoDoLa.Gameplay
         }
 
         private IEnumerable<JToken> BoxTypesForToday() => content["boxes"]
-            .Where(box => (string)box["id"] != "RD" || Day >= (int)rules["red_chest_from_day"]);
+            .Where(box => (string)box["id"] != "RD" || state.EarlyBlackChest || Day >= (int)rules["red_chest_from_day"]);
 
         private int GetTodayPrice(JToken definition)
         {

@@ -30,10 +30,9 @@ namespace ChoDoLa.Gameplay
                 Debug.LogWarning($"Started a fresh market run. Invalid save kept at {backupPath}.", this));
         }
 
-        public bool StartNextRun()
+        public bool StartNextRun(bool earlyBlackChest = false)
         {
-            if (Run.Status == "active") return false;
-            Run = new MarketRun(content, NewSeed(), null, save.Write);
+            if (!Run.StartNextRun(NewSeed(), earlyBlackChest)) return false;
             RunReplaced?.Invoke();
             return true;
         }

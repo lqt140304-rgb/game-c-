@@ -815,5 +815,130 @@
       "announce": "đầu ngày, trước khi mua hộp",
       "event_e3_applies": "after_swing"
     }
+  },
+  "skill_tree": {
+    "first_inspection_points": 1,
+    "win_points": 4,
+    "loss_points": 2,
+    "nodes": [
+      {
+        "id": "R01",
+        "name": "Kệ rương",
+        "branch": "Rương",
+        "parent": null,
+        "cost": 1,
+        "condition": {
+          "kind": "collection",
+          "target": 1,
+          "label": "Soi 1 hiện vật"
+        },
+        "reward": "Ghi chú của Dì Mận: dãy rương cao xếp theo ngày, giá thay đổi theo phiên."
+      },
+      {
+        "id": "M3",
+        "name": "Thử thách Rương Đen",
+        "branch": "Rương",
+        "parent": "R01",
+        "cost": 2,
+        "condition": {
+          "kind": "wins",
+          "target": 1,
+          "label": "Thắng 1 ván"
+        },
+        "reward": "Chọn ván mới có Rương Đen từ ngày 1."
+      },
+      {
+        "id": "S01",
+        "name": "Trang sưu tập đầu tiên",
+        "branch": "Sưu tập",
+        "parent": null,
+        "cost": 1,
+        "condition": {
+          "kind": "collection",
+          "target": 1,
+          "label": "Soi 1 hiện vật"
+        },
+        "reward": "Mở danh sách những món đã soi trong Sổ Sưu Tập."
+      },
+      {
+        "id": "S02",
+        "name": "Sổ tay người săn đồ",
+        "branch": "Sưu tập",
+        "parent": "S01",
+        "cost": 2,
+        "condition": {
+          "kind": "collection",
+          "target": 3,
+          "label": "Soi 3 hiện vật khác nhau"
+        },
+        "reward": "Ghi chú: tên món đã gặp được giữ lại khi bán hoặc kết thúc ván."
+      },
+      {
+        "id": "M1",
+        "name": "Chọn gia truyền",
+        "branch": "Sưu tập",
+        "parent": "S02",
+        "cost": 2,
+        "condition": {
+          "kind": "collection",
+          "target": 5,
+          "label": "Soi 5 hiện vật khác nhau"
+        },
+        "reward": "Ghi quyền chọn gia truyền vào hồ sơ. Áp dụng khi hệ gia truyền vào game."
+      },
+      {
+        "id": "T01",
+        "name": "Tiếng thì thầm",
+        "branch": "Thần lực",
+        "parent": null,
+        "cost": 1,
+        "condition": {
+          "kind": "collection",
+          "target": 1,
+          "label": "Soi 1 hiện vật"
+        },
+        "reward": "Bình sứ thì thầm: «Đặt nhẹ thôi. Khớp gối tôi kêu từ triều trước.»"
+      },
+      {
+        "id": "T02",
+        "name": "Mèo chợ",
+        "branch": "Thần lực",
+        "parent": "T01",
+        "cost": 2,
+        "condition": {
+          "kind": "origin",
+          "target": 1,
+          "label": "Soi 1 hiện vật Cổ tích",
+          "origin": "co_tich"
+        },
+        "reward": "Gương ngó con mèo: «Nó có chín mạng. Tôi có chín vết nứt.»"
+      },
+      {
+        "id": "C01",
+        "name": "Sổ của Dì Mận",
+        "branch": "Câu chuyện",
+        "parent": null,
+        "cost": 1,
+        "condition": {
+          "kind": "collection",
+          "target": 1,
+          "label": "Soi 1 hiện vật"
+        },
+        "reward": "Dì Mận từng mua nhầm một cái hộp rỗng. Bà giữ nó để đựng biên lai."
+      },
+      {
+        "id": "C02",
+        "name": "Lời nhắn của Anh Bảy",
+        "branch": "Câu chuyện",
+        "parent": "C01",
+        "cost": 2,
+        "condition": {
+          "kind": "wins",
+          "target": 1,
+          "label": "Thắng 1 ván"
+        },
+        "reward": "Anh Bảy nhắn: «Thanh toán đúng hẹn. Đã bỏ theo dõi.»"
+      }
+    ]
   }
 }

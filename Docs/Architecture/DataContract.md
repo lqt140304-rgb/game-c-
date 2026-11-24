@@ -107,3 +107,9 @@ Chạy kiểm thử C# ở thư mục gốc repo:
 ```sh
 dotnet run --project QA/Gameplay -- Docs/Content/data/content.json
 ```
+
+### Cây phát triển giữa các ván
+
+Sổ có tab **Phát triển** để xem điểm và điều kiện. Màn cuối ván dùng cùng danh sách và cho phép mở các nút đủ điều kiện. `RecordInspection` ghi lần đầu soi mỗi mã hiện vật. `UnlockSkill` chỉ chạy giữa các ván. `StartNextRun` giữ nguyên tiến trình và chỉ bật Rương Đen sớm nếu người chơi đã mở M3 và chọn tùy chọn đó.
+
+Cấu hình thử nghiệm nằm trong `content.json` tại `skill_tree`. Điểm, sổ sưu tập và nút đã mở được lưu chung với giao dịch cập nhật, nên tải lại màn kết quả giữ nguyên số điểm. M1 ghi quyền chọn gia truyền để Sprint 2 dùng. M2 và M4 chưa kích hoạt. Nút Thần lực và Câu chuyện mở đoạn nội dung đọc được trong cây.
