@@ -107,3 +107,9 @@ Chạy kiểm thử C# ở thư mục gốc repo:
 ```sh
 dotnet run --project QA/Gameplay -- Docs/Content/data/content.json
 ```
+
+### Tạo Tác và Bí Khế BK1
+
+Kho Kim Khuy có thể đọc `TactCatalog`, `EquippedTacts`, `EquipSlotCount`, `Resonance`, `ActiveCombos` và `Bikhe1Unlocked` từ `MarketRun`. Scene gọi `BuyTact(transactionId, tactId)`, `EquipTact(transactionId, tactId, slot)` và `UnequipTact(transactionId, slot)`. Ô đánh số từ 0. Gắn vào ô đang có món sẽ đưa món cũ về túi. Chuyển món sang ô khác chỉ giữ một bản trang bị.
+
+Mua Tạo Tác dùng tiền ván và túi riêng. Sở hữu, trang bị và BK1 được ghi cùng bản tự lưu. Có 4 ô ban đầu. Khi trang bị đủ CB1 hoặc CB2 trước ngày 5, BK1 mở ô thứ 5 đến hết ván, kể cả sau khi tháo combo. Mốc 3 của cùng một hệ thay mốc 2. Hiệu ứng cộng giá bán và manh mối miễn phí chạy trong gameplay. `ActiveTactEffects` cung cấp loại hiệu ứng, nguồn và phạm vi cho scene và các dịch vụ sẽ tích hợp sau.

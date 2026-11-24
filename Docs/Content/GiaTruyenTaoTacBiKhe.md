@@ -46,7 +46,7 @@ Có **2 hệ**, mỗi hệ 3 tạo tác với 3 tier. Tạo tác mua ở Kho T�
 | TC2 | Mắt máy soi | Thiên Cơ | 2 | 450 xu | Hiện vật nhóm Hiện đại hoặc Tương lai hiện thêm 1 dấu hiệu soi gần. | Soi hiện vật thuộc nhóm đó. | Khi trang bị. |
 | TC3 | Lõi năng lượng | Thiên Cơ | 3 | **500 xu** | **+10% giá bán hiện vật nhóm Hiện đại, Tương lai và Ngoài hành tinh.** | Bán hiện vật thuộc các nhóm đó. | Khi trang bị. |
 
-**Ô trang bị:** mặc định **3 ô**. Bí Khế BK1 có thể mở thêm ô thứ 4 (xem mục 5).
+**Ô trang bị:** mặc định **4 ô**. Bí Khế BK1 có thể mở thêm ô thứ 5 (xem mục 5).
 
 **Mốc cộng hưởng:**
 - **Mốc 2:** trang bị 2 tạo tác cùng hệ. Hiệu ứng:
@@ -91,11 +91,11 @@ Bí Khế mở theo điều kiện đạt được **trong chính ván đang ch�
 
 | Mã | Tên | Điều kiện | Phần thưởng | Thời điểm hiệu lực |
 | --- | --- | --- | --- | --- |
-| BK1 | Lời Thề Bảy Ngày | Hoàn thành bất kỳ combo nhỏ (CB1 hoặc CB2) trước ngày 5. | Mở thêm ô trang bị thứ 4 đến hết ván. | Ngay khi đạt. |
+| BK1 | Lời Thề Bảy Ngày | Hoàn thành bất kỳ combo nhỏ (CB1 hoặc CB2) trước ngày 5. | Mở thêm ô trang bị thứ 5 đến hết ván. | Ngay khi đạt. |
 | BK2 | Mắt Người Sành | Giám định thành công 2 hiện vật nhóm Thần thoại. | Giảm 50% phí giám định cho mọi hiện vật còn lại trong ván. | Ngay khi đạt. |
 
 **Ví dụ:**
-- BK1: ngày 3 hoàn thành CB1, BK1 đạt. Từ lúc đó người chơi có 4 ô trang bị đến hết ván. Nếu hoàn thành CB1 sau ngày 5 thì BK1 không đạt.
+- BK1: ngày 3 hoàn thành CB1, BK1 đạt. Từ lúc đó người chơi có 5 ô trang bị đến hết ván. Nếu hoàn thành CB1 từ ngày 5 thì BK1 không đạt.
 - BK2: giám định 1 Mảnh vảy long (V10) và 1 Bình sứ (V01) thì chưa đạt. Giám định thêm 1 Lá bùa (V09) thì đạt, vì cả 2 món thuộc nhóm Thần thoại. Bình sứ không tính vì thuộc nhóm Quá khứ.
 
 ## 6. Ca kiểm thử
@@ -108,7 +108,7 @@ Bí Khế mở theo điều kiện đạt được **trong chính ván đang ch�
 | 4 | Có GT1. Hoãn lần thứ hai trong cùng ván. | Từ chối. |
 | 5 | Có GT1. Hoãn kỳ ngày 7. | Từ chối. |
 | 6 | Có GT1. Hoãn một khoản nợ tồn. | Từ chối. Chỉ hoãn được kỳ của ngày đó. |
-| 7 | Ô trang bị 3 món đã đầy, BK1 đạt. | Mở ô thứ 4 ngay. |
+| 7 | 4 ô trang bị đã đầy, BK1 đạt. | Mở ô thứ 5 ngay. |
 | 8 | Tải lại ván sau khi đạt BK2. | Trạng thái BK2 và giảm phí giám định được khôi phục. |
 | 9 | Trang bị CP1, TC3 và CB3 nhưng không có CP3. | CB3 không kích hoạt vì thiếu CP3. TC3 vẫn có hiệu ứng riêng. |
 | 10 | Trang bị CP3 và TC3, giám định 2 hiện vật trong cùng ngày. | Cả hai lần đều miễn phí. Mọi hiện vật bán thêm +15%. |

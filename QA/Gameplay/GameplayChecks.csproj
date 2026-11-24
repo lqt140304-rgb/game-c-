@@ -8,6 +8,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" Condition="'$(NewtonsoftAssembly)' == ''" />
     <Reference Include="Newtonsoft.Json" HintPath="$(NewtonsoftAssembly)" Condition="'$(NewtonsoftAssembly)' != ''" />
     <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketRun.cs" />
+    <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketRun.Tacts.cs" />
     <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketSaveFile.cs" />
     <Compile Include="../../Assets/_Project/Scripts/Contracts/MarketDataContract.cs" />
     <Compile Include="../../Assets/_Project/Scripts/Sprint1/Sprint1MarketService.cs" />

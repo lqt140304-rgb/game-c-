@@ -166,7 +166,11 @@ class MatchesSimulation(unittest.TestCase):
         self.assertEqual(em.MAX_BOXES_PER_DAY, r["max_boxes_per_day"])
         self.assertEqual(em.PENALTY_RATE, r["penalty_rate"])
         self.assertEqual(em.LOSE_ARREARS_OVER, r["lose_arrears_over"])
-        self.assertEqual(em.EQUIP_SLOTS, r["equip_slots"])
+
+    def test_approved_tact_slot_counts(self):
+        # Balance simulations still use their original profiles.
+        self.assertEqual(4, D["rules"]["equip_slots"])
+        self.assertEqual(5, D["rules"]["equip_slots_with_bk1"])
 
     def test_services_match_service_model(self):
         s = D["services"]

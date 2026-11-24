@@ -198,3 +198,56 @@ var resumedService = new ChoDoLa.Sprint1.Sprint1MarketService();
 resumedService.Bind(new MarketRunHost { Run = new MarketRun(json, 0, resumeState) });
 Check(resumedService.UnopenedBoxes.Single().BoxInstanceId == resumeBox.EntityId, "scene restores saved box ID");
 Check(resumedService.CurrentRunState.Cash == 1000 - resumeOffer.Price, "scene restores saved wallet");
+
+var tactData = JObject.Parse(json);
+tactData["rules"]["start_cash"] = 100000;
+string tactSave = null;
+var tactRun = new MarketRun(tactData.ToString(), 123, null, value => tactSave = value);
+Check(tactRun.EquipSlotCount == 4 && tactRun.EquippedTacts.Count == 4, "four initial slots");
+Check(tactRun.EquipTact("not-owned", "CP1", 0).Code == "TACT_NOT_OWNED", "ownership gate");
+foreach (var id in new[] { "CP1", "CP2", "CP3", "TC1", "TC2", "TC3" })
+    Check(tactRun.BuyTact("buy-" + id, id).Success, "purchase tact");
+Check(!tactRun.BuyTact("buy-CP1-again", "CP1").Success, "no duplicate purchase");
+Check(tactRun.Inventory.Count == 0 && tactRun.TactCatalog.Count(item => item.Owned) == 6, "separate bag");
+Check(tactRun.EquipTact("outside", "CP1", 4).Code == "INVALID_SLOT", "fifth slot locked");
+Check(tactRun.EquipTact("equip-cp1", "CP1", 0).Success, "equip first");
+Check(tactRun.EquipTact("same", "CP1", 1).Success && tactRun.EquippedTacts[0] == null, "move without duplicate");
+Check(tactRun.EquipTact("equip-cp2", "CP2", 0).Success, "equip second");
+Check(tactRun.ActiveCombos.Contains("CB1") && tactRun.Resonance["co_phong"] == 2 &&
+    tactRun.Bikhe1Unlocked && tactRun.EquipSlotCount == 5, "small combo earns BK1");
+Check(tactRun.EquipTact("equip-cp3", "CP3", 4).Success && tactRun.Resonance["co_phong"] == 3, "fifth slot and tier three");
+Check(tactRun.Shelf[0].Clues.Length == 2, "tier three Cổ Phong adds a clue");
+Check(tactRun.EquipTact("equip-tc3", "TC3", 2).Success && tactRun.ActiveCombos.Contains("CB3"), "cross-set combo");
+tactRun = new MarketRun(tactData.ToString(), 999, tactSave);
+Check(tactRun.EquippedTacts[4] == "CP3" && tactRun.Bikhe1Unlocked && tactRun.Cash == 97880, "load equipment and exact cash");
+Check(tactRun.UnequipTact("remove-cp2", 0).Success && !tactRun.ActiveCombos.Contains("CB1") &&
+    tactRun.Resonance["co_phong"] == 2 && tactRun.EquipSlotCount == 5, "removing combo keeps BK1");
+var lateTact = new MarketRun(tactData.ToString(), 123);
+for (var day = 1; day <= 4; day++) Check(lateTact.EndDay("late-" + day, day).Success, "advance to cutoff");
+Check(lateTact.BuyTact("late-buy-1", "TC1").Success && lateTact.BuyTact("late-buy-2", "TC2").Success &&
+    lateTact.EquipTact("late-equip-1", "TC1", 0).Success && lateTact.EquipTact("late-equip-2", "TC2", 1).Success,
+    "equip late combo");
+Check(lateTact.ActiveCombos.Contains("CB2") && lateTact.Shelf[0].Clues.Length == 2 &&
+    !lateTact.Bikhe1Unlocked && lateTact.EquipSlotCount == 4, "day five activates combo without BK1");
+Console.WriteLine("Tact equipment checks passed.");
+
+var priceTactData = JObject.Parse(json);
+priceTactData["rules"]["start_cash"] = 100000;
+priceTactData["boxes"][0]["drops"] = JArray.Parse("[{\"item\":\"V01\",\"weight\":100}]");
+priceTactData["boxes"][0]["fake_rate"] = 0;
+priceTactData["rules"]["quality"] = new JArray(priceTactData["rules"]["quality"][0].DeepClone());
+var priceTactRun = new MarketRun(priceTactData.ToString(), 123);
+var priceTactBox = priceTactRun.BuyBox("price-tact-box", priceTactRun.Shelf[0].Id);
+var priceTactItem = priceTactRun.OpenBox("price-tact-item", priceTactBox.EntityId).EntityId;
+Check(priceTactRun.Inspect(priceTactItem).ListedPrice == 230, "unmodified base price");
+foreach (var id in new[] { "CP1", "CP2", "CP3", "TC1", "TC2" })
+    Check(priceTactRun.BuyTact("price-tact-buy-" + id, id).Success, "buy equipment for price test");
+Check(priceTactRun.EquipTact("price-tact-equip-1", "CP1", 0).Success &&
+    priceTactRun.EquipTact("price-tact-equip-2", "CP2", 1).Success, "enable price combo");
+Check(priceTactRun.Inspect(priceTactItem).ListedPrice == 276, "add item, combo and tier two effects");
+Check(priceTactRun.EquipTact("price-tact-equip-3", "CP3", 2).Success &&
+    priceTactRun.Inspect(priceTactItem).ListedPrice == 264, "tier three replaces tier two bonus");
+Check(priceTactRun.EquipTact("price-tact-equip-4", "TC1", 3).Success &&
+    priceTactRun.EquipTact("price-tact-equip-5", "TC2", 4).Success, "equip mixed five-slot layout");
+Check(priceTactRun.Shelf[0].Clues.Length == 3, "two free clue bonuses reach three clues");
+Check(priceTactRun.Sell("price-tact-sell", priceTactItem).Amount == 264, "same effects used for actual sale");

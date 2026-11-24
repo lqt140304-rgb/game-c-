@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ChoDoLa.Gameplay
 {
-    public sealed class MarketRun
+    public sealed partial class MarketRun
     {
         public sealed class Offer
         {
@@ -79,6 +79,9 @@ namespace ChoDoLa.Gameplay
             public int Cash { get; set; }
             public int Bought { get; set; }
             public int Arrears { get; set; }
+            public bool Bikhe1Unlocked { get; set; }
+            public HashSet<string> OwnedTacts { get; set; } = new HashSet<string>();
+            public Dictionary<int, string> TactSlots { get; set; } = new Dictionary<int, string>();
             public bool StoppedBuying { get; set; }
             public string Status { get; set; } = "active";
             public string EndReason { get; set; }
@@ -166,7 +169,7 @@ namespace ChoDoLa.Gameplay
                 saved["Table"]?.Type != JTokenType.Array || saved["Inventory"]?.Type != JTokenType.Array ||
                 saved["AppliedTransactions"]?.Type != JTokenType.Array || saved["ExtraClues"]?.Type != JTokenType.Object ||
                 loaded.Day < 1 || loaded.Day > (int)rules["days"] || loaded.Cash < 0 || loaded.Arrears < 0 ||
-                loaded.Bought < 0 || loaded.Bought > DailyLimit ||
+                !ValidTactSave(loaded) || loaded.Bought < 0 || loaded.Bought > DailyLimit ||
                 (loaded.Status != "active" && loaded.Status != "won" && loaded.Status != "lost") ||
                 loaded.Table.Concat(loaded.Inventory).Any(box => box == null || string.IsNullOrWhiteSpace(box.Id) ||
                     box.ItemId == null || !items.ContainsKey(box.ItemId) ||
@@ -381,7 +384,7 @@ namespace ChoDoLa.Gameplay
                 FakeRate = fakeRate,
                 TodayPrice = todayPrice,
                 Price = (int)Math.Round(todayPrice * multiplier, MidpointRounding.ToEven),
-                Clues = clues.Take((int)shelfRules["free_clues_base"]).ToArray(),
+                Clues = clues.Take(FreeClueCount()).ToArray(),
                 CertainOrigin = state.ExtraClues.ContainsKey(id) ? origin : null
             };
             return (offer, box);
@@ -407,7 +410,8 @@ namespace ChoDoLa.Gameplay
         }
 
         private decimal PriceBeforeAuthenticity(Box entry) =>
-            (int)items[entry.ItemId]["base_price"] * (decimal)qualities[entry.Quality]["price_mult"];
+            (int)items[entry.ItemId]["base_price"] * (decimal)qualities[entry.Quality]["price_mult"] *
+            (1m + TactSellBonus((string)items[entry.ItemId]["origin"]));
 
         private static JToken PickWeighted(JToken entries, string field, OfferRandom rng)
         {
