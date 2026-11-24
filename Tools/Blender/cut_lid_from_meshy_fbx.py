@@ -39,8 +39,8 @@ glow_txt = _opt("--glow"); key_scale_txt = _opt("--key-scale")
 size_xy = _opt("--size-xy")   # "length,depth" in metres: squash X/Y independently of the height (default: uniform scale)
 
 src_dir, out, name, seam_src, target_h = sys.argv[sys.argv.index("--") + 1:][:5]
-_a = sys.argv[sys.argv.index("--") + 1:] + ["1024", "", "", "", "", ""]
-tex_size = int(_a[5]); keyhole_arg = _a[6]
+_a = sys.argv[sys.argv.index("--") + 1:] + [""] * 6   # pad every optional positional with "" (a "1024" pad used to land in the glow slot)
+tex_size = int(_a[5] or 1024); keyhole_arg = _a[6]
 # A positional value wins over its --flag twin; both empty -> Golden default.
 glow_rgb = _rgb(_a[7] or glow_txt, (1.0, 0.82, 0.45)); lining_rgb = _rgb(_a[8] or lining_txt, (0.16, 0.018, 0.03))
 key_scale = float(_a[9] or key_scale_txt or 1.45)   # Golden default; a big lock (Magic) wants a bigger key

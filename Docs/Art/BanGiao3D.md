@@ -176,6 +176,8 @@ Lưu ý: găng tay L19 mất lớp kim tuyến (ra màu trắng trơn); kiếm L
 
 ## Rương Golden Treasure (thử nghiệm, bản đầu tiên của rương Meshy tự mang vào)
 
+> **Tích hợp 2026-11-24:** bảng tổng hợp mọi rương (số tam giác, kích thước, lớp, ảnh, nhánh nguồn, điểm yếu) ở [DanhSachRuong](DanhSachRuong.md). `cut_lid_from_meshy_fbx.py` nay nhận **cả hai kiểu** tham số tùy chọn: kiểu vị trí của Magic (`[màu glow] [màu lót] [cỡ chìa] [số tam giác tối đa]` sau vị trí khóa) và kiểu cờ của Miner (`--decimate-tris`/`--max-tris`, `--size-xy`, `--lining`, `--rim`, `--glow`, `--key-scale`); giá trị vị trí thắng cờ trùng nghĩa, bỏ trống thì ra như Golden. Đã sửa lỗi của bản Magic: lệnh kiểu Golden (chỉ tới vị trí khóa) từng bị đệm `"1024"` rơi vào ô màu glow và báo lỗi.
+
 `Assets/_Project/Art/Chests/Chest_Golden.glb`, **chưa gán chủ đề hay ID rương** vì danh sách chủ đề chưa chốt. Nguồn là file FBX Meshy do chủ dự án cung cấp (4,7 nghìn tam giác, không tốn credit mới). Tạo bằng `Tools/Blender/cut_lid_from_meshy_fbx.py`:
 
 ```
