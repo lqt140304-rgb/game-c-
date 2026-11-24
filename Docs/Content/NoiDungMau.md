@@ -6,10 +6,10 @@ Danh mục hộp, hiện vật mẫu, manh mối niêm phong và hướng dẫn 
 
 | Mã | Tên hộp | Giá gốc | Nhóm nguồn gốc tiềm năng | Hàng giả | Manh mối đúng | Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- |
-| H1 | Hộp Gỗ Nhỏ | 100 xu | Quá khứ | 12% | 2 trên 3 | Hộp thường, dễ mua vào đầu ván. |
-| H2 | Hộp Kim Loại Mờ | 350 xu | Hiện đại, Tương lai | 15% | 2 trên 3 | Hộp thường, có thể ra thiết bị hỏng. Manh mối đọc được nhiều nhất. |
-| H3 | Hộp Vải Dày | 800 xu | Thần thoại, Cổ tích | 22% | 1 trên 3 | Hộp thường, rủi ro cao hơn, nhiều manh mối đánh lạc hướng. |
-| RD | Rương Đen | 1.500 xu | Mọi nhóm | 30% | 1 trên 3 | Hộp đặc biệt. Xuất hiện từ ngày 4. Gần như hòa vốn, chỉ đáng mua để lấy hiện vật hiếm nhất. |
+| H1 | Hộp Gỗ Nhỏ | 1.000.000 đ | Quá khứ | 12% | 2 trên 3 | Hộp thường, dễ mua vào đầu ván. |
+| H2 | Hộp Kim Loại Mờ | 3.500.000 đ | Hiện đại, Tương lai | 15% | 2 trên 3 | Hộp thường, có thể ra thiết bị hỏng. Manh mối đọc được nhiều nhất. |
+| H3 | Hộp Vải Dày | 8.000.000 đ | Thần thoại, Cổ tích | 22% | 1 trên 3 | Hộp thường, rủi ro cao hơn, nhiều manh mối đánh lạc hướng. |
+| RD | Rương Đen | 15.000.000 đ | Mọi nhóm | 30% | 1 trên 3 | Hộp đặc biệt. Xuất hiện từ ngày 4. Gần như hòa vốn, chỉ đáng mua để lấy hiện vật hiếm nhất. |
 
 Mỗi lần mở hộp chỉ ra **1 hiện vật**. Tỷ lệ rơi nằm ở mục 3.
 
@@ -29,16 +29,16 @@ Món chưa giám định **hiển thị giá như hàng thật**. Nếu là hàn
 
 | Mã | Hiện vật | Nhóm nguồn gốc | Độ hiếm | Giá nền | Dấu hiệu khi soi |
 | --- | --- | --- | --- | --- | --- |
-| V01 | Bình sứ men xanh | Quá khứ | Thường | 230 xu | Vết rạn men gần miệng. Dấu triện dưới đáy. |
-| V02 | Sách cổ bìa da | Quá khứ | Thường | 385 xu | Chữ mờ nhưng còn mục lục. Gáy sách có vết sửa. |
-| V03 | Đồng hồ quả lắc cũ | Quá khứ | Thường | 495 xu | Kim bị gãy hoặc vẫn chạy. Mặt kính có vết mờ. |
-| V04 | Mảnh kính đồng hồ thiên văn | Hiện đại | Thường | 415 xu | Khung kim loại in số. Mép kính có vết cắt thô. |
-| V05 | Thiết bị liên lạc hỏng | Tương lai | Thường | 310 xu | Màn hình vỡ. Mã máy còn đọc được. Phục chế có thể đổi thành món đáng giá. |
-| V06 | Bộ pin lượng tử | Tương lai | Hiếm | 1.845 xu | Nhãn in mờ. Linh kiện bạc còn sáng. |
-| V07 | Tinh thể lam cầm tay | Ngoài hành tinh | Rất hiếm | 2.695 xu | Phát sáng yếu khi xoay. Bề mặt có vân. |
-| V08 | Gương thủy tinh cổ tích | Cổ tích | Hiếm | 1.590 xu | Ảnh phản chiếu lệch góc so với người soi. |
-| V09 | Lá bùa giấy vàng | Thần thoại | Thường | 895 xu | Mực đỏ dễ phai. Có thể là đồ giả. |
-| V10 | Mảnh vảy long | Thần thoại | Rất hiếm | 2.860 xu | Vết cắt sắc. Ánh kim đổi màu theo góc nhìn. |
+| V01 | Bình sứ men xanh | Quá khứ | Thường | 2.300.000 đ | Vết rạn men gần miệng. Dấu triện dưới đáy. |
+| V02 | Sách cổ bìa da | Quá khứ | Thường | 3.850.000 đ | Chữ mờ nhưng còn mục lục. Gáy sách có vết sửa. |
+| V03 | Đồng hồ quả lắc cũ | Quá khứ | Thường | 4.950.000 đ | Kim bị gãy hoặc vẫn chạy. Mặt kính có vết mờ. |
+| V04 | Mảnh kính đồng hồ thiên văn | Hiện đại | Thường | 4.150.000 đ | Khung kim loại in số. Mép kính có vết cắt thô. |
+| V05 | Thiết bị liên lạc hỏng | Tương lai | Thường | 3.100.000 đ | Màn hình vỡ. Mã máy còn đọc được. Phục chế có thể đổi thành món đáng giá. |
+| V06 | Bộ pin lượng tử | Tương lai | Hiếm | 18.450.000 đ | Nhãn in mờ. Linh kiện bạc còn sáng. |
+| V07 | Tinh thể lam cầm tay | Ngoài hành tinh | Rất hiếm | 26.950.000 đ | Phát sáng yếu khi xoay. Bề mặt có vân. |
+| V08 | Gương thủy tinh cổ tích | Cổ tích | Hiếm | 15.900.000 đ | Ảnh phản chiếu lệch góc so với người soi. |
+| V09 | Lá bùa giấy vàng | Thần thoại | Thường | 8.950.000 đ | Mực đỏ dễ phai. Có thể là đồ giả. |
+| V10 | Mảnh vảy long | Thần thoại | Rất hiếm | 28.600.000 đ | Vết cắt sắc. Ánh kim đổi màu theo góc nhìn. |
 
 Giá nền là giá bán của hiện vật **thật, chất lượng Nguyên, chưa tính hiệu ứng nào**. Bảng giá này là bảng giá nền hệ số 0,85 của Claude 2 nhân thêm 1,10 để bù cho phạt rủi ro ở mục 1.
 
@@ -57,10 +57,10 @@ Giá nền là giá bán của hiện vật **thật, chất lượng Nguyên, c
 
 | Hộp | Giá | Kỳ vọng |
 | --- | --- | --- |
-| H1 | 100 xu | 2,50 lần |
-| H2 | 350 xu | 1,59 lần |
-| H3 | 800 xu | 1,24 lần |
-| RD | 1.500 xu | 1,01 lần |
+| H1 | 1.000.000 đ | 2,50 lần |
+| H2 | 3.500.000 đ | 1,59 lần |
+| H3 | 8.000.000 đ | 1,24 lần |
+| RD | 15.000.000 đ | 1,01 lần |
 
 Hộp càng đắt thì tỷ lệ lời càng thấp. Rương Đen gần như hòa vốn nên là canh bạc cần tính kỹ.
 
@@ -72,7 +72,7 @@ Hộp càng đắt thì tỷ lệ lời càng thấp. Rương Đen gần như h�
 
 Hiệu ứng tăng giá bán gồm tạo tác, combo, biến cố và chứng nhận giám định, cộng với nhau theo phép cộng (xem [GiaTruyenTaoTacBiKhe.md](GiaTruyenTaoTacBiKhe.md)).
 
-**Làm tròn:** mọi giá bán **làm tròn xuống đến xu**. Ví dụ V02 (giá nền 385) chất lượng Xước: 385 × 0,7 = 269,5 nên bán 269 xu. Mô hình tham chiếu của Claude 2 dùng cách làm tròn này.
+**Làm tròn:** mọi giá bán **làm tròn xuống đến 10.000 đ**. Ví dụ V02 (giá nền 3.850.000 đ) chất lượng Xước: 3.850.000 × 0,7 = 2.695.000 nên bán 2.690.000 đ. Mô hình tham chiếu của Claude 2 dùng cách làm tròn này.
 
 **Giá hiển thị và giá thực nhận.** Hai giá này khác nhau với hiện vật chưa giám định:
 - **Giá hiển thị** (`ListedPrice`) tính như hàng **thật**, theo chất lượng đã thấy khi soi. Giá này **không bao giờ làm lộ hàng giả**.
@@ -82,7 +82,7 @@ Hiệu ứng tăng giá bán gồm tạo tác, combo, biến cố và chứng nh
 Nếu giao diện hiển thị trực tiếp giá thực nhận thì người chơi nhìn giá là biết hàng giả, và phạt rủi ro theo hộp (hộp đắt nhiều hàng giả hơn) mất tác dụng.
 
 **Giám định (Giáo Sư Lẫm).**
-- Phí **15% giá nền**, tối thiểu 20 xu.
+- Phí **15% giá nền**, tối thiểu 200.000 đ.
 - Cho biết món thật hay giả.
 - Hàng **thật** đã giám định được **chứng nhận**: cộng **25%** vào giá bán. Hàng giả vẫn chỉ bán 20%.
 
@@ -98,7 +98,7 @@ Nếu giao diện hiển thị trực tiếp giá thực nhận thì người ch
 | Xước | Khoảng −3% đến 0% | Hòa vốn hoặc lỗ nhẹ. Cần cân nhắc. |
 | Hỏng | Khoảng −8% đến −10% | Luôn lỗ. |
 
-Ví dụ V09 Lá bùa (giá nền 895 xu, Nguyên): phí 134 xu. Nếu là hàng thật thì giá bán tăng thêm 224 xu. Nếu là hàng giả thì mất phí 134 xu vô ích. Người chơi phải đọc chất lượng và tỷ lệ giả của hộp để quyết định.
+Ví dụ V09 Lá bùa (giá nền 8.950.000 đ, Nguyên): phí 1.340.000 đ. Nếu là hàng thật thì giá bán tăng thêm 2.240.000 đ. Nếu là hàng giả thì mất phí 1.340.000 đ vô ích. Người chơi phải đọc chất lượng và tỷ lệ giả của hộp để quyết định.
 
 ## 5. Manh mối niêm phong và kệ hộp
 
@@ -130,20 +130,20 @@ Mỗi hộp là một vật thể riêng. Hiện vật, chất lượng và tín
 - Hộp của mỗi lượt xác định theo (seed, ngày, lượt, loại hộp), nên tải lại không đổi hộp.
 - Mỗi hộp hiển thị: loại, tỷ lệ hàng giả của loại, giá niêm yết và **1 manh mối miễn phí**. CB2 và Mốc 3 Cổ Phong thêm manh mối miễn phí, tối đa 3 manh mối mỗi hộp.
 - Giá mỗi loại hộp là **giá hôm nay**, dao động theo ngày (mục 5.3).
-- **Lời mách của Dì Mận:** trả **15 xu** để biết **nhóm nguồn gốc thật** của hiện vật trong hộp đó. Lời mách **chắc đúng**, khác với manh mối miễn phí có thể sai. Mỗi hộp mua được một lần. Lời mách không cho biết chất lượng hay hàng giả. Giá niêm yết **không đổi** khi mua lời mách.
+- **Lời mách của Dì Mận:** trả **150.000 đ** để biết **nhóm nguồn gốc thật** của hiện vật trong hộp đó. Lời mách **chắc đúng**, khác với manh mối miễn phí có thể sai. Mỗi hộp mua được một lần. Lời mách không cho biết chất lượng hay hàng giả. Giá niêm yết **không đổi** khi mua lời mách.
 
 ### 5.3 Giá hộp mỗi ngày dao động
 
 Giá ghi ở bảng hộp (mục 1) là **giá gốc**. Mỗi ngày, giá **hôm nay** của từng loại hộp lệch khỏi giá gốc ngẫu nhiên đều trong khoảng **cộng trừ 20%**:
 
-> giá hôm nay = giá gốc × (1 + u), u ngẫu nhiên đều trong khoảng từ −0,2 đến +0,2, làm tròn đến xu gần nhất
+> giá hôm nay = giá gốc × (1 + u), u ngẫu nhiên đều trong khoảng từ −0,2 đến +0,2, làm tròn đến 10.000 đ gần nhất
 
 - Giá hôm nay xác định theo (seed, ngày, loại hộp) nên tải lại không đổi. Mỗi loại hộp có độ lệch riêng, độc lập nhau. Áp dụng từ ngày 1.
 - **Công bố đầu ngày, trước khi mua hộp**, như biến cố. Giao diện hiển thị bảng giá hôm nay của các loại hộp (Rương Đen từ ngày 4), và **không** hiển thị giá trị kỳ vọng vì người chơi tự tính.
 - Biến cố E3 giảm thêm 20% giá H2, tính **sau** dao động: giá H2 hôm nay = giá gốc × (1 + u) × 0,8.
 - Giá hôm nay chưa phải giá niêm yết cuối cùng: mỗi hộp còn được điều chỉnh theo manh mối (mục 5.4).
 
-**Vì sao có luật này.** Lời tuyệt đối của một hộp là giá trị kỳ vọng trừ giá hộp, nên giá dao động làm loại hộp tốt nhất đổi theo ngày. Ví dụ H3 có giá trị kỳ vọng khoảng 990 xu: giá hôm nay 640 thì lời khoảng 350, giá 960 thì lời khoảng 30. Rương Đen có giá trị kỳ vọng khoảng 1.515 xu: giá 1.200 thì lời khoảng 315, giá 1.800 thì lỗ khoảng 285. Người chơi phải tính lại mỗi ngày thay vì có một đáp án cố định, và Rương Đen có những ngày đáng mua.
+**Vì sao có luật này.** Lời tuyệt đối của một hộp là giá trị kỳ vọng trừ giá hộp, nên giá dao động làm loại hộp tốt nhất đổi theo ngày. Ví dụ H3 có giá trị kỳ vọng khoảng 9.900.000 đ: giá hôm nay 6.400.000 đ thì lời khoảng 3.500.000 đ, giá 9.600.000 đ thì lời khoảng 300.000 đ. Rương Đen có giá trị kỳ vọng khoảng 15.150.000 đ: giá 12.000.000 đ thì lời khoảng 3.150.000 đ, giá 18.000.000 đ thì lỗ khoảng 2.850.000 đ. Người chơi phải tính lại mỗi ngày thay vì có một đáp án cố định, và Rương Đen có những ngày đáng mua.
 
 **Số liệu đo ban đầu** ([QA/box_price_swing.py](../../QA/box_price_swing.py), Claude 2 sẽ đo lại): với biên độ 20%, người chơi tối ưu thắng 40% / 46% / 46% / 47% (thận trọng, liều, combo nhỏ, combo lớn), bot thường 20% / 16%. Biên độ 30% làm game dễ hơn. Xem [DieuChinhSauCanBang.md](DieuChinhSauCanBang.md) mục K.
 
@@ -151,7 +151,7 @@ Giá ghi ở bảng hộp (mục 1) là **giá gốc**. Mỗi ngày, giá **hôm
 
 Dì Mận cũng đọc manh mối. Giá niêm yết của hộp là giá hôm nay nhân một hệ số theo **manh mối miễn phí đầu tiên**, kể cả khi manh mối đó là sai:
 
-> giá niêm yết = giá hôm nay × hệ số, làm tròn đến xu gần nhất
+> giá niêm yết = giá hôm nay × hệ số, làm tròn đến 10.000 đ gần nhất
 >
 > hệ số = 1 + 0,75 × (giá trị kỳ vọng sau manh mối ÷ giá trị kỳ vọng trước manh mối − 1)
 
@@ -165,7 +165,7 @@ Bảng hệ số, theo độ tin cậy manh mối của từng loại hộp (nh�
 | RD | 1,000 | 1,000 | 1,000 | 1,022 | 0,936 | 1,031 |
 
 - H1 không đổi giá vì manh mối không phân biệt được hiện vật.
-- **H2 là hộp đọc manh mối rõ nhất.** Ở giá gốc 350 xu, nhóm Hiện đại chỉ ra V04 giá thấp (khoảng 258 xu), nhóm Tương lai chỉ ra V05 hoặc V06 (khoảng 397 xu).
+- **H2 là hộp đọc manh mối rõ nhất.** Ở giá gốc 3.500.000 đ, nhóm Hiện đại chỉ ra V04 giá thấp (khoảng 2.580.000 đ), nhóm Tương lai chỉ ra V05 hoặc V06 (khoảng 3.970.000 đ).
 - H3 và Rương Đen gần như không đổi giá vì chỉ 1 trên 3 manh mối đúng. Hai hộp đắt này là canh bạc, ít thông tin.
 - Giá niêm yết là một thông tin: nếu thấp hơn giá hôm nay thì Dì Mận cho rằng hộp xấu. Người chơi tự cân xem có tin Dì Mận hay không.
 
@@ -175,7 +175,7 @@ Bảng hệ số, theo độ tin cậy manh mối của từng loại hộp (nh�
 
 Đây là vòng người chơi làm với một hộp, theo đúng [GDD mục 2](../GameDesign/README.md).
 
-1. **Xem kệ và mua.** Mỗi lượt mua, xem các hộp Dì Mận bày: đọc manh mối miễn phí, giá niêm yết và tỷ lệ hàng giả, có thể trả 15 xu hỏi lời mách của Dì Mận để biết chắc nhóm nguồn gốc thật. Chọn 1 hộp hoặc dừng mua. Sau khi mua, hộp nằm trên bàn mở và người chơi mở niêm phong.
+1. **Xem kệ và mua.** Mỗi lượt mua, xem các hộp Dì Mận bày: đọc manh mối miễn phí, giá niêm yết và tỷ lệ hàng giả, có thể trả 150.000 đ hỏi lời mách của Dì Mận để biết chắc nhóm nguồn gốc thật. Chọn 1 hộp hoặc dừng mua. Sau khi mua, hộp nằm trên bàn mở và người chơi mở niêm phong.
 2. **Nhấc và xoay.** Hiện vật được xoay theo ba trục. Người chơi cần xem ít nhất ba góc để soi xong.
 3. **Soi gần.** Di chuyển gần để thấy vết nứt, dấu triện, linh kiện và chữ. Mỗi hiện vật có ít nhất một dấu hiệu chỉ thấy khi soi gần.
 4. **Đọc thông tin.** Chất lượng và Độ hiếm đã biết. Tính xác thực chưa chắc chắn cho đến khi giám định.

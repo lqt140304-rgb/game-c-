@@ -20,12 +20,12 @@ Mỗi ván bắt đầu với **1 cổ vật gia truyền**, rút ngẫu nhiên 
 
 **Luật hoãn nợ của GT1:**
 1. Kỳ hoãn thành khoản **kỳ × 1,15** (làm tròn lên), trả cùng kỳ của ngày kế tiếp.
-2. Kỳ hoãn **không bị phạt 20%** và **không tính vào ngưỡng thua 1.000 xu**.
+2. Kỳ hoãn **không bị phạt 20%** và **không tính vào ngưỡng thua 10.000.000 đ**.
 3. Chỉ hoãn **kỳ của ngày đó**, không hoãn nợ tồn. **Không hoãn được kỳ ngày 7.**
 4. Nếu ngày kế tiếp không đủ tiền trả, phần thiếu thành nợ tồn như luật nợ thông thường.
 
 **Ví dụ:**
-- GT1: ngày 4 người chơi hoãn kỳ 750 xu. Cuối ngày 4 Anh Bảy không thu. Ngày 5 phải trả 1.050 cộng 863 (750 cộng 15%, làm tròn lên) là 1.913 xu, cộng nợ tồn nếu có.
+- GT1: ngày 4 người chơi hoãn kỳ 7.500.000 đ. Cuối ngày 4 Anh Bảy không thu. Ngày 5 phải trả 10.500.000 đ cộng 8.630.000 đ (7.500.000 đ cộng 15%, làm tròn lên) là 19.130.000 đ, cộng nợ tồn nếu có.
 - GT2: xem H1 có 3 manh mối, người chơi thấy 2 manh mối thay vì 1.
 
 **Đánh đổi của GT1:** trả thêm 15% để có vốn sớm. Dùng sớm để đầu tư thường hợp hơn dùng khi đã thiếu tiền, vì hoãn lúc thiếu tiền chỉ đẩy khoản nợ lớn hơn sang ngày sau.
@@ -39,12 +39,12 @@ Có **2 hệ**, mỗi hệ 3 tạo tác với 3 tier. Tạo tác mua ở Kho T�
 
 | Mã | Tên | Hệ | Tier | Giá mua | Hiệu ứng | Điều kiện kích hoạt | Hiệu lực |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| CP1 | Phiến khắc tre | Cổ Phong | 1 | 150 xu | **+5% giá bán mọi hiện vật.** | Bán hiện vật. | Khi trang bị. |
-| CP2 | Hũ đựng đồ | Cổ Phong | 2 | 400 xu | Giảm 10% phí giám định. | Giám định hiện vật. | Khi trang bị. |
-| CP3 | Ấn triện đồng | Cổ Phong | 3 | **500 xu** | Hiện vật nhóm Thần thoại bán thêm +10%. | Bán hiện vật nhóm Thần thoại. | Khi trang bị. |
-| TC1 | Ốc vít dự phòng | Thiên Cơ | 1 | 120 xu | Giảm 10% phí phục chế. | Phục chế hiện vật. | Khi trang bị. |
-| TC2 | Mắt máy soi | Thiên Cơ | 2 | 450 xu | Hiện vật nhóm Hiện đại hoặc Tương lai hiện thêm 1 dấu hiệu soi gần. | Soi hiện vật thuộc nhóm đó. | Khi trang bị. |
-| TC3 | Lõi năng lượng | Thiên Cơ | 3 | **500 xu** | **+10% giá bán hiện vật nhóm Hiện đại, Tương lai và Ngoài hành tinh.** | Bán hiện vật thuộc các nhóm đó. | Khi trang bị. |
+| CP1 | Phiến khắc tre | Cổ Phong | 1 | 1.500.000 đ | **+5% giá bán mọi hiện vật.** | Bán hiện vật. | Khi trang bị. |
+| CP2 | Hũ đựng đồ | Cổ Phong | 2 | 4.000.000 đ | Giảm 10% phí giám định. | Giám định hiện vật. | Khi trang bị. |
+| CP3 | Ấn triện đồng | Cổ Phong | 3 | **5.000.000 đ** | Hiện vật nhóm Thần thoại bán thêm +10%. | Bán hiện vật nhóm Thần thoại. | Khi trang bị. |
+| TC1 | Ốc vít dự phòng | Thiên Cơ | 1 | 1.200.000 đ | Giảm 10% phí phục chế. | Phục chế hiện vật. | Khi trang bị. |
+| TC2 | Mắt máy soi | Thiên Cơ | 2 | 4.500.000 đ | Hiện vật nhóm Hiện đại hoặc Tương lai hiện thêm 1 dấu hiệu soi gần. | Soi hiện vật thuộc nhóm đó. | Khi trang bị. |
+| TC3 | Lõi năng lượng | Thiên Cơ | 3 | **5.000.000 đ** | **+10% giá bán hiện vật nhóm Hiện đại, Tương lai và Ngoài hành tinh.** | Bán hiện vật thuộc các nhóm đó. | Khi trang bị. |
 
 **Ô trang bị:** mặc định **3 ô**. Bí Khế BK1 có thể mở thêm ô thứ 4 (xem mục 5).
 
@@ -71,8 +71,8 @@ Combo kích hoạt khi trang bị **đủ các tạo tác trong danh sách**, kh
 | CB3 | Chợ Đa Giới (combo lớn) | CP3, TC3 và gia truyền (luôn có sẵn) | **Giám định miễn phí không giới hạn và mọi hiện vật bán thêm +15% giá.** | Trong ván. |
 
 **Ví dụ combo:**
-- CB1: ngày 3 trang bị CP1 và CP2, bán Bình sứ (V01, thật, Nguyên, giá nền 230 xu). Cộng CP1 +5%, CB1 +10% và Mốc 2 Cổ Phong +5% (nhóm Quá khứ) là +20%, nên bán được 276 xu thay vì 230. Với hiện vật nhóm Hiện đại như V04 (giá nền 415 xu) chỉ được CP1 và CB1, tức +15%, bán 477 xu.
-- CB3: khi trang bị CP3 và TC3, mọi lần giám định miễn phí. Giám định V10 (thật, Nguyên, giá nền 2.860 xu) được chứng nhận +25%, CP3 +10% cho Thần thoại, CB3 +15%, tổng +50% và bán được 4.290 xu.
+- CB1: ngày 3 trang bị CP1 và CP2, bán Bình sứ (V01, thật, Nguyên, giá nền 2.300.000 đ). Cộng CP1 +5%, CB1 +10% và Mốc 2 Cổ Phong +5% (nhóm Quá khứ) là +20%, nên bán được 2.760.000 đ thay vì 2.300.000 đ. Với hiện vật nhóm Hiện đại như V04 (giá nền 4.150.000 đ) chỉ được CP1 và CB1, tức +15%, bán 4.770.000 đ.
+- CB3: khi trang bị CP3 và TC3, mọi lần giám định miễn phí. Giám định V10 (thật, Nguyên, giá nền 28.600.000 đ) được chứng nhận +25%, CP3 +10% cho Thần thoại, CB3 +15%, tổng +50% và bán được 42.900.000 đ.
 
 ## 4. Thứ tự áp dụng hiệu ứng
 
@@ -104,7 +104,7 @@ Bí Khế mở theo điều kiện đạt được **trong chính ván đang ch�
 | --- | --- | --- |
 | 1 | Trang bị CP1, CP2 và TC1. | Đạt Mốc 2 Cổ Phong. CB1 kích hoạt. TC1 giữ hiệu ứng riêng là giảm phí phục chế. Không đạt mốc Thiên Cơ vì chỉ có 1 món. |
 | 2 | Trang bị CP1, CP2, CP3. | Mốc 3 Cổ Phong. Mốc 2 không còn áp dụng. |
-| 3 | Có GT1. Ngày 4 hoãn kỳ 750 xu. | Ngày 5 phải trả 1.050 cộng 863. Không bị phạt 20% cho phần hoãn. |
+| 3 | Có GT1. Ngày 4 hoãn kỳ 7.500.000 đ. | Ngày 5 phải trả 10.500.000 đ cộng 8.630.000 đ. Không bị phạt 20% cho phần hoãn. |
 | 4 | Có GT1. Hoãn lần thứ hai trong cùng ván. | Từ chối. |
 | 5 | Có GT1. Hoãn kỳ ngày 7. | Từ chối. |
 | 6 | Có GT1. Hoãn một khoản nợ tồn. | Từ chối. Chỉ hoãn được kỳ của ngày đó. |
@@ -112,10 +112,10 @@ Bí Khế mở theo điều kiện đạt được **trong chính ván đang ch�
 | 8 | Tải lại ván sau khi đạt BK2. | Trạng thái BK2 và giảm phí giám định được khôi phục. |
 | 9 | Trang bị CP1, TC3 và CB3 nhưng không có CP3. | CB3 không kích hoạt vì thiếu CP3. TC3 vẫn có hiệu ứng riêng. |
 | 10 | Trang bị CP3 và TC3, giám định 2 hiện vật trong cùng ngày. | Cả hai lần đều miễn phí. Mọi hiện vật bán thêm +15%. |
-| 11 | Trang bị CP1 và CP2, bán V01 (Quá khứ, giá nền 230) và V04 (Hiện đại, giá nền 415). | V01 được +20% (276 xu). V04 được +15% (477 xu). |
+| 11 | Trang bị CP1 và CP2, bán V01 (Quá khứ, giá nền 2.300.000 đ) và V04 (Hiện đại, giá nền 4.150.000 đ). | V01 được +20% (2.760.000 đ). V04 được +15% (4.770.000 đ). |
 
 ## 7. Kết quả đo của Claude 2
 
 Gói này đã được Claude 2 đo ở [DoLaiDeXuat.md](../Balance/DoLaiDeXuat.md) với bot thường thắng khoảng 15% đến 18%, bot đầu tư 26% đến 38%, combo nhỏ và combo lớn ngang nhau. Hai điểm cần theo dõi khi có bản chơi thật:
-- Hiệu ứng thông tin (CB2, GT2, TC2, Mốc 3 Cổ Phong) không đo được bằng xu, cần thử người chơi.
+- Hiệu ứng thông tin (CB2, GT2, TC2, Mốc 3 Cổ Phong) không đo được bằng tiền, cần thử người chơi.
 - Tần suất đạt BK1 trước ngày 5 và tần suất người chơi chọn combo lớn thay vì combo nhỏ.

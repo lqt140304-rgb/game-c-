@@ -1,5 +1,8 @@
 # Đề xuất điều chỉnh sau cân bằng — CHỢ ĐỒ LẠ
 
+> **Lưu ý về đơn vị tiền (2026-11-24):** đây là hồ sơ lịch sử của quyết định. Mọi số tiền trong file này giữ theo **xu cũ**, quy đổi **1 xu cũ = 10.000 đ** (xem [tiền tệ](../../docs/superpowers/specs/2026-11-24-tien-te-design.md)). Ví dụ giá nền V10 là 2.860 xu cũ, nay là 28.600.000 đ. Các file luật đang dùng ([NoiDungMau.md](NoiDungMau.md), [GiaTruyenTaoTacBiKhe.md](GiaTruyenTaoTacBiKhe.md), [DichVuVaMeta.md](DichVuVaMeta.md), [GDD](../GameDesign/README.md)) đã ghi bằng đồng.
+
+
 Claude 1 tổng hợp báo cáo của Claude 2 ([Sprint 2](../Balance/Sprint2.md), [Sprint 3](../Balance/Sprint3.md), [Sprint 4](../Balance/Sprint4.md), [DoKho](../Balance/DoKho.md), [DoLaiDeXuat](../Balance/DoLaiDeXuat.md)) và chốt cách sửa nội dung.
 
 **Mục tiêu của chủ dự án:** không để người chơi thắng quá dễ. Game phải tạo nhiều tình huống khó, có đánh đổi và buộc tính toán kỹ.

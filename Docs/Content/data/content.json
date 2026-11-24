@@ -1,4 +1,9 @@
 {
+  "currency": {
+    "symbol": "đ",
+    "unit_vnd": 10000,
+    "note": "Mọi số tiền trong file này lưu theo đơn vị cân bằng 10.000 đ (bằng 1 xu cũ). Lớp hiển thị nhân với unit_vnd và in dạng 22.000.000 đ. Bước làm tròn nhỏ nhất là 1 đơn vị (10.000 đ)."
+  },
   "_note": "Dữ liệu nguồn của gói nội dung đã duyệt (2026-11-22). Codex nạp file này làm dữ liệu chỉnh được, không gán cứng số trong mã. Tên trường là gợi ý, Codex và Antigravity chốt schema thật. Số liệu phải khớp với tài liệu trong Docs/Content và mô hình QA, kiểm tra bằng QA/test_content_data.py.",
   "version": "2026-11-22",
   "rules": {
