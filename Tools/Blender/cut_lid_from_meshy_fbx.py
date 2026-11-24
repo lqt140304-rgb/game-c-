@@ -83,7 +83,7 @@ def flat_mat(mname, color, rough, metal=0.0):
     b.inputs["Base Color"].default_value = color; b.inputs["Roughness"].default_value = rough; b.inputs["Metallic"].default_value = metal
     m.use_backface_culling = False   # lining is seen from inside: glTF doubleSided
     return m
-interior = flat_mat(name + "_Lining", (0.30, 0.035, 0.05, 1), 0.85)   # burgundy velvet lining
+interior = flat_mat(name + "_Lining", (0.16, 0.018, 0.03, 1), 0.85)   # burgundy velvet lining
 rim = flat_mat(name + "_Rim", (0.16, 0.085, 0.04, 1), 0.7)            # dark wood on the cut rim
 
 glow_mat = bpy.data.materials.new(name + "_Glow"); glow_mat.use_nodes = True
