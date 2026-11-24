@@ -173,3 +173,19 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | L22 | Bản đồ cổ vẽ tay | Vải Niêm (rương cơ bản) |
 
 Lưu ý: găng tay L19 mất lớp kim tuyến (ra màu trắng trơn); kiếm L21 hơi cong. Chưa có: Đồng hồ bỏ túi (Kim Khí), Két sắt (Đen), gom vào đợt làm lại sau.
+
+## Rương Golden Treasure (thử nghiệm, bản đầu tiên của rương Meshy tự mang vào)
+
+`Assets/_Project/Art/Chests/Chest_Golden.glb`, **chưa gán chủ đề hay ID rương** vì danh sách chủ đề chưa chốt. Nguồn là file FBX Meshy do chủ dự án cung cấp (4,7 nghìn tam giác, không tốn credit mới). Tạo bằng `Tools/Blender/cut_lid_from_meshy_fbx.py`:
+
+```
+python cut_lid_from_meshy_fbx.py -- <thư mục chứa fbx và png> <ra.glb> Chest_Golden 0.03 0.42
+```
+
+Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm giữa dải xám), chiều cao mong muốn 0,42 m. Dùng được cho FBX khác của Meshy nếu rương nhìn từ phía có khóa hướng về -Y.
+
+- Cấu trúc: root `Chest_Golden` gồm `Body` (3,3 nghìn tam giác), `Lid` (2,1 nghìn, **gốc ở bản lề phía sau**) và `Glow` (quầng sáng vàng, ẩn bằng scale). Mặt cắt lòng rương dùng vật liệu tối `_Interior`.
+- **Không có `Seal` và `Binding`**: khóa và đai vàng nằm trong texture. `BoxOpenSequence` bỏ qua lớp thiếu, nên giai đoạn "Gỡ niêm" sẽ không thấy gì rơi ra. Cần chỉnh nhịp (ví dụ rút ngắn giai đoạn 2) hoặc thêm hiệu ứng hạt.
+- Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
+- Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
+- Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity.
