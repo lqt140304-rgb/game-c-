@@ -366,3 +366,16 @@ python Tools/Blender/render_chest_am_nhac_preview.py -- Assets/_Project/Art/Ches
 - Lớp: root `Chest_TuoiTho` → `Body` (thân sao rỗng giấy đỏ, khung tre, tua vàng ở đầu cánh, cây nến bên trong, cán tre buộc ở khe giữa hai mũi sao bên trái, chĩa chéo ra ngoài và lên), `Lid` (chóp sao đỏ vàng, gân tre; **gốc ở bản lề sau**, xoay quanh X, mở ngửa ra sau), `Glow` (ngôi sao phát sáng ở miệng, ẩn bằng scale), `Seal` (tem giấy dán ngang khe nắp ở cánh trước, mặt trước -Y). Không có `Binding`, `Key`.
 - Chạy: `pip install bpy pillow`, rồi `python Tools/Blender/make_chest_tuoi_tho.py` (tham số tuỳ chọn `-- <file.glb>`). Ảnh xem trước Cycles: `python Tools/Blender/render_chest_tuoi_tho_preview.py -- 48 480` → `Art/Source/render_chest_tuoi_tho_open.png` (đóng, hé, mở toang, 3 góc hình bóng).
 - Ảnh là dựng ngoại tuyến, **chưa chạy trong Unity**; chưa kiểm chiều mở nắp (đổi `lidOpenSign` nếu ngược).
+
+## Rương Robot (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_Robot.glb`, **bản thử tạm**, chưa gán ID hay chủ đề vào dữ liệu game. Ý tưởng: [ruong-robot](../../docs/superpowers/specs/2026-11-24-ruong-robot-design.md). Robot dây cót thiếc lùn mập ngồi bệt; nắp là cả cái đầu vòm (mắt, ăng-ten lò xo) ngửa ra sau.
+
+```
+pip install bpy pillow
+python Tools/Blender/make_chest_robot.py -- Assets/_Project/Art/Chests
+```
+
+- Cấu trúc: root `Chest_Robot` gồm `Body` (1.340 tam giác), `Lid` (910, **gốc ở bản lề sau**, xoay quanh X, mặt trước -Y), `Glow` (104, quầng xanh lam ở miệng, ẩn bằng scale). Tổng 2.250 tam giác không tính Glow. Không có `Seal`, `Binding`, `Key` (chìa cót sau lưng là một phần của `Body`).
+- Cao khoảng 0,49 m tính cả ăng-ten (thân + đầu khoảng 0,42 m). Vật liệu đơn sắc, không texture.
+- Ảnh xem trước Cycles (đóng, hé, mở toang; trước, cạnh, sau): `Art/Source/render_chest_robot_open.png`. Dựng ngoại tuyến, **chưa chạy trong Unity**.

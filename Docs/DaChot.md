@@ -22,6 +22,8 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 | Bàn giao mô hình | [BanGiao3D](Art/BanGiao3D.md) | Low-poly, màu trung tính; bậc cao chi tiết hơn; Meshy gộp tối đa 8 món một lượt; món lỗi gom làm lại một đợt, không làm riêng lẻ; Gậy sắt làng Gióng để thẳng |
 | Rương Tuổi thơ (tạm) | [ruong-tuoi-tho](../docs/superpowers/specs/2026-11-24-ruong-tuoi-tho-design.md) | Bản thử: đèn ông sao nằm ngửa, nắp chóp sao bản lề sau; chưa chốt, chưa gán dữ liệu |
 
+| Rương Robot (tạm) | [ruong-robot](../docs/superpowers/specs/2026-11-24-ruong-robot-design.md) | Bản thử: robot dây cót ngồi, nắp là đầu vòm; chưa duyệt |
+
 ## Quy tắc làm việc
 
 - Không dùng credit Meshy khi chủ dự án chưa cho phép; báo ước tính trước. Không tự quyết thay chủ dự án.
