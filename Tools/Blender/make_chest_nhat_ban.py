@@ -92,26 +92,86 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 L["Body"].append(lathe("shell", BODY + [(0.150, CUT), (0.150, 0.26), (0.11, 0.17), (0, 0.16)], "lacquer", sy=0.92))
 L["Body"].append(lathe("inner", [(0, 0.162), (0.12, 0.17), (0.148, 0.255)], "interior", sy=0.92))
 L["Body"].append(lathe("base", [(0, 0.0), (0.15, 0.0), (0.155, 0.02), (0.135, 0.038), (0, 0.038)], "wood", seg=12))
-# face: cream oval plate on the front, eyes (one painted, one blank: the wish is not granted yet)
-fz = 0.215
-L["Body"].append(prim(bpy.ops.mesh.primitive_cylinder_add, "face", front(fz, inset=0.012), rot=(math.radians(90 - 12), 0, 0), scale=(0.115, 0.085, 1), vertices=14, radius=1, depth=0.02))
+# face: decals wrapped onto the curved egg (no flat plates), so it reads as a Daruma from far away:
+# cream face framed by a gold trim, big round eyes (left painted, right still blank: wish not granted yet),
+# thick "crane" brows, curly "turtle" moustache and a beard fringe.
+def surf(u, z, off):
+    """Map (arc length u along the front, height z) onto the egg surface, pushed out by off."""
+    r = body_r(z) + off
+    phi = u / max(r, 1e-3)
+    return (r * math.sin(phi), -0.92 * r * math.cos(phi), z)
+
+
+def decal(name, pts2d, faces, material, off):
+    """2D shape (u, v) in metres, wrapped onto the surface; v is height."""
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([surf(u, v, off) for u, v in pts2d], [], faces)
+    o = bpy.data.objects.new(name, me); bpy.context.scene.collection.objects.link(o)
+    me.materials.append(mat(material))
+    return o
+
+
+def ellipse(cu, cv, a, b, material, off, n=16, rings=3, hole=0.0):
+    """Disc (or ring when hole > 0) subdivided in rings so it bends with the surface."""
+    pts, faces = [], []
+    radii = [hole + (1 - hole) * k / rings for k in range(rings + 1)]
+    start = 0
+    if hole == 0:
+        pts.append((cu, cv)); radii = radii[1:]
+    for k, t in enumerate(radii):
+        for i in range(n):
+            ang = 2 * math.pi * i / n
+            pts.append((cu + a * t * math.cos(ang), cv + b * t * math.sin(ang)))
+    if hole == 0:
+        faces += [(0, 1 + i, 1 + (i + 1) % n) for i in range(n)]
+        start = 1
+    for k in range(len(radii) - 1):
+        a0, b0 = start + k * n, start + (k + 1) * n
+        faces += [(a0 + i, b0 + i, b0 + (i + 1) % n, a0 + (i + 1) % n) for i in range(n)]
+    return decal("e", pts, faces, material, off)
+
+
+def stroke(centre, width, material, off):
+    """Thick brush stroke along a 2D polyline; width tapers at both ends."""
+    pts, faces, m = [], [], len(centre)
+    for i, (u, v) in enumerate(centre):
+        u0, v0 = centre[max(i - 1, 0)]; u1, v1 = centre[min(i + 1, m - 1)]
+        du, dv = u1 - u0, v1 - v0; ln = math.hypot(du, dv) or 1
+        w = width * (0.35 + 0.65 * math.sin(math.pi * (i + 0.5) / m))
+        pts += [(u - dv / ln * w / 2, v + du / ln * w / 2), (u + dv / ln * w / 2, v - du / ln * w / 2)]
+    faces = [(2 * i, 2 * i + 1, 2 * i + 3, 2 * i + 2) for i in range(m - 1)]
+    return decal("s", pts, faces, material, off)
+
+
+def arc(cu, cv, r, a0, a1, n=7, sy=1.0):
+    return [(cu + r * math.cos(math.radians(a0 + (a1 - a0) * i / (n - 1))), cv + sy * r * math.sin(math.radians(a0 + (a1 - a0) * i / (n - 1)))) for i in range(n)]
+
+
+fz = 0.19
+B = L["Body"]
+B.append(ellipse(0, fz, 0.105, 0.072, "face", 0.002, n=20, rings=3))                    # cream face
+B.append(ellipse(0, fz, 0.118, 0.084, "gold", 0.0035, n=20, rings=1, hole=0.885))        # gold frame
 for sx, painted in ((-1, True), (1, False)):
-    e = front(fz + 0.012, sx * 0.045, inset=-0.004)
-    L["Body"].append(prim(bpy.ops.mesh.primitive_cylinder_add, "face", e, rot=(math.radians(78), 0, 0), scale=(0.028, 0.028, 1), vertices=10, radius=1, depth=0.01))
+    eu = sx * 0.042
+    B.append(ellipse(eu, fz + 0.008, 0.026, 0.026, "ink", 0.004, n=12, rings=1, hole=0.8))   # eye outline
     if painted:
-        p = (e[0], e[1] - 0.006, e[2])
-        L["Body"].append(prim(bpy.ops.mesh.primitive_cylinder_add, "ink", p, rot=(math.radians(78), 0, 0), scale=(0.015, 0.015, 1), vertices=8, radius=1, depth=0.006))
-    # thick crane-shaped brows
-    b = front(fz + 0.055, sx * 0.05, inset=-0.006)
-    L["Body"].append(prim(bpy.ops.mesh.primitive_cube_add, "ink", b, rot=(math.radians(-12), sx * math.radians(14), 0), scale=(0.028, 0.006, 0.007), size=2))
-    # beard swirls
-    w = front(fz - 0.05, sx * 0.04, inset=-0.006)
-    L["Body"].append(prim(bpy.ops.mesh.primitive_cube_add, "ink", w, rot=(math.radians(-12), -sx * math.radians(25), 0), scale=(0.03, 0.006, 0.006), size=2))
-L["Body"].append(prim(bpy.ops.mesh.primitive_cube_add, "ink", front(fz - 0.022, inset=-0.006), rot=(math.radians(-12), 0, 0), scale=(0.018, 0.005, 0.004), size=2))
-# gold belly emblem (abstract "fortune" plaque)
-bz = 0.11
-L["Body"].append(prim(bpy.ops.mesh.primitive_cylinder_add, "gold", front(bz, inset=0.004), rot=(math.radians(90 + 22), 0, 0), scale=(0.045, 0.045, 1), vertices=8, radius=1, depth=0.012))
-L["Body"].append(prim(bpy.ops.mesh.primitive_cube_add, "lacquer_dk", front(bz, inset=-0.004), rot=(math.radians(22), 0, 0), scale=(0.022, 0.005, 0.022), size=2))
+        B.append(ellipse(eu, fz + 0.008, 0.016, 0.016, "ink", 0.005, n=10, rings=1))          # painted pupil
+    # crane brows: thick sweeping arcs that flick upward at the outer end
+    brow = [(sx * u, fz + 0.045 + 0.012 * math.sin(math.pi * k / 6) + (0.01 if k > 4 else 0))
+            for k, u in enumerate([0.012, 0.024, 0.036, 0.048, 0.06, 0.07, 0.078])]
+    B.append(stroke(brow, 0.016, "ink", 0.005))
+    # turtle moustache: curl from the nose outward and up into a swirl
+    must = [(sx * 0.006, fz - 0.026)] + [(sx * u, v) for u, v in arc(0.034, fz - 0.024, 0.024, 200, 360, 6)][1:] \
+        + [(sx * u, v) for u, v in arc(0.050, fz - 0.016, 0.009, 0, 200, 5)][1:]
+    B.append(stroke(must, 0.010, "ink", 0.005))
+# nose (a chin-beard fringe was tried and read as skull teeth, so it was dropped)
+B.append(ellipse(0, fz - 0.012, 0.008, 0.006, "lacquer", 0.005, n=8, rings=1))
+# gold belly emblem: round medallion with a stylised "fortune" mark, wrapped too
+bz = 0.085
+B.append(ellipse(0, bz, 0.034, 0.03, "gold", 0.003, n=12, rings=2))
+B.append(stroke([(-0.016, bz + 0.012), (0.016, bz + 0.012)], 0.006, "lacquer_dk", 0.0045))
+B.append(stroke([(0, bz + 0.02), (0, bz - 0.02)], 0.006, "lacquer_dk", 0.0045))
+B.append(stroke(arc(0, bz - 0.004, 0.013, 200, 340, 5), 0.006, "lacquer_dk", 0.0045))
 # gold side swirls (stylised cheek clouds)
 for sx in (-1, 1):
     L["Body"].append(prim(bpy.ops.mesh.primitive_torus_add, "gold", (sx * 0.19, 0, 0.17), rot=(0, math.radians(90), 0), major_radius=0.03, minor_radius=0.006, major_segments=10, minor_segments=4))

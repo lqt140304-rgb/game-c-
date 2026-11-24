@@ -194,7 +194,7 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 ## Rương Nhật Bản cổ (dựng bằng Blender, tạm)
 
 - File: `Assets/_Project/Art/Chests/Chest_NhatBan.glb`. Hình: búp bê Daruma tròn (một mắt đã tô), chỏm đầu là nắp. Ý tưởng: [ruong-nhat-ban](../../docs/superpowers/specs/2026-11-24-ruong-nhat-ban-design.md).
-- 1.632 tam giác (không tính Glow). Cao ~0,43 m, rộng ~0,41 m. Vật liệu đơn sắc, không texture.
+- 1.694 tam giác (không tính Glow). Mặt, mắt, lông mày, ria và huy hiệu bụng là lớp "decal" dán ôm theo mặt cong của thân (không phải tấm phẳng). Cao ~0,43 m, rộng ~0,41 m. Vật liệu đơn sắc, không texture.
 - Lớp: `Chest_NhatBan` (root) → `Body`, `Lid` (gốc ở bản lề sau, xoay trục X, mở bằng góc âm), `Binding` (dây vàng), `Seal` (lá bùa giấy ở khe trước), `Glow` (ẩn bằng scale).
 - Chạy lại: `pip install bpy pillow` rồi `python Tools/Blender/make_chest_nhat_ban.py`; ảnh: `python Tools/Blender/render_chest_nhat_ban.py 40 560` → `Assets/_Project/Art/Source/render_chest_nhat_ban_open.png`.
 - Chưa chạy trong Unity, chưa gán ID/chủ đề vào dữ liệu game.
