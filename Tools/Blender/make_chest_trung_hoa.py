@@ -61,11 +61,14 @@ for k in range(12):                                                    # raised 
     a = 2 * math.pi * (k + 0.5) / 12
     L["Body"].append(prim("cube", "bronze_dk", (0.18 * math.cos(a), 0.18 * math.sin(a), 0.237), rot=(0, 0, a), scale=(0.008, 0.014, 0.012), size=1))
 for k, a_deg in enumerate((-90 - 60, -90 + 60, 90)):                  # two legs front, one at the back
-    a = math.radians(a_deg); r0, r1 = 0.11, 0.135
-    leg = lathe([(0.022, 0.0), (0.028, 0.012), (0.020, 0.05), (0.024, 0.10), (0.034, 0.135)], "bronze_dk", seg=8,
-                cap_bot=True, loc=(r1 * math.cos(a), r1 * math.sin(a), 0))
-    L["Body"].append(leg)
-    L["Body"].append(prim("uv_sphere", "bronze", (r1 * math.cos(a), r1 * math.sin(a), 0.125), scale=(0.04, 0.04, 0.03), segments=8, ring_count=5, radius=1))  # leg "knee" mask
+    a = math.radians(a_deg); r1 = 0.122; c, sn = math.cos(a), math.sin(a)
+    # leg grows out of the belly: wide flared root buried in the bowl, slim waist, flared hoof foot
+    L["Body"].append(lathe([(0.030, 0.0), (0.034, 0.010), (0.022, 0.030), (0.018, 0.070), (0.026, 0.115), (0.044, 0.150), (0.040, 0.175)],
+                           "bronze", seg=8, cap_bot=True, loc=(r1 * c, r1 * sn, 0)))
+    # taotie mask plate where the leg meets the bowl, facing outward
+    L["Body"].append(prim("cube", "bronze_dk", (0.152 * c, 0.152 * sn, 0.150), rot=(0, 0, a), scale=(0.012, 0.050, 0.034), size=1))
+    for dz in (-0.01, 0.01):
+        L["Body"].append(prim("cube", "gilt", (0.159 * c, 0.159 * sn, 0.150 + dz), rot=(0, 0, a), scale=(0.004, 0.034, 0.005), size=1))
 for sx in (-1, 1):                                                     # upright ears outboard of the rim
     x = sx * 0.19
     for dy in (-0.045, 0.045):
