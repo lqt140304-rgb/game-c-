@@ -22,7 +22,8 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from color_bleed_lib import (mesh_arrays, image_array, glb_base_color_bytes, analyze, face_colors,
-                             weld_index, face_neighbors, tri_area, delta_e, uv_mask)
+                             weld_index, face_neighbors, tri_area, delta_e, uv_mask,
+                             srgb_to_lab, lab_to_srgb, dilate)
 
 BAKE = 2048
 OUT = 1024
@@ -30,6 +31,36 @@ PACK_MARGINS = (0.016, 0.012, 0.008, 0.006, 0.004)  # ~16..4 px o 1024
 MIN_COVER = 0.40
 TINY_ISLAND_PX = 6.0  # texel o texture goc (2048/4096)
 BAKE_MARGIN = 32
+
+# Vet ve san trong texture goc cua Meshy (nguyen nhan 4), de bi hieu nham la loi hien vat.
+# Chon mat theo huong phap tuyen + do cao, to lai bang mau nen tron,
+# giu cac texel `keep` (vd. vien vang). Sau do dung lai phan dem quanh dao.
+REPAINT = {
+    # L10 mu do: day mu (mat phang ngua xuong) co hinh xoay xanh xam vo nghia -> do tron, giu vien vang
+    "L10_mu_do_chu_m": dict(normal_z=-0.7, max_z=0.01,
+                            base=lambda lab: lab[:, 1] > 32,
+                            keep=lambda lab: (lab[:, 2] > 38) & (lab[:, 1] < 18) & (lab[:, 0] > 55)),
+}
+
+
+def repaint(name, P, T, UV, img):
+    cfg = REPAINT[name]
+    N = np.cross(P[T][:, 1] - P[T][:, 0], P[T][:, 2] - P[T][:, 0])
+    N /= np.linalg.norm(N, axis=1, keepdims=True) + 1e-12
+    sel = (N[:, 2] < cfg["normal_z"]) & (P[T][:, :, 2].max(1) < cfg["max_z"])
+    h, w = img.shape[:2]
+    m = uv_mask(UV[sel], h, w)
+    flat = img.reshape(-1, 3); idx = np.where(m.ravel())[0]
+    lab = srgb_to_lab(flat[idx])
+    keep = cfg["keep"](lab)
+    base_lab = np.median(lab[cfg["base"](lab) & ~keep], 0)
+    new = np.tile(base_lab, (len(idx), 1))
+    out = np.where(keep[:, None], flat[idx], lab_to_srgb(new))
+    flat[idx] = out
+    # dung lai phan dem (dilation) quanh tat ca cac dao tu noi dung moi
+    allm = uv_mask(UV, h, w)
+    img[:] = dilate(img, allm, BAKE_MARGIN // 2)
+    return int(sel.sum())
 
 
 def uv_islands(T, UV, weld, nb_edges):
@@ -137,13 +168,13 @@ def process(path, src_glb, report=None):
     #    Luoi that khong bi han: vi tri, tam giac va phap tuyen giu nguyen tuyet doi.
     o2 = o.copy(); o2.data = me.copy(); bpy.context.scene.collection.objects.link(o2)
     me2 = o2.data
+    # danh dau chi so goc goc: han co the xoa tam giac suy bien (dien tich 0) va doi thu tu
+    tag = me2.attributes.new("orig_loop", "INT", "CORNER")
+    tag.data.foreach_set("value", np.arange(len(me.loops), dtype=np.int32))
     bm = bmesh.new(); bm.from_mesh(me2)
     bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=1e-6)
     bm.to_mesh(me2); bm.free()
-    assert len(me2.loops) == len(me.loops) and len(me2.polygons) == len(me.polygons)
-    a1 = np.empty(len(me.loops) * 2); me.uv_layers["old"].data.foreach_get("uv", a1)
-    a2 = np.empty(len(me.loops) * 2); me2.uv_layers["old"].data.foreach_get("uv", a2)
-    assert np.abs(a1 - a2).max() < 1e-6, "thu tu goc thay doi sau khi han"
+    a1 = np.empty(len(me2.loops) * 2); me2.uv_layers["old"].data.foreach_get("uv", a1)
     me2.uv_layers.active = me2.uv_layers["old"]
     for ob in bpy.context.scene.objects:
         ob.select_set(False)
@@ -164,7 +195,19 @@ def process(path, src_glb, report=None):
         margin_used = margin
         if cover >= MIN_COVER and UVt.min() >= 0 and UVt.max() <= 1:
             break
-    packed = np.empty(len(me.loops) * 2); me2.uv_layers["old"].data.foreach_get("uv", packed)
+    p2 = np.empty(len(me2.loops) * 2); me2.uv_layers["old"].data.foreach_get("uv", p2)
+    ids = np.empty(len(me2.loops), np.int32); me2.attributes["orig_loop"].data.foreach_get("value", ids)
+    packed = np.full((len(me.loops), 2), np.nan); packed[ids] = p2.reshape(-1, 2)
+    lost = np.where(np.isnan(packed[:, 0]))[0]
+    if len(lost):  # goc cua tam giac suy bien bi xoa (khong nhin thay): lay UV cua goc cung dinh
+        cv = np.empty(len(me.loops), np.int64); me.loops.foreach_get("vertex_index", cv)
+        kp = weld_index(np.array([v.co[:] for v in me.vertices]), 1e-6)[cv]
+        have = {}
+        for li in np.where(~np.isnan(packed[:, 0]))[0]:
+            have.setdefault(kp[li], li)
+        for li in lost:
+            packed[li] = packed[have[kp[li]]] if kp[li] in have else (0.5, 0.5)
+    packed = packed.ravel()
     bpy.data.objects.remove(o2); bpy.data.meshes.remove(me2)
     new = me.uv_layers.new(name="UVMap", do_init=True)
     new.data.foreach_set("uv", packed)
@@ -196,6 +239,9 @@ def process(path, src_glb, report=None):
     px = image_array(bake_img)
     s = BAKE // OUT
     small = px.reshape(OUT, s, OUT, s, 3).mean((1, 3))
+    _, _, UVn = mesh_arrays(o, "UVMap")
+    name = os.path.splitext(os.path.basename(path))[0]
+    repainted = repaint(name, P, T, UVn, small) if name in REPAINT else 0
     out_img = bpy.data.images.new("Image_0", OUT, OUT, alpha=False)
     rgba = np.concatenate([small, np.ones((OUT, OUT, 1), np.float32)], 2)
     out_img.pixels.foreach_set(rgba.ravel())
@@ -205,7 +251,6 @@ def process(path, src_glb, report=None):
     tex_node.image = out_img
     # node anh trong material goc dung UV mac dinh -> UV moi sau khi xoa UV cu
 
-    _, _, UVn = mesh_arrays(o, "UVMap")
     # kiem tra do trung mau: anh moi @ UV moi so voi texture goc @ UV da sua
     c_new, _ = face_colors(small, UVn); c_ref, _ = face_colors(src_tex, UVf)
     fid = delta_e(c_new, c_ref)
@@ -219,7 +264,7 @@ def process(path, src_glb, report=None):
     strip = lambda r: {k: v for k, v in r.items() if not k.startswith("_") and not k.endswith("_idx")}
     rep = {"file": path.split("Items/LowPoly/")[-1], "src_tex": list(src.size),
            "pack_margin_px": round(margin_used * OUT), "uv_cover_pct": round(cover * 100, 1),
-           "fixed_uv_faces": fixed, "tiny_island_faces": len(tiny), "unfixed": unfixed, "outlier_kept": kept,
+           "repainted_faces": repainted, "fixed_uv_faces": fixed, "tiny_island_faces": len(tiny), "unfixed": unfixed, "outlier_kept": kept,
            "before_src": strip(before), "after": strip(after),
            "fidelity_dE_p50": round(float(np.median(fid)), 2),
            "fidelity_dE_p99": round(float(np.percentile(fid, 99)), 2),
