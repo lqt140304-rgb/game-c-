@@ -89,7 +89,8 @@ for sx in (-1, 1):                                            # quai thúng hai 
 
 # ---- nón lá (Lid): nón thấp phủ trùm miệng, có các vòng nan
 LR, LH, LZ = 0.245, 0.17, H + 0.006
-add("Lid", cone(LR, 0.0, LH, (0, 0, LZ + LH / 2), "la", v=20))
+CONE = cone(LR, 0.0, LH, (0, 0, LZ + LH / 2), "la", v=20)
+add("Lid", CONE)
 add("Lid", cone(LR - 0.004, LR - 0.004, 0.006, (0, 0, LZ + 0.001), "la_dk", v=20))   # đáy nón
 for t in (0.18, 0.42, 0.66):
     add("Lid", torus(LR * (1 - t) + 0.002, 0.0035, (0, 0, LZ + LH * t), "la_dk", mj=20, mn=3))
@@ -102,36 +103,60 @@ LAC = [(0.075, 0.000), (0.030, 0.006), (0.018, 0.014), (-0.010, 0.030), (0.004, 
        (0.012, -0.006), (0.026, -0.002)]   # chim Lạc: mỏ dài, cánh xòe, mào và đuôi vắt ngược
 
 
-def on_cone(pts2d, a, t, n, lift=0.0018, th=0.002):
-    """Đắp hình 2D (x theo vòng nón, y theo sườn nón) lên mặt nón tại góc a, độ cao t."""
+# CONE (mặt nón lá, tạo ở trên) dùng để chiếu hình khắc dính sát lên từng mặt phẳng của nón
+
+
+def on_cone(pts2d, a, t, n, th=0.0022):
+    """Dán hình 2D (x theo vòng nón, y theo sườn nón) lên nón tại góc a, độ cao t.
+    Cắt theo cạnh gấp của nón rồi chiếu từng đỉnh xuống mặt nón (raycast): hình ôm sát nón, không hở, không nổi."""
     import bmesh
+    from mathutils.bvhtree import BVHTree
     V = mathutils.Vector
     T = V((-math.sin(a), math.cos(a), 0)); U = V((-math.cos(a) * LR, -math.sin(a) * LR, LH)).normalized()
     N = T.cross(U).normalized()
     if N.dot(V((math.cos(a), math.sin(a), 0))) < 0:
         N = -N
-    c = V((math.cos(a) * LR * (1 - t), math.sin(a) * LR * (1 - t), LZ + LH * t)) + N * lift
-    me = bpy.data.meshes.new("k"); bm = bmesh.new()
-    f = bm.faces.new([bm.verts.new(c + T * x + U * y) for x, y in pts2d])
-    r = bmesh.ops.extrude_face_region(bm, geom=[f])
+    c = V((math.cos(a) * LR * (1 - t), math.sin(a) * LR * (1 - t), LZ + LH * t))
+    true_area = abs(sum(pts2d[i][0] * pts2d[i - 1][1] - pts2d[i - 1][0] * pts2d[i][1] for i in range(len(pts2d)))) / 2
+    for order in (pts2d, pts2d[::-1]):     # chia tam giác đa giác lõm: chọn chiều vòng cho diện tích đúng
+        bm = bmesh.new()
+        f = bm.faces.new([bm.verts.new(c + T * x + U * y) for x, y in order])
+        bmesh.ops.triangulate(bm, faces=[f], ngon_method="EAR_CLIP")
+        if abs(sum(q.calc_area() for q in bm.faces) - true_area) < true_area * 0.01:
+            break
+        bm.free()
+    # cắt hình theo các cạnh gấp của nón (mặt phẳng qua trục Z và từng đỉnh đáy), để mỗi mảnh nằm gọn trên một mặt
+    for cv in CONE.data.vertices:
+        if cv.co.z < LZ + 0.01 and cv.co.xy.length > 0.01:
+            phi = math.atan2(cv.co.y, cv.co.x)
+            g = bm.verts[:] + bm.edges[:] + bm.faces[:]
+            bmesh.ops.bisect_plane(bm, geom=g, plane_co=(0, 0, 0), plane_no=(-math.sin(phi), math.cos(phi), 0))
+    bmesh.ops.triangulate(bm, faces=bm.faces[:], ngon_method="EAR_CLIP")
+    tree = BVHTree.FromObject(CONE, bpy.context.evaluated_depsgraph_get())
+    for v in bm.verts:
+        hit = tree.ray_cast(v.co + N * 0.03, -N, 0.1)[0]
+        if hit is not None:
+            v.co = hit - N * 0.0006          # lún nhẹ vào nón để không thấy khe
+    r = bmesh.ops.extrude_face_region(bm, geom=bm.faces[:])
     for v in r["geom"]:
         if isinstance(v, bmesh.types.BMVert):
             v.co += N * th
-    bm.to_mesh(me); bm.free()
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    me = bpy.data.meshes.new("k"); bm.to_mesh(me); bm.free()
     o = bpy.data.objects.new("k", me); bpy.context.scene.collection.objects.link(o)
     return fin(o, n)
 
 
 for i in range(4):                     # né quai đỏ ở chính diện (-Y)
-    add("Lid", on_cone(LAC, -math.pi / 2 + math.pi / 4 + i * math.pi / 2, 0.30, "khac"))
+    add("Lid", on_cone([(x, y * 1.7) for x, y in LAC], -math.pi / 2 + math.pi / 4 + i * math.pi / 2, 0.30, "khac"))
 for i in range(28):
     add("Lid", on_cone([(-0.012, 0), (0.012, 0), (0, 0.012)], 2 * math.pi * i / 28, 0.08, "lua"))
 
 # ---- quai nón lụa đỏ (Binding): hai dải từ đỉnh vòng xuống trước, nút ở mặt trước
-for sx in (-1, 1):
-    a = math.atan2(LH, LR)
-    add("Binding", box((0.018, 0.004, math.hypot(LR, LH) * 0.95), (sx * 0.035, -LR * 0.5, LZ + LH * 0.5 + 0.004), "lua",
-                       rot=(-(math.pi / 2 - a), 0, sx * math.radians(8))))
+SL = math.hypot(LR, LH)
+for sx in (-1, 1):                      # dải quai dán dọc sườn nón, từ vành lên gần chóp
+    add("Binding", on_cone([(-0.009, 0.012), (0.009, 0.012), (0.009, SL * 0.9), (-0.009, SL * 0.9)],
+                           -math.pi / 2 + sx * 0.14, 0.0, "lua", th=0.0018))
     add("Binding", box((0.016, 0.004, 0.08), (sx * 0.02, -RT - 0.018, H - 0.03), "lua", rot=(0, sx * math.radians(18), 0)))
 add("Binding", ico(0.016, (0, -LR + 0.01, LZ + 0.004), "lua"))
 

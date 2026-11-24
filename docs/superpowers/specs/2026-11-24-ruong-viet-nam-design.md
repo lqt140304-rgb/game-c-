@@ -21,3 +21,5 @@ Nón lá là `Lid`, bản lề ở mép sau vành nón (+Y), nón lật ngửa r
 ## Dấu ấn Việt Nam
 
 Trên nón khắc nổi 4 chim Lạc (dáng chim trên trống đồng Đông Sơn) bay vòng quanh, né quai đỏ ở mặt trước; sát vành nón là dải răng cưa đỏ.
+
+Hình khắc và quai được cắt theo từng cạnh gấp của nón rồi chiếu xuống mặt nón, nên dính liền, không hở, không nổi lơ lửng.

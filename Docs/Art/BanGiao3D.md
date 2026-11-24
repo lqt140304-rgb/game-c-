@@ -195,7 +195,7 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 
 `Assets/_Project/Art/Chests/Chest_VietNam.glb`: **thúng tre đội nón lá** (ý tưởng ở [spec](../../docs/superpowers/specs/2026-11-24-ruong-viet-nam-design.md)). Bản thử tạm, **chưa gán ID hay chủ đề** vào dữ liệu game.
 
-- Lớp: root `Chest_VietNam` gồm `Body` (thúng, 996 tam giác), `Lid` (nón lá, 1.086, có khắc 4 chim Lạc kiểu trống đồng và dải răng cưa đỏ quanh vành, **gốc ở mép sau vành nón**, xoay quanh X, mặt trước -Y), `Binding` (quai lụa đỏ, 68), `Seal` (tem giấy đỏ hình thoi, 24), `Glow` (quầng sáng trong thúng, 20, ẩn bằng scale). Tổng 2.174 tam giác không tính Glow. Cao khoảng 0,37 m.
+- Lớp: root `Chest_VietNam` gồm `Body` (thúng, 996 tam giác), `Lid` (nón lá, 1.766, có khắc 4 chim Lạc kiểu trống đồng và dải răng cưa đỏ quanh vành, dán ôm sát từng mặt nón, **gốc ở mép sau vành nón**, xoay quanh X, mặt trước -Y), `Binding` (quai lụa đỏ dán dọc sườn nón, 156), `Seal` (tem giấy đỏ hình thoi, 24), `Glow` (quầng sáng trong thúng, 20, ẩn bằng scale). Tổng 2.942 tam giác không tính Glow. Cao khoảng 0,37 m.
 - Vật liệu đơn sắc, không texture. Không có `Key`.
 - Chạy lại: `pip install bpy pillow`, rồi `python Tools/Blender/make_chest_viet_nam.py -- Assets/_Project/Art/Chests`.
-- Ảnh xem trước: `python Tools/Blender/render_chest_viet_nam_preview.py <thư mục>` (Cycles, đóng, hé, mở toang và 3 góc hình bóng), bảng ghép ở `Art/Source/render_chest_viet_nam_open.png`. Ảnh dựng ngoại tuyến, **chưa chạy trong Unity** (đổi `lidOpenSign` nếu nón lật ngược).
+- Ảnh xem trước: `python Tools/Blender/render_chest_viet_nam_preview.py <thư mục>` (Cycles, đóng, hé, mở toang và 3 góc hình bóng; ảnh cận nón ghép thêm ở hàng dưới), bảng ghép ở `Art/Source/render_chest_viet_nam_open.png`. Ảnh dựng ngoại tuyến, **chưa chạy trong Unity** (đổi `lidOpenSign` nếu nón lật ngược).
