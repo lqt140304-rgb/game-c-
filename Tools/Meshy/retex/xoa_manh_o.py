@@ -26,17 +26,26 @@ bad |= hub
 blue = (((hu > 170) & (hu < 270) & (sa > 0.12)) | ((sa < 0.15) & (v < 0.75))) & (a < low[idx] + 0.02)   # manh xanh xam con lai duoi tan
 bad |= blue
 nd = g.face_normals @ ax
-bad |= (np.abs(nd) < 0.35) & (r < 0.3 * r.max()) & (a < low[idx] + 0.02)   # manh dung nghieng (vay lom chom) quanh chop duoi
+bad |= (np.abs(nd) < 0.35) & (r < 0.3 * r.max()) & (a < low[idx] + 0.02)
+bad |= (r < 0.3 * r.max()) & (a < low[idx] + 0.004) & (nd > -0.5)   # mat khong up xuong (phap tuyen loi) sat duoi chop   # manh dung nghieng (vay lom chom) quanh chop duoi
 print('xoa', bad.sum(), 'tren', len(g.faces))
-# phan con lai gan chop duoi tan, khong phai giay do: to mau tre (doc nhu gong runner)
+# phan con lai gan chop duoi tan, khong phai giay do: to mau giay do toi (chim vao mat duoi tan)
 rest = ~bad & ~red & (r < 0.35 * r.max()) & (a < low[idx] + 0.02)
 Pm = facemasks(g, W, H)
-tex = paint(tex, [Pm[i] for i in np.where(rest)[0]], lambda px: np.array((200, 160, 100)) * (0.75 + 0.35 * px.mean(1, keepdims=True) / 255))
-def unblue(px):  # tung diem anh: xanh xam -> tre, giu do
+paper = np.median(cols[red], 0); print('giay', paper.round())
+tex = paint(tex, [Pm[i] for i in np.where(rest)[0]], lambda px: paper * (0.6 + 0.3 * px.mean(1, keepdims=True) / 255))
+def unblue(px):  # tung diem anh: xanh xam -> giay do toi, giu do
     mx = px.max(1); sp = (mx - px.min(1)) / np.maximum(mx, 1); b = (px[:, 2] > px[:, 0] - 5) | (sp < 0.18)
-    out = px.copy(); out[b] = np.array((200, 160, 100)) * (0.75 + 0.35 * px[b].mean(1, keepdims=True) / 255); return out
-zone = ~bad & (r < 0.4 * r.max()) & (a < low[idx] + 0.03)
+    out = px.copy(); out[b] = paper * (0.6 + 0.3 * px[b].mean(1, keepdims=True) / 255); return out
+zone = ~bad & (r < 0.45 * r.max())
 tex = paint(tex, [Pm[i] for i in np.where(zone)[0]], unblue)
+# giay dau: mat do (theo tam mat) xoa vet vang/kem lem -> do giay deu, giu sang toi
+def repaint(px):
+    mx = px.max(1); sp = (mx - px.min(1)) / np.maximum(mx, 1)
+    hh = np.degrees(np.arctan2(np.sqrt(3) * (px[:, 1] - px[:, 2]), 2 * px[:, 0] - px[:, 1] - px[:, 2])) % 360
+    b = ((hh > 22) & (hh < 75)) | (sp < 0.35)
+    out = px.copy(); out[b] = paper * (0.85 + 0.25 * mx[b, None] / 255); return out
+tex = paint(tex, [Pm[i] for i in np.where(red & ~bad)[0]], repaint)
 g.visual.material.baseColorTexture = Image.fromarray(np.clip(tex, 0, 255).astype(np.uint8)); print('to tre', rest.sum())
 keep = g.submesh([np.where(~bad)[0]], append=True)
 t = keep.copy(); t.merge_vertices(merge_tex=True, merge_norm=True, digits_vertex=4)   # bo vun le con sot
@@ -47,15 +56,16 @@ s.geometry['o_tan.glb'] = keep
 # khoen tre (runner) quanh can ngay duoi chop, che lo sau khi xoa: non cut, mau tre
 a0 = np.percentile(a[red & (r < 0.25 * r.max())], 20) if (red & (r < 0.25 * r.max())).any() else low[0]
 Rh = np.linalg.norm((h.vertices - hc) - np.outer((h.vertices - hc) @ ax, ax), axis=1).max()
-L = 0.12 * r.max()
-k = trimesh.creation.cylinder(radius=1.0, height=L, sections=40)
+L = 0.09 * r.max()
+k = trimesh.creation.cylinder(radius=1.0, height=L, sections=24)
 v = k.vertices.copy(); top = v[:, 2] > 0
-v[:, :2] *= np.where(top, 0.3 * r.max(), 1.6 * Rh)[:, None]   # dau to sat tan, dau nho om can
+v[:, :2] *= np.where(top, 0.22 * r.max(), 1.6 * Rh)[:, None]   # dau to sat tan, dau nho om can
 k.vertices = v
 R3 = trimesh.geometry.align_vectors([0, 0, 1], ax)
 ang = np.arctan2(k.triangles_center[:, 1], k.triangles_center[:, 0])   # nan xen ke sang toi (truoc khi xoay)
-fc = np.where((np.floor((ang + np.pi) / (2 * np.pi) * 40) % 2 == 0)[:, None], [205, 165, 105, 255], [150, 110, 60, 255])
+fc = np.where((np.floor((ang + np.pi) / (2 * np.pi) * 24) % 2 == 0)[:, None], [188, 150, 92, 255], [118, 84, 44, 255])   # mau theo can tre
 k.visual = trimesh.visual.ColorVisuals(k, face_colors=fc.astype(np.uint8))
 k.apply_transform(R3); k.apply_translation(hc + ax * (a0 - L / 2))
 s.add_geometry(k, geom_name='khoen')
+
 s.export(dst)

@@ -384,7 +384,7 @@ Còn lại: xem danh sách làm lại; 7 Thường và 5 Hiếm mới chưa làm
 
 ## Thường và Hiếm mới, 12 món một lượt (2026-11-24)
 
-7 Thường và 5 Hiếm mới theo spec (đoạn "Thêm 2026-11-24"), mã V42–V48, H36–H40. 1 ảnh gộp 12 món (lưới 4×3), 39 credit (số dư còn 417). Ảnh nguồn `Art/Source/ref_thuong_hiem_moi.png` (đã xóa quốc huy và chữ trên bìa sổ hộ khẩu, đã làm phẳng ô); ảnh kiểm tra `render_thuong_hiem_moi.png`. File ở `Items/LowPoly/Common/` và `Items/LowPoly/Rare/`, cỡ thật (mét), đáy y=0.
+7 Thường và 5 Hiếm mới theo spec (đoạn "Thêm 2026-11-24"), mã V42–V48, H36–H40 (V48 Ô giấy dầu đã bỏ 2026-11-24, không đánh lại mã). 1 ảnh gộp 12 món (lưới 4×3), 39 credit (số dư còn 417). Ảnh nguồn `Art/Source/ref_thuong_hiem_moi.png` (đã xóa quốc huy và chữ trên bìa sổ hộ khẩu, đã làm phẳng ô); ảnh kiểm tra `render_thuong_hiem_moi.png`. File ở `Items/LowPoly/Common/` và `Items/LowPoly/Rare/`, cỡ thật (mét), đáy y=0.
 
 **Meshy hỏng nặng với 12 món cỡ lớn:** xếp lại vị trí, dính món (nhân sư + cán lightstick, ô + hộp bento, chân gỗ + một chiếc đũa), mất băng đội trưởng, bàn cầu cơ méo, vệ tinh mất tấm pin, đầu lightstick rỗng. Ảnh gộp vẫn đẹp (kiểu render, không nét viền), nên lỗi do số món lớn. **Gộp 12–14 món chỉ dùng cho Rác nhỏ; món Thường trở lên giữ 8 món một lượt.**
 
@@ -401,7 +401,6 @@ Cứu không tốn credit:
 | V45 | Tượng nhân sư bằng đá | Ai Cập cổ đại | Có (làm lại 2026-11-24: Meshy, đủ thân, có đế, giảm lưới còn 6 nghìn tam giác) |
 | V46 | Đũa đỏ đầu mạ vàng | Trung Hoa cổ | Có (Meshy, chiếc thẳng nhân đôi thành đôi); tô lại đỏ sơn mài đều, đầu vàng 17% chiều dài (`fix_thuong.py V46`) |
 | V47 | Hộp bento sơn mài | Nhật Bản cổ | Có (Blender), 2 tầng đen, viền đỏ, huy hiệu vàng |
-| V48 | Ô giấy dầu | Nhật Bản cổ | Có (tán Meshy + cán tre Blender), nằm nghiêng, dài 85 cm; đã xóa mảnh thừa của hộp bento dưới tán, thêm khoen tre có nan che chóp dưới (`retex/xoa_manh_o.py`) |
 | H36 | Ảnh Polaroid "người ngoài hành tinh" | Không gian | Có (Meshy), hơi cong |
 | H37 | Mảnh vệ tinh thật | Không gian | Có (Blender), thân giấy vàng, 2 tấm pin, chảo, ăng-ten; rộng 82 cm |
 | H38 | Băng đội trưởng có chữ ký | Thể thao | Có (Blender), vòng vải vàng, chữ C, chữ ký bút dạ |
@@ -422,7 +421,7 @@ Chuyển sang phiên sửa (không tốn credit):
 - [x] V42 Sổ hộ khẩu: giống sổ Việt Nam hơn, bìa có chữ "SỔ HỘ KHẨU" (dựng lại bằng Blender).
 - [x] V43 Tay cầm: tô dây cùng màu thân, xóa chỗ lem.
 - [x] V46 Đũa, H40 Chân gỗ: tô lại màu. Dây da H40 chọn tay theo vùng (vòng dây tách khỏi thân), một mảng sát cối chân cũng thành da.
-- [x] V48 Ô giấy dầu: làm sạch mảnh thừa ngay dưới tán. Mảnh dính sát mặt dưới tán không tách sạch được, nên che bằng khoen tre hình nón có nan (giống cụm gọng trong của ô giấy thật).
+- [x] V48 Ô giấy dầu: chủ dự án quyết định bỏ (mảnh thừa dính sát mặt dưới tán không tách sạch; khoen che thì to). Đã xóa file, bỏ khỏi spec và bảng; R50 Ô giấy rách giữ, không còn cặp. Script thử `retex/xoa_manh_o.py` giữ làm mẫu.
 
 ## Danh sách làm lại
 
@@ -431,6 +430,6 @@ Không làm lại riêng lẻ. Đủ 8 món (rác: 14 món) hoặc hết món kh
 - Rác: đủ (đợt 3 làm xong 13 món hỏng ở đợt 2 và R26).
 - Thường và Hiếm: đủ (12 món mới làm xong, xem mục trên).
 
-Đã có mô hình cho mọi món trong bảng rương của spec (Thường V13–V48, Hiếm đủ đến H40).
+Đã có mô hình cho mọi món trong bảng rương của spec (Thường V13–V47, V48 đã bỏ; Hiếm đủ đến H40).
 
 Kinh nghiệm: món đặt trong hộp, trên ma-nơ-canh hoặc giá đỡ dễ bị mất hay dính; để món đứng riêng, không đế thì Meshy giữ tốt hơn. Meshy có thể xếp lại vị trí các món (không theo lưới ảnh) hoặc nhân đôi một món: xuất từng mảnh ra ảnh 4 góc để nhận diện trước khi đặt tên.

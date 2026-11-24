@@ -92,9 +92,9 @@ Chủ dự án đồng ý danh sách rương chủ đề gợi ý (2026-11-24). 
 | Ai Cập cổ đại | Bọ hung, Giấy cói, Tượng nhân sư bằng đá | Tượng mèo Bastet, Kim tự tháp mini | Mắt Horus, Quan tài xác ướp mini | Mặt nạ vàng pharaoh |
 | Hải tặc | La bàn, Đồng xu vàng | Móc tay thuyền trưởng, Cờ đầu lâu, Chân gỗ thuyền trưởng | Bản đồ kho báu, Trái ác quỷ (nhại) | Mũ rơm (nhại) |
 | Trung Hoa cổ | Quạt lông Gia Cát, Đèn lồng đỏ, Đũa đỏ đầu mạ vàng | Bàn tính, Bình gốm Thanh Hoa | Thanh Long Yển Nguyệt Đao, Vòng kim cô | Gậy Như Ý |
-| Nhật Bản cổ | Mèo vẫy tay, Quạt giấy, Hộp bento sơn mài, Ô giấy dầu | Mặt nạ quỷ Oni, Búp bê Daruma | Giáp samurai mini, Tranh sóng lừng | Thần kiếm Kusanagi |
+| Nhật Bản cổ | Mèo vẫy tay, Quạt giấy, Hộp bento sơn mài | Mặt nạ quỷ Oni, Búp bê Daruma | Giáp samurai mini, Tranh sóng lừng | Thần kiếm Kusanagi |
 
-**Thêm 2026-11-24 (chủ dự án duyệt):** 7 món Thường (Sổ hộ khẩu giấy, Tay cầm game kiểu cũ, Lightstick, Tượng nhân sư bằng đá, Đũa đỏ đầu mạ vàng, Hộp bento sơn mài, Ô giấy dầu) và 5 món Hiếm (Ảnh Polaroid "người ngoài hành tinh", Mảnh vệ tinh thật, Băng đội trưởng có chữ ký, Bàn cầu cơ nguyên vẹn, Chân gỗ thuyền trưởng), lên bậc từ ý tưởng rác. Chưa có mô hình.
+**Thêm 2026-11-24 (chủ dự án duyệt):** 7 món Thường (Sổ hộ khẩu giấy, Tay cầm game kiểu cũ, Lightstick, Tượng nhân sư bằng đá, Đũa đỏ đầu mạ vàng, Hộp bento sơn mài, Ô giấy dầu (đã bỏ 2026-11-24, mã V48 để trống)) và 5 món Hiếm (Ảnh Polaroid "người ngoài hành tinh", Mảnh vệ tinh thật, Băng đội trưởng có chữ ký, Bàn cầu cơ nguyên vẹn, Chân gỗ thuyền trưởng), lên bậc từ ý tưởng rác. Chưa có mô hình.
 
 ### Rác riêng của rương chủ đề (chốt 2026-11-24)
 
@@ -117,7 +117,7 @@ Mã R10–R50 theo thứ tự bảng (R20 Mũi Pinocchio đã bỏ 2026-11-24, k
 | Ai Cập cổ đại | Lọ cát sa mạc; Lạc đà bông (hư); Tượng nhân sư thạch cao gãy mũi (cặp: Tượng nhân sư bằng đá) | Lọ gốm nút bần; lạc đà bông xẹp, rách chỉ lòi bông; tượng lưu niệm trắng gãy mũi |
 | Hải tặc | Chai rỗng không có thư (hư); Miếng bịt mắt rách; Chân gỗ mọt (cặp: Chân gỗ thuyền trưởng) | Chai gốm xanh sứt miệng bám hà; vải đen có dây rách mép; chân gỗ tiện đầy lỗ mọt |
 | Trung Hoa cổ | Bánh bao mốc (hư); Bao lì xì rỗng; Đũa gãy (cặp: Đũa đỏ đầu mạ vàng) | Bánh trắng đốm mốc xanh lõm một bên; bao đỏ chữ vàng mở toang; một chiếc đũa gãy |
-| Nhật Bản cổ | Quẻ xăm "đại hung"; Hộp bento nứt (cặp: Hộp bento sơn mài); Ô giấy rách (cặp: Ô giấy dầu) | Giấy dài gấp buộc vào nhánh cây khô; hộp sơn mài nứt nắp lệch; ô giấy đỏ rách xơ, cán tre gãy |
+| Nhật Bản cổ | Quẻ xăm "đại hung"; Hộp bento nứt (cặp: Hộp bento sơn mài); Ô giấy rách | Giấy dài gấp buộc vào nhánh cây khô; hộp sơn mài nứt nắp lệch; ô giấy đỏ rách xơ, cán tre gãy |
 
 **Thay đổi so với bảng chia cũ:** Mô hình gộp vào Game; Kiếm sáng chuyển sang Không gian; Áo đấu cũ và Vé cược thành rác chung. **Số món mới cần mô hình:** khoảng 85. Gom tối đa 8 món mỗi lượt Meshy, ước tính sẽ báo trước khi chạy.
 
