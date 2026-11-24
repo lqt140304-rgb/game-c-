@@ -15,3 +15,13 @@ Món lỗi (mất, dính nhau, không nhận ra): **không làm lại riêng l�
 Mẹo: để mỗi món đứng riêng, không hộp, không ma-nơ-canh, không giá đỡ (dễ bị mất hoặc dính). Logo thật trong ảnh nguồn thì xóa (inpaint) trước khi dựng 3D. Kim tuyến, đồ trong suốt không giữ được.
 
 Lỗi màu nhỏ (vệt, nhòe texture): tô lại tại chỗ bằng `Tools/Meshy/retex/` (`python3 fix_helm.py vao.glb ra.glb`, xem `fix_ball.py` làm mẫu), không tốn credit.
+
+## Mẫu tải từ thư viện cộng đồng Meshy (không tốn credit dựng)
+
+Theo trang thư viện của Meshy, mô hình cộng đồng cấp phép **CC0** (dùng thương mại, không cần ghi tên). Nguồn: meshy.ai/tags/* và trung tâm trợ giúp Meshy (kiểm tra 2026-11-24, các trang hướng dẫn chưa khớp nhau). Lưu ý:
+
+- CC0 chỉ phủ quyền của người đăng; mẫu giống nhân vật, logo, thương hiệu thật vẫn vướng bản quyền bên thứ ba. Món nhại vẫn phải đổi nhỏ.
+- Xem nhãn giấy phép trên trang từng mẫu trước khi tải; gói miễn phí giới hạn lượt tải.
+- Mô hình tự tạo: gói trả phí sở hữu toàn quyền; gói miễn phí là CC BY 4.0 (ghi nguồn Meshy).
+
+Quy trình: chủ dự án tải `.glb` vào `Assets/_Project/Art/Source/meshy_cong_dong/` kèm file `NGUON.md` ghi link trang từng mẫu (bằng chứng giấy phép). Agent chuẩn hóa: giảm poly theo bậc, đặt cỡ thật, đáy y=0, tâm giữa, tô lại màu trung tính (`retex/`), rồi xuất ảnh 4 góc. Hợp nhất cho món Meshy hay làm mất (đồ phẳng, trong suốt).
