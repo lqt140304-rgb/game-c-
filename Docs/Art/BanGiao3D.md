@@ -397,3 +397,19 @@ python Tools/Blender/make_chest_robot.py -- Assets/_Project/Art/Chests
 - Lớp: root `Chest_Game` gồm `Body` (328 tam giác, nửa vỏ dưới, nút vai, chân đế), `Lid` (556, nửa vỏ trên, **gốc ở bản lề mép sau**, xoay quanh X), `Binding` (12, khóa gài ở mép trước), `Seal` (48, nhãn tròn chấm đỏ), `Glow` (20). Tổng **944 tam giác** (không tính Glow). Cao 0,30 m.
 - Vật liệu đơn sắc, xám trung tính, nút màu làm điểm nhấn. Mặt trước là -Y.
 - Ảnh `Art/Source/render_chest_game_open.png` dựng bằng Cycles ngoại tuyến: hàng trên là đóng, hé, mở; hàng dưới là hình bóng chính diện, cạnh bên, chéo 45°. **Chưa chạy trong Unity**: chưa có prefab, chưa kiểm tra chiều mở (đổi `lidOpenSign` nếu ngược). Nắp đã nghiêng sẵn 52° nên góc mở chỉ nên khoảng 80–90°.
+
+## Rương Thể thao (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_TheThao.glb`. Ý tưởng ở [spec](../../docs/superpowers/specs/2026-11-24-ruong-the-thao-design.md): quả bóng đá low-poly tách đôi, ngồi trên chân đế phát bóng màu cam. **Chưa gán ID hay chủ đề vào dữ liệu game.**
+
+```
+pip install bpy pillow          # Python 3.13, Blender 5.3 chạy headless
+cd Tools/Blender
+python make_chest_the_thao.py -- ../../Assets/_Project/Art/Chests/Chest_TheThao.glb ../../Assets/_Project/Art/Source/render_chest_the_thao_open.png 48 480
+```
+
+Hai tham số cuối là số mẫu Cycles và độ rộng mỗi ô ảnh. Bỏ đường dẫn ảnh thì chỉ xuất GLB.
+
+- Cấu trúc: root `Chest_TheThao` gồm `Body` (510 tam giác: nửa dưới quả bóng, chân đế, viền chỉ), `Lid` (242 tam giác, **gốc ở bản lề phía sau**, mở bằng cách xoay âm quanh trục X của Blender), `Binding` (184 tam giác: đai thun và khóa), `Seal` (52 tam giác: huy hiệu) và `Glow` (80 tam giác, ẩn bằng scale). Không có `Key`.
+- Tổng 988 tam giác (chưa tính Glow), cao 0,38 m. Vật liệu đơn sắc, không có texture.
+- Ảnh `Art/Source/render_chest_the_thao_open.png`: hàng trên là đóng, hé và mở toang. Hàng dưới là hình bóng nhìn từ trước, từ cạnh và từ 3/4 phía sau. Ảnh dựng ngoại tuyến bằng Cycles, **chưa chạy trong Unity** (nếu nắp mở ngược thì đổi `lidOpenSign`).
