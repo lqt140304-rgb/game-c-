@@ -33,7 +33,7 @@ RULES = dict(
     odd=.10,                                  # xác suất món thật có một "dấu lạ" giống dấu giả
     miss_pen=.05,                             # phạt mỗi lỗi bị sót, theo giá thẩm định
     open=1.0, up=.08, down=.05,               # giá chào mở màn = giá bảng đã trừ lỗi; thắng +8%, thua -5%
-    rounds=3, floor=.70, cap=1.12,
+    rounds=3, floor=.70, cap=1.10,
     fake_x=.20, fine=.20, fine_T=None, day1_fine=0.0,
     hint_rate=.05,                            # gợi ý của Giáo Sư Lẫm: 5% giá nền, tối thiểu 200.000 đ
     cert=False,
