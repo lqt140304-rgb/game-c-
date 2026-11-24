@@ -1,0 +1,53 @@
+# Thiết kế: rương chủ đề (bổ sung cho phần tier)
+
+Trạng thái: **nháp theo lời chủ dự án, chờ duyệt danh sách chủ đề**. Chưa có gì được xây. Bản này **thay đổi** cách mở khóa Rương Việt Nam và Rương Nhại ở [tier-do-trong-ruong](2026-11-23-tier-do-trong-ruong-design.md) (mục "Rương riêng mở khóa bằng cây phát triển").
+
+## Ý định
+
+Mỗi chủ đề là một **hệ sinh thái riêng**: một rương, một nhóm đồ, một món Huyền thoại của riêng chủ đề đó. Người chơi săn thành tựu để mở rương, rồi theo đuổi món Huyền thoại ở cuối chủ đề.
+
+## Đã chốt với chủ dự án
+
+1. **Chỉ cần thành tựu để mở khóa**, không tốn điểm phát triển.
+2. **Sau khi mở khóa, rương xuất hiện trong shop rương vào ngày hôm sau.**
+3. **Rương Nhại tách ra, không gộp chung.** Nhóm Nhại cũ chia thành các chủ đề rõ ràng.
+4. **Mỗi chủ đề có món Huyền thoại riêng**, chỉ ra từ rương chủ đề đó.
+5. Các chủ đề chủ dự án nêu: **Wibu, truyền thuyết Châu Âu, mô hình, robot**. Danh sách có thể còn thêm.
+
+## Khung chung của một rương chủ đề
+
+| Mục | Nội dung |
+|---|---|
+| Ra gì | Ưu tiên đồ của chủ đề, có thể lẫn rác. Món Huyền thoại riêng chỉ ra ở rương này |
+| Mở khóa | Một **thành tựu** gắn với chủ đề (đề xuất, chưa chốt từng cái) |
+| Xuất hiện | Mở khóa hôm nay thì có trong shop rương **từ ngày mai** |
+| Giá, tỉ lệ ra | Claude 2 cân bằng |
+| Tác dụng khác | Không buff chơi, giữ nguyên nguyên tắc ở phần 1 |
+
+## Chủ đề dự kiến (chờ duyệt)
+
+| Chủ đề | Rương | Huyền thoại riêng | Thành tựu mở | Đồ có sẵn có thể thuộc về |
+|---|---|---|---|---|
+| Wibu | Rương Wibu | chưa chọn | chưa chọn | kiếm sáng (X03), quả cầu ngọc (X04), mũ phù thủy (H05)? |
+| Truyền thuyết Châu Âu | Rương Truyền thuyết Châu Âu | chưa chọn | chưa chọn | giày thủy tinh (L03), quả táo vàng (L02)? |
+| Mô hình | Rương Mô hình | chưa chọn | chưa chọn | chưa có |
+| Robot | Rương Robot | chưa chọn | chưa chọn | trái tim robot (X05), phi thuyền mini (X06)? |
+| Việt Nam | Rương Việt Nam | chưa chọn | chưa chọn | nỏ thần (L05), gậy sắt (L06), ấn ngọc tỷ (L01), vé số (L04)? |
+
+Dấu "?" là gợi ý ghép đồ đã có mô hình, **chưa chốt**. Món Huyền thoại riêng của từng chủ đề có thể là món sẵn có hoặc món làm mới; mô hình mới sẽ gom vào một lượt Meshy chung để đỡ tốn credit.
+
+## Hệ quả cần xử lý
+
+- Đồ nhại hiện có (áo đấu, máy game 8-bit, túi thần kỳ, cục sạc chuột, mũ phù thủy, kiếm sáng, quả cầu ngọc) cần phân vào các chủ đề mới.
+- Số món Huyền thoại sẽ **tăng**: hiện 8 (2 chưa có mô hình), cộng món riêng của từng chủ đề. Rương Tổng Hợp có thể không còn là nơi duy nhất ra Huyền thoại.
+- Cây phát triển: nhánh Rương bỏ nút Rương Nhại, Rương Việt Nam chuyển sang điều kiện thành tựu nếu chủ dự án đồng ý.
+- Cần hệ **thành tựu** trong dữ liệu (`id`, `điều kiện`, `rương mở`), và shop rương có danh sách hôm nay (Codex).
+- Mô hình 3D cho từng rương chủ đề (Antigravity và Blender): chưa có.
+
+## Câu hỏi còn mở
+
+1. Danh sách chủ đề cuối cùng; có giữ Việt Nam là chủ đề không.
+2. Món Huyền thoại riêng của từng chủ đề là gì, và đồ hiện có thuộc chủ đề nào.
+3. Thành tựu mở khóa từng rương.
+4. Rương Tổng Hợp còn ra Huyền thoại không.
+5. Tỉ lệ và giá: Claude 2.
