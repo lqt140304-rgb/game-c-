@@ -25,7 +25,7 @@ Mục tiêu sau lần hướng dẫn là 10–15 giây cho phần chà. Cần th
 
 1. Người chơi tự chọn quán. Tại bàn, bấm tờ thực đơn giấy để xem món. Nhân viên đứng cạnh bàn. Chỉ vào nhân viên và nhấn E để mở hội thoại kiểu light novel, rồi chọn câu gọi món trong hội thoại. Hai quán đề xuất cho bản thử là quán phở (phở bò, phở gà) và quán xôi (xôi gà, xôi chà bông).
 2. Chủ quán mang bát hoặc đĩa ra, đặt trước mặt người chơi. Có tiếng bát chạm bàn và một câu thoại ngắn. Chỉ bắt đầu mini-game sau khi món đã đặt xuống.
-3. Gắp hoặc xúc từng miếng, rê dụng cụ lên vùng miệng có phạm vi rộng. Có thể thêm ớt, vắt chanh, thổi miếng nóng hoặc uống nước. Rê dụng cụ là phương án thử đầu tiên. Nếu thao tác trở nên lặp và chậm, thử bấm chọn miếng để nhân vật tự gắp.
+3. Gắp hoặc xúc từng miếng, kéo dụng cụ thẳng lên vùng miệng ở ngay phía trên bát, theo góc nhìn thứ nhất. Có thể thêm ớt, vắt chanh, thổi miếng nóng hoặc uống nước. Rê dụng cụ là phương án thử đầu tiên. Nếu thao tác trở nên lặp và chậm, thử bấm chọn miếng để nhân vật tự gắp.
 4. Bản thử dùng 3–4 miếng mỗi món. Mục tiêu là 10–15 giây cho phần ăn, tính riêng thời gian gọi và phục vụ.
 
 | Tình huống | Phản ứng |

@@ -15,8 +15,8 @@ namespace ChoDoLa.Morning
         private static readonly Color Ink = new Color(.12f, .18f, .17f);
         private static readonly Color Cream = new Color(.99f, .94f, .82f);
         private static readonly Color Green = new Color(.24f, .50f, .39f);
-        private static readonly Rect Bowl = new Rect(90, 190, 335, 160);
-        private static readonly Rect Mouth = new Rect(515, 190, 255, 160);
+        private static readonly Rect Bowl = new Rect(262.5f, 237, 335, 127);
+        private static readonly Rect Mouth = new Rect(Bowl.x, 122, Bowl.width, 83);
 
         [SerializeField] private bool standalonePreview = true;
         [SerializeField] private bool previewCat = true;
@@ -142,7 +142,7 @@ namespace ChoDoLa.Morning
             MorningPhase.Brushing => "Giữ chuột trái và chà qua lại trên từng vùng răng",
             MorningPhase.ChooseShop => "Bấm vào quán phở hoặc quán xôi",
             MorningPhase.ChooseMeal => "Bấm vào thực đơn để xem · Chỉ vào nhân viên và nhấn E để gọi",
-            MorningPhase.Eating => "Giữ chuột từ bát, kéo miếng ăn đến vùng miệng rồi thả",
+            MorningPhase.Eating => "Giữ chuột từ bát, kéo thẳng lên miệng rồi thả",
             MorningPhase.Complete => "Bạn có thể ra chợ săn hộp",
             _ => "Chờ chủ quán đặt món xuống bàn"
         };
@@ -224,7 +224,7 @@ namespace ChoDoLa.Morning
             Fill(Bowl, new Color(.79f, .61f, .38f));
             Fill(Mouth, new Color(.30f, .49f, .42f));
             GUI.Label(new Rect(Bowl.x + 20, Bowl.y + 12, 290, 35), Meals[morning.Shop, morning.Meal], darkLine);
-            GUI.Label(new Rect(Mouth.x + 25, Mouth.y + 40, 205, 60), "Đưa lên miệng", line);
+            GUI.Label(new Rect(Mouth.x + 102, Mouth.y + 24, 220, 36), "↑ Miệng", line);
             for (int i = morning.Bites; i < MorningSession.BitesPerMeal; i++)
                 Fill(new Rect(Bowl.x + 32 + i * 90, Bowl.y + 65, 66, 50), new Color(.99f, .86f, .55f));
 
