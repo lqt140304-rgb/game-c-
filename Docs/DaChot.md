@@ -2,6 +2,8 @@
 
 Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm ở file được trỏ tới. Mỗi khi chốt điều mới: ghi vào spec tương ứng (hoặc tạo spec mới trong `docs/superpowers/specs/`) rồi thêm một dòng ở đây.
 
+Bản tóm tắt toàn bộ kế hoạch: [TongQuanKeHoach.md](TongQuanKeHoach.md).
+
 ## Thiết kế (spec)
 
 | Chủ đề | File | Điểm chính đã chốt |
