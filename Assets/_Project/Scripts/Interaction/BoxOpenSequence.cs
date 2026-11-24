@@ -15,6 +15,8 @@ namespace ChoDoLa.Interaction
     /// Stages: 1 Rung (shake), 2 Go niem (seal and cord/lock come off), 3 He nap (lid cracks open, light leaks),
     /// 4 Bat nap (lid pops up), 5 Mo toang (fully open, glow peaks). Each stage has a travel time and a hold,
     /// and the whole thing can wait for the player between stages.
+    /// Optional "Key" layer (a key modelled in the inserted pose, shaft along its local Z): before stage 1 the key
+    /// floats in from the front, slides into the lock, turns, clicks, and slides out (see the Key intro fields).
     /// The same stage data is mirrored by the three.js preview used for the reference screenshots.
     /// </summary>
     public class BoxOpenSequence : MonoBehaviour
@@ -52,6 +54,23 @@ namespace ChoDoLa.Interaction
         [Tooltip("Direction the box fronts toward the player in local space. Flip if the seal and lock fall backwards.")]
         [SerializeField] private Vector3 frontDirection = new Vector3(0f, 0f, -1f);
 
+        [Header("Key intro (only when the model has a \"Key\" child)")]
+        [SerializeField] private bool keyIntro = true;
+        [Tooltip("How far in front of the lock the key starts, in local units.")]
+        [SerializeField] private float keyStartDistance = 0.22f;
+        [Tooltip("Distance from the lock where the key pauses before the thrust.")]
+        [SerializeField] private float keyHoverDistance = 0.07f;
+        [SerializeField] private float keyApproachTime = 0.8f;
+        [SerializeField] private float keyInsertTime = 0.25f;
+        [SerializeField] private float keyTurnTime = 0.45f;
+        [Tooltip("Degrees the key turns round its shaft.")]
+        [SerializeField] private float keyTurnAngle = 90f;
+        [Tooltip("Pause after the turn: the click, before the key slides out.")]
+        [SerializeField] private float keyClickHold = 0.35f;
+        [SerializeField] private float keyRetractTime = 0.3f;
+        [Tooltip("Axis the key turns round, in the key's own space (its shaft).")]
+        [SerializeField] private Vector3 keyTurnAxis = Vector3.forward;
+
         [Header("Light inside the box")]
         [SerializeField] private Light innerLight;
         [SerializeField] private float innerLightMaxIntensity = 2f;
@@ -59,6 +78,9 @@ namespace ChoDoLa.Interaction
         [Header("Events")]
         public UnityEvent<int> onStageReached;   // stage index, after its travel finishes (play sound, particles, UI here)
         public UnityEvent onOpened;              // after the last stage
+        public UnityEvent onKeyApproach;         // the key starts floating in (play a jingle)
+        public UnityEvent onKeyInserted;         // the key hits the lock (metal clink)
+        public UnityEvent onKeyTurned;           // the key finishes turning (the lock click)
 
         private struct LayerState
         {
@@ -68,7 +90,7 @@ namespace ChoDoLa.Interaction
             public Vector3 scale;
         }
 
-        private LayerState _lid, _seal, _binding, _glow;
+        private LayerState _lid, _seal, _binding, _glow, _key;
         private Vector3 _rootStart;
         private bool _ready;
         private bool _playing;
@@ -97,6 +119,7 @@ namespace ChoDoLa.Interaction
             EnsureReady();
             StopAllCoroutines();
             _playing = false;
+            SetKey(0f, 0f, 0f);
             Apply(Pose(-1, -1, 0f), 0f);
         }
 
@@ -116,6 +139,8 @@ namespace ChoDoLa.Interaction
             _seal = Capture(transform.Find("Seal"));
             _binding = Capture(transform.Find("Binding"));
             _glow = Capture(transform.Find("Glow"));
+            _key = Capture(transform.Find("Key"));
+            SetKey(0f, 0f, 0f);
             Apply(Pose(-1, -1, 0f), 0f);
         }
 
@@ -137,6 +162,8 @@ namespace ChoDoLa.Interaction
         {
             _playing = true;
             int previous = -1;
+
+            if (keyIntro && _key.transform != null) yield return RunKeyIntro();
 
             for (int i = 0; i < stages.Count; i++)
             {
@@ -178,6 +205,51 @@ namespace ChoDoLa.Interaction
 
             _playing = false;
             onOpened?.Invoke();
+        }
+
+        // ---------------------------------------------------------------- Key intro
+
+        private IEnumerator RunKeyIntro()
+        {
+            onKeyApproach?.Invoke();
+            yield return KeyPhase(keyApproachTime, u => SetKey(Mathf.Lerp(keyStartDistance, keyHoverDistance, Mathf.SmoothStep(0f, 1f, u)), 0f, Mathf.SmoothStep(0.6f, 1f, u), bob: u));
+            yield return KeyPhase(keyInsertTime, u => SetKey(Mathf.Lerp(keyHoverDistance, 0f, u * u), 0f, 1f));
+            onKeyInserted?.Invoke();
+            yield return KeyPhase(keyTurnTime, u => SetKey(0f, Mathf.SmoothStep(0f, 1f, u), 1f), shakeAmplitude: 0.0015f);
+            onKeyTurned?.Invoke();
+            yield return KeyPhase(keyClickHold, u => SetKey(0f, 1f, 1f));
+            yield return KeyPhase(keyRetractTime, u => SetKey(Mathf.Lerp(0f, keyHoverDistance, u * u), 1f, 1f - u * u * u));
+            SetKey(0f, 0f, 0f);
+        }
+
+        private IEnumerator KeyPhase(float duration, Action<float> step, float shakeAmplitude = 0f)
+        {
+            float t = 0f;
+            duration = Mathf.Max(0.01f, duration);
+            while (t < duration)
+            {
+                t += Time.deltaTime;
+                step(Mathf.Clamp01(t / duration));
+                if (shakeAmplitude > 0f)
+                {
+                    float time = Time.time * 40f;
+                    transform.localPosition = _rootStart + new Vector3(Mathf.PerlinNoise(time, 0.3f) - 0.5f, 0f, Mathf.PerlinNoise(0.7f, time) - 0.5f) * 2f * shakeAmplitude;
+                }
+                yield return null;
+            }
+            transform.localPosition = _rootStart;
+        }
+
+        /// <summary>distance = how far the key sits in front of the lock (0 = inserted), turn01 = 0..1 of keyTurnAngle, scale01 = 0 hides the key.</summary>
+        private void SetKey(float distance, float turn01, float scale01, float bob = 0f)
+        {
+            if (_key.transform == null) return;
+            Vector3 front = frontDirection.normalized;
+            Vector3 hover = Vector3.up * (0.004f * Mathf.Sin(bob * Mathf.PI * 2f) * (1f - bob));   // a little float while it approaches
+            _key.transform.localPosition = _key.position + front * distance + hover;
+            _key.transform.localRotation = _key.rotation * Quaternion.AngleAxis(keyTurnAngle * turn01, keyTurnAxis);
+            _key.transform.localScale = _key.scale * Mathf.Max(0.0001f, scale01);
+            _key.transform.gameObject.SetActive(scale01 > 0.01f);
         }
 
         // ---------------------------------------------------------------- Pose maths
