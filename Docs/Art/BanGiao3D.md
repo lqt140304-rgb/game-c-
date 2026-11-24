@@ -246,11 +246,11 @@ Găng tay lấp lánh (L19) làm lại vẫn ra trắng trơn: Meshy không gi�
 |---|---|---|---|
 | H13 | Bánh chưng Lang Liêu | Việt Nam | Có |
 | H18 | Chó robot | Robot | Có, gộp thân và đầu |
-| H19 | Mũ phi hành gia | Không gian | Có, kính vàng đặc; đỉnh mũ có vệt hồng cam do texture |
+| H19 | Mũ phi hành gia | Không gian | Có, kính vàng đặc; đã tô lại vỏ trắng (bỏ vệt hồng cam) |
 | H20 | Nấm đỏ (nhại) | Game | Có |
 | H21 | Khối gạch dấu hỏi (nhại) | Game | Có |
 | H22 | Găng thủ môn | Thể thao | Có, mỏng |
-| H23 | Bóng rổ số 23 (nhại) | Thể thao | Có; mặt sau texture nhòe trắng |
+| H23 | Bóng rổ số 23 (nhại) | Thể thao | Có; đã tô lại cam đều, bỏ số thừa ở mặt sau |
 | H24 | Micro cổ | Âm nhạc | Có, chân đế là một phần của micro |
 | H25 | Kính tròn ca sĩ tứ quái (nhại) | Âm nhạc | Có, tròng tối đặc, gộp tròng và gọng |
 | H26 | Mặt nạ khúc côn cầu (nhại) | Phim kinh dị | Có, đã bỏ giá đỡ |
@@ -260,6 +260,8 @@ Găng tay lấp lánh (L19) làm lại vẫn ra trắng trơn: Meshy không gi�
 | H30 | Móc tay thuyền trưởng | Hải tặc | Có |
 | H31 | Cờ đầu lâu | Hải tặc | Có, cờ mỏng |
 | H32 | Bàn tính | Trung Hoa cổ | Có, gộp khung và hạt |
+
+Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` chọn mặt tam giác theo màu và hướng rồi tô lại vùng UV của chúng trên texture trong file `.glb`. Dùng cho lỗi màu nhỏ thay vì chạy lại Meshy.
 
 ## Danh sách làm lại
 
