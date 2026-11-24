@@ -247,3 +247,25 @@ python make_mimic_chest.py -- <thư mục fbx+png> Assets/_Project/Art/Chests/Ch
 - **Gợi ý hiệu ứng riêng:** rung mạnh, rồi nắp **há ra và đóng sập một lần như cắn** (kèm rung cả hộp và âm thanh), sau đó mới chạy các giai đoạn mở thường: hé nắp, bật nắp, há toang với `Glow` đỏ cam. Góc há toang cuối nên khoảng 60° đến 75° thay vì 105°, vì nắp dày và răng dài. Đã thêm tuỳ chọn `biteIntro` vào `BoxOpenSequence` (mặc định tắt nên các rương khác không đổi hành vi): `biteCount`, `biteOpenAngle`, `biteOpenTime`, `biteHoldOpen`, `biteSlamTime`, `biteSlamShake`, `biteRestTime` và sự kiện `onBite` (đúng lúc nắp sập, gắn âm thanh). Đoạn mã này **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
 - **Lưu ý cho chủ dự án (phong cách):** Mimic là mô hình thực tế, có răng chi tiết, texture 2048 và tông gỗ sẫm, sắt cũ, khác hướng low-poly màu trung tính của repo. Đặt cạnh các rương và đồ khác có thể lệch phong cách; cần chủ dự án quyết định giữ hay làm lại theo hướng low-poly.
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity.
+
+## Rương Miner (thợ mỏ, rương gỗ cũ có cuốc chim chéo)
+
+`Assets/_Project/Art/Chests/Chest_Miner.glb`, **chưa gán chủ đề hay ID rương** vì danh sách chủ đề chưa chốt. Nguồn: `Art/Source/MeshyChests/Miner/` (FBX Meshy của chủ dự án, 369.686 tam giác, không tốn credit mới). Tạo bằng cùng script với Golden, có thêm các tham số tuỳ chọn (mặc định tắt, Golden tái tạo y như cũ):
+
+```
+python cut_lid_from_meshy_fbx.py -- <thư mục fbx và png> Assets/_Project/Art/Chests/Chest_Miner.glb Chest_Miner 0.376 0.32 1024 "" --size-xy 0.85,0.42 --decimate-tris 3000 --lining 0.06,0.04,0.022 --rim 0.09,0.05,0.025 --glow 1.0,0.5,0.12
+```
+
+- **Tham số cắt:** đường nối nắp z = 0,376 (đơn vị nguồn; Z là trục đứng). Đó là chỗ mép dưới tấm nắp ván bắt đầu loe ra khỏi thân (thân thẳng đứng đến 0,375, nắp loe từ 0,376). Chủ dự án **cho phép bóp méo**, nên rương được co không đều: cao **0,32 m**, dài **0,85 m**, sâu **0,42 m** (Golden cao 0,42, rộng 0,6; nguồn gốc cao 0,96, dài 2,0, sâu 0,98, tức chiều cao bị nén khoảng 0,78 lần so với chiều dài). Hình cuốc chim và đá hơi dẹt nhưng vẫn nhìn tự nhiên. Texture 1024. Không có ổ khóa nên bỏ trống tham số vị trí khóa, **không có `Key`**.
+- **Hướng:** FBX nhập vào đã có mặt trước là -Y (cuốc chim chéo, đá quặng). Mặt sau (+Y) cũng có cuốc chim, nên sau này đặt rương quay mặt nào cũng đẹp. Không cần xoay.
+- **Giảm poly (Decimate kiểu Collapse, chạy trước khi cắt):** 369.686 xuống 3.000 tam giác. Sau khi cắt: `Body` 2,9 nghìn (gồm mặt cắt và đệm lót), `Lid` 0,54 nghìn, **tổng khoảng 3,4 nghìn** (chủ dự án chọn mức này, thấp hơn mục tiêu ban đầu 8 đến 15 nghìn). Đã thử ba mức: 12,8k (đẹp nhất, vân nắp còn), 6,6k và 3,4k (đang dùng). Ở 3,4k đai sắt và chân sắt còn rõ, nhưng mặt nắp và đá hơi vỡ mặt, cuốc chim hơi méo. Muốn chi tiết hơn: đổi `--decimate-tris` (6000 cho 6,6k, 12000 cho 12,8k). Texture 2048 ép xuống 1024 vẫn nét.
+- **Cấu trúc:** root `Chest_Miner` gồm `Body`, `Lid` (gốc ở **bản lề phía sau**, xoay quanh trục X, tấm nắp ván phẳng dày khoảng 0,1 nguồn), `Glow` (quầng sáng cam ấm, ẩn bằng scale). Đệm lót nâu sẫm kiểu vải bố, viền mặt cắt gỗ rất tối. `BoxOpenSequence` bỏ qua lớp thiếu nên không cần `Key`, `Seal`, `Binding`; chưa kiểm tra giai đoạn "Gỡ niêm" trông thế nào khi không có lớp nào (giống Golden).
+- **Tham số mới của script:** `--decimate-tris N`, `--size-xy dài,sâu` (bóp méo X/Y riêng, mét), `--lining r,g,b`, `--rim r,g,b`, `--glow r,g,b` (màu tuyến tính 0 đến 1). Cũng sửa lỗi nhỏ: đường ra chỉ là tên file không thư mục thì không còn báo lỗi. `Tools/Blender/cycles_chest_preview_setup.py` nay nhận `--glb <file>` và `--size <bề rộng m>`, chịu được rương không có `Key`.
+- **Ảnh xem trước:** `Art/Source/render_chest_miner_open.png` (nguồn gốc 375 nghìn tam giác (cùng kích thước đã bóp), đóng nắp, hé nắp 22 độ, mở toang 105 độ), dựng ngoại tuyến bằng Cycles CPU trong Blender, **không phải ảnh từ Unity**.
+
+**Giới hạn và lưu ý cho chủ dự án:**
+- Chưa chạy trong Unity, chưa tạo prefab, chưa gắn `BoxOpenSequence`; đoạn mã C# (kể cả phần chìa khóa của Golden) **chưa biên dịch**. Chiều mở nắp, vật liệu và ánh sáng trong Unity chưa kiểm chứng (đổi `lidOpenSign` nếu nắp mở ngược).
+- Tỉ lệ đã bóp méo theo cho phép của chủ dự án (xem trên). Muốn dẹt hơn nữa chỉ cần đổi tham số `<chiều cao>` và `--size-xy`, nhưng hình khắc sẽ méo rõ hơn.
+- Nắp là một tấm ván phẳng dày, khi hé thấy bên trong chỉ là đệm lót phẳng (mô hình nguồn là khối đặc, không có lòng rương thật), giống Golden.
+- Phong cách **thực tế, tối và nhiều chi tiết hơn** hướng low-poly màu trung tính của repo; đứng cạnh đồ low-poly sẽ lệch tông. Chủ dự án cần quyết có giữ hướng này cho rương Meshy hay không.
+- Glow đang có lõi sáng gần trắng vàng trong ảnh dựng vì tông màu của bộ dựng; trong Unity màu sẽ khác.
