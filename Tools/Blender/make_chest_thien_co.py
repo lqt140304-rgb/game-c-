@@ -1,4 +1,4 @@
-"""Thien Co chest (temporary test version): a split mechanical sphere on a three-claw stand, built with bpy.
+"""Thien Co chest (temporary test version): a split mechanical rocket-pod (sphere hull with a nose-cone lid, three fins), built with bpy.
 
 Run:   python make_chest_thien_co.py -- <out.glb> [<preview.png> <samples> <width>]
 Layers: Chest_ThienCo (root) -> Body, Lid (origin on the back hinge, rotates about X, front is -Y), Glow (cyan halo
@@ -133,7 +133,8 @@ def join(objs):
 
 
 # ----------------------------------------------------------------------------------------------- build
-R, CZ = 0.165, 0.235                    # sphere radius and equator height -> total height ~0.43 m with finial
+R, CZ, NZ = 0.14, 0.21, 1.8            # radius, equator height, nose stretch of the lid -> rocket ~0.48 m
+TOP = CZ + R * NZ
 HINGE = Vector((0, R + 0.012, CZ))
 L = {"Body": [], "Lid": [], "Glow": [], "Seal": []}
 add = lambda layer, o: L[layer].append(o)
@@ -141,19 +142,18 @@ add = lambda layer, o: L[layer].append(o)
 
 def build():
     # stand: octagonal foot, three claws hugging the lower half
-    add("Body", cyl(0.15, 0.025, (0, 0, 0.0125), "iron", verts=8))
-    add("Body", cyl(0.12, 0.02, (0, 0, 0.035), "shell_dk", verts=8))
-    for k in range(3):
+    add("Body", cone(0.07, 0.10, 0.08, (0, 0, 0.06), "shell_dk", verts=8))      # engine nozzle under the hull
+    add("Body", cyl(0.05, 0.012, (0, 0, 0.026), "cyan", verts=8))                   # nozzle glow ring
+    for k in range(3):                                                             # three swept rocket fins
         a = math.radians(90 + 120 * k)
         d = Vector((math.cos(a), math.sin(a), 0))
-        root = d * 0.11 + Vector((0, 0, 0.04))
-        tip = d * (R + 0.02) + Vector((0, 0, CZ - 0.04))
-        mid = (root + tip) / 2
-        v = tip - root
-        rot = v.to_track_quat("Z", "Y").to_euler()
-        add("Body", box((0.03, 0.022, v.length), mid, "iron", rot=rot))
-        add("Body", box((0.036, 0.03, 0.05), tip + Vector((0, 0, -0.01)) - d * 0.008, "brass",
-                         rot=(0, 0, a)))
+        fin = box((0.13, 0.016, 0.21), d * (R * 0.95) + Vector((0, 0, 0.105)), "iron", rot=(0, 0, a))
+        for v in fin.data.vertices:                                                # sweep: top outer edge slides in
+            r = Vector((v.co.x, v.co.y, 0)).dot(d)
+            if v.co.z > 0.15 and r > R * 0.95:
+                v.co -= d * 0.09
+        add("Body", fin)
+        add("Body", box((0.03, 0.024, 0.024), d * (R * 0.95 + 0.065) + Vector((0, 0, 0.012)), "brass", rot=(0, 0, a)))
     # lower hemisphere + equator gear band
     add("Body", hemi(R, CZ, "shell", upper=False))
     add("Body", hemi(R - 0.012, CZ + 0.001, "interior", upper=False))   # dark cut face reads as cavity
@@ -170,23 +170,23 @@ def build():
         add("Body", cyl(0.014, 0.03, (sx * 0.045, HINGE.y, HINGE.z), "iron", verts=8, rot=(0, R90, 0)))
 
     # lid: upper hemisphere shell with gear plates and a cyan eye lens on the front
-    add("Lid", hemi(R, CZ + 0.002, "shell", upper=True))
-    add("Lid", hemi(R - 0.012, CZ + 0.001, "interior", upper=True))   # dark inside face of the lid
+    add("Lid", hemi(R, CZ + 0.002, "shell", upper=True, scale_z=NZ))
+    add("Lid", hemi(R - 0.012, CZ + 0.001, "interior", upper=True, scale_z=NZ))   # dark inside face of the lid
     add("Lid", ring(R + 0.012, R - 0.012, 0.016, CZ + 0.002, "shell_dk", verts=24))
     # latitude band (bánh răng dẹt ôm vòm)
     lat = math.radians(48)
-    add("Lid", ring(R * math.cos(lat) + 0.008, R * math.cos(lat) - 0.01, 0.014, CZ + R * math.sin(lat) - 0.007, "iron", verts=16))
+    add("Lid", ring(R * math.cos(lat) + 0.008, R * math.cos(lat) - 0.01, 0.014, CZ + R * NZ * math.sin(lat) - 0.007, "iron", verts=16))
     # top dome gear + finial
-    add("Lid", gear(0.07, 0.02, (0, 0, CZ + R - 0.004), "brass", teeth=10))
-    add("Lid", cyl(0.03, 0.03, (0, 0, CZ + R + 0.02), "iron", verts=8))
-    add("Lid", cone(0.018, 0.004, 0.045, (0, 0, CZ + R + 0.057), "shell_dk", verts=6))
-    add("Lid", cyl(0.011, 0.02, (0, 0, CZ + R + 0.088), "cyan", verts=8))
+    add("Lid", cyl(0.018, 0.03, (0, 0, TOP - 0.004), "iron", verts=8))
+    add("Lid", cone(0.012, 0.002, 0.05, (0, 0, TOP + 0.034), "shell_dk", verts=6))
+    add("Lid", cyl(0.008, 0.014, (0, 0, TOP + 0.012), "cyan", verts=8))
     # side gear on the right flank
     add("Lid", gear(0.04, 0.014, (R * 0.93, 0, CZ + 0.055), "brass", teeth=8, rot=(0, R90, 0), tooth=0.01))
     # the eye: tilted bezel + iris on the front
     el = math.radians(28)
-    n = Vector((0, -math.cos(el), math.sin(el)))
-    c = Vector((0, 0, CZ)) + n * (R + 0.004)
+    c = Vector((0, -R * math.cos(el), CZ + R * NZ * math.sin(el)))
+    n = Vector((0, -math.cos(el) / R, math.sin(el) / (R * NZ))).normalized()   # ellipsoid normal
+    c += n * 0.004
     erot = n.to_track_quat("Z", "Y").to_euler()
     add("Lid", cyl(0.055, 0.024, c, "iron", verts=12, rot=erot))
     add("Lid", cyl(0.042, 0.01, c + n * 0.014, "shell_dk", verts=12, rot=erot))

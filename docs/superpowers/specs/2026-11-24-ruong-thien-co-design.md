@@ -13,3 +13,7 @@ Rương mở khóa thuộc hệ tạo tác Thiên Cơ (TC1 ốc vít, TC2 mắt 
 - Hình bóng tròn trên chân kiềng khác hẳn hộp H1–H3, RD, rương Golden và các hình thùng, trụ, thân tàu, đàn, mũ phi hành gia của các phiên khác.
 - Nối thẳng với TC2 (mắt máy): mặt trước nửa trên có một thấu kính cyan như con mắt; lõi bên trong gợi TC3.
 - **Cách mở:** nửa cầu trên (Lid) xoay quanh bản lề ngang ở phía sau, ngay xích đạo, lật ra sau như vỏ sò cơ khí. Khi mở, quầng cyan (Glow) bừng lên ở miệng nửa dưới, nơi có lõi năng lượng nhỏ. Vòng xoay khóa (Seal) ở mặt trước xích đạo rơi ra trong giai đoạn gỡ niêm.
+
+## Chỉnh theo chủ dự án (2026-11-24): giống tên lửa hơn
+
+Nắp kéo dài thành mũi tên lửa thuôn nhọn, bỏ kiềng ba móng và đế, thay bằng ba vây xuôi và loa phụt có vòng cyan; tên lửa đứng trên vây. Cách mở giữ nguyên (mũi lật ra sau quanh bản lề). Lưu ý: gần chủ đề rương Không gian hơn trước, cần chủ dự án xem có trùng không.

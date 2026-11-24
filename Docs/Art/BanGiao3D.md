@@ -193,7 +193,7 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 
 ## Rương Thiên Cơ (dựng bằng Blender, tạm)
 
-`Assets/_Project/Art/Chests/Chest_ThienCo.glb`, **bản thử tạm**, chưa gán ID hay chủ đề vào dữ liệu game. Ý tưởng: [spec](../../docs/superpowers/specs/2026-11-24-ruong-thien-co-design.md). Dáng **quả cầu cơ khí tách đôi trên kiềng ba móng**, xích đạo là vành răng đồng, mặt trước nắp có mắt máy cyan (gợi TC2), bên trong có lõi cyan (gợi TC3).
+`Assets/_Project/Art/Chests/Chest_ThienCo.glb`, **bản thử tạm**, chưa gán ID hay chủ đề vào dữ liệu game. Ý tưởng: [spec](../../docs/superpowers/specs/2026-11-24-ruong-thien-co-design.md). Dáng **tên lửa cơ khí tách đôi**: thân dưới nửa cầu có loa phụt và ba vây xuôi (đứng trên vây, không đế), nắp là mũi tên lửa thuôn nhọn có chóp ăng-ten, xích đạo là vành răng đồng, mặt trước nắp có mắt máy cyan (gợi TC2), bên trong có lõi cyan (gợi TC3).
 
 ```
 pip install bpy pillow
@@ -201,7 +201,7 @@ python Tools/Blender/make_chest_thien_co.py -- Assets/_Project/Art/Chests/Chest_
 ```
 (Bỏ hai tham số cuối và đường dẫn ảnh nếu chỉ cần GLB.)
 
-- Lớp: root `Chest_ThienCo` gồm `Body` (1.036 tam giác), `Lid` (1.252, **gốc ở bản lề phía sau**, xoay quanh X, mặt trước là -Y), `Glow` (60, đĩa cyan ở miệng, ẩn bằng scale), `Seal` (68, núm khóa xoay ở mặt trước xích đạo). Tổng **2.416 tam giác**, cao ~0,50 m (kể cả chóp ăng-ten), vật liệu đơn sắc, cyan dùng emission, không texture.
+- Lớp: root `Chest_ThienCo` gồm `Body` (1.036 tam giác), `Lid` (1.056, **gốc ở bản lề phía sau**, xoay quanh X, mặt trước là -Y), `Glow` (60, đĩa cyan ở miệng, ẩn bằng scale), `Seal` (68, núm khóa xoay ở mặt trước xích đạo). Tổng **2.220 tam giác**, cao ~0,52 m (kể cả chóp ăng-ten), vật liệu đơn sắc, cyan dùng emission, không texture.
 - Không có `Key`, `Binding`.
 - Ảnh `Art/Source/render_chest_thien_co_open.png`: đóng, hé, mở toang, và 3 góc hình bóng; dựng ngoại tuyến bằng Cycles, **không phải ảnh từ Unity**. Chưa tạo prefab, chưa chạy trong Unity (đổi `lidOpenSign` nếu nắp mở ngược).
 - Điểm còn yếu: mặt trong nắp khi mở toang còn sáng xám, đĩa Glow phẳng và to.

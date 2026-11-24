@@ -18,7 +18,7 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 
 | Chủ đề | File | Điểm chính đã chốt |
 |---|---|---|
-| Rương Thiên Cơ (tạm) | [ruong-thien-co](../docs/superpowers/specs/2026-11-24-ruong-thien-co-design.md) | Quả cầu cơ khí tách đôi trên kiềng ba móng, nửa trên lật ra sau; bản thử Blender |
+| Rương Thiên Cơ (tạm) | [ruong-thien-co](../docs/superpowers/specs/2026-11-24-ruong-thien-co-design.md) | Tên lửa cơ khí tách đôi đứng trên ba vây, mũi lật ra sau; bản thử Blender |
 | Bàn giao mô hình | [BanGiao3D](Art/BanGiao3D.md) | Low-poly, màu trung tính; bậc cao chi tiết hơn; Meshy gộp tối đa 8 món một lượt; món lỗi gom làm lại một đợt, không làm riêng lẻ; Gậy sắt làng Gióng để thẳng |
 
 ## Quy tắc làm việc
