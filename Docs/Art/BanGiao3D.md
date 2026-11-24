@@ -357,3 +357,12 @@ python Tools/Blender/render_chest_am_nhac_preview.py -- Assets/_Project/Art/Ches
 - Vật liệu đơn sắc, không texture. Không có `Key`.
 - Chạy lại: `pip install bpy pillow`, rồi `python Tools/Blender/make_chest_viet_nam.py -- Assets/_Project/Art/Chests`.
 - Ảnh xem trước: `python Tools/Blender/render_chest_viet_nam_preview.py <thư mục>` (Cycles, đóng, hé, mở toang và 3 góc hình bóng; ảnh cận nón ghép thêm ở hàng dưới), bảng ghép ở `Art/Source/render_chest_viet_nam_open.png`. Ảnh dựng ngoại tuyến, **chưa chạy trong Unity** (đổi `lidOpenSign` nếu nón lật ngược).
+
+## Rương Tuổi thơ Việt Nam (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_TuoiTho.glb`: **bản thử tạm**, hình đèn ông sao năm cánh nằm ngửa (ý tưởng: [ruong-tuoi-tho](../../docs/superpowers/specs/2026-11-24-ruong-tuoi-tho-design.md)). **Chưa gán ID hay chủ đề vào dữ liệu game.** Dựng hoàn toàn bằng script, không mô hình ngoài, không texture ảnh.
+
+- Số tam giác: **654** (Body 508, Lid 120, Glow 10, Seal 16). Cao khoảng 0,49 m tính cả cán tre (thân và chóp 0,32 m), rộng khoảng 0,6 m.
+- Lớp: root `Chest_TuoiTho` → `Body` (thân sao rỗng giấy đỏ, khung tre, tua vàng ở đầu cánh, cây nến bên trong, cán tre buộc ở khe giữa hai mũi sao bên trái, chĩa chéo ra ngoài và lên), `Lid` (chóp sao đỏ vàng, gân tre; **gốc ở bản lề sau**, xoay quanh X, mở ngửa ra sau), `Glow` (ngôi sao phát sáng ở miệng, ẩn bằng scale), `Seal` (tem giấy dán ngang khe nắp ở cánh trước, mặt trước -Y). Không có `Binding`, `Key`.
+- Chạy: `pip install bpy pillow`, rồi `python Tools/Blender/make_chest_tuoi_tho.py` (tham số tuỳ chọn `-- <file.glb>`). Ảnh xem trước Cycles: `python Tools/Blender/render_chest_tuoi_tho_preview.py -- 48 480` → `Art/Source/render_chest_tuoi_tho_open.png` (đóng, hé, mở toang, 3 góc hình bóng).
+- Ảnh là dựng ngoại tuyến, **chưa chạy trong Unity**; chưa kiểm chiều mở nắp (đổi `lidOpenSign` nếu ngược).
