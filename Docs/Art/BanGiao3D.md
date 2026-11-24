@@ -288,12 +288,35 @@ Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` chọn 
 | V40 | Mèo vẫy tay | Nhật Bản cổ | Có |
 | V41 | Quạt giấy | Nhật Bản cổ | Có, mở nửa, mỏng |
 
+## Thường theo rương, đợt 2 (2026-11-24)
+
+2 ảnh gộp 8 món, 78 credit (số dư còn 612). Ảnh nguồn `Art/Source/ref_hiem_thuong_3.png` (đã làm phẳng nền, tô mờ đường kẻ ô), `_4.png`; ảnh kiểm tra `render_hiem_thuong_3.png`, `_4.png`. File ở `Items/LowPoly/Common/`, 0,4–10 nghìn tam giác mỗi món, cỡ thật (mét), đáy y=0. Đủ 16 món, không món nào mất hay dính.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| V22 | Guồng quay sợi | Truyền thuyết Châu Âu | Có, cao 0,6 m (cỡ thu nhỏ) |
+| V23 | Robot dây cót | Robot | Có, chìa cót sau lưng |
+| V24 | Tay robot thiếc | Robot | Có, nằm ngang, màu trắng bạc (nhạt hơn ảnh nguồn) |
+| V25 | Đá mặt trăng | Không gian | Có, màu xám trắng |
+| V26 | Thức ăn phi hành gia | Không gian | Có, túi trắng (mất ánh bạc giấy bạc) |
+| V27 | Băng game (nhại) | Game | Có, nằm phẳng, nhãn trống |
+| V28 | Giày bóng đá | Thể thao | Có, một chiếc, không logo |
+| V29 | Huy chương | Thể thao | Có, nằm phẳng, dây đỏ mỏng |
+| V30 | Đĩa than | Âm nhạc | Có, nằm phẳng, mỏng |
+| V31 | Kèn harmonica | Âm nhạc | Có |
+| V32 | Nến đen | Phim kinh dị | Có; Meshy ra xám, đã tô tối lại (`retex/fix_candle.py`) |
+| V33 | Búp bê vải | Phim kinh dị | Có, ngồi, mắt cúc áo |
+| V34 | Bọ hung | Ai Cập cổ đại | Có, bùa đá xanh |
+| V35 | Giấy cói | Ai Cập cổ đại | Có, mở nửa, hai đầu cuộn |
+| V36 | La bàn | Hải tặc | Có, nắp mở |
+| V37 | Đồng xu vàng | Hải tặc | Có, gộp 4 chồng xu |
+
 ## Danh sách làm lại
 
 Không làm lại riêng lẻ. Đủ 8 món hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi ảnh gộp 8 món).
 
 (Trống.)
 
-Còn lại chưa làm: 16 món Thường V22–V37 (đúng 2 ảnh gộp 8 món, ~78 credit). Bậc Hiếm đã đủ.
+Đã có mô hình cho mọi món trong bảng rương của spec (Thường V13–V41, Hiếm đủ).
 
 Kinh nghiệm: món đặt trong hộp, trên ma-nơ-canh hoặc giá đỡ dễ bị mất hay dính; để món đứng riêng, không đế thì Meshy giữ tốt hơn. Meshy có thể xếp lại vị trí các món (không theo lưới ảnh) hoặc nhân đôi một món: xuất từng mảnh ra ảnh 4 góc để nhận diện trước khi đặt tên.
