@@ -190,3 +190,26 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Magic (đá và tinh thể tím, khóa lục giác)
+
+`Assets/_Project/Art/Chests/Chest_Magic.glb`, **chưa gán chủ đề hay ID rương** vì danh sách chủ đề chưa chốt. Nguồn: FBX Meshy do chủ dự án cung cấp ở `Art/Source/MeshyChests/Magic/` (10,1 nghìn tam giác, Git LFS; chạy `git lfs pull`), không tốn credit mới. Tạo bằng cùng script với Golden, thêm ba tham số tùy chọn (màu glow, màu lót, cỡ chìa; bỏ trống thì ra y như Golden):
+
+```
+python cut_lid_from_meshy_fbx.py -- Assets/_Project/Art/Source/MeshyChests/Magic Assets/_Project/Art/Chests/Chest_Magic.glb Chest_Magic -0.13 0.6 1024 "0,-0.70,-0.10" "0.62,0.28,1.0" "0.05,0.02,0.11" 2.0
+```
+
+- **Đường nối** z = -0,13 (đơn vị nguồn): rãnh tím giữa hai đai vàng, chỗ ít đỉnh nhất (13 đỉnh) nên các viên tinh thể không bị cắt đôi. Ổ khóa lục giác nằm vắt qua đường nối (nửa trên theo nắp), giống Golden.
+- **Hướng:** cả hai mặt ±Y đều có khóa nên không cần xoay; mặt trước vẫn là -Y.
+- **Kích thước:** cao 0,6 m (cả tinh thể), rộng ≈0,57 m, gần cỡ Golden (0,60 × 0,42). Cao hơn Golden vì tinh thể nhô lên.
+- **Cấu trúc:** root `Chest_Magic` gồm `Body` (4,9 nghìn tam giác), `Lid` (6,4 nghìn, gốc ở bản lề sau), `Glow` (quầng sáng **tím**), `Key` (chìa bạc cỡ 2,0, to hơn Golden vì ổ khóa lớn). Đệm lót **tím sẫm**. Hiệu ứng chìa dùng nguyên `BoxOpenSequence`, không đổi code.
+- Texture ép 1024, có normal và metallic/roughness. Không có `Seal`, `Binding` (khóa và đai nằm trong texture).
+- Ảnh kiểm tra (dựng bằng Cycles CPU: chìa tới gần, cắm, xoay, hé nắp, đóng, mở toang): `Art/Source/render_chest_magic_open.png`. Bộ dựng: `Tools/Blender/cycles_chest_preview_setup.py` (đặt `CHEST_GLB`, `CHEST_EXPOSURE`).
+
+**Giới hạn:**
+- Chưa chạy trong Unity, chưa tạo prefab; ảnh xem trước là dựng ngoại tuyến bằng Blender, ánh sáng và vật liệu trong Unity có thể khác. Có thể cần đổi `lidOpenSign` nếu nắp mở ngược.
+- Đoạn mã C# (chìa khóa) chưa biên dịch trên máy dựng.
+- Script đã đổi để nhận màu, nhưng FBX gốc của Golden không nằm trong repo nên chưa chạy lại để so từng byte; giá trị mặc định giữ nguyên từng chữ.
+- Nắp mở 105° nhìn khá lớn vì nắp vòm dày (6,4 nghìn tam giác); nên chỉnh nhịp hoạt ảnh khi gắn vào game.
+- Mặt cắt thân là tấm lót phẳng che ~80% miệng rương, nên bên trong trông nông.
+- **Lưu ý cho chủ dự án:** phong cách Magic (tím rực, đá sáng, viền vàng bóng) khác hướng low-poly màu trung tính của repo; đặt cạnh các món low-poly có thể lệch tông, cần quyết định giữ hay đổi.
