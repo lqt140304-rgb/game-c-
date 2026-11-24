@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ChoDoLa.Morning
 {
     [RequireComponent(typeof(AudioSource))]
-    public sealed class MorningPrototype : MonoBehaviour
+    public sealed partial class MorningPrototype : MonoBehaviour
     {
         private static readonly string[] Brushes = { "Thường", "Đầu to", "Cá sấu" };
         private static readonly string[] Pastes = { "Bạc hà", "Dâu", "Trà đá" };
@@ -33,7 +33,6 @@ namespace ChoDoLa.Morning
         private GUIStyle darkLine;
         private GUIStyle button;
         private int brush;
-        private int paste;
         private int seed;
         private int brushZone = -1;
         private bool draggingBite;
@@ -68,15 +67,23 @@ namespace ChoDoLa.Morning
             notified = false;
             effectUntil = 0;
             feedback = "";
+            brush = -1;
+            tableInteraction = TableInteraction.None;
+            dirtyWorld = true;
         }
 
         private void Update()
         {
-            if (morning?.Phase == MorningPhase.Serving && Time.unscaledTime >= serveAt && morning.Serve())
+            if (morning == null)
             {
-                sound.PlayOneShot(tap);
-                feedback = "Chủ quán: Món của bạn đây!";
+                ClearWorld();
+                RestoreCamera();
+                return;
             }
+
+            RefreshWorld();
+            ReadWorldInput();
+            if (morning.Phase == MorningPhase.Serving) UpdateServing();
         }
 
         private void OnGUI()
@@ -89,25 +96,29 @@ namespace ChoDoLa.Morning
             GUI.matrix = Matrix4x4.TRS(new Vector3((Screen.width - 860 * scale) / 2 + jolt,
                 (Screen.height - 550 * scale) / 2, 0), Quaternion.identity, Vector3.one * scale);
 
-            Fill(new Rect(0, 0, 860, 550), Cream);
+            if (!IsWorldPhase(morning.Phase)) Fill(new Rect(0, 0, 860, 550), Cream);
             Fill(new Rect(0, 0, 860, 94), Ink);
             GUI.Label(new Rect(26, 12, 790, 40), Heading(), title);
             GUI.Label(new Rect(29, 53, 800, 30), $"Ngày {morning.Day} · {Hint()}", line);
 
             switch (morning.Phase)
             {
-                case MorningPhase.ChooseBrush: DrawChoices(); break;
+                case MorningPhase.ChooseBrush: DrawShortcuts(); break;
                 case MorningPhase.Brushing: DrawBrushing(); break;
-                case MorningPhase.ChooseShop: DrawShops(); break;
-                case MorningPhase.ChooseMeal: DrawMenu(); break;
+                case MorningPhase.ChooseShop: DrawShortcuts(); break;
+                case MorningPhase.ChooseMeal: DrawTableInteraction(); break;
                 case MorningPhase.Serving:
-                    GUI.Label(new Rect(100, 205, 670, 48), $"Chủ quán đang mang {Meals[morning.Shop, morning.Meal].ToLower()} ra…", darkLine);
+                    GUI.Label(new Rect(29, 115, 760, 40), $"Nhân viên đang mang {Meals[morning.Shop, morning.Meal].ToLower()} ra…", line);
                     break;
                 case MorningPhase.Eating: DrawEating(); break;
                 case MorningPhase.Complete: DrawComplete(); break;
             }
 
-            GUI.Label(new Rect(27, 458, 804, 45), feedback, darkLine);
+            if (!string.IsNullOrEmpty(feedback))
+            {
+                if (IsWorldPhase(morning.Phase)) Fill(new Rect(20, 454, 820, 48), Cream);
+                GUI.Label(new Rect(27, 458, 804, 45), feedback, darkLine);
+            }
             if (morning.IsSpicy && Time.unscaledTime < effectUntil) DrawSpiceBorder();
             shake = GUI.Toggle(new Rect(28, 512, 230, 24), shake, "Rung nhẹ khi ăn cay", darkLine);
             GUI.matrix = previous;
@@ -123,29 +134,14 @@ namespace ChoDoLa.Morning
 
         private string Hint() => morning.Phase switch
         {
-            MorningPhase.ChooseBrush => "Chọn bàn chải và kem đánh răng",
+            MorningPhase.ChooseBrush => brush < 0 ? "Bấm vào một bàn chải trên kệ" : "Bấm vào tuýp kem trên kệ để bắt đầu chà",
             MorningPhase.Brushing => "Giữ chuột trái và chà qua lại trên từng vùng răng",
-            MorningPhase.ChooseShop => "Chọn quán bạn muốn ghé",
-            MorningPhase.ChooseMeal => "Gọi một món từ menu",
+            MorningPhase.ChooseShop => "Bấm vào quán phở hoặc quán xôi",
+            MorningPhase.ChooseMeal => "Bấm vào thực đơn để xem · Chỉ vào nhân viên và nhấn E để gọi",
             MorningPhase.Eating => "Giữ chuột từ bát, kéo miếng ăn đến vùng miệng rồi thả",
             MorningPhase.Complete => "Bạn có thể ra chợ săn hộp",
             _ => "Chờ chủ quán đặt món xuống bàn"
         };
-
-        private void DrawChoices()
-        {
-            GUI.Label(new Rect(37, 115, 700, 30), "Bàn chải", darkLine);
-            for (int i = 0; i < Brushes.Length; i++)
-                if (Select(new Rect(37 + i * 260, 153, 240, 56), Brushes[i], brush == i)) brush = i;
-
-            GUI.Label(new Rect(37, 226, 700, 30), "Kem đánh răng", darkLine);
-            for (int i = 0; i < Pastes.Length; i++)
-                if (Select(new Rect(37 + i * 260, 263, 240, 56), Pastes[i], paste == i)) paste = i;
-
-            if (GUI.Button(new Rect(37, 350, 250, 56), "Bắt đầu chà", button) && morning.StartBrushing(brush, paste))
-                feedback = "";
-            DrawShortcuts();
-        }
 
         private void DrawBrushing()
         {
@@ -216,28 +212,6 @@ namespace ChoDoLa.Morning
                 Fill(new Rect(cursor.x - 22, cursor.y, 96, 7), Green);
                 Fill(new Rect(cursor.x - 22, cursor.y - 9, 29 + morning.Brush * 6, 9), Foam[morning.Paste]);
             }
-            DrawShortcuts();
-        }
-
-        private void DrawShops()
-        {
-            for (int i = 0; i < Shops.Length; i++)
-                if (GUI.Button(new Rect(55 + i * 385, 178, 355, 105), Shops[i], button) && morning.ChooseShop(i))
-                    feedback = "";
-            DrawShortcuts();
-        }
-
-        private void DrawMenu()
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                if (GUI.Button(new Rect(55 + i * 385, 170, 355, 86), Meals[morning.Shop, i], button) && morning.Order(i))
-                {
-                    serveAt = Time.unscaledTime + .75f;
-                    feedback = "";
-                }
-            }
-            if (GUI.Button(new Rect(55, 288, 210, 48), "Chọn quán khác", button)) morning.ReturnToShops();
             DrawShortcuts();
         }
 
@@ -338,15 +312,6 @@ namespace ChoDoLa.Morning
 
         private static Rect Teeth(int zone) => new Rect(65 + zone * 250, 182, 212, 130);
 
-        private bool Select(Rect rect, string label, bool selected)
-        {
-            Color previous = GUI.backgroundColor;
-            GUI.backgroundColor = selected ? Foam[0] : Color.white;
-            bool clicked = GUI.Button(rect, label, button);
-            GUI.backgroundColor = previous;
-            return clicked;
-        }
-
         private void CreateStyles()
         {
             if (title != null) return;
@@ -425,6 +390,8 @@ namespace ChoDoLa.Morning
 
         private void OnDestroy()
         {
+            ClearWorld();
+            RestoreCamera();
             Destroy(gasp);
             Destroy(meow);
             Destroy(tap);
