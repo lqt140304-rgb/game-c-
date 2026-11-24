@@ -269,3 +269,33 @@ python cut_lid_from_meshy_fbx.py -- <thư mục fbx và png> Assets/_Project/Art
 - Nắp là một tấm ván phẳng dày, khi hé thấy bên trong chỉ là đệm lót phẳng (mô hình nguồn là khối đặc, không có lòng rương thật), giống Golden.
 - Phong cách **thực tế, tối và nhiều chi tiết hơn** hướng low-poly màu trung tính của repo; đứng cạnh đồ low-poly sẽ lệch tông. Chủ dự án cần quyết có giữ hướng này cho rương Meshy hay không.
 - Glow đang có lõi sáng gần trắng vàng trong ảnh dựng vì tông màu của bộ dựng; trong Unity màu sẽ khác.
+
+## Rương Rác Quý (dựng bằng Blender)
+
+`Assets/_Project/Art/Chests/Chest_RacQuy.glb`, **bản dựng thử, chưa gán ID hay chủ đề** vào dữ liệu game. Ý tưởng và lý do chọn hình: [spec rương Rác Quý](../../docs/superpowers/specs/2026-11-24-ruong-rac-quy-design.md). Dựng hoàn toàn bằng script, không dùng Meshy.
+
+Hình dáng: **thùng rác tròn** thân côn loe miệng (rộng 0,35 m ở vành, cao 0,45 m tính cả quai nắp), hai đai nổi, thân móp một vết phía trước bên phải, nắp vòm có quai và một chiếc vương miện giấy rẻ tiền đội lệch, tem giấy "QUÝ" dán chéo, xương cá thò ra mép phía sau, trong lòng có lon bẹp và dép tổ ong. Màu xanh rêu xỉn, vật liệu đơn sắc, không texture.
+
+| Lớp | Tam giác | Nội dung |
+|---|---|---|
+| `Body` | 1.458 | Thân, đai, tai cầm, bản lề, tem "QUÝ", xương cá, lòng tối và rác bên trong |
+| `Lid` | 406 | Nắp vòm, quai, vương miện giấy. **Gốc ở bản lề phía sau**, xoay quanh trục X, mặt trước là -Y |
+| `Seal` | 72 | Chiếc tất thối vắt qua vành, phía trước bên trái |
+| `Binding` | 72 | Hai dải băng dính bạc dán chéo qua khe nắp ở mặt trước |
+| `Glow` | 252 | Hơi thối xanh vàng (tự phát sáng nhẹ) **và ba con ruồi** trên miệng thùng; ẩn bằng scale như các hộp khác |
+
+Tổng **2.008 tam giác** (không tính `Glow`). Không có lớp `Key`, nên `BoxOpenSequence` bỏ qua phần chìa khóa.
+
+Hiệu ứng mở đặc trưng: hơi và ruồi nằm chung trong `Glow`, nên khi `BoxOpenSequence` phóng to `Glow` theo các giai đoạn thì hơi thối và ruồi "nở" ra từ miệng thùng, **không cần sửa C#**. Giai đoạn "Gỡ niêm" làm tất và băng dính rơi ra. Gợi ý âm thanh: nắp tôn kêu kẹt, ruồi vo ve ở `onStageReached`. Đèn trong (`innerLight`) nên đặt màu xanh vàng thay vì vàng ấm.
+
+Chạy lại (cần `pip install bpy pillow`, Python 3.13, Blender 5.3 dạng module; các hộp `.glb` lấy qua `git lfs pull`):
+
+```
+python Tools/Blender/make_chest_rac_quy.py                         # ghi đè Chest_RacQuy.glb, in số tam giác và chiều cao
+python Tools/Blender/render_chest_rac_quy_preview.py -- <thư mục tạm> 64 640   # ảnh Cycles
+```
+
+Các số chỉnh nhanh nằm ở khối `CONFIG` đầu script (số cạnh `SEGS`, chiều cao, bán kính, vết móp `DENT`, vị trí tất `SOCK_ANGLE`, bảng màu).
+
+- Ảnh kiểm tra: `Art/Source/render_chest_rac_quy_open.png` (dựng ngoại tuyến bằng Cycles, **không phải ảnh từ Unity**): hàng 1 đóng, hé 25°, mở toang 110°; hàng 2 nhìn trước, bên phải, sau; hàng 3 hình bóng đen cạnh H1, H2, H3, RD.
+- Chưa nhập vào Unity, chưa tạo prefab, chưa gắn `BoxOpenSequence`. Nắp có thể mở ngược chiều trong Unity: đổi `lidOpenSign`. Vật liệu glTF tự phát sáng của hơi thối chưa kiểm tra trong URP.
