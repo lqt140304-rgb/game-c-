@@ -47,6 +47,13 @@ namespace ChoDoLa.Interaction
         {
             HeldItemProfile profile = new HeldItemProfile { itemId = itemId };
 
+            // Chests (Assets/_Project/Art/Chests/Chest_*.glb) share one preset, whatever their name.
+            if (itemId != null && itemId.StartsWith("Chest_", StringComparison.Ordinal))
+            {
+                ApplyChestPreset(profile);
+                return profile;
+            }
+
             switch (itemId)
             {
                 // ---- Items (inspect signs come from content.json) ----
@@ -120,6 +127,23 @@ namespace ChoDoLa.Interaction
             }
 
             return profile;
+        }
+
+        /// <summary>
+        /// Chests are 0.3–0.6 m tall, so they are shrunk to fit the hand. ChestHandMenu turns the chest so its
+        /// front (the lock) faces the camera; the base yaw turns it a little more toward the camera, because the
+        /// hand sits to the right. The lid hinges at the back, so it opens away from the camera.
+        /// Inspect stops move the chest toward the middle of the screen (negative X offset).
+        /// </summary>
+        private static void ApplyChestPreset(HeldItemProfile profile)
+        {
+            Vector3 centre = new Vector3(-0.2f, 0.06f, 0.1f);
+            profile.targetSize = 0.26f;
+            profile.baseEuler = new Vector3(14f, 22f, 0f);
+            profile.stops.Add(new InspectStop("Mặt trước và ổ khóa", new Vector3(-4f, -20f, 0f), centre, 0.55f, 0.9f));
+            profile.stops.Add(new InspectStop(string.Empty, new Vector3(0f, 80f, 0f), centre, 0.55f, 0.2f));
+            profile.stops.Add(new InspectStop("Mặt sau và bản lề", new Vector3(5f, 160f, 0f), centre, 0.55f, 0.7f));
+            profile.stops.Add(new InspectStop("Nhìn vào lòng rương", new Vector3(40f, -20f, 0f), centre, 0.65f, 0.9f));
         }
 
         /// <summary>Generic Valorant-style flourish: bring it close, spin, flip to the bottom, settle.</summary>
