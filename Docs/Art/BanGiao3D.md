@@ -190,3 +190,12 @@ Tham số: độ cao đường nối nắp theo đơn vị nguồn (0,03, nằm 
 - Texture ép xuống 1024 (từ 2048), có normal, metallic/roughness gộp theo chuẩn glTF và emission cho viền vàng.
 - Ảnh kiểm tra đóng/mở: `Art/Source/render_chest_golden_open.png`. Ảnh dựng bằng bộ vẽ phần mềm, tô màu theo texture, **không phải ảnh chụp từ Unity**, nên chưa kiểm chứng ánh sáng, vật liệu hay chiều mở nắp trong Unity (đổi `lidOpenSign` nếu mở ngược).
 - Chưa tạo prefab, chưa gắn `BoxOpenSequence`, chưa chạy trong Unity. Đoạn mã chìa khóa mới viết, **chưa biên dịch** vì máy này không có Unity hay trình biên dịch C#.
+
+## Rương Không gian (dựng bằng Blender, tạm)
+
+`Assets/_Project/Art/Chests/Chest_KhongGian.glb`, **bản thử tạm, chưa gán ID hay chủ đề vào dữ liệu game, chưa chạy trong Unity**. Ý tưởng: [spec](../../docs/superpowers/specs/2026-11-24-ruong-khong-gian-design.md), khoang hạ cánh hình chuông đứng trên 3 chân, chóp lật ra sau.
+
+- Tam giác: 816 (Body 564, Lid 228, Binding 24; Glow 44 không tính). Cao ~0,52 m tính cả ăng-ten (thân ~0,41 m), đáy ở gốc.
+- Lớp: `Chest_KhongGian` → `Body`, `Lid` (gốc ở bản lề sau +Y, xoay quanh X), `Binding` (chốt trước + bản lề), `Glow` (đĩa sáng xanh ở miệng, ẩn bằng scale). Không có Seal, Key.
+- Vật liệu đơn sắc, không texture: vỏ trắng ngà, tấm chắn nhiệt cam, kim loại xám, kính xanh, điểm vàng.
+- Chạy: `pip install bpy pillow`, rồi từ gốc repo `python Tools/Blender/make_chest_khong_gian.py`; ảnh: `python Tools/Blender/render_chest_khong_gian.py <thư mục tạm> Assets/_Project/Art/Source/render_chest_khong_gian_open.png` (dựng ngoại tuyến bằng Cycles).
