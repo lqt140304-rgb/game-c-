@@ -99,7 +99,7 @@ Người chơi mang đồ đến **cửa hàng đồ cổ**, thẩm định viê
 ## Câu hỏi còn mở
 
 1. Thẩm định viên ở cửa hàng đồ cổ là ai: nhân vật mới hay Giáo Sư Lẫm? Có cần thêm cửa hàng mới, hay dùng quầy giám định hiện có?
-2. Giá trị cụ thể: số lượt soi, phí soi thêm, mức phạt giả-thành-thật, mức lỗ thật-thành-giả, mức ép giá: **chờ Claude 2**. Cần mô phỏng để game không quá bấp bênh.
+2. Giá trị cụ thể: số lượt soi, phí soi thêm, mức phạt giả-thành-thật, mức lỗ thật-thành-giả, mức ép giá: **chờ Claude 2**. Cần mô phỏng để game không quá bấp bênh. *Claude 2 đã đo và đề xuất (2026-11-24, chờ duyệt):* [Sprint5SoiLoi.md](../../../Docs/Balance/Sprint5SoiLoi.md).
 3. Lớp phủ tình trạng và biến đổi bản giả trên mô hình low-poly: cách làm cụ thể (shader hay texture) do Antigravity quyết.
 4. Có tùy chọn bỏ qua hoàn toàn soi lỗi (chọn nhanh, chấp nhận rủi ro) hay không.
 5. Cách lưu bằng chứng và kết quả soi trong dữ liệu ván: trao đổi với Codex trong `Docs/Content/YeuCauDuLieu.md`.
