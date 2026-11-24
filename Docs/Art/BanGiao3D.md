@@ -263,12 +263,37 @@ Găng tay lấp lánh (L19) làm lại vẫn ra trắng trơn: Meshy không gi�
 
 Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` chọn mặt tam giác theo màu và hướng rồi tô lại vùng UV của chúng trên texture trong file `.glb`. Dùng cho lỗi màu nhỏ thay vì chạy lại Meshy.
 
+## Hiếm cuối và Thường theo rương, đợt 1 (2026-11-24)
+
+2 ảnh gộp 8 món, 78 credit (số dư còn 690). Ảnh nguồn `Art/Source/ref_hiem_thuong_1.png`, `_2.png` (ảnh 2 đã làm phẳng nền và tô mờ đường kẻ ô); ảnh kiểm tra `render_hiem_thuong_1.png`, `_2.png`. Hiếm ở `Items/LowPoly/Rare/`, Thường ở `Items/LowPoly/Common/`; 0,7–11,6 nghìn tam giác mỗi món, cỡ thật (mét), đáy y=0. Đủ 16 món, không món nào mất hay dính.
+
+**Mã Thường V13–V41** cấp theo thứ tự bảng rương trong spec cho cả 29 món Thường mới (kể cả món chưa làm), để đợt sau dùng tiếp: V13 Radio bóng đèn, V14 Xúc xắc chì, V15 Bộ bài cũ, V16 Guốc mộc, V17 Bi ve, V18 Tò he, V19 Băng đô làng ninja, V20 Bát mì ramen, V21 Hạt đậu thần, V22 Guồng quay sợi, V23 Robot dây cót, V24 Tay robot thiếc, V25 Đá mặt trăng, V26 Thức ăn phi hành gia, V27 Băng game, V28 Giày bóng đá, V29 Huy chương, V30 Đĩa than, V31 Kèn harmonica, V32 Nến đen, V33 Búp bê vải, V34 Bọ hung, V35 Giấy cói, V36 La bàn, V37 Đồng xu vàng, V38 Quạt lông Gia Cát, V39 Đèn lồng đỏ, V40 Mèo vẫy tay, V41 Quạt giấy.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| H33 | Bình gốm Thanh Hoa | Trung Hoa cổ | Có |
+| H34 | Mặt nạ quỷ Oni | Nhật Bản cổ | Có, nằm ngửa |
+| H35 | Búp bê Daruma | Nhật Bản cổ | Có; đã tô lại vệt xanh trắng ở đáy (`retex/fix_daruma.py`) |
+| V13 | Radio bóng đèn | Kim Khí | Có, gộp thân và mặt loa; mặt sau có vệt núm vặn do texture |
+| V14 | Xúc xắc chì | Đen | Có, một cặp, màu xám trắng |
+| V15 | Bộ bài cũ | Đen | Có, xấp bài |
+| V16 | Guốc mộc | Việt Nam | Có, một đôi, gộp hai chiếc |
+| V17 | Bi ve | Tuổi thơ Việt Nam | Có, 5 viên đục (không trong suốt), màu nhạt |
+| V18 | Tò he | Tuổi thơ Việt Nam | Có, con gà trên que |
+| V19 | Băng đô làng ninja (nhại) | Wibu | Có, cuộn tròn; biểu tượng lá xoáy giống bản gốc, cần chủ dự án duyệt |
+| V20 | Bát mì ramen (nhại) | Wibu | Có, có đũa |
+| V21 | Hạt đậu thần | Truyền thuyết Châu Âu | Có, 3 hạt |
+| V38 | Quạt lông Gia Cát | Trung Hoa cổ | Có, nằm phẳng |
+| V39 | Đèn lồng đỏ | Trung Hoa cổ | Có |
+| V40 | Mèo vẫy tay | Nhật Bản cổ | Có |
+| V41 | Quạt giấy | Nhật Bản cổ | Có, mở nửa, mỏng |
+
 ## Danh sách làm lại
 
 Không làm lại riêng lẻ. Đủ 8 món hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi ảnh gộp 8 món).
 
-(Trống. H13 đã làm lại ở đợt 2.)
+(Trống.)
 
-Còn lại chưa làm: 3 món Hiếm (Bình gốm Thanh Hoa, Mặt nạ quỷ Oni, Búp bê Daruma) và 29 món Thường.
+Còn lại chưa làm: 16 món Thường V22–V37 (đúng 2 ảnh gộp 8 món, ~78 credit). Bậc Hiếm đã đủ.
 
 Kinh nghiệm: món đặt trong hộp, trên ma-nơ-canh hoặc giá đỡ dễ bị mất hay dính; để món đứng riêng, không đế thì Meshy giữ tốt hơn. Meshy có thể xếp lại vị trí các món (không theo lưới ảnh) hoặc nhân đôi một món: xuất từng mảnh ra ảnh 4 góc để nhận diện trước khi đặt tên.

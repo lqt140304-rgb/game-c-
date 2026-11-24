@@ -4,7 +4,7 @@ Tốn ~9 credit (ảnh) + ~30 credit (3D) mỗi lượt. Không chạy khi chủ
 
 Chạy trong thư mục làm việc tạm (scratchpad), không trong repo:
 
-1. Ảnh gộp: `python3 Tools/Meshy/gen_img.py out.png "1) ..., 2) ..., ... 8) ..."` (8 món, hàng trên trái→phải rồi hàng dưới). Xem ảnh; có đường kẻ ô thì tô đè trước khi dựng 3D.
+1. Ảnh gộp: `python3 Tools/Meshy/gen_img.py out.png "1) ..., 2) ..., ... 8) ..."` (8 món, hàng trên trái→phải rồi hàng dưới). Xem ảnh; có đường kẻ ô (mỗi ô nền một tông) thì làm phẳng nền từng ô (trừ mặt phẳng nền ước lượng từ viền ô) rồi tô mờ đường nối trước khi dựng 3D.
 2. Dựng 3D low-poly: `python3 Tools/Meshy/img_to_3d.py out.png TAG` → `TAG_all.glb` (30 nghìn tam giác, như các bậc khác).
 3. Liệt kê mảnh: `python3 Tools/Meshy/comps.py TAG` (cần `pip install trimesh scipy`). Mảnh lớn = món; thường x tăng theo cột, z âm là hàng trên, nhưng Meshy có lúc xếp lại vị trí hoặc dựng hai hàng đứng: xuất mọi mảnh ra rồi xem 4 góc để nhận diện.
 4. Xuất từng món: `python3 Tools/Meshy/export.py TAG '{"<mảnh>":["X07_ten",kich_thuoc_m],...}'` → `items_ht/*.glb` (tâm giữa, đáy y=0, cạnh dài nhất = kích thước). Món tách mảnh thì ghi khóa `"1+2"` để gộp. Cần `comps.py` cùng thư mục chạy.
