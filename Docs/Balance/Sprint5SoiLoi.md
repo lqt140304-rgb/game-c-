@@ -1,5 +1,7 @@
 # Sprint 5 phần 3: soi lỗi và trả giá (Claude 2)
 
+> **Cần đo lại (2026-11-24):** chủ dự án đã chốt luật soi mới (tự tìm chỗ lỗi, bấm vào lỗi thì giá trừ, bảng cho chọn thật hay giả). Số đo dưới đây theo luật cũ. Kế hoạch đo lại: [BanGiaoSprint5SoiLoi.md](BanGiaoSprint5SoiLoi.md).
+
 Viết ngày 2026-11-24. Phần 3 của việc cân bằng Sprint 5: lượt soi, phí soi thêm, mức phạt và mức lỗ khi soi sai thật giả, giá ép khi soi thiếu, bán nhanh, và giá trị của trả giá kiểu Ace Attorney theo 5 bậc (Thường bán nhanh, Hiếm trở lên trả giá đầy đủ). **Mọi con số dưới đây là ĐỀ XUẤT, chưa chốt.** Điều cần chủ dự án quyết nằm ở mục 7. Luật gốc: [soi-loi-tra-gia](../../docs/superpowers/specs/2026-11-23-soi-loi-tra-gia-design.md). Cách đo và giả định: [spec cách đo](../../docs/superpowers/specs/2026-11-24-can-bang-soi-loi-design.md). Nền: 4 rương cơ bản đã chốt ([Sprint5Ruong.md](Sprint5Ruong.md)).
 
 > **Tiền tệ:** mọi số tiền ghi bằng **đồng Việt Nam**. Mô phỏng tính theo đơn vị 10.000 đ (`extra_fee` H=20 là 200.000 đ) và in qua `QA/currency.py`. Mọi mức là phần trăm của giá thẩm định, làm tròn về bội số 10.000 đ; phí cố định là bội số 10.000 đ.
