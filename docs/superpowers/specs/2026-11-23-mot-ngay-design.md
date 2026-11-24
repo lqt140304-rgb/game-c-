@@ -1,6 +1,6 @@
 # Thiết kế: một ngày trong game, mini-game buổi sáng và tình huống đời thường (phần 3/4)
 
-Trạng thái: **chờ chủ dự án duyệt**. Chưa có gì được xây theo bản này.
+Trạng thái: **đã duyệt** (cập nhật 2026-11-24: mèo của chợ, chuông rung... vẫn là chất liệu cho tình huống; chưa có cảnh hay mô hình mèo). Chưa có gì được xây theo bản này.
 
 Phần 1 (rương, rác, sưu tập, thần lực): [2026-11-23-ruong-suu-tap-design.md](2026-11-23-ruong-suu-tap-design.md). Phần 2 (mở màn, giọng điệu, nhân vật): [2026-11-23-mo-man-design.md](2026-11-23-mo-man-design.md). Phần 4 (nội dung thần lực chi tiết) làm sau.
 

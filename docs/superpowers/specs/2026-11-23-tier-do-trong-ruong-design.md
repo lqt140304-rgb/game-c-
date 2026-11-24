@@ -17,7 +17,7 @@ Chốt rương ra **loại đồ nào** và **cụ thể là món gì**, để n
 ## Không phải mục tiêu
 
 - Chưa chốt giá nền, hồ sơ soi, dấu hiệu soi và thần lực của 25 món mới.
-- Chưa làm mô hình 3D (làm sau khi chuyển sang low-poly).
+- Mô hình 3D đã làm (xem mục "Tình trạng mô hình" cuối bản).
 - Con số tỉ lệ và giá: Claude 2 chốt.
 
 ## Ràng buộc đã có
@@ -85,7 +85,7 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 3. Số món mỗi nhóm nguồn gốc ở mỗi bậc có cân đối cho rương Vải Niêm (theo bộ) không: cần kiểm tra.
 4. Tỉ lệ ra ở mục 3 và 8–10% Huyền thoại ở Rương Tổng Hợp: **chờ Claude 2**.
 5. Kim Khí có nên ra tạo tác đã có (trùng) hay chỉ ra tạo tác chưa sở hữu.
-6. 25 món mới cần mô hình 3D low-poly; tổng cộng 35 hiện vật, ưu tiên theo bậc.
+6. ~~Cần mô hình 3D low-poly cho 25 món mới~~ **Đã làm**, xem dưới. **Còn lệch ở bậc Huyền thoại, cần chủ dự án quyết.**
 
 ## Cập nhật: cách làm mô hình theo bậc (chốt)
 
@@ -98,3 +98,9 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 | Rất hiếm, Huyền thoại | Meshy | Chi tiết nhất, làm sau |
 
 Đã làm: Rác (9) và Thường (V01–V05, V09, quạt nan V11, máy game 8-bit V12) trong `Assets/_Project/Art/Items/LowPoly/Junk` và `Common`. **Bản dùng chính tạo bằng Meshy** (gộp ảnh có bóng đổ), vì bản dựng bằng code (`Junk_Blender`, `Common_Blender`) quá trừu tượng, người chơi không nhận ra món nếu không có chú thích. Nguyên tắc: mỗi món phải nhận ra ngay khi nhìn.
+
+## Tình trạng mô hình (cập nhật 2026-11-24)
+
+Đủ mô hình low-poly cho 5 bậc, ở `Assets/_Project/Art/Items/LowPoly/` (`Junk`, `Common`, `Rare`, `VeryRare`, `Legendary`). Bậc **Hiếm** và **Rất hiếm** khớp đúng danh sách ở mục 2.
+
+**Lệch cần quyết, ở bậc Huyền thoại:** danh sách ở mục 2 (đã cân bằng Việt Nam và nhại) là Nỏ thần, Roi sắt làng Gióng, Ấn Ngọc Tỷ, Chiếc nhẫn duy nhất, Quyển sổ định mệnh, Vé số độc đắc. Nhưng mô hình **đã làm** theo danh sách cũ: Trái tim robot, Ấn Ngọc Tỷ, Quả táo vàng, Giày thủy tinh, Phi thuyền mini, Vé số độc đắc. Chỉ **Ấn Ngọc Tỷ và Vé số độc đắc** trùng. Chưa món nào bị xóa hay đổi; chờ chủ dự án chọn danh sách chính thức (xem tin nhắn).

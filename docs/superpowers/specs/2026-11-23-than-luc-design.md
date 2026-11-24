@@ -1,6 +1,6 @@
 # Thiết kế: thần lực của đồ cổ (phần 4/4)
 
-Trạng thái: **chờ chủ dự án duyệt**. Chưa có gì được xây theo bản này.
+Trạng thái: **đã duyệt** (cập nhật 2026-11-24: chữ chạy kiểu light novel, không giọng thật; mô hình 3D của V01–V10 đã làm lại low-poly). Chưa có gì được xây theo bản này.
 
 Phần 1: [2026-11-23-ruong-suu-tap-design.md](2026-11-23-ruong-suu-tap-design.md) (mục 5 đã chốt nguyên tắc thần lực). Phần 2: [2026-11-23-mo-man-design.md](2026-11-23-mo-man-design.md) (giọng điệu Gen Z). Phần 3: [2026-11-23-mot-ngay-design.md](2026-11-23-mot-ngay-design.md).
 
@@ -23,7 +23,7 @@ Làm cho đồ quý giá có hồn: mở ra một món đồ cổ là thấy nó
 ## Ràng buộc đã có
 
 - Giọng điệu hài hước phóng đại, ngôn ngữ Gen Z, lời thoại nằm trong file dữ liệu riêng (phần 2). Lời thoại hiện bằng chữ chạy kiểu light novel, **không có giọng thật**.
-- **Định hướng nghệ thuật mới:** low-poly, màu tươi sáng. Hiệu ứng và mô tả hiệu ứng trong bản này cần hiểu theo phong cách đó; "ánh sáng ấm, tránh lòe loẹt" nay thành "màu tươi, hiệu ứng gọn".
+- **Định hướng nghệ thuật hiện tại:** low-poly, **màu trung tính**. Hiệu ứng và mô tả hiệu ứng trong bản này cần hiểu theo phong cách đó; "ánh sáng ấm, tránh lòe loẹt" nay thành "màu trung tính, hiệu ứng gọn".
 - Cầm và soi bằng `HeldItemViewmodel`: F soi, Q cất (đã làm, chưa chạy thử trong Unity).
 - Dấu hiệu soi của V01–V10 nằm trong `Docs/Content/data/content.json`, trường `inspect_signs`.
 
@@ -40,7 +40,7 @@ Mỗi món có **một nhân cách** (giọng nói riêng) và tối đa **ba lo
 **Quy tắc viết**
 - Mỗi món **đúng một nhân cách**, câu ngắn như tin nhắn, tối đa khoảng 12 từ mỗi câu.
 - Mỗi loại phản ứng có **2–3 biến thể** để không lặp lại khi cầm nhiều lần; chọn theo hạt giống ván, không ngẫu nhiên thật, để lưu và tải lại không đổi.
-- Hiệu ứng nhẹ, hợp chất phố đá cổ kỳ ảo: ánh sáng ấm, rung nhẹ, âm thanh ngắn. **Không** hiệu ứng lòe loẹt.
+- Hiệu ứng nhẹ, hợp phong cách low-poly màu trung tính: rung nhẹ, ánh sáng dịu, âm thanh ngắn. **Không** hiệu ứng lòe loẹt.
 - Không câu thoại nào ám chỉ thật/giả, tình trạng hay giá.
 - Sự kiện ngoài đời xác suất thấp, chỉ xảy ra tối đa một lần mỗi món mỗi ngày.
 

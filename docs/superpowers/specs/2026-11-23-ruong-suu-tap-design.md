@@ -94,7 +94,7 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 ## Câu hỏi còn mở
 
 1. Giá, tỉ lệ rơi, tỉ lệ rác và mức cộng hưởng khi có 4 ô: **chờ Claude 2**.
-2. Rác cần mô hình 3D hoặc icon: bao nhiêu món, làm bằng Meshy (gộp một ảnh như các lần trước)?
+2. ~~Rác cần mô hình 3D hoặc icon~~ **Đã làm:** 9 món rác bằng Meshy, xem phần 6.
 3. Rương mở khóa (Tổng Hợp, Cổ Phong, Thiên Cơ, Rác Quý) cần mô hình 3D riêng không, hay dùng lại 4 mô hình hiện có đổi màu?
 4. Khoảnh khắc thần lực "ngoài đời thật" cần cảnh chợ có NPC và mèo, đang chờ Antigravity dựng cảnh.
 5. Giá điểm phát triển của từng nút và cách chia điểm cuối ván: **chờ Claude 2**; giao diện cây (màn hình) do Antigravity dựng.

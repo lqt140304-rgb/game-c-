@@ -8,7 +8,7 @@ Bản này **thay thế** cách giám định bằng chữ hiện có trong `Doc
 
 ## Định hướng nghệ thuật mới (ghi nhận)
 
-Game chuyển sang **low-poly, màu tươi sáng** (thay cho photoreal, màu trầm). Hệ quả cho bản này: chi tiết nhỏ mất đi, nên **dấu hiệu phải đọc được bằng hình khối và màu**, và số lỗi mỗi món phải ít và rõ. Chưa làm lại 24 mô hình 3D; việc đó làm sau khi chốt phần này.
+Game chuyển sang **low-poly, màu trung tính** (thay cho photoreal; bạn thử "tươi sáng" rồi chỉnh về trung tính). Hệ quả cho bản này: chi tiết nhỏ mất đi, nên **dấu hiệu phải đọc được bằng hình khối và màu**, và số lỗi mỗi món phải ít và rõ. Mô hình 3D của 35 món đã làm lại theo low-poly (xem phần 6).
 
 ## Ý định
 

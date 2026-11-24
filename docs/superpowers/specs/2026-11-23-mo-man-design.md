@@ -2,6 +2,8 @@
 
 Trạng thái: **chờ chủ dự án duyệt**. Chưa có gì được xây theo bản này.
 
+**Cập nhật 2026-11-24:** phong cách ảnh là low-poly màu trung tính; mô hình 3D của mọi món đã có ở `Assets/_Project/Art/Items/LowPoly/`; áo đấu cũ của đội nhại (R07) đã dựng, huy hiệu là khuôn mặt sừng cách điệu, khác logo thật.
+
 Phần 1 (rương, rác, sưu tập, thần lực) ở [2026-11-23-ruong-suu-tap-design.md](2026-11-23-ruong-suu-tap-design.md). Phần 3 (một ngày trong game, mini-game buổi sáng) và phần 4 (nội dung thần lực chi tiết) làm sau.
 
 ## Ý định
@@ -26,7 +28,7 @@ Người chơi vào game là hiểu ngay: mình mắc nợ, phải trả 7 kỳ,
 - 7 ngày, mỗi ngày kết thúc ở phòng trọ, Anh Bảy thu nợ đúng kỳ vào cuối ngày. Kỳ 1 là 200 xu, tiền đầu ván 1000 xu.
 - Mỗi ngày tối đa 3 lượt mua, mỗi lượt 1 hộp mỗi loại, 1 manh mối miễn phí và lời mách của Dì Mận 15 xu.
 - Bản chơi thử chỉ có phòng trọ, một khu chợ nhỏ, bàn mở/soi, Dì Mận, Kim Khuy và Anh Bảy. (`Docs/GameDesign/README.md`)
-- Thị trấn giữ chất phố đá cổ kỳ ảo, tránh nhồi hiệu ứng lòe loẹt. (`docs/superpowers/specs/2026-11-22-market-town-design.md`)
+- **Hướng nghệ thuật hiện tại: low-poly, màu trung tính** (bạn đã đổi từ phố đá photoreal, rồi chỉnh từ "tươi sáng" về "trung tính"). Thiết kế thị trấn `2026-11-22-market-town-design.md` (phố đá châu Âu cổ, đèn ấm) viết trước thay đổi này và **chưa được cập nhật**, cần chủ dự án và Antigravity xác nhận.
 
 ## 1. Câu chuyện nền
 
@@ -47,7 +49,7 @@ Nhân vật cá độ bóng đá, dồn hết tiền vào **đội mình mê**, 
 ## 3. Giọng điệu
 
 - Hài hước **phóng đại**, ngôn ngữ **Gen Z** (tiếng lóng mạng, meme, viết tắt), thoại ngắn như tin nhắn và bình luận.
-- Phóng đại ở **lời thoại, biểu cảm, tình huống**, không phải ở hình ảnh: khu chợ vẫn giữ chất phố đá cổ kỳ ảo.
+- Phóng đại ở **lời thoại, biểu cảm, tình huống**, không phải ở hình ảnh: hình ảnh giữ low-poly màu trung tính.
 - Chuyện nhỏ kể như đại sự (đôi tất thối thành "vũ khí sinh học", thua cược thành "bi kịch quốc gia").
 - Tiếng lóng lỗi thời nhanh, nên **toàn bộ lời thoại nằm trong file dữ liệu riêng** (ngoài code) để thay lóng mà không đụng game.
 
