@@ -74,7 +74,7 @@ TREE = [
 ]
 CASH_BONUS = 0          # M2 (đơn vị 10.000 đ). Đề xuất 0 (bỏ buff), đo cả 100 = 1.000.000 đ như bản cũ
 RD_EARLY_OPT = "best"   # M3 có bật không: "best" bật khi có lợi cho cách chơi đó (đo ở static), True, False
-GT_BEST = {}            # cách chơi -> gia truyền tốt nhất (đo ở static), dùng khi đã có M1
+GT_BEST = {k: "GT1" for k in ("thận trọng", "liều") + SKILLED}   # đo ở static: GT1 hơn GT2 0,5 đến 1,6 điểm mọi cách chơi
 # Rương chủ đề mở bằng thành tựu (GIẢ ĐỊNH, thành tựu chưa chốt): chủ đề thứ j mở khi Sổ có >= THEME_RULE[j] mục.
 THEME_RULE = (15, 30)
 SHOP_EXTRA = None       # None: bày mọi rương đã mở; k: mỗi ngày chỉ bày k rương mở khóa / chủ đề (phần 2, câu hỏi 2)
@@ -84,8 +84,9 @@ HIGH = ("X", "L")
 
 
 # --- dựng cấu hình một ván -------------------------------------------------------------------------------
-# ĐỀ XUẤT sửa bảng phần 2 khi có soi lỗi (phần 3): Tổng Hợp hàng giả 20% -> 10% (xem báo cáo mục 3).
-UNLOCK_OVER = {"Tổng Hợp": dict(fake=.10)}
+# ĐỀ XUẤT sửa bảng phần 2 khi có soi lỗi (phần 3): Tổng Hợp hàng giả 20% -> 10%, Hiếm 28% -> 25%, Rất hiếm 14% -> 13%,
+# Thường 39% -> 43% (xem báo cáo mục 3).
+UNLOCK_OVER = {"Tổng Hợp": dict(fake=.10, tiers=dict(R=.16, T=.43, H=.25, X=.13, L=.03))}
 
 
 def scenario(chests=(), n_theme=0, rd_early=False, shop_extra=None):
@@ -226,7 +227,7 @@ class Meta:
         return (tuple(sorted(chests)), self.n_theme(), bool(rd), cash, gt)
 
 
-RD_BEST = {}   # cách chơi -> có bật M3 hay không (đo ở static)
+RD_BEST = {}   # cách chơi -> có bật M3 hay không. Đo ở static: M3 làm mọi cách chơi thua nhiều hơn, nên không ai bật
 
 
 def run_points(run, new_items, pts=None):
