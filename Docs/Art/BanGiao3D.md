@@ -141,8 +141,10 @@ Lưu ý: tất thối và trứng thối có vạch mùi xanh nổi trên đầu
 
 `Assets/_Project/Art/Items/LowPoly/VeryRare/`, tạo bằng Meshy từ **một ảnh gộp 6 món** (`Art/Source/ref_rat_hiem.png`), chi tiết hơn bậc Hiếm (4–23 nghìn tam giác mỗi món): `V07_tinh_the_lam`, `V10_manh_vay_long`, `X01_dan_than`, `X02_trong_dong`, `X03_kiem_sang`, `X04_qua_cau_ngoc`, cộng `X05_trai_tim_robot` và `X06_phi_thuyen_mini` (hạ từ Huyền thoại). Mã `X01`–`X06` là tạm. **X04 (quả cầu ngọc) và X03 (kiếm sáng) gợi nhắc rất rõ nhân vật và tác phẩm nổi tiếng, cần chủ dự án duyệt về bản quyền trước khi phát hành.** Cỡ thật (mét), đáy y=0.
 
-## Hiện vật Huyền thoại low-poly (4/6 món)
+## Hiện vật Huyền thoại low-poly (6 món)
 
-`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly và texture cao nhất: `L01_an_ngoc_ty`, `L02_qua_tao_vang`, `L03_giay_thuy_tinh`, `L04_ve_so_doc_dac`. **Còn thiếu 2 món Việt Nam: Nỏ thần và Roi sắt làng Gióng** (chưa làm, chờ cho phép dùng credit). Hai món Trái tim robot và Phi thuyền mini đã **hạ xuống Rất hiếm** (`VeryRare/X05_trai_tim_robot`, `X06_phi_thuyen_mini`). Mã tạm. Ảnh nguồn: `Art/Source/ref_huyen_thoai.png`, `ref_huyen_thoai2.png`.
+`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly và texture cao nhất: `L01_an_ngoc_ty`, `L02_qua_tao_vang`, `L03_giay_thuy_tinh`, `L04_ve_so_doc_dac`, `L05_no_than`, `L06_roi_sat_lang_giong`. Mã tạm. Hai món Trái tim robot và Phi thuyền mini đã **hạ xuống Rất hiếm** (`VeryRare/X05`, `X06`). Ảnh nguồn: `Art/Source/ref_huyen_thoai.png`, `ref_huyen_thoai2.png`, `ref_no_roi.png`.
 
-Lưu ý: **Meshy không giữ vật trong suốt**, nên trái tim robot không có chuông kính, chỉ còn trái tim trên đế đồng. Đệm của giày thủy tinh có một vệt đỏ do texture.
+**Roi sắt có xương và chuyển động:** `L06_roi_sat_lang_giong_rigged.glb` là cây roi gắn **16 xương** dọc thân, kèm clip `WhipWave` (2 giây, lặp): tay cầm đầu rồng giữ cứng, sóng uốn lan từ tay cầm ra đầu roi, càng xa càng mạnh. Dựng bằng `Tools/Blender/rig_whip.py` (chạy cho bất kỳ cây gậy thẳng nào: `python rig_whip.py -- in.glb out.glb min|max [số xương] [số giây]`). Video xem trước: `Art/Source/roi_sat_uon_luon.mp4` (dựng bằng three.js, **chưa chạy trong Unity**). Muốn nhập vào Unity cần glTFast; clip chạy qua Animator hoặc Animation. Bản `L06_roi_sat_lang_giong.glb` không có xương, dùng khi chỉ cần dáng thẳng.
+
+Lưu ý: Meshy không giữ vật trong suốt, nên trái tim robot (X05) không có chuông kính. Đệm giày thủy tinh (L03) có một vệt đỏ do texture.

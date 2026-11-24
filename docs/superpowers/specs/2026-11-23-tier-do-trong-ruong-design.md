@@ -49,7 +49,7 @@ Nguyên tắc nội dung: **gần gũi, người chơi nhận ra ngay**. Pha **c
 | **Thường (8)** | **V01** Bình sứ men xanh, **V02** Sách cổ bìa da, **V03** Đồng hồ quả lắc cũ, **V04** Mảnh kính đồng hồ thiên văn, **V05** Thiết bị liên lạc hỏng, **V09** Lá bùa giấy vàng, Quạt nan cũ (VN), Máy game cầm tay 8-bit (NH) |
 | **Hiếm (7)** | **V06** Bộ pin lượng tử, **V08** Gương thủy tinh cổ tích, Băng cassette và máy phát (VN), Nón lá thêu hoa (VN), Cái túi thần kỳ 4 chiều (NH), Cục sạc hình chuột vàng (NH), Mũ phù thủy học việc (NH) |
 | **Rất hiếm (8)** | **V07** Tinh thể lam cầm tay, **V10** Mảnh vảy long, Đàn thần (VN, truyền thuyết Thạch Sanh), Trống đồng nhỏ (VN), Kiếm sáng ba màu (NH), Quả cầu ngọc 7 sao (NH), Trái tim robot (hạ từ Huyền thoại), Phi thuyền mini của phi hành gia (hạ từ Huyền thoại) |
-| **Huyền thoại (6)** | Ấn Ngọc Tỷ (VN), Tấm vé số độc đắc "chưa đổi" (VN, hài), Giày thủy tinh nguyên bản (cổ tích), Quả táo vàng (thần thoại), **Nỏ thần** (VN, An Dương Vương, *chưa làm mô hình*), **Roi sắt của vị anh hùng làng Gióng** (VN, *chưa làm mô hình*) |
+| **Huyền thoại (6)** | Ấn Ngọc Tỷ (VN), Tấm vé số độc đắc "chưa đổi" (VN, hài), Giày thủy tinh nguyên bản (cổ tích), Quả táo vàng (thần thoại), **Nỏ thần** (VN, An Dương Vương, `L05`), **Roi sắt của vị anh hùng làng Gióng** (VN, `L06`, có xương và chuyển động như roi thật) |
 
 ## 3. Rương ra bậc nào (đề xuất)
 
@@ -108,7 +108,7 @@ Theo yêu cầu của chủ dự án, thêm **hai nhóm nguồn gốc** vào 6 n
 
 | Nhóm | Món |
 |---|---|
-| **Việt Nam** | Dép tổ ong (R05), Quạt nan (V11), Băng cassette (H01), Nón lá (H02), Đàn thần (X01), Trống đồng (X02), Vé số độc đắc (L04), Nỏ thần, Roi sắt làng Gióng (hai món sau chưa có mô hình) |
+| **Việt Nam** | Dép tổ ong (R05), Quạt nan (V11), Băng cassette (H01), Nón lá (H02), Đàn thần (X01), Trống đồng (X02), Vé số độc đắc (L04), Nỏ thần, Roi sắt làng Gióng  |
 | **Nhại** | Áo đấu đội nhại (R07), Máy game 8-bit (V12), Túi thần kỳ (H03), Cục sạc chuột (H04), Mũ phù thủy (H05), Kiếm sáng (X03), Quả cầu ngọc (X04) |
 | Giữ nhóm cũ | Mọi món còn lại (ví dụ Bình sứ, Sách cổ: Quá khứ; Pin lượng tử: Tương lai; Tinh thể lam: Ngoài hành tinh) |
 
@@ -127,5 +127,5 @@ Mô hình low-poly ở `Assets/_Project/Art/Items/LowPoly/` (`Junk`, `Common`, `
 **Đã chốt với chủ dự án về bậc Huyền thoại:** tận dụng các mô hình đã dựng bằng cách **hạ những món hình chưa đẹp xuống bậc thấp hơn** và thêm đồ Việt Nam vào Huyền thoại.
 - **Hạ xuống Rất hiếm:** Trái tim robot (`X05`), Phi thuyền mini (`X06`).
 - **Giữ ở Huyền thoại:** Ấn Ngọc Tỷ (`L01`), Quả táo vàng (`L02`), Giày thủy tinh (`L03`), Vé số độc đắc (`L04`).
-- **Thêm vào Huyền thoại, chưa có mô hình:** Nỏ thần, Roi sắt làng Gióng. Việc làm cần **dùng credit Meshy**, chờ chủ dự án cho phép.
+- **Thêm vào Huyền thoại, đã có mô hình:** Nỏ thần (`L05`), Roi sắt làng Gióng (`L06`, gắn xương, uốn lượn như roi thật).
 - **Bỏ khỏi danh sách:** Chiếc nhẫn duy nhất, Quyển sổ định mệnh (hai món nhại, thay bằng hai món Việt Nam). Đây là tôi suy ra từ "thêm các món Việt Nam vào", chủ dự án chưa xác nhận từng món.
