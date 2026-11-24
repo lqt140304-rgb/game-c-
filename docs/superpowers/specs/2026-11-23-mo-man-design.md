@@ -44,6 +44,7 @@ Nhân vật cá độ bóng đá, dồn hết tiền vào **đội mình mê**, 
 3. **Anh Bảy gửi giấy nợ:** kỳ 1 là 200 xu, thu cuối ngày. Hình thức: tin nhắn thoại khoa trương kèm giấy nhét qua khe cửa. Đủ để người chơi hiểu luật mà không cần bảng hướng dẫn.
 4. **Ra chợ**, Dì Mận dạy mua hộp bằng đoạn thoại ngắn: 3 lượt, 1 hộp mỗi loại, manh mối, giá niêm yết.
 5. **Hộp đầu tiên được sắp sẵn:** hộp thứ nhất ra **rác hài** (tốt nhất là áo đấu hoặc khăn cổ vũ cũ của chính nhân vật), hộp thứ hai ra đồ thường bán được. Dạy rằng rương có thể ra rác, mà người chơi vẫn qua ngày 1.
+   - **Chốt 2026-11-24:** ngày 1 của lần chơi đầu, cửa hàng **chỉ bán Rương Gỗ và Rương Vải Niêm** (Kim Khí và Đen chưa bán). Số đo ở [Sprint5Ruong](../../../Docs/Balance/Sprint5Ruong.md) mục 3: không ván nào thua trước ngày 3, đường thắng còn (bot thường 8% đến 10%, người chơi giỏi đến 36%). Các ván sau bán đủ như thường.
 6. **Cuối ngày về phòng trọ**, Anh Bảy thu 200 xu. Từ ngày 2, mọi thứ ra hoàn toàn ngẫu nhiên.
 
 ## 3. Giọng điệu

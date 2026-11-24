@@ -59,8 +59,11 @@ if __name__ == "__main__":
                 sys.stdout.flush()
         sys.exit()
     if which == "final":
-        J = [("cuối, không sắp sẵn", final(), 2000, True)] + \
-            [("cuối, sắp sẵn %s" % m, final(script=m), 1500, True) for m in ("any", "free1", "cheap")]
+        J = [("cuối, không sắp sẵn", final(), 2000, True),
+             ("lần chơi đầu đã chốt: sắp sẵn + ngày 1 chỉ bán Gỗ và Vải Niêm", dict(CS.FIRST_RUN), 1500, True),
+             ("tham khảo: mọi ván ngày 1 chỉ bán Gỗ và Vải Niêm", final(day1_shop_first_run_only=False), 1500, True)] + \
+            [("tham khảo: sắp sẵn %s, cửa hàng ngày 1 bán đủ" % m, final(script=m, day1_shop=None), 1500, True)
+             for m in ("any", "free1", "cheap")]
     else:
         J = [("3 ô", final(slots=3), 1000, False), ("5 ô", final(slots=5), 1000, False),
              ("tạo tác trùng 0", final(dup_frac=0), 1000, False), ("tạo tác trùng 1", final(dup_frac=1.0), 1000, False),
