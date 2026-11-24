@@ -19,6 +19,7 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 | Chủ đề | File | Điểm chính đã chốt |
 |---|---|---|
 | Bàn giao mô hình | [BanGiao3D](Art/BanGiao3D.md) | Low-poly, màu trung tính; bậc cao chi tiết hơn; Meshy gộp tối đa 8 món một lượt; món lỗi gom làm lại một đợt, không làm riêng lẻ; Gậy sắt làng Gióng để thẳng |
+| Rương Tuổi thơ (tạm) | [ruong-tuoi-tho](../docs/superpowers/specs/2026-11-24-ruong-tuoi-tho-design.md) | Bản thử: đèn ông sao nằm ngửa, nắp chóp sao bản lề sau; chưa chốt, chưa gán dữ liệu |
 
 ## Quy tắc làm việc
 
