@@ -143,8 +143,8 @@ Lưu ý: tất thối và trứng thối có vạch mùi xanh nổi trên đầu
 
 ## Hiện vật Huyền thoại low-poly (6 món)
 
-`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly và texture cao nhất: `L01_an_ngoc_ty`, `L02_qua_tao_vang`, `L03_giay_thuy_tinh`, `L04_ve_so_doc_dac`, `L05_no_than`, `L06_roi_sat_lang_giong`. Mã tạm. Hai món Trái tim robot và Phi thuyền mini đã **hạ xuống Rất hiếm** (`VeryRare/X05`, `X06`). Ảnh nguồn: `Art/Source/ref_huyen_thoai.png`, `ref_huyen_thoai2.png`, `ref_no_roi.png`.
+`Assets/_Project/Art/Items/LowPoly/Legendary/`, làm bằng Meshy với poly và texture cao nhất: `L01_an_ngoc_ty`, `L02_qua_tao_vang`, `L03_giay_thuy_tinh`, `L04_ve_so_doc_dac`, `L05_no_than`, `L06_gay_sat_lang_giong`. Mã tạm. Hai món Trái tim robot và Phi thuyền mini đã **hạ xuống Rất hiếm** (`VeryRare/X05`, `X06`). Ảnh nguồn: `Art/Source/ref_huyen_thoai.png`, `ref_huyen_thoai2.png`, `ref_no_roi.png`.
 
-**Roi sắt có xương và chuyển động:** `L06_roi_sat_lang_giong_rigged.glb` là cây roi gắn **16 xương** dọc thân, kèm clip `WhipWave` (2 giây, lặp): tay cầm đầu rồng giữ cứng, sóng uốn lan từ tay cầm ra đầu roi, càng xa càng mạnh. Dựng bằng `Tools/Blender/rig_whip.py` (chạy cho bất kỳ cây gậy thẳng nào: `python rig_whip.py -- in.glb out.glb min|max [số xương] [số giây]`). Video xem trước: `Art/Source/roi_sat_uon_luon.mp4` (dựng bằng three.js, **chưa chạy trong Unity**). Muốn nhập vào Unity cần glTFast; clip chạy qua Animator hoặc Animation. Bản `L06_roi_sat_lang_giong.glb` không có xương, dùng khi chỉ cần dáng thẳng.
+**Gậy sắt làng Gióng** (`L06`): theo truyền thuyết là gậy sắt thẳng và cứng, nên mô hình để dáng thẳng, không xương, không chuyển động. Công cụ `Tools/Blender/rig_whip.py` (gắn xương và sóng uốn cho vật thẳng) và video thử `Art/Source/roi_sat_uon_luon.mp4` chỉ giữ để tham khảo, không dùng cho món này.
 
 Lưu ý: Meshy không giữ vật trong suốt, nên trái tim robot (X05) không có chuông kính. Đệm giày thủy tinh (L03) có một vệt đỏ do texture.
