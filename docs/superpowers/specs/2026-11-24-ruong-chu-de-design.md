@@ -98,7 +98,7 @@ Chủ dự án đồng ý danh sách rương chủ đề gợi ý (2026-11-24). 
 
 ### Rác riêng của rương chủ đề (chốt 2026-11-24)
 
-Chưa có mô hình. "(hư)" là dạng hư hỏng nặng, nhìn là biết đồ bỏ. "(cặp: X)" là bản hư của món X ở bậc cao (mục 14). Món phẳng (tờ, vé, ảnh, quẻ) cho cuộn, gấp hoặc nhàu để Meshy giữ được độ dày; đồ thủy tinh làm bằng gốm.
+Mã R10–R50 theo thứ tự bảng (xem [BanGiao3D](../../../Docs/Art/BanGiao3D.md)); đã có mô hình 12 món đợt 1. "(hư)" là dạng hư hỏng nặng, nhìn là biết đồ bỏ. "(cặp: X)" là bản hư của món X ở bậc cao (mục 14). Món phẳng (tờ, vé, ảnh, quẻ) cho cuộn, gấp hoặc nhàu để Meshy giữ được độ dày; đồ thủy tinh làm bằng gốm.
 
 | Rương | Rác riêng | Hình dáng |
 |---|---|---|

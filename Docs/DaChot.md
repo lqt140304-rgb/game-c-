@@ -20,7 +20,7 @@ Bản tóm tắt toàn bộ kế hoạch: [TongQuanKeHoach.md](TongQuanKeHoach.m
 
 | Chủ đề | File | Điểm chính đã chốt |
 |---|---|---|
-| Bàn giao mô hình | [BanGiao3D](Art/BanGiao3D.md) | Low-poly, màu trung tính; bậc cao chi tiết hơn; Meshy gộp tối đa 8 món một lượt; món lỗi gom làm lại một đợt, không làm riêng lẻ (danh sách làm lại ở cuối file); Gậy sắt làng Gióng để thẳng |
+| Bàn giao mô hình | [BanGiao3D](Art/BanGiao3D.md) | Low-poly, màu trung tính; bậc cao chi tiết hơn; Meshy gộp 8 món một lượt (rác nhỏ thử 12 món, đạt); món lỗi gom làm lại một đợt, không làm riêng lẻ (danh sách làm lại ở cuối file); Gậy sắt làng Gióng để thẳng |
 
 ## Quy tắc làm việc
 

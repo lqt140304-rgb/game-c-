@@ -311,6 +311,29 @@ Tô lại texture (không tốn credit): script ở `Tools/Meshy/retex/` (món T
 | V36 | La bàn | Hải tặc | Có, nắp mở |
 | V37 | Đồng xu vàng | Hải tặc | Có, gộp 4 chồng xu |
 
+## Rác theo chủ đề, đợt 1 (2026-11-24, thử 12 món một lượt)
+
+Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md) (mục "Rác riêng của rương chủ đề"). **Thử gộp 12 món một lượt** (lưới 4×3, `gen_img.py ... 12`): đủ 12 món, không mất, không dính, cùng giá 39 credit (số dư còn 573), ~30 nghìn tam giác chia cho 12 món (0,6–5,5 nghìn mỗi món), đủ cho bậc Rác. Ảnh nguồn `Art/Source/ref_rac_chu_de_1.png` (chữ "DANGER" trên biển đã thay bằng "CẤM ĐỔ RÁC"); ảnh kiểm tra `render_rac_chu_de_1.png`. File ở `Items/LowPoly/Junk/`, cỡ thật (mét), đáy y=0.
+
+**Mã Rác R10–R50** cấp theo thứ tự bảng rác chủ đề trong spec cho cả 41 món: R10 Mũ "nồi cơm điện", R11 Biển "Cấm đổ rác", R12 Hóa đơn tiền điện, R13 Que kem, R14 Sổ liên lạc, R15 Vỏ bim bim, R16 Gối ôm waifu, R17 Poster rách, R18 Figure gãy, R19 Ếch bông, R20 Mũi Pinocchio, R21 Bát cháo nguội, R22 Dây cáp rối, R23 Sạc dự phòng phồng, R24 Bàn phím hỏng, R25 Mũ giấy bạc, R26 Mảnh vệ tinh cháy, R27 Thẻ nhớ mất save, R28 Đĩa game lậu, R29 Tay cầm đứt dây, R30 Vé bóng đá giả, R31 Còi méo, R32 Băng đội trưởng giãn chun, R33 Vé concert hủy, R34 Loa kẹo kéo, R35 Lightstick vỡ, R36 Tóc giả, R37 Chuông gió, R38 Bàn cầu cơ gãy, R39 Lọ cát, R40 Lạc đà bông, R41 Tượng nhân sư gãy mũi, R42 Chai rỗng, R43 Bịt mắt rách, R44 Chân gỗ mọt, R45 Bánh bao mốc, R46 Bao lì xì rỗng, R47 Đũa gãy, R48 Quẻ xăm đại hung, R49 Hộp bento nứt, R50 Ô giấy rách.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| R10 | Mũ bảo hiểm "nồi cơm điện" (hư) | Việt Nam | Có, nứt, trầy, quai đứt; dáng hơi giống mũ nửa đầu thật hơn mũ nhựa mỏng |
+| R11 | Biển "Cấm đổ rác" | Việt Nam | Có, có túi nilon đen ở chân |
+| R12 | Hóa đơn tiền điện tháng 6 | Việt Nam | Có, cuộn quăn, mỏng |
+| R18 | Figure (hư) | Wibu | Có, mất đầu và một tay |
+| R19 | Ếch bông | Truyền thuyết Châu Âu | Có, vương miện giấy |
+| R21 | Bát cháo nguội | Truyền thuyết Châu Âu | Có, thìa cắm trong bát |
+| R22 | Mớ dây cáp rối | Robot | Có, dẹt |
+| R23 | Sạc dự phòng (hư) | Robot | Có, cháy sém |
+| R24 | Bàn phím (hư) | Robot | Có, ngả vàng, rụng phím, dẹt |
+| R25 | Mũ giấy bạc | Không gian | Có; đã tô lại đốm mốc lem từ bánh bao (`retex/fix_rac.py R25`) |
+| R40 | Lạc đà bông (hư) | Ai Cập cổ đại | Có, lòi bông |
+| R45 | Bánh bao mốc (hư) | Trung Hoa cổ | Có |
+
+Còn 29 món Rác chủ đề (khoảng 3 lượt 12 món), 7 Thường và 5 Hiếm mới.
+
 ## Danh sách làm lại
 
 Không làm lại riêng lẻ. Đủ 8 món hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi ảnh gộp 8 món).

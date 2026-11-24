@@ -62,8 +62,8 @@ Bản gạch đầu dòng toàn bộ kế hoạch tới 2026-11-24. Chi tiết v
 
 ## Mô hình 3D (tình trạng)
 - Rương: 4 rương cơ bản làm bằng Blender, có lớp nắp mở được.
-- Đồ: Rác 9 (còn 41 rác chủ đề mới), Thường 37 (còn 7 món mới), Hiếm 37 (còn 5 món mới), Rất hiếm 32 (đủ), Huyền thoại 24 (găng tay L19 cần hiệu ứng lấp lánh trong Unity). Chi tiết: [BanGiao3D](Art/BanGiao3D.md).
-- Meshy: gộp 8 món một lượt; món lỗi gom làm lại một đợt khi đủ 8 món.
+- Đồ: Rác 21 (còn 29 rác chủ đề mới), Thường 37 (còn 7 món mới), Hiếm 37 (còn 5 món mới), Rất hiếm 32 (đủ), Huyền thoại 24 (găng tay L19 cần hiệu ứng lấp lánh trong Unity). Chi tiết: [BanGiao3D](Art/BanGiao3D.md).
+- Meshy: gộp 8 món một lượt (rác nhỏ gộp được 12 món); món lỗi gom làm lại một đợt khi đủ 8 món.
 - Chưa chạy thử trong Unity (cần glTFast để đọc .glb).
 
 ## Còn chờ
