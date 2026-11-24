@@ -87,7 +87,7 @@ def sens_jobs(n=1000):
 
 def show(label, prof, strat, r):
     d = r.pop("day1", None)
-    m = dict(r, fines_per_run=fmt_vnd(r["fines_per_run"]), loss_per_run=fmt_vnd(r["loss_per_run"]))
+    m = dict(r, fines_per_run=fmt_vnd(r["fines_per_run"]), loss_per_run=fmt_vnd(r["loss_per_run"]), pen_per_run=fmt_vnd(r["pen_per_run"]))
     print("== %s | %s | %s: %s" % (label, prof, strat, json.dumps(m, ensure_ascii=False)))
     if d:
         d = dict(d, arrears1_mean=fmt_vnd(round(d["arrears1_mean"])), arrears1_max=fmt_vnd(d["arrears1_max"]),
