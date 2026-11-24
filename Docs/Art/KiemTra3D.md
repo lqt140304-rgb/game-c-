@@ -113,7 +113,7 @@ python3 Tools/Blender/audit_color_bleed.py compare <truoc.glb> <sau.glb> <anh.jp
 | L19 găng tay | Phủ kim sa bạc (lưới lục giác); vật liệu metallic 0,6, roughness 0,25 |
 | L20 băng video | Viền cạnh xung quanh đen, bỏ mảng hồng/nâu; giữ nhãn trắng, cửa sổ |
 | L22 bản đồ | Bỏ mảng trắng, giấy da đều màu, giữ nét mực |
-| X04 quả cầu ngọc | Cam đều, bỏ mảng cam sẫm loang (bóng khúc xạ vẽ sẵn); chỉ giữ 6 sao ở mặt trước; đĩa xám xanh trong đế thành gỗ nâu |
+| X04 quả cầu ngọc | Cam đều, bỏ mảng cam sẫm loang (bóng khúc xạ vẽ sẵn) và vệt gỗ vẽ lên mặt cầu; chỉ giữ 6 sao ở mặt trước; đế (kể cả đĩa xám xanh trong lòng) gỗ nâu. Cầu và đế dính chung một lưới nên tách theo từng texel: trong 1,025 bán kính hoặc nửa trên là cầu; mép đế ôm đáy cầu nhận theo màu gỗ gốc |
 
 - `audit_color_bleed.py` và `color_bleed_lib.py`: **kiểm tra tự động.** Mỗi tam giác lấy 7 mẫu màu texture trong vùng UV của nó (Lab):
   - **outlier**: mặt lệch ΔE76 > 20 so với *mọi* mặt kề.

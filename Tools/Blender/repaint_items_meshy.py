@@ -7,7 +7,7 @@ Chi tac dong len texture; hinh hoc, UV, phap tuyen giu nguyen.
 Moi mon co danh sach buoc trong RULES. Moi buoc chon texel theo:
   faces : ham tren dac trung mat (F.nx/ny/nz phap tuyen the gioi, F.h do cao 0..1 tu day,
           F.r ban kinh ngang 0..1 tinh tu truc giua, F.rad = phap tuyen . huong ra ngoai tu truc)
-  texels: ham (lab, pos) tren tung texel da chon (mau Lab va vi tri 3D)
+  texels: ham (lab, pos) tren tung texel da chon (mau Lab va vi tri 3D); orig=True -> lab la mau goc
 va mot hanh dong:
   tint   : dua ve mau dich ("auto" = mau chu dao cua mon), giu `keep` phan bien thien do sang;
   stripes: soc ngang deu theo do cao (`count` soc, ti le `duty` mau thu hai);
@@ -104,21 +104,42 @@ RULES = {
     # qua cau ngoc (ref_rat_hiem.png): cam trong deu, 6 sao do chi o mat truoc, de go nau.
     # Meshy ve san mang cam sam loang (bong khuc xa), manh sao lac o dinh/mat sau, dia xam trong de.
     "X04_qua_cau_ngoc": [
-        dict(faces=lambda F: F.h > 0.3,
-             texels=lambda lab, p: ~((chroma(lab) > 35) & ((hue(lab) < 45) | (hue(lab) > 340)) & (lab[:, 1] > 35)),
-             act="tint", color=(240, 146, 34), keep=0.15),
-        dict(faces=lambda F: (F.h > 0.3) & (F.ny > -0.35),
-             texels=lambda lab, p: (chroma(lab) > 35) & (lab[:, 1] > 35),
-             act="tint", color=(240, 146, 34), keep=0.15),
-        dict(faces=lambda F: F.h <= 0.3,
-             texels=lambda lab, p: (chroma(lab) > 38) & (hue(lab) > 40) & (hue(lab) < 90),
-             act="tint", color=(240, 146, 34), keep=0.15),
-        dict(faces=lambda F: F.h <= 0.3,
-             texels=lambda lab, p: (chroma(lab) < 16) | ((hue(lab) > 110) & (hue(lab) < 280)),
-             act="tint", color=(112, 76, 50), keep=0.3),
-        dict(faces=lambda F: (F.h <= 0.3) & (F.r < 0.35), act="tint", color=(112, 76, 50), keep=0.3),  # dia giua de
+        # qua cau = mat nam tren mat cau (tam/ban kinh lay tu bao ngoai), con lai la de go
+        #  (xet tung texel theo vi tri 3D: tam giac dai vat tu cau xuong de duoc chia dung)
+        dict(texels=lambda lab, p: on_sphere(p) & ~((chroma(lab) > 35) & ((hue(lab) < 45) | (hue(lab) > 340))
+                                                    & (lab[:, 1] > 35)),
+             act="tint", color=(240, 146, 34), keep=0.12),
+        dict(faces=lambda F: F.ny > -0.35, texels=lambda lab, p: on_sphere(p) & (chroma(lab) > 35) & (lab[:, 1] > 35),
+             act="tint", color=(240, 146, 34), keep=0.12),
+        dict(texels=lambda lab, p: ~on_sphere(p), act="tint", color=(112, 76, 50), keep=0.35),
+        # mep tren cua de om day cau: cung do cao/ban kinh voi day cau -> dua vao mau GOC (go toi, it sac)
+        #  (mep: cao 22-28%, cach truc 0,4-0,7 R; day cau lo qua long de va than cau nam ngoai dai nay)
+        dict(orig=True, texels=lambda lab, p: lip_band(p) & (lab[:, 0] < 42) & (chroma(lab) < 30),
+             act="tint", color=(112, 76, 50), keep=0.35),
     ],
 }
+
+
+BOX = [None, None]  # bao ngoai cua mon dang xu ly (dat trong process)
+
+
+def on_sphere(p, tol=0.025):
+    """Diem thuoc qua cau o dinh vat (ban kinh = nua be ngang, tam cach dinh mot ban kinh).
+    Day cau hoi bep (0,92-0,99 R) con de luon >= 1,04 R, nen lay moi diem trong 1,025 R."""
+    mn, mx = BOX
+    R = max(mx[0] - mn[0], mx[1] - mn[1]) / 2
+    ctr = np.array([(mn[0] + mx[0]) / 2, (mn[1] + mx[1]) / 2, mx[2] - R])
+    d = np.linalg.norm(p - ctr, axis=1)
+    # de chi nam duoi tam cau: phan tren luon la qua cau (dinh hoi phong toi 1,03 R)
+    return ((d < (1 + tol) * R) & (d > 0.8 * R)) | (p[:, 2] > ctr[2] - 0.3 * R)
+
+
+def lip_band(p):
+    mn, mx = BOX
+    R = max(mx[0] - mn[0], mx[1] - mn[1]) / 2
+    h = (p[:, 2] - mn[2]) / (mx[2] - mn[2])
+    r = np.hypot(p[:, 0] - (mn[0] + mx[0]) / 2, p[:, 1] - (mn[1] + mx[1]) / 2) / R
+    return (h > 0.22) & (h < 0.28) & (r > 0.4) & (r < 0.7)
 
 
 class Faces:
@@ -272,15 +293,17 @@ def process(path):
     tex = image_array(node.image); h, w = tex.shape[:2]
     P, T, UV = mesh_arrays(o)
     F = Faces(P, T)
+    BOX[:] = [P.min(0), P.max(0)]
     fid, pos = texel_map(P, T, UV, h, w)
     inside = fid >= 0
     lab_img = srgb_to_lab(tex)
+    lab0 = lab_img.copy()  # mau goc, cho cac buoc co orig=True
     changed = np.zeros((h, w), bool)
     for st in steps:
         fsel = st["faces"](F) if "faces" in st else np.ones(len(T), bool)
         sel = inside & fsel[np.maximum(fid, 0)]
         if "texels" in st:
-            tsel = st["texels"](lab_img[sel], pos[sel])
+            tsel = st["texels"]((lab0 if st.get("orig") else lab_img)[sel], pos[sel])
             m = np.zeros(sel.sum(), bool); m[:] = tsel; sel2 = np.zeros_like(sel); sel2[sel] = m; sel = sel2
         if not sel.any():
             continue
