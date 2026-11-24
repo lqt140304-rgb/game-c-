@@ -75,7 +75,7 @@ def union_pools():
 
 # Bảng ĐỀ XUẤT (Claude 2, Docs/Balance/Sprint5RuongMoKhoa.md). Chưa chốt: chờ chủ dự án duyệt.
 UNLOCK = {
-    "Tổng Hợp": dict(price=600, fake=.20, ntrue=2, tiers=dict(R=.15, T=.38, H=.28, X=.16, L=.03), pools=union_pools()),
+    "Tổng Hợp": dict(price=600, fake=.20, ntrue=2, tiers=dict(R=.16, T=.39, H=.28, X=.14, L=.03), pools=union_pools()),
     "Cổ Phong": dict(price=450, fake=.10, ntrue=2, tiers=dict(R=.14, T=.30, H=.15, X=.07, L=0), art_sys="CP",
                      art_mix=(.60, .35, .05), pools=dict(T=["PC1", "PC2"], H=["PC3"], X=["PC4"])),
     "Thiên Cơ": dict(price=450, fake=.10, ntrue=2, tiers=dict(R=.12, T=.29, H=.17, X=.08, L=0), art_sys="TC",
