@@ -44,3 +44,8 @@ sysinfo.txt
 # Python
 __pycache__/
 *.pyc
+
+# Morning prototype checks
+!/QA/Morning/MorningChecks.csproj
+/QA/Morning/bin/
+/QA/Morning/obj/

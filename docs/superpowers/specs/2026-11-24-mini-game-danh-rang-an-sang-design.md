@@ -42,3 +42,15 @@ Giữ phản ứng ngắn để người chơi vẫn điều khiển được. N
 - Thử cả hai quán. Kiểm tra menu, đúng món được phục vụ, ăn từng miếng, ăn cay và uống nước.
 - Thử ngày đầu và một ngày sau với thao tác chơi nhanh hoặc bỏ qua. Kiểm tra người chơi vẫn vào được vòng săn hộp.
 - Tỉ lệ hình hiếm, lựa chọn quán và chi tiết thao tác ăn được điều chỉnh sau Play Mode.
+
+## Mở prototype trong Unity
+
+Chọn **Tools → Cho Do La → Open Morning Prototype** rồi nhấn **Play**. Scene thử dựng giao diện 2D, hình vết bám và âm thanh tạm. Trong Inspector, tắt **Preview Cat** để chạy tỷ lệ ngẫu nhiên thay vì luôn có mèo. Cuối buổi sáng, nút tiếp tục chuyển sang ngày thử kế tiếp để kiểm tra làm nhanh và bỏ qua.
+
+Scene chính có thể tắt **Standalone Preview**, gọi `BeginMorning(day, seed)` và nghe `MorningCompleted` để tiếp tục vòng săn hộp. Hiện chưa gắn vào các GameObject phòng trọ hoặc quán ăn trong `Market_Town`.
+
+Kiểm thử logic độc lập với Unity ở thư mục gốc repo:
+
+```sh
+dotnet run --project QA/Morning
+```
