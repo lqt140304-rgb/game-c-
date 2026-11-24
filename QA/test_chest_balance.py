@@ -73,9 +73,11 @@ class ChestBalance(unittest.TestCase):
         cls.mix = CS.mix_of(cls.c, N)
         cls.day1 = CS.day1_stats(cls.c, P.STRATS["liều"], N_DAY1)
         cls.day1_script = {}
-        for mode in ("any", "cheap"):
-            cls.c = CS.apply(dict(CS.FINAL, script=mode))
-            cls.day1_script[mode] = CS.day1_stats(cls.c, P.STRATS["liều"], N_DAY1)
+        # Lần chơi đầu đã chốt: hộp sắp sẵn + ngày 1 chỉ bán Gỗ và Vải Niêm
+        cls.c = CS.apply(CS.FIRST_RUN)
+        cls.day1_script["lần chơi đầu"] = CS.day1_stats(cls.c, P.STRATS["liều"], N_DAY1)
+        cls.first_buys = CS.day1_boxes(cls.c, P.STRATS["liều"], 100)
+        cls.first_buys_skilled = CS.day1_boxes(cls.c, C.TURN_NAMES["liều + giám định"], 100)
         CS.restore()
 
     def test_every_chest_profitable_in_expectation(self):
@@ -110,6 +112,13 @@ class ChestBalance(unittest.TestCase):
             self.assertEqual(d["lost_day1"], 0, d)
             self.assertEqual(d["lost_before_day3"], 0, d)
             self.assertLess(d["arrears1_max"], 1000 * .3, d)   # dưới 3.000.000 đ, xa ngưỡng thua 10.000.000 đ (số trong mô phỏng tính theo đơn vị 10.000 đ)
+
+    def test_first_run_day1_shop_only_wood_and_cloth(self):
+        """Chủ dự án chốt 2026-11-24: ngày 1 của lần chơi đầu chỉ bán Rương Gỗ và Rương Vải Niêm."""
+        self.assertEqual(set(CS.FINAL["day1_shop"]), {"Gỗ", "Vải Niêm"})
+        self.assertTrue(self.first_buys)
+        self.assertLessEqual(set(self.first_buys), {"Gỗ", "Vải Niêm"}, self.first_buys)
+        self.assertLessEqual(set(self.first_buys_skilled), {"Gỗ", "Vải Niêm"}, self.first_buys_skilled)
 
     def test_scripted_run_still_winnable(self):
         """Lần chơi đầu (hộp sắp sẵn) khó hơn nhưng đường thắng vẫn còn."""

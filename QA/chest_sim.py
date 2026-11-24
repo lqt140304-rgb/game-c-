@@ -68,7 +68,10 @@ FINAL_CHESTS = {
                     pools=CHESTS["Kim Khí"]["pools"]),   # 34% còn lại là tạo tác
     "Đen": dict(price=1200, fake=.30, ntrue=1, tiers=dict(R=.30, T=.03, H=.04, X=.58, L=.05), pools=CHESTS["Đen"]["pools"]),
 }
-FINAL = dict(DEFAULT, chests=FINAL_CHESTS, script=False)
+# Lần chơi đầu (chủ dự án chốt 2026-11-24): hộp ngày 1 sắp sẵn (mo-man) và ngày 1 cửa hàng chỉ bán Gỗ và Vải Niêm.
+# Ván thường: script=False nên luật cửa hàng ngày 1 không áp. Đo lần chơi đầu: dict(FINAL, script="any").
+FINAL = dict(DEFAULT, chests=FINAL_CHESTS, script=False, day1_shop=("Gỗ", "Vải Niêm"), day1_shop_first_run_only=True)
+FIRST_RUN = dict(FINAL, script="any")
 KEYS = ("H1", "H2", "H3", "RD")
 STATE = {}
 # Ảnh chụp trạng thái lõi cũ lúc nạp module, để restore() trả lại (các test khác dùng chung biến toàn cục).
@@ -76,7 +79,8 @@ _SNAP = dict(ITEMS=dict(ITEMS), BOXES=copy.deepcopy(BOXES), ART=dict(ART), NTRUE
              RD_FROM_DAY=sm.RD_FROM_DAY, CFG=dict(S.E.CFG), PKG={k: getattr(P, k) for k in F.PKG},
              fns=[(R, "fake_rate", R.fake_rate), (C, "fake_rate", C.fake_rate), (P.Run5, "buy_open", P.Run5.__dict__.get("buy_open")),
                   (P.Run5, "p_real", P.Run5.__dict__.get("p_real")), (P.Run5, "sell", P.Run5.__dict__.get("sell")),
-                  (sm.Run, "slots", sm.Run.__dict__.get("slots")), (C, "make_candidate", C.make_candidate), (P, "handle5", P.handle5)])
+                  (sm.Run, "slots", sm.Run.__dict__.get("slots")), (C, "make_candidate", C.make_candidate), (P, "handle5", P.handle5),
+                  (P, "start_hooks", P.start_hooks)])
 
 
 def restore():
@@ -157,6 +161,7 @@ def apply(design):
     sm.Run.slots = slots
     C.make_candidate = make_candidate
     P.handle5 = handle5
+    P.start_hooks = start_hooks
     return Content(box_price={k: v[0] for k, v in BOXES.items()})
 
 
@@ -262,6 +267,24 @@ def sell(self, it):
 
 
 _orig_handle5 = P.handle5
+_orig_start = P.start_hooks   # đã gồm dao động giá ±20% của swing_sim (đặt lại giá hộp mỗi sáng)
+UNSOLD = 10 ** 7              # giá "không bán": không ai đủ tiền mua
+
+
+def start_hooks(run):
+    """Mỗi sáng: dao động giá như cũ, rồi áp luật cửa hàng ngày 1.
+    design['day1_shop'] = tập tên rương được bán ở ngày 1 (None = bán đủ). Rương khác coi như không bán trong ngày 1.
+    design['day1_shop_first_run_only'] = True: luật chỉ áp ở lần chơi đầu, tức là khi có hộp sắp sẵn (design['script'])."""
+    _orig_start(run)
+    d = STATE["design"]
+    shop = d.get("day1_shop")
+    if not shop or run.g.day != 1:
+        return
+    if d.get("day1_shop_first_run_only", True) and not d["script"]:
+        return
+    for n, k in STATE["key"].items():
+        if n not in shop:
+            run.c.box_price[k] = UNSOLD
 
 
 def handle5(run, it, r, smart):
@@ -365,3 +388,31 @@ def day1_stats(content, strat, n=1000):
                 arrears1_mean=round(sum(arr1) / len(arr1), 1), arrears1_max=max(arr1),
                 arrears1_pos=round(100 * sum(1 for a in arr1 if a > 0) / len(arr1), 1),
                 cash1_min=min(cash1), first_loss_day=min(lose_days) if lose_days else None)
+
+
+def day1_boxes(content, strat, n=100):
+    """Đếm số hộp mua ở ngày 1 theo tên rương (kiểm luật cửa hàng ngày 1). Bắt cả đường mua của bot và của người chơi giỏi."""
+    cnt = {}
+    orig_buy, orig_turn = P.Run5.buy_open, C.turn_choose
+
+    def note(run, it):
+        if it and run.g.day == 1:
+            nm = STATE["name"][it["box"]]
+            cnt[nm] = cnt.get(nm, 0) + 1
+
+    def buy(self, box):
+        it = orig_buy(self, box)
+        note(self, it)
+        return it
+
+    def turn(run, rc, tiers):
+        it = orig_turn(run, rc, tiers)
+        note(run, it)
+        return it
+    P.Run5.buy_open, C.turn_choose = buy, turn
+    try:
+        for s in range(n):
+            P.play5(s, content, strat)
+    finally:
+        P.Run5.buy_open, C.turn_choose = orig_buy, orig_turn
+    return cnt

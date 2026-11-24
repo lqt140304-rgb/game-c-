@@ -8,7 +8,7 @@ Viết ngày 2026-11-24. Phần 1 của việc cân bằng Sprint 5: giá và t�
 
 1. **Nghiệm thu đạt** trên ván thường (n = 2.000): bot thường thắng **17,4% (thận trọng) và 18,4% (liều)**, người chơi tính toán hoàn hảo thắng **38,4% đến 44,1%** (trần 47%), không rương nào trên 37% lượt chọn, Rương Đen được chọn 18%.
 2. **Ngày 1 không thua ngay** ở mọi cách chơi và mọi chế độ hộp sắp sẵn: 0 ván thua trước ngày 3 trên 2.000 ván (không sắp sẵn) và 1.500 ván mỗi chế độ sắp sẵn. Nợ tồn cuối ngày 1 xấu nhất 2.390.000 đ, xa ngưỡng thua 10.000.000 đ.
-3. **Đường thắng vẫn tồn tại ở lần chơi đầu** (hộp sắp sẵn, spec mo-man: "chỉ cho riêng lần chơi đầu"), nhưng ván đó khó hơn rõ: bot thường 7% đến 14%, người chơi giỏi 18% đến 37% tùy cách sắp sẵn. Cách ít thiệt nhất: ngày 1 của lần chơi đầu chỉ bán Rương Gỗ cho 2 hộp đầu. Chủ dự án chọn.
+3. **Đường thắng vẫn tồn tại ở lần chơi đầu** (hộp sắp sẵn, spec mo-man: "chỉ cho riêng lần chơi đầu"), nhưng ván đó khó hơn. **Chủ dự án chốt: ngày 1 của lần chơi đầu cửa hàng chỉ bán Rương Gỗ và Rương Vải Niêm.** Với luật này lần chơi đầu cho bot thường 8,1% đến 10,1%, người chơi giỏi 24,5% đến 35,7% (giữ đúng spec mà không giới hạn cửa hàng: bot 6,9% đến 7,3%, người chơi giỏi 17,8% đến 26,5%).
 4. **Bảng khởi đầu của spec là bẫy**: Kim Khí chỉ ra tạo tác thu về 0,46 lần giá, Đen 0,60 lần giá; bot thường (mua rương đắt nhất mua được) thắng 0,0% đến 0,2%. Bảng đề xuất sửa bằng cách cho Kim Khí ra cả đồ lẫn tạo tác (như bảng bộ sưu tập của `ruong-chu-de`), hạ Kim Khí xuống 4.500.000 đ và đẩy Rất hiếm của Đen lên 55%.
 5. **4 ô tạo tác không phá cân bằng kinh tế**: 3, 4 hay 5 ô chênh dưới 1 điểm thắng. 4 ô làm bot combo lớn đạt CB3 gấp đôi (12% lên 25%), tức là vấn đề nằm ở **thiết kế** (combo thành mặc định, ít quyết định chọn hệ), không ở tiền. Giữ 4 ô được về số; việc có thêm tạo tác hay không là của Claude 1 và chủ dự án.
 6. **Điểm nhạy nhất là giá nền 25 món mới**: ±15% làm bot thường đổi từ 10% lên 24%. Khi Claude 1 hoặc chủ dự án chốt giá món mới, phải đo lại (chạy `test_chest_balance`).
@@ -62,7 +62,19 @@ Khoảng cách kỹ năng (người chơi giỏi thận trọng trừ bot thận
 
 ## 3. Ngày 1 và lần chơi đầu (hộp sắp sẵn)
 
-`mo-man`: hộp đầu ra rác hài, hộp hai ra đồ Thường bán được, **chỉ ở lần chơi đầu**. Mô phỏng có 4 chế độ:
+`mo-man`: hộp đầu ra rác hài, hộp hai ra đồ Thường bán được, **chỉ ở lần chơi đầu**.
+
+**Đã chốt (2026-11-24):** lần chơi đầu có hộp sắp sẵn như spec, và **ngày 1 cửa hàng chỉ bán Rương Gỗ và Rương Vải Niêm** (Kim Khí không bán ngày 1; Đen vốn chỉ bán từ ngày 4). Ván thường bán đủ như cũ. Trong mô phỏng: `chest_sim.FIRST_RUN` (cờ `day1_shop`).
+
+| Lần chơi đầu đã chốt (n = 1.500) | Bot thận trọng | Bot liều | Người chơi giỏi (thận trọng / liều / combo nhỏ / combo lớn) | Thua trước ngày 3 | Ván bot liều có nợ tồn cuối ngày 1 | Nợ tồn ngày 1 xấu nhất |
+|---|---|---|---|---|---|---|
+| Sắp sẵn + ngày 1 chỉ Gỗ và Vải Niêm | **8,1** | **10,1** | 26,5 / **35,7** / 26,5 / 24,5 | 0% | 3,9% | 2.280.000 đ |
+
+Người chơi giỏi ở lần chơi đầu chọn rương (cả ván): Gỗ 31%, Vải Niêm 28%, Kim Khí 27%, Đen 15%.
+
+**Tham khảo, chưa đề xuất:** nếu áp "ngày 1 chỉ bán Gỗ và Vải Niêm" cho **mọi ván** (không sắp sẵn), bot thường 16,7% và 19,3%, người chơi giỏi 39,5% đến 45,1%: vẫn trong mục tiêu, nên nếu sau này muốn làm luật chung thì không vướng cân bằng.
+
+Các chế độ khác đã đo trước khi chốt (cửa hàng ngày 1 bán đủ):
 
 - **không:** ván thường.
 - **any:** hai hộp đầu sắp sẵn, trả giá rương đã chọn (đúng spec, không đổi gì khác).
@@ -78,7 +90,7 @@ Khoảng cách kỹ năng (người chơi giỏi thận trọng trừ bot thận
 
 Ngày thua sớm nhất ở mọi chế độ là cuối ngày 3. Nợ ngày 1 chỉ 2.000.000 đ, có phạt 20% thì nợ tồn tối đa 2.400.000 đ, dưới ngưỡng thua 10.000.000 đ, nên **theo luật ngày 1 không thể thua**, và mô phỏng xác nhận.
 
-Hộp sắp sẵn tốn nhiều vì nó lấy 2 trên 3 lượt mua của ngày 1 và trả thấp hơn kỳ vọng. Nếu muốn lần chơi đầu cũng ở mức 15% đến 20% cho bot thường, cần thêm một điều mo-man chưa có (ví dụ "cheap" kèm vốn đầu ván cao hơn chút), đó là việc của chủ dự án.
+Hộp sắp sẵn tốn nhiều vì nó lấy 2 trên 3 lượt mua của ngày 1 và trả thấp hơn kỳ vọng. Giới hạn cửa hàng ngày 1 ở Gỗ và Vải Niêm giảm thiệt vì người chơi không bỏ 4.500.000 đ vào Kim Khí cho hộp sắp sẵn. Lần chơi đầu vẫn khó hơn ván thường (bot 8% đến 10% so với 17% đến 18%); muốn ngang ván thường thì cần thêm một điều mo-man chưa có, ví dụ vốn đầu ván cao hơn chút ở lần chơi đầu.
 
 ## 4. Độ nhạy (n = 1.000, không sắp sẵn)
 
@@ -133,7 +145,7 @@ Mã: `QA/chest_sim.py` (bộ chuyển đổi: nạp bảng 5 bậc, rác, tạo 
 2. ~~Thứ tự rác~~ **Đã chốt:** rác Đen lên 30% (bằng Vải Niêm), Rất hiếm Đen 58%.
 3. ~~Huyền thoại ở rương cơ bản~~ **Đã chốt cùng bảng:** có, hiếm (0,5% đến 5%); đã sửa `tier-do-trong-ruong`.
 4. ~~Tạo tác trùng từ Kim Khí đổi bao nhiêu~~ **Đã chốt: 50% giá Kho** (đúng mức đã đo, không cần đo lại).
-5. **Hộp sắp sẵn ở lần chơi đầu:** chấp nhận ván đầu khó hơn (đúng spec, bot 6,5%), hay ngày 1 của lần chơi đầu chỉ bán Gỗ (bot 10% đến 15%, đo tốt nhất), hay tặng hộp đầu.
+5. ~~Hộp sắp sẵn ở lần chơi đầu~~ **Đã chốt:** ngày 1 của lần chơi đầu chỉ bán Rương Gỗ và Rương Vải Niêm (mục 3). Còn mở: có muốn lần chơi đầu dễ ngang ván thường không (hiện bot 8% đến 10%).
 6. **Giá nền 25 món mới và nhóm nguồn gốc** (Claude 1): bản đo dùng giá đề xuất trong `chest_sim.NEW_ITEMS`. Giá lệch trung bình quá ±5% thì cần đo lại. Nhóm nguồn gốc nên phân sao cho bậc cao trong một rương khác nhóm bậc thấp, để kỹ năng đọc manh mối còn giá trị.
 7. **4 ô tạo tác:** về kinh tế không sao; về thiết kế, combo gần như mặc định (BanGiaoSprint5.md mục 2). Thêm tạo tác hay giữ 6 là quyết định của Claude 1 và chủ dự án.
 8. ~~Rương Đen 12.000.000 đ hay 15.000.000 đ~~ **Đã chốt: 12.000.000 đ.** Ghi chú cũ: phương án C cũ giữ 15.000.000 đ trên bảng cũ. Với 5 bậc và rác, Đen 15.000.000 đ (Thường 5%, Hiếm 5%, Huyền thoại 5%) cần Rất hiếm 75% và rác chỉ 10% mới đạt thu 1,08 lần giá như mức 12.000.000 đ ở đây (Rất hiếm 70% mới hòa vốn), trái với "Đen nhiều rác nhất"; đề xuất 12.000.000 đ.
