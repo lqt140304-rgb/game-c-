@@ -172,4 +172,56 @@ Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-ch
 | L21 | Thần kiếm Kusanagi | Nhật Bản cổ |
 | L22 | Bản đồ cổ vẽ tay | Vải Niêm (rương cơ bản) |
 
-Lưu ý: găng tay L19 mất lớp kim tuyến (ra màu trắng trơn); kiếm L21 hơi cong. Chưa có: Đồng hồ bỏ túi (Kim Khí), Két sắt (Đen), gom vào đợt làm lại sau.
+Lưu ý: găng tay L19 mất lớp kim tuyến (ra màu trắng trơn); kiếm L21 hơi cong. Chưa có: Đồng hồ bỏ túi (Kim Khí), Két sắt (Đen), gom vào [danh sách làm lại](#danh-sách-làm-lại).
+
+## Rất hiếm theo rương (đợt 2026-11-24, low-poly)
+
+Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md). Meshy, 3 ảnh gộp 8 món, ~30 nghìn tam giác mỗi ảnh (không tăng poly), tốn 117 credit. File ở `Assets/_Project/Art/Items/LowPoly/VeryRare/`. Ảnh nguồn `Art/Source/ref_rat_hiem_chu_de_1.png`, `_2.png`, `_3.png` (ảnh 3 đã xóa logo thật trên giày); ảnh kiểm tra 4 góc `render_rat_hiem_chu_de_1.png`, `_2.png`. Cỡ thật (mét), đáy y=0. Mã X07–X30 cấp theo thứ tự danh sách; mã của món lỗi giữ chỗ.
+
+| Mã | Món | Rương | Tình trạng |
+|---|---|---|---|
+| X07 | Tượng Di Lặc gỗ | Gỗ | Có |
+| X08 | Nhẫn kim cương không rõ nguồn | Đen | **Mất**, chờ làm lại |
+| X09 | Đèn ông sao | Tuổi thơ Việt Nam | **Mất**, chờ làm lại |
+| X10 | Đũa thủy thủ mặt trăng (nhại) | Wibu | **Mất**, chờ làm lại |
+| X11 | Sừng kỳ lân | Truyền thuyết Châu Âu | Có |
+| X12 | Đũa phép cậu bé phù thủy (nhại) | Truyền thuyết Châu Âu | Có, mất giá đỡ, bề mặt hơi thô |
+| X13 | Đầu mô hình Gundam (nhại) | Robot | Có |
+| X14 | Lá cờ trên mặt trăng | Không gian | Có |
+| X15 | Khối kim cương vuông (nhại Minecraft) | Game | Có |
+| X16 | Kiếm thần của chàng áo xanh (nhại Zelda) | Game | Có, cắm trên bệ đá |
+| X17 | Áo đấu số 7 (nhại) | Thể thao | **Mất**, chờ làm lại |
+| X18 | Giày "biết bay" (nhại) | Thể thao | **Mất**, chờ làm lại |
+| X19 | Đàn bầu | Âm nhạc | Có, mất quả bầu (bầu bị tách rời, đã bỏ) |
+| X20 | Cây ghi-ta đập vỡ | Âm nhạc | Có, dáng đứng nghiêng |
+| X21 | Búp bê ma (nhại) | Phim kinh dị | Có |
+| X22 | Bóng bay đỏ (nhại) | Phim kinh dị | **Mất**, chờ làm lại |
+| X23 | Mắt Horus | Ai Cập cổ đại | Có, trên giá đỡ |
+| X24 | Quan tài xác ướp mini | Ai Cập cổ đại | Có |
+| X25 | Bản đồ kho báu | Hải tặc | **Mất**, chờ làm lại |
+| X26 | Trái ác quỷ (nhại) | Hải tặc | **Mất**, chờ làm lại |
+| X27 | Thanh Long Yển Nguyệt Đao | Trung Hoa cổ | **Dính** với giá và đũa phép, chờ làm lại |
+| X28 | Vòng kim cô | Trung Hoa cổ | Có |
+| X29 | Giáp samurai mini | Nhật Bản cổ | Có |
+| X30 | Tranh sóng lừng (nhại Hokusai) | Nhật Bản cổ | Có, trên giá vẽ |
+
+Ghi chú: ảnh gộp 2 chỉ còn 4/8 món (mất nhẫn trong hộp, áo trên ma-nơ-canh, bóng bay, trái ác quỷ). Giày đã xóa logo thật trong ảnh nguồn trước khi dựng.
+
+## Danh sách làm lại
+
+Không làm lại riêng lẻ. Đủ 8 món hoặc hết món khác thì hỏi chủ dự án (~39 credit mỗi ảnh gộp 8 món).
+
+1. Đồng hồ bỏ túi không bao giờ hết pin (Kim Khí, Huyền thoại)
+2. Két sắt chưa ai mở được (Đen, Huyền thoại)
+3. Găng tay lấp lánh L19 (Âm nhạc, mất kim tuyến)
+4. X08 Nhẫn kim cương không rõ nguồn
+5. X09 Đèn ông sao
+6. X10 Đũa thủy thủ mặt trăng (nhại)
+7. X17 Áo đấu số 7 (nhại)
+8. X18 Giày "biết bay" (nhại)
+9. X22 Bóng bay đỏ (nhại)
+10. X25 Bản đồ kho báu
+11. X26 Trái ác quỷ (nhại)
+12. X27 Thanh Long Yển Nguyệt Đao
+
+Hiện 12 món, đủ 1 ảnh gộp 8 món (+4 món dư, hoặc 2 ảnh 6 món ~78 credit). **Chờ chủ dự án cho phép.**
