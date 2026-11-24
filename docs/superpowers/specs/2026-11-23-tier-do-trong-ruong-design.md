@@ -63,6 +63,7 @@ Cột là phần trăm khối lượng ra của rương; **Kim Khí** ra tạo t
 | **Kim Khí** | 10% rác máy móc | — | — | — | — |
 
 - **Kim Khí:** 90% ra tạo tác (tier 1: 60%, tier 2: 35%, tier 3: 5%), 10% rác máy móc hỏng.
+- *(Đã thay đổi: xem [rương chủ đề](2026-11-24-ruong-chu-de-design.md), mục 9. Rương Tổng Hợp ra món của các rương thường, Huyền thoại riêng nằm ở rương chủ đề.)*
 - **Huyền thoại không có ở 4 rương cơ bản.** Chỉ có ở **rương mở khóa** (phần 1): Rương Tổng Hợp là rương cho Huyền thoại, đề xuất mỗi lần mở có 8–10% ra một món Huyền thoại.
 - Các rương mở khóa khác (Cổ Phong, Thiên Cơ, Rác Quý) giữ như phần 1.
 - Hàng giả áp dụng cho **Thường, Hiếm, Rất hiếm** (và Huyền thoại, đề xuất tỉ lệ thấp); rác không có giả.

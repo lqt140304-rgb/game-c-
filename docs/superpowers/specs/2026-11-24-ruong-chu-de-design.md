@@ -16,6 +16,7 @@ Mỗi chủ đề là một **hệ sinh thái riêng**: một rương, một nh�
 6. **Cơ chế mở rương: chọn bậc trước, rồi mới quay ra món** (xem mục dưới).
 7. Các chủ đề chủ dự án nêu: **Việt Nam, Wibu, truyền thuyết Châu Âu, mô hình, robot**. **Việt Nam vẫn là một chủ đề.** Danh sách sẽ còn thêm, chủ dự án chưa chọn.
 8. **Tiêu chí món Huyền thoại:** là **biểu tượng (icon)** của chủ đề, **có câu chuyện** (thần thoại, truyền thuyết, sự tích), và **người trong nền văn hóa đó ai cũng biết**, đủ tầm ảnh hưởng và phẩm giá để đứng ở bậc cao nhất. Ví dụ mẫu: **Nỏ thần** của Việt Nam (truyện An Dương Vương, người Việt nào cũng biết).
+9. **Rương Tổng Hợp** ra ngẫu nhiên các món trong **bộ sưu tập của các rương thường** (4 rương cơ bản), **không** ra món của rương chủ đề. Điều này **thay** ghi chú cũ "Rương Tổng Hợp là rương cho Huyền thoại" ở spec tier.
 
 ## Cơ chế mở rương (đã chốt)
 
@@ -62,6 +63,6 @@ Dấu "?" là gợi ý ghép đồ đã có mô hình, **chưa chốt**. Món Hu
 1. Chủ đề bổ sung ngoài 5 chủ đề trên (chủ dự án sẽ nghĩ thêm).
 2. Món Huyền thoại cụ thể của từng chủ đề (theo tiêu chí ở mục 8), và đồ hiện có thuộc chủ đề nào. Cần xét lại Huyền thoại hiện có theo tiêu chí: Vé số độc đắc là món hài, không có truyền thuyết, có thể không đạt.
 3. Thành tựu mở khóa từng rương.
-4. Rương Tổng Hợp còn ra Huyền thoại không.
+4. ~~Rương Tổng Hợp còn ra Huyền thoại không~~ Đã chốt ở mục 9. Còn lại: các rương thường có món Huyền thoại nào không, hay Huyền thoại chỉ nằm ở rương chủ đề.
 5. Một món có được nằm trong bộ sưu tập của nhiều rương không, hay mỗi món chỉ thuộc một rương (4 rương cơ bản có chung kho Thường và Rác không).
 6. Tỉ lệ và giá: Claude 2.
