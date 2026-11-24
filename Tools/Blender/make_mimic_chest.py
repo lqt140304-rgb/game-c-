@@ -11,7 +11,7 @@ Result: root <name> -> Body, Lid (origin on the back hinge, rotates about X, fro
 No Key layer: a mimic has no lock to open.
 
 Run:  python make_mimic_chest.py -- <dir with fbx+png> <out.glb> [name=Chest_Mimic] [target closed height m=0.42]
-        [lid tris=7000] [body tris=7000] [tex size=2048] [close angle deg=33] [seam z=-0.2] [hinge "y,z"=0.625,-0.186]
+        [lid tris=5000] [body tris=5000] [tex size=2048] [close angle deg=33] [seam z=-0.2] [hinge "y,z"=0.625,-0.186]
 Needs Blender (`pip install bpy` works) and Pillow.
 """
 import sys, os, glob, math, tempfile
@@ -25,8 +25,8 @@ a = sys.argv[sys.argv.index("--") + 1:]
 src_dir, out = a[0], a[1]
 name = a[2] if len(a) > 2 else "Chest_Mimic"
 target_h = float(a[3]) if len(a) > 3 else 0.42
-lid_tris = int(a[4]) if len(a) > 4 else 7000
-body_tris = int(a[5]) if len(a) > 5 else 7000
+lid_tris = int(a[4]) if len(a) > 4 else 5000
+body_tris = int(a[5]) if len(a) > 5 else 5000
 tex_size = int(a[6]) if len(a) > 6 else 2048
 close_deg = float(a[7]) if len(a) > 7 else 33.0
 seam_z = float(a[8]) if len(a) > 8 else -0.2
