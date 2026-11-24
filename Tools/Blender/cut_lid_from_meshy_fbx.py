@@ -5,7 +5,12 @@ and, when a keyhole position is given, Key (a silver key already in the "inserte
 Both cut faces get a dark-wood rim plus a bevelled burgundy lining pad (raised in Body, hung under the lid) instead of a bare filled cap.
 There is no Seal or Binding layer: the lock and bands are baked into the Meshy texture (BoxOpenSequence skips missing layers).
 
-Run:  python cut_lid_from_meshy_fbx.py -- <dir with fbx + png maps> <out.glb> <root name> <seam z in source units> <target height m> [tex size] ["x,y,z" keyhole in source units]
+Run:  python cut_lid_from_meshy_fbx.py -- <dir with fbx + png maps> <out.glb> <root name> <seam z in source units> <target height m> [tex size] ["x,y,z" keyhole in source units] [options]
+  Options (all optional, defaults reproduce the Golden chest exactly):
+    --decimate-tris N   Decimate (collapse) the source mesh to about N triangles BEFORE cutting (default: off). Prints before/after counts.
+    --lining r,g,b      lining pad colour, linear 0-1 (default 0.16,0.018,0.03 = burgundy)
+    --rim r,g,b         cut-rim colour (default 0.16,0.085,0.04 = dark wood)
+    --glow r,g,b        Glow colour (default 1.0,0.82,0.45 = pale gold)
   Source FBX imports Z-up, centred on the origin. The seam is the height (source units) where the lid meets the body;
   find it with a vertex-height histogram or a side render. Front of the chest must face -Y (lock side); the hinge is at +Y.
 Needs Blender (`pip install bpy` works) and Pillow.
@@ -15,6 +20,16 @@ import bpy
 import bmesh
 import mathutils
 from PIL import Image
+
+def _opt(flag, default=None):
+    """Pull '--flag value' out of argv (so the positional parsing below is untouched)."""
+    if flag in sys.argv:
+        i = sys.argv.index(flag); v = sys.argv[i + 1]; del sys.argv[i:i + 2]; return v
+    return default
+def _rgb(text, default): return tuple(float(c) for c in text.split(",")) if text else default
+decimate_tris = int(_opt("--decimate-tris", 0))
+lining_rgb = _rgb(_opt("--lining"), (0.16, 0.018, 0.03)); rim_rgb = _rgb(_opt("--rim"), (0.16, 0.085, 0.04))
+glow_rgb = _rgb(_opt("--glow"), (1.0, 0.82, 0.45))
 
 src_dir, out, name, seam_src, target_h = sys.argv[sys.argv.index("--") + 1:][:5]
 _a = sys.argv[sys.argv.index("--") + 1:] + ["1024", ""]
@@ -30,6 +45,12 @@ obj.parent = None
 bpy.context.view_layer.objects.active = obj
 obj.select_set(True)
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+
+if decimate_tris:
+    tris0 = sum(len(p.vertices) - 2 for p in obj.data.polygons)
+    dm = obj.modifiers.new("dec", "DECIMATE"); dm.decimate_type = "COLLAPSE"; dm.ratio = min(1.0, decimate_tris / tris0)
+    bpy.ops.object.modifier_apply(modifier="dec")
+    print("decimate tris", tris0, "->", sum(len(p.vertices) - 2 for p in obj.data.polygons))
 
 zs = [v.co.z for v in obj.data.vertices]
 zmin, zmax = min(zs), max(zs)
@@ -83,13 +104,13 @@ def flat_mat(mname, color, rough, metal=0.0):
     b.inputs["Base Color"].default_value = color; b.inputs["Roughness"].default_value = rough; b.inputs["Metallic"].default_value = metal
     m.use_backface_culling = False   # lining is seen from inside: glTF doubleSided
     return m
-interior = flat_mat(name + "_Lining", (0.16, 0.018, 0.03, 1), 0.85)   # burgundy velvet lining
-rim = flat_mat(name + "_Rim", (0.16, 0.085, 0.04, 1), 0.7)            # dark wood on the cut rim
+interior = flat_mat(name + "_Lining", lining_rgb + (1,), 0.85)   # lining colour (default burgundy velvet)
+rim = flat_mat(name + "_Rim", rim_rgb + (1,), 0.7)                      # cut rim colour (default dark wood)
 
 glow_mat = bpy.data.materials.new(name + "_Glow"); glow_mat.use_nodes = True
 gb = glow_mat.node_tree.nodes["Principled BSDF"]
-gb.inputs["Base Color"].default_value = (1.0, 0.82, 0.45, 1)
-gb.inputs["Emission Color"].default_value = (1.0, 0.82, 0.45, 1); gb.inputs["Emission Strength"].default_value = 3.0
+gb.inputs["Base Color"].default_value = glow_rgb + (1,)
+gb.inputs["Emission Color"].default_value = glow_rgb + (1,); gb.inputs["Emission Strength"].default_value = 3.0
 
 obj.data.materials.clear(); obj.data.materials.append(mat); obj.data.materials.append(interior); obj.data.materials.append(rim)
 
@@ -171,6 +192,6 @@ for o in [x for x in (body, lid, glow, key) if x]:
     o.parent = root
     for p in o.data.polygons: p.use_smooth = o is glow
 bpy.ops.object.select_all(action="SELECT")
-os.makedirs(os.path.dirname(out), exist_ok=True)
+os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=out, export_format="GLB", use_selection=True, export_apply=True)
 print("tris body", sum(len(p.vertices) - 2 for p in body.data.polygons), "lid", sum(len(p.vertices) - 2 for p in lid.data.polygons), "->", out)
