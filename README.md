@@ -12,3 +12,12 @@ Dự án chọn **Unity 6 (6000.6.9f1) + URP** và **Blender**, với mỹ thu�
 - [Game Design](Docs/GameDesign/README.md) — Luật chơi, phạm vi và các câu hỏi thiết kế còn mở.
 - [Cân bằng và kiểm thử](Docs/Balance/README.md) — Giả định tiền, nợ, giá hộp, xác suất rơi và ca kiểm thử biên.
 - [Checklist sprint](TASKS.md) — Claude 1 phụ trách thiết kế, Claude 2 phụ trách kinh tế và QA, Antigravity phụ trách 3D và tích hợp, Codex phụ trách hệ thống và kiểm thử.
+
+## Quy tắc cho agent
+
+Mọi agent (Claude, Codex, Antigravity...) làm việc trên repo này đều áp dụng:
+
+1. **Mỗi phiên làm một việc.** Xong việc thì chuyển sang phiên mới cho việc sau, để không mất ngữ cảnh và tiết kiệm hạn mức. Mọi thứ cần nhớ phải nằm trong repo, không nằm trong lịch sử trò chuyện.
+2. **Nội dung đã chốt phải ghi ra file `.md` trong repo** và thêm vào mục lục [Docs/DaChot.md](Docs/DaChot.md). Đầu mỗi phiên, đọc file này trước.
+3. **Đầu mỗi phiên mới, bật Ponytail mức `full` và dùng quy trình Superpowers** (brainstorming trước khi xây, spec ở `docs/superpowers/specs/`). Cài Ponytail cho Claude Code: `/plugin marketplace add DietrichGebert/ponytail` rồi `/plugin install ponytail@ponytail`.
+4. Không dùng credit dịch vụ trả phí (Meshy...) và không tự quyết thay chủ dự án khi chưa được phép.
