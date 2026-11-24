@@ -35,7 +35,7 @@ Các nguyên tắc này đến từ [DichVuVaMeta.md](DichVuVaMeta.md) mục 0 v
 | **Đấu giá** | `AuctionListings` (lô đang chờ: hiện vật, giá sàn, ngày có kết quả) | `RequestAuctionSubmit(artifactInstanceId, floorOption)` |
 | **Sòng bạc** | `BetsToday`, `CasinoOpen` (từ ngày 2) | `RequestPlaceBet(stake)` |
 | **Cầm cố** | `PawnTickets` (hiện vật hoặc tạo tác, tiền cầm, giá chuộc, hạn) | `RequestPawn(instanceId)`, `RequestRedeem(ticketId)` |
-| **Meta** | `MetaProgress` (hiện vật đã sưu tầm, mở khóa đã đạt) | tùy chọn khi bắt đầu ván: chọn gia truyền (M1), bật Rương Đen sớm (M3) |
+| **Meta và cây phát triển** | `DevelopmentPoints`, `RunsWon`, `CollectedItems`, `SkillNodes` (mỗi nút: `Id`, `Name`, `Branch`, `Parent`, `Cost`, `Condition`, `Progress`, `Target`, `Reward`, `Unlocked`, `Available`), `CanStartWithEarlyBlackChest`. Xem mục 7. | `RecordInspection(itemId)`, `UnlockSkill(skillId)` (chỉ giữa các ván), `StartNextRun(seed, earlyBlackChest)` |
 
 ## 4. Mã từ chối gợi ý (`OnActionRejected`)
 
@@ -50,7 +50,8 @@ Hợp đồng hiện có `OnActionRejected(reasonCode, message)`. Các mã gợi
 | Đấu giá | `AUCTION_BELOW_MIN_PRICE`, `AUCTION_DAILY_LIMIT`, `AUCTION_ON_DAY_7` |
 | Sòng bạc | `CASINO_CLOSED`, `CASINO_DAILY_LIMIT`, `INVALID_STAKE` |
 | Cầm cố | `PAWN_LIMIT`, `PAWN_NOT_ALLOWED` (gia truyền), `PAWN_EXPIRED` |
-| Chung | `DUPLICATE_TRANSACTION`, `RUN_ENDED` |
+| Cây phát triển | `ITEM_UNAVAILABLE`, `SKILL_UNAVAILABLE`, `SKILL_UNLOCKED`, `PARENT_LOCKED`, `CONDITION_NOT_MET`, `NOT_ENOUGH_POINTS`, `RUN_ACTIVE` (mở nút khi ván còn đang chạy) |
+| Chung | `DUPLICATE_TRANSACTION`, `INVALID_TRANSACTION`, `RUN_ENDED` |
 
 ## 5. Sự kiện thông báo thay đổi (gợi ý thêm)
 
@@ -66,3 +67,22 @@ Hợp đồng hiện có `OnActionRejected(reasonCode, message)`. Các mã gợi
 | Lệnh | `RequestBuyBox`, `RequestOpenBox`, `RequestSellArtifact`, `RequestKeepArtifact`, `RequestPayDebt`, `RequestEndDay`, `RequestBuyTactArtifact`, `RequestEquipTactArtifact` | Giám định, phục chế, mua manh mối, tháo tạo tác, hoãn nợ, đấu giá, cược, cầm và chuộc |
 
 **Một điểm cần Codex và Antigravity chốt:** luật nợ ([GDD mục 2](../GameDesign/README.md)) quy định Anh Bảy **tự thu vào cuối ngày** khi người chơi kết thúc ngày. Hợp đồng hiện có cả `RequestPayDebt` và `RequestEndDay`, dễ hiểu thành hai bước thu nợ. Đề xuất: việc thu nợ nằm trong `RequestEndDay`. Nếu giữ `RequestPayDebt` thì nó chỉ nên là bước xem trước hoặc xác nhận, không trừ tiền hai lần (đây là lỗi D-01 Claude 2 đã ghi ở [Sprint1.md](../Balance/Sprint1.md)).
+
+## 7. Cây phát triển giữa các ván (theo bản của Codex, nhánh `codex/skill-tree`)
+
+Luật gốc ở [spec rương và sưu tập](../../docs/superpowers/specs/2026-11-23-ruong-suu-tap-design.md) mục 4. Điểm và giá nút là **số tạm**, Claude 2 cân lại ở [Sprint5CayPhatTrien.md](../Balance/Sprint5CayPhatTrien.md). Đừng gán cứng trong mã.
+
+**Dữ liệu** nằm ở khối `skill_tree` của `content.json`: `first_inspection_points`, `win_points`, `loss_points` và danh sách `nodes`. Mỗi nút có `id`, `name`, `branch` (Rương, Sưu tập, Thần lực, Câu chuyện), `parent` (null nếu là gốc), `cost`, `condition` (`kind` là `wins`, `collection` hoặc `origin`, kèm `target`, `label` và với `origin` thêm `origin`) và `reward`.
+
+**Luật bắt buộc**
+1. Mở nút cần **cả ba**: nút cha đã mở, điều kiện sưu tập đủ, đủ điểm. Thứ tự kiểm tra và mã từ chối: `SKILL_UNAVAILABLE`, `SKILL_UNLOCKED`, `PARENT_LOCKED`, `CONDITION_NOT_MET`, `NOT_ENOUGH_POINTS`.
+2. `UnlockSkill` **chỉ chạy giữa các ván**. Đang có ván chạy thì từ chối `RUN_ACTIVE`. Ngược lại mọi lệnh trong ván bị từ chối `RUN_ENDED` khi ván đã kết thúc.
+3. Điểm kiếm được: một lần cho mỗi mã hiện vật **soi lần đầu** (`RecordInspection`), cộng điểm thắng hoặc thua khi ván kết thúc (thắng nhiều hơn). Cộng đúng một lần, nhờ mã giao dịch.
+4. Điểm, sổ sưu tập, số ván thắng và nút đã mở **lưu cùng bản lưu ván** trong cùng một giao dịch, nên tải lại màn kết quả không đổi số. Bản lưu cũ không có khối meta nạp được với giá trị rỗng. Bản lưu có điểm hoặc số ván âm bị coi là hỏng.
+5. `StartNextRun` giữ nguyên tiến trình meta, đặt lại mọi thứ khác, và **lưu trước rồi mới thay trạng thái**. `earlyBlackChest` chỉ được bật khi nút M3 đã mở.
+6. Phần thưởng meta **không có buff chơi** (chỉ rương, sưu tập, cốt truyện, phản ứng thần lực). M1 chỉ ghi quyền chọn gia truyền, M2 và M4 chưa kích hoạt.
+
+**Còn mở**
+- Hệ rương mới (5 bậc, rương mở khóa và chủ đề) chưa có nút nào trong cây. Cần thêm nút mở Tổng Hợp, Cổ Phong, Thiên Cơ, Rác Quý, Việt Nam, Nhại theo spec.
+- M3 hiện bật Rương Đen từ ngày 1. Ngày 1 của lần chơi đầu chỉ bán Rương Gỗ và Vải Niêm, nên cần định nghĩa lại cho khớp.
+- Giao diện đọc `SkillNodes` nên đọc qua bản sao hoặc trong khóa, để không thấy số cũ khi đang ghi.
