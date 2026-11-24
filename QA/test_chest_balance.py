@@ -46,6 +46,11 @@ class ChestRules(unittest.TestCase):
         self.assertTrue(0 < CS.FINAL_CHESTS["Gỗ"]["tiers"]["X"] <= .02)
         self.assertEqual(CS.FINAL_CHESTS["Đen"]["price"], 1200)
 
+    def test_duplicate_artifact_pays_half_kho_price(self):
+        """Chủ dự án chốt 2026-11-24: tạo tác trùng từ Kim Khí đổi 50% giá Kho."""
+        self.assertEqual(CS.FINAL["dup_frac"], .5)
+        self.assertEqual(CS.FINAL["art_value"], 1.0)
+
     def test_spec_start_table_is_a_trap(self):
         """Bảng khởi đầu của spec: Kim Khí chỉ ra tạo tác và Đen đều lỗ kỳ vọng."""
         CS.apply(CS.DEFAULT)

@@ -32,7 +32,7 @@ So với bảng khởi đầu của spec: Gỗ 1.200.000 đ lên **1.400.000 đ*
 
 Rác: Gỗ 18%, Vải Niêm 30%, Kim Khí 10% (vài món máy móc hỏng), **Đen 30%** (cùng Vải Niêm, nhiều nhất).
 
-**Tạo tác từ Kim Khí** (giả định, spec chưa chốt): tạo tác chưa có thì vào ô trống; trùng hoặc hết ô thì đổi **50% giá Kho**. Tính theo giá Kho Tạo Tác.
+**Tạo tác từ Kim Khí** (chủ dự án chốt 2026-11-24): tạo tác chưa có thì vào ô trống; trùng hoặc hết ô thì đổi **50% giá Kho**. Tính theo giá Kho Tạo Tác.
 
 **Giá nền dùng để đo** (đề xuất của Claude 2, nằm trong khoảng giá bậc của spec; món đã có giữ giá X110 đang dùng). Đầy đủ ở `chest_sim.NEW_ITEMS`. Huyền thoại cơ bản: Vé số độc đắc 40.000.000 đ, Bản đồ cổ vẽ tay 50.000.000 đ, Đồng hồ bỏ túi 50.000.000 đ, Két sắt chưa ai mở được 70.000.000 đ. Món mới bậc Thường 2.200.000 đến 3.500.000 đ, Hiếm 15.000.000 đến 19.000.000 đ, Rất hiếm 27.000.000 đến 30.000.000 đ.
 
@@ -132,7 +132,7 @@ Mã: `QA/chest_sim.py` (bộ chuyển đổi: nạp bảng 5 bậc, rác, tạo 
 1. ~~Duyệt bảng đề xuất~~ **Đã duyệt 2026-11-24** (Đen giữ 12.000.000 đ, Gỗ thêm Rất hiếm 1%, rác Vải Niêm 30%, rác Đen 30% kèm Rất hiếm 58%).
 2. ~~Thứ tự rác~~ **Đã chốt:** rác Đen lên 30% (bằng Vải Niêm), Rất hiếm Đen 58%.
 3. ~~Huyền thoại ở rương cơ bản~~ **Đã chốt cùng bảng:** có, hiếm (0,5% đến 5%); đã sửa `tier-do-trong-ruong`.
-4. **Tạo tác trùng từ Kim Khí** đổi tiền không, bao nhiêu (bản đo 50% giá Kho; 0% hay 100% chỉ lệch 1 đến 2 điểm).
+4. ~~Tạo tác trùng từ Kim Khí đổi bao nhiêu~~ **Đã chốt: 50% giá Kho** (đúng mức đã đo, không cần đo lại).
 5. **Hộp sắp sẵn ở lần chơi đầu:** chấp nhận ván đầu khó hơn (đúng spec, bot 6,5%), hay ngày 1 của lần chơi đầu chỉ bán Gỗ (bot 10% đến 15%, đo tốt nhất), hay tặng hộp đầu.
 6. **Giá nền 25 món mới và nhóm nguồn gốc** (Claude 1): bản đo dùng giá đề xuất trong `chest_sim.NEW_ITEMS`. Giá lệch trung bình quá ±5% thì cần đo lại. Nhóm nguồn gốc nên phân sao cho bậc cao trong một rương khác nhóm bậc thấp, để kỹ năng đọc manh mối còn giá trị.
 7. **4 ô tạo tác:** về kinh tế không sao; về thiết kế, combo gần như mặc định (BanGiaoSprint5.md mục 2). Thêm tạo tác hay giữ 6 là quyết định của Claude 1 và chủ dự án.
