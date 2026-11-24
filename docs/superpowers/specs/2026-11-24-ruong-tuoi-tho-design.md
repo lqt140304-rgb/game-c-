@@ -12,7 +12,7 @@ Ngày 2026-11-24. Bản tạm dựng bằng Blender, chưa phải bản chốt; 
 
 - Năm mũi nhọn là hình bóng không rương nào có (H1, H2, H3, RD và Golden đều là khối hộp; các phiên khác đang dùng thùng, xô, trụ tròn, thúng, trống). Lon sữa và hũ kẹo đều là trụ tròn, dễ trùng thùng rum, xô, trống.
 - Đèn ông sao là biểu tượng Tuổi thơ dễ nhận nhất, lại chính là món Rất hiếm trong rương, nên tự cài cảnh "rương là món đồ".
-- Cán tre buộc vào một đầu cánh sau, chĩa chéo ra ngoài như cách cầm đèn thật (gắn thân, không theo nắp). Nến bên trong chính là quầng sáng Glow.
+- Cán tre buộc ở khe giữa hai mũi sao bên trái, chĩa chéo ra ngoài và lên (gắn thân, không theo nắp). Nến bên trong chính là quầng sáng Glow.
 
 ## Cách nắp mở
 

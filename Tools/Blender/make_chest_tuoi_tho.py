@@ -54,7 +54,7 @@ def star(r_out, r_in, z=0.0, zt=None):
     return pts
 
 
-def mesh_obj(name, build, material_slots):
+def mesh_obj(name, build):
     """build(bm, mi) tạo mặt; mi(name) trả chỉ số vật liệu."""
     me = bpy.data.meshes.new(name)
     bm = bmesh.new()
@@ -101,7 +101,7 @@ def build_body(bm, mi):
     top = ring(bm, star(R_OUT, R_IN, H_BODY, H_BODY - TIP_LIFT))
     k = (R_OUT - WALL * 2.2) / R_OUT
     itop = ring(bm, star(R_OUT * k, R_IN - WALL, H_BODY, H_BODY - TIP_LIFT))
-    ibot = ring(bm, star(R_OUT * k, R_IN - WALL, 0.025))
+    ibot = ring(bm, star(R_OUT * k, R_IN - WALL, 0.025, TIP_LIFT + 0.02))  # sàn không lòi ra dưới đầu cánh
     for i in range(10):  # tô xen kẽ hai sắc đỏ cho thấy nếp gấp giấy
         j = (i + 1) % 10
         f = bm.faces.new((bot[i], bot[j], top[j], top[i]))
@@ -178,24 +178,27 @@ def set_origin(o, p):
 bpy.ops.wm.read_factory_settings(use_empty=True)
 
 # ---- Body: thân sao + khung tre viền dưới/trên + tua giấy đầu cánh
-body = [mesh_obj("BodyShell", build_body, None)]
+body = [mesh_obj("BodyShell", build_body)]
 for z, zt in ((0.008, TIP_LIFT + 0.008), (H_BODY - 0.004, H_BODY - TIP_LIFT - 0.004)):
     pts = star(R_OUT + 0.004, R_IN + 0.004, z, zt)
     for i in range(10):
         body.append(stick(pts[i], pts[(i + 1) % 10], 0.007, "bamboo"))
-for i, p in enumerate(star(R_OUT, R_IN, H_BODY - TIP_LIFT)):
-    if i % 2 == 0:  # tua giấy vàng treo ở mỗi đầu cánh
-        d = Vector((p.x, p.y, 0)).normalized()
-        body.append(cone((p.x + d.x * 0.012, p.y + d.y * 0.012, TIP_LIFT - 0.01), 0.016, 0.07, "tassel",
-                         rot=(math.pi, 0, 0)))
-        body.append(stick((p.x, p.y, TIP_LIFT + 0.01), (p.x + d.x * 0.012, p.y + d.y * 0.012, TIP_LIFT + 0.025),
-                          0.003, "bamboo_dk", 4))
+for i, p in enumerate(star(R_OUT, R_IN, 0)):
+    if i % 2 == 0:  # tua giấy vàng treo dưới mỗi đầu cánh, không chạm sàn
+        body.append(cone((p.x, p.y, TIP_LIFT - 0.022), 0.014, 0.04, "tassel", rot=(math.pi, 0, 0)))
+body += [stick((0, 0, 0.025), (0, 0, 0.09), 0.018, "candle", 6), cone((0, 0, 0.1), 0.008, 0.025, "glow", 5)]
+# Cán tre cầm: buộc ở khe giữa hai mũi sao bên trái, chĩa chéo ra ngoài và lên (gắn thân, không vướng nắp)
+notch = star(R_OUT, R_IN, H_BODY * 0.55)[7]
+d = Vector((notch.x, notch.y, 0)).normalized()
+base = notch - d * 0.02
+body.append(stick(base, base + d * 0.34 + Vector((0, 0, 0.20)), 0.009, "bamboo_dk", 6))
+body.append(stick(base + d * 0.03 - Vector((0, 0, 0.012)), base + d * 0.03 + Vector((0, 0, 0.012)), 0.016, "tassel", 6))  # nút dây buộc
 body = join(body, "Body")
 
 # ---- Lid: chóp sao + gân tre
 z0 = H_BODY + 0.004
 apex = (0, 0, z0 + H_RIM + H_APEX)
-lid = [mesh_obj("LidShell", build_lid, None)]
+lid = [mesh_obj("LidShell", build_lid)]
 for i, p in enumerate(star(R_OUT + 0.003, R_IN + 0.003, z0 + H_RIM, z0 + H_RIM - TIP_LIFT)):
     if i % 2 == 0:
         lid.append(stick(p, apex, 0.006, "bamboo"))
@@ -203,22 +206,13 @@ lid = join(lid, "Lid")
 HINGE = (0, R_OUT * math.sin(math.radians(54)) + 0.003, H_BODY - TIP_LIFT)
 set_origin(lid, HINGE)
 
-# ---- Glow: ngôi sao phẳng phát sáng ở miệng + ngọn nến
+# ---- Glow: ngôi sao phẳng phát sáng, thấp hơn mép đầu cánh để không xuyên nắp
+ZG = H_BODY - TIP_LIFT - 0.012
 def build_glow(bm, mi):
-    cap(bm, ring(bm, star(R_OUT * 0.78, R_IN * 0.85, H_BODY - 0.012)), mi("glow"))
-glow = mesh_obj("Glow", build_glow, None)
-set_origin(glow, (0, 0, H_BODY - 0.012))
+    cap(bm, ring(bm, star(R_OUT * 0.72, R_IN * 0.8, ZG)), mi("glow"))
+glow = mesh_obj("Glow", build_glow)
+set_origin(glow, (0, 0, ZG))
 
-body2 = [body, stick((0, 0, 0.025), (0, 0, 0.11), 0.018, "candle", 6), cone((0, 0, 0.125), 0.008, 0.03, "glow", 5)]
-# Cán tre cầm như đèn thật: buộc vào đầu cánh sau bên trái, chĩa chéo ra ngoài và lên (gắn thân, nắp mở tự do)
-tip = star(R_OUT, R_IN, H_BODY / 2)[6]
-d = Vector((tip.x, tip.y, 0)).normalized()
-z_mid = (TIP_LIFT + H_BODY - TIP_LIFT) / 2
-base = Vector((tip.x, tip.y, z_mid)) - d * 0.03
-end = base + d * 0.30 + Vector((0, 0, 0.26))
-body2.append(stick(base, end, 0.009, "bamboo_dk", 6))
-body2.append(stick(base + d * 0.015 - Vector((0, 0, 0.012)), base + d * 0.015 + Vector((0, 0, 0.012)), 0.016, "tassel", 6))  # nút dây buộc
-body = join(body2, "Body")
 
 # ---- Seal: tem giấy dán ngang khe nắp ở mũi cánh trước
 ZS = H_BODY - TIP_LIFT
