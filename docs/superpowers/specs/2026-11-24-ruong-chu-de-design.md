@@ -19,7 +19,10 @@ Mỗi chủ đề là một **hệ sinh thái riêng**: một rương, một nh�
 9. **Rương Tổng Hợp** ra ngẫu nhiên các món trong **bộ sưu tập của các rương thường** (4 rương cơ bản), **không** ra món của rương chủ đề. Điều này **thay** ghi chú cũ "Rương Tổng Hợp là rương cho Huyền thoại" ở spec tier.
 10. **Rương thường cũng có món Huyền thoại**, nhưng **cơ bản hơn, giá thấp hơn** Huyền thoại của rương chủ đề và rương đặc biệt. Rương thường để **sinh tồn**: mở để kiếm tiền. Đồ ở đây tự phát, không cần nhiều câu chuyện; người chơi tự dệt câu chuyện cho nó. Tiêu chí "biểu tượng, có truyền thuyết" ở mục 8 chỉ áp dụng cho Huyền thoại của rương chủ đề.
 11. **Vé số độc đắc giữ ở Huyền thoại** (Huyền thoại của rương thường). Sau này có thể thêm cơ chế mang vé đến **quầy vé số để rút thưởng** (chưa thiết kế).
-12. **Bậc Rác dùng chung** cho mọi rương (ngoại lệ). **Các bậc còn lại khóa chặt theo rương:** mỗi món chỉ thuộc **một** rương. Món của chủ đề chỉ ra ở rương chủ đề đó; món của từng rương cơ bản chỉ ra ở rương đó. **Ngoại lệ duy nhất:** Rương Tổng Hợp ra được món của các rương cơ bản (mục 9).
+12. **Bậc Rác có kho chung** cho mọi rương (ngoại lệ); **từ 2026-11-24 mỗi rương chủ đề có thêm rác riêng** (mục 13). **Các bậc còn lại khóa chặt theo rương:** mỗi món chỉ thuộc **một** rương. Món của chủ đề chỉ ra ở rương chủ đề đó; món của từng rương cơ bản chỉ ra ở rương đó. **Ngoại lệ duy nhất:** Rương Tổng Hợp ra được món của các rương cơ bản (mục 9).
+
+13. **Rác theo chủ đề (chốt 2026-11-24, phương án A):** rương chủ đề quay ra Rác thì lấy từ **kho chung cộng rác riêng của chủ đề đó**; rương cơ bản chỉ lấy từ kho chung. Rác riêng mang tính **châm biếm**, không na ná đồ ở bậc khác (trừ cặp nguyên/hư ở mục 14). Danh sách ở mục "Rác riêng của rương chủ đề".
+14. **Ghép cặp bản nguyên và bản hư hỏng nặng (chốt 2026-11-24):** một món có thể có **bản nguyên ở bậc cao** và **bản hư hỏng nặng ở Rác**, là hai món riêng, hai mô hình riêng, cùng một rương. Đây là **ngoại lệ** của quy tắc "biến thể chất lượng là lớp phủ, không làm mô hình riêng" ở [soi-loi-tra-gia](2026-11-23-soi-loi-tra-gia-design.md), chỉ dùng khi vết hư đổi hình khối (gãy, móp, mất mảnh), không dùng cho hư chỉ đổi màu.
 
 ## Cơ chế mở rương (đã chốt)
 
@@ -57,9 +60,9 @@ Dấu "?" là gợi ý ghép đồ đã có mô hình, **chưa chốt**. Món Hu
 
 Chủ dự án đồng ý danh sách rương chủ đề gợi ý (2026-11-24). Món có mã (V, H, X, L, R) là **đã có mô hình**; món không mã là **đề xuất mới, chưa có mô hình**. "(nhại)" là bản gợi nhắc, không dùng tên hay logo thật.
 
-### Rác: dùng chung cho mọi rương
+### Rác: kho chung cho mọi rương
 
-**Ngoại lệ của luật khóa chặt:** bậc Rác là **một kho chung**, rương nào quay ra Rác cũng lấy từ kho này. Gồm 9 món: Giày cũ R01, Tất thối R02, Trứng thối R03, Xương cá R04, Dép tổ ong R05, Lon bẹp R06, Áo đấu cũ R07, Bao thuốc rồng R08, Vé cược nhàu R09. Có thể thêm rác sau.
+**Ngoại lệ của luật khóa chặt:** bậc Rác có **một kho chung**, rương nào quay ra Rác cũng lấy từ kho này. Gồm 9 món: Giày cũ R01, Tất thối R02, Trứng thối R03, Xương cá R04, Dép tổ ong R05, Lon bẹp R06, Áo đấu cũ R07, Bao thuốc rồng R08, Vé cược nhàu R09. Có thể thêm rác sau. Rương chủ đề có thêm rác riêng, xem mục dưới.
 
 ### Rương cơ bản (Huyền thoại cơ bản, rẻ hơn, không cần truyền thuyết)
 
@@ -76,20 +79,45 @@ Chủ dự án đồng ý danh sách rương chủ đề gợi ý (2026-11-24). 
 
 | Rương | Thường | Hiếm | Rất hiếm | Huyền thoại |
 |---|---|---|---|---|
-| Việt Nam | Quạt nan V11, Guốc mộc | Cassette H01, Nón lá H02, Bánh chưng Lang Liêu | Đàn thần X01, Trống đồng X02 | Ấn Ngọc Tỷ L01, Nỏ thần L05, Gậy sắt làng Gióng L06, Gươm Thuận Thiên (Hồ Gươm) |
+| Việt Nam | Quạt nan V11, Guốc mộc, Sổ hộ khẩu giấy | Cassette H01, Nón lá H02, Bánh chưng Lang Liêu | Đàn thần X01, Trống đồng X02 | Ấn Ngọc Tỷ L01, Nỏ thần L05, Gậy sắt làng Gióng L06, Gươm Thuận Thiên (Hồ Gươm) |
 | Tuổi thơ Việt Nam | Bi ve, Tò he | Hộp bút hai tầng, Máy nuôi gà ảo | Đèn ông sao | Truyện tranh thần đồng đất Việt tập 1 (nhại) |
 | Wibu | Băng đô làng ninja, Bát mì ramen (nhại Naruto) | Túi thần kỳ H03, Cục sạc chuột H04, Cánh cửa thần kỳ | Quả cầu ngọc X04, Đũa thủy thủ mặt trăng | Quyển sổ tử thần (nhại) |
 | Truyền thuyết Châu Âu | Hạt đậu thần, Guồng quay sợi | Gương thần V08, Mũ phù thủy H05 | Sừng kỳ lân, Đũa phép cậu bé phù thủy (nhại) | Táo vàng L02, Giày thủy tinh L03, Chiếc nhẫn duy nhất (nhại), Thanh gươm trong đá |
 | Robot | Robot dây cót, Tay robot thiếc | Robot vòm tròn bíp bíp (nhại R2), Chó robot | Trái tim lò phản ứng X05, Đầu mô hình Gundam (nhại) | Mũ giáp đỏ vàng của người sắt (nhại) |
-| Không gian | Đá mặt trăng, Thức ăn phi hành gia | Mũ phi hành gia | Phi thuyền mini X06, Kiếm sáng X03, Lá cờ trên mặt trăng | Mặt nạ thở của chúa tể bóng tối (nhại) |
-| Game (gộp Mô hình) | Máy game 8-bit V12, Băng game | Nấm đỏ, Khối gạch dấu hỏi (nhại) | Khối kim cương vuông (nhại), Kiếm thần của chàng áo xanh (nhại) | Mũ đỏ chữ M của anh thợ sửa ống nước (nhại) |
-| Thể thao | Giày bóng đá, Huy chương | Găng thủ môn, Bóng rổ chữ ký số 23 (nhại) | Áo đấu số 7 (nhại), Giày "biết bay" (nhại) | Cúp vàng thế giới (nhại) |
-| Âm nhạc | Đĩa than, Kèn harmonica | Micro cổ, Kính tròn ca sĩ tứ quái (nhại) | Đàn bầu, Cây ghi-ta đập vỡ trên sân khấu | Găng tay lấp lánh một chiếc của ông hoàng nhạc pop (nhại) |
-| Phim kinh dị | Nến đen, Búp bê vải | Mặt nạ khúc côn cầu (nhại), Hộp nhạc tự kêu | Búp bê ma (nhại), Bóng bay đỏ (nhại) | Băng video "7 ngày" (nhại) |
-| Ai Cập cổ đại | Bọ hung, Giấy cói | Tượng mèo Bastet, Kim tự tháp mini | Mắt Horus, Quan tài xác ướp mini | Mặt nạ vàng pharaoh |
-| Hải tặc | La bàn, Đồng xu vàng | Móc tay thuyền trưởng, Cờ đầu lâu | Bản đồ kho báu, Trái ác quỷ (nhại) | Mũ rơm (nhại) |
-| Trung Hoa cổ | Quạt lông Gia Cát, Đèn lồng đỏ | Bàn tính, Bình gốm Thanh Hoa | Thanh Long Yển Nguyệt Đao, Vòng kim cô | Gậy Như Ý |
-| Nhật Bản cổ | Mèo vẫy tay, Quạt giấy | Mặt nạ quỷ Oni, Búp bê Daruma | Giáp samurai mini, Tranh sóng lừng | Thần kiếm Kusanagi |
+| Không gian | Đá mặt trăng, Thức ăn phi hành gia | Mũ phi hành gia, Ảnh Polaroid "người ngoài hành tinh", Mảnh vệ tinh thật | Phi thuyền mini X06, Kiếm sáng X03, Lá cờ trên mặt trăng | Mặt nạ thở của chúa tể bóng tối (nhại) |
+| Game (gộp Mô hình) | Máy game 8-bit V12, Băng game, Tay cầm game kiểu cũ | Nấm đỏ, Khối gạch dấu hỏi (nhại) | Khối kim cương vuông (nhại), Kiếm thần của chàng áo xanh (nhại) | Mũ đỏ chữ M của anh thợ sửa ống nước (nhại) |
+| Thể thao | Giày bóng đá, Huy chương | Găng thủ môn, Bóng rổ chữ ký số 23 (nhại), Băng đội trưởng có chữ ký | Áo đấu số 7 (nhại), Giày "biết bay" (nhại) | Cúp vàng thế giới (nhại) |
+| Âm nhạc | Đĩa than, Kèn harmonica, Lightstick | Micro cổ, Kính tròn ca sĩ tứ quái (nhại) | Đàn bầu, Cây ghi-ta đập vỡ trên sân khấu | Găng tay lấp lánh một chiếc của ông hoàng nhạc pop (nhại) |
+| Phim kinh dị | Nến đen, Búp bê vải | Mặt nạ khúc côn cầu (nhại), Hộp nhạc tự kêu, Bàn cầu cơ nguyên vẹn | Búp bê ma (nhại), Bóng bay đỏ (nhại) | Băng video "7 ngày" (nhại) |
+| Ai Cập cổ đại | Bọ hung, Giấy cói, Tượng nhân sư bằng đá | Tượng mèo Bastet, Kim tự tháp mini | Mắt Horus, Quan tài xác ướp mini | Mặt nạ vàng pharaoh |
+| Hải tặc | La bàn, Đồng xu vàng | Móc tay thuyền trưởng, Cờ đầu lâu, Chân gỗ thuyền trưởng | Bản đồ kho báu, Trái ác quỷ (nhại) | Mũ rơm (nhại) |
+| Trung Hoa cổ | Quạt lông Gia Cát, Đèn lồng đỏ, Đũa đỏ đầu mạ vàng | Bàn tính, Bình gốm Thanh Hoa | Thanh Long Yển Nguyệt Đao, Vòng kim cô | Gậy Như Ý |
+| Nhật Bản cổ | Mèo vẫy tay, Quạt giấy, Hộp bento sơn mài | Mặt nạ quỷ Oni, Búp bê Daruma | Giáp samurai mini, Tranh sóng lừng | Thần kiếm Kusanagi |
+
+**Thêm 2026-11-24 (chủ dự án duyệt):** 7 món Thường (Sổ hộ khẩu giấy, Tay cầm game kiểu cũ, Lightstick, Tượng nhân sư bằng đá, Đũa đỏ đầu mạ vàng, Hộp bento sơn mài, Ô giấy dầu (đã bỏ 2026-11-24, mã V48 để trống)) và 5 món Hiếm (Ảnh Polaroid "người ngoài hành tinh", Mảnh vệ tinh thật, Băng đội trưởng có chữ ký, Bàn cầu cơ nguyên vẹn, Chân gỗ thuyền trưởng), lên bậc từ ý tưởng rác. Chưa có mô hình.
+
+### Rác riêng của rương chủ đề (chốt 2026-11-24)
+
+Mã R10–R50 theo thứ tự bảng (R20 Mũi Pinocchio đã bỏ 2026-11-24, không đánh lại mã; xem [BanGiao3D](../../../Docs/Art/BanGiao3D.md)); đã có mô hình 12 món đợt 1. "(hư)" là dạng hư hỏng nặng, nhìn là biết đồ bỏ. "(cặp: X)" là bản hư của món X ở bậc cao (mục 14). Món phẳng (tờ, vé, ảnh, quẻ) cho cuộn, gấp hoặc nhàu để Meshy giữ được độ dày; đồ thủy tinh làm bằng gốm.
+
+| Rương | Rác riêng | Hình dáng |
+|---|---|---|
+| Việt Nam | Mũ bảo hiểm "nồi cơm điện" (hư) | Nhựa mỏng đen bóng, dáng nửa quả bóng, lưỡi trai ngắn, quai dây dù khóa nhựa, sọc caro trắng xám dọc giữa (không dùng họa tiết hãng thật), không lót xốp; lưỡi trai nứt, vỏ trầy, đứt một quai |
+| | Biển "Cấm đổ rác" | Tấm tôn trắng chữ đỏ viết tay, gỉ góc, đinh cong, túi nilon đen buộc ở chân biển |
+| | Hóa đơn tiền điện tháng 6 | Giấy in nhiệt dài cuộn quăn, số tiền khoanh bút đỏ |
+| Tuổi thơ Việt Nam | Que kem đã liếm sạch; Sổ liên lạc chữ ký giả của bố; Vỏ gói bim bim không có quà | Que gỗ dẹt có vết cắn; sổ mỏng bìa xanh, chữ ký nguệch ngoạc; gói nilon sặc sỡ xé toạc, không nhãn hãng |
+| Wibu | Gối ôm in waifu bạc màu; Poster anime rách đôi; Figure (hư) | Gối dài ố màu; cuộn giấy rách hai nửa; tượng nhựa trên đế tròn, gãy tay, mất đầu, lem sơn |
+| Truyền thuyết Châu Âu | Ếch bông hôn mãi không thành hoàng tử; Bát cháo nguội của cô bé tóc vàng | Thú bông đội vương miện giấy méo; bát gỗ thìa cắm đứng |
+| Robot | Mớ dây cáp rối; Sạc dự phòng (hư); Bàn phím (hư) | Cáp đen rối nhiều đầu cắm; hộp phồng, cháy sém một góc; bàn phím ngả vàng rụng nhiều phím |
+| Không gian | Mũ giấy bạc chống sóng não; Mảnh vệ tinh cháy nát (cặp: Mảnh vệ tinh thật) | Mũ chóp giấy nhôm nhăn; tấm pin mặt trời cháy sém, cong, lòi dây |
+| Game | Thẻ nhớ mất save; Đĩa game lậu (hư); Tay cầm đứt dây (cặp: Tay cầm game kiểu cũ) | Thẻ nhựa nhãn viết tay "ĐỪNG XÓA"; đĩa nứt trong hộp vỡ; tay cầm xám dây đứt tưa |
+| Thể thao | Vé xem bóng đá giả; Còi méo; Băng đội trưởng giãn chun (cặp: Băng đội trưởng có chữ ký) | Vé in nhòe rách góc; còi kim loại méo dây đỏ; băng vải vàng chữ C chun giãn |
+| Âm nhạc | Vé concert bị hủy; Loa kẹo kéo (hư); Lightstick vỡ (cặp: Lightstick) | Vé đóng dấu đỏ "HỦY"; loa vali nhựa đen móp, tay kéo gãy, lưới thủng; que nhựa đầu tròn nứt, nắp pin mất |
+| Phim kinh dị | Bộ tóc giả (hư); Chuông gió kêu lúc 3 giờ sáng; Bàn cầu cơ gãy đôi (cặp: Bàn cầu cơ nguyên vẹn) | Tóc đen dài bết rối rụng mảng; chuông kim loại dây rối; bảng gỗ chữ cái gãy đôi |
+| Ai Cập cổ đại | Lọ cát sa mạc; Lạc đà bông (hư); Tượng nhân sư thạch cao gãy mũi (cặp: Tượng nhân sư bằng đá) | Lọ gốm nút bần; lạc đà bông xẹp, rách chỉ lòi bông; tượng lưu niệm trắng gãy mũi |
+| Hải tặc | Chai rỗng không có thư (hư); Miếng bịt mắt rách; Chân gỗ mọt (cặp: Chân gỗ thuyền trưởng) | Chai gốm xanh sứt miệng bám hà; vải đen có dây rách mép; chân gỗ tiện đầy lỗ mọt |
+| Trung Hoa cổ | Bánh bao mốc (hư); Bao lì xì rỗng; Đũa gãy (cặp: Đũa đỏ đầu mạ vàng) | Bánh trắng đốm mốc xanh lõm một bên; bao đỏ chữ vàng mở toang; một chiếc đũa gãy |
+| Nhật Bản cổ | Quẻ xăm "đại hung"; Hộp bento nứt (cặp: Hộp bento sơn mài); Ô giấy rách | Giấy dài gấp buộc vào nhánh cây khô; hộp sơn mài nứt nắp lệch; ô giấy đỏ rách xơ, cán tre gãy |
 
 **Thay đổi so với bảng chia cũ:** Mô hình gộp vào Game; Kiếm sáng chuyển sang Không gian; Áo đấu cũ và Vé cược thành rác chung. **Số món mới cần mô hình:** khoảng 85. Gom tối đa 8 món mỗi lượt Meshy, ước tính sẽ báo trước khi chạy.
 

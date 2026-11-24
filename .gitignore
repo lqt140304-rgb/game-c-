@@ -44,3 +44,11 @@ sysinfo.txt
 # Python
 __pycache__/
 *.pyc
+
+# Xem truoc mo hinh (tam)
+Tools/Meshy/preview/node_modules/
+Tools/Meshy/preview/package-lock.json
+Tools/Meshy/preview/glb/
+Tools/Meshy/preview/ht_*.png
+Tools/Meshy/preview/top_*.png
+Tools/Meshy/preview/package.json
