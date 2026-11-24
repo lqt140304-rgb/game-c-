@@ -101,6 +101,23 @@ RULES = {
     "L22_ban_do_co": [
         dict(texels=lambda lab, p: lab[:, 0] > 45, act="tint", color=(204, 176, 128), keep=0.3),
     ],
+    # qua cau ngoc (ref_rat_hiem.png): cam trong deu, 6 sao do chi o mat truoc, de go nau.
+    # Meshy ve san mang cam sam loang (bong khuc xa), manh sao lac o dinh/mat sau, dia xam trong de.
+    "X04_qua_cau_ngoc": [
+        dict(faces=lambda F: F.h > 0.3,
+             texels=lambda lab, p: ~((chroma(lab) > 35) & ((hue(lab) < 45) | (hue(lab) > 340)) & (lab[:, 1] > 35)),
+             act="tint", color=(240, 146, 34), keep=0.15),
+        dict(faces=lambda F: (F.h > 0.3) & (F.ny > -0.35),
+             texels=lambda lab, p: (chroma(lab) > 35) & (lab[:, 1] > 35),
+             act="tint", color=(240, 146, 34), keep=0.15),
+        dict(faces=lambda F: F.h <= 0.3,
+             texels=lambda lab, p: (chroma(lab) > 38) & (hue(lab) > 40) & (hue(lab) < 90),
+             act="tint", color=(240, 146, 34), keep=0.15),
+        dict(faces=lambda F: F.h <= 0.3,
+             texels=lambda lab, p: (chroma(lab) < 16) | ((hue(lab) > 110) & (hue(lab) < 280)),
+             act="tint", color=(112, 76, 50), keep=0.3),
+        dict(faces=lambda F: (F.h <= 0.3) & (F.r < 0.35), act="tint", color=(112, 76, 50), keep=0.3),  # dia giua de
+    ],
 }
 
 

@@ -85,7 +85,7 @@ Chạy từng file một (máy dễ hết bộ nhớ). Bản texture gốc 2048/
 ```
 git show cce9f69:<path> | git lfs smudge -- <path> > goc.glb
 python3 Tools/Blender/rebake_items_meshy.py <file.glb> goc.glb [bao_cao.json]
-python3 Tools/Blender/repaint_items_meshy.py <file.glb>        # chỉ 11 món có quy tắc tô lại
+python3 Tools/Blender/repaint_items_meshy.py <file.glb>        # chỉ 12 món có quy tắc tô lại
 python3 Tools/Blender/audit_color_bleed.py audit <file.glb>
 python3 Tools/Blender/audit_color_bleed.py compare <truoc.glb> <sau.glb> <anh.jpg>
 ```
@@ -113,6 +113,7 @@ python3 Tools/Blender/audit_color_bleed.py compare <truoc.glb> <sau.glb> <anh.jp
 | L19 găng tay | Phủ kim sa bạc (lưới lục giác); vật liệu metallic 0,6, roughness 0,25 |
 | L20 băng video | Viền cạnh xung quanh đen, bỏ mảng hồng/nâu; giữ nhãn trắng, cửa sổ |
 | L22 bản đồ | Bỏ mảng trắng, giấy da đều màu, giữ nét mực |
+| X04 quả cầu ngọc | Cam đều, bỏ mảng cam sẫm loang (bóng khúc xạ vẽ sẵn); chỉ giữ 6 sao ở mặt trước; đĩa xám xanh trong đế thành gỗ nâu |
 
 - `audit_color_bleed.py` và `color_bleed_lib.py`: **kiểm tra tự động.** Mỗi tam giác lấy 7 mẫu màu texture trong vùng UV của nó (Lab):
   - **outlier**: mặt lệch ΔE76 > 20 so với *mọi* mặt kề.
@@ -138,7 +139,7 @@ Màu không đổi so với texture gốc 2048: ΔE trung vị từng mặt 0,1�
 **Phần còn lại, đã kiểm từng loại:**
 - *Loang mip0 còn 477 mặt*: đều là mặt rất nhỏ, khoảng 1–2 texel trên UV và 1–7 mm² trên vật (trung vị cả lưới là 18 texel). Số gần như không đổi qua mip0, mip1, mip2, nên không phải hút màu theo mipmap mà là giới hạn của phép đo trên mặt nhỏ hơn texel. Không thấy khi render cận.
 - *UV vắt còn 16 mặt*: là tam giác dẹt trong 3D. Sau khi xếp lại, mỗi mặt nằm trọn trong một mảnh UV riêng, không còn vắt sang vùng khác.
-- *Outlier*: đối chiếu từng mặt với màu của nó trong texture gốc. Ở các món không tô lại, hầu hết khớp màu gốc trong ΔE 10, tức là chi tiết vốn có của thiết kế: chữ và viền R09 vé cược, X01, X03, L08, mặt số V03, vết nứt V01, lỗ giày R01. Chỉ còn V03 (1 mặt, 0,5 mm²), V07 (1 mặt, 1,4 mm²) và L05 (7 mặt, 43 mm² tổng) lệch gốc: đó là mặt trong mảnh UV tí hon đã được gộp sang màu mặt kề, không phải vết màu. Ở 11 món tô lại, outlier lệch gốc là do chủ ý tô: sọc mới của L13, chữ trên vé số L04, tam giác dẹt vắt qua vòng xanh L12, nét mực L22.
+- *Outlier*: đối chiếu từng mặt với màu của nó trong texture gốc. Ở các món không tô lại, hầu hết khớp màu gốc trong ΔE 10, tức là chi tiết vốn có của thiết kế: chữ và viền R09 vé cược, X01, X03, L08, mặt số V03, vết nứt V01, lỗ giày R01. Chỉ còn V03 (1 mặt, 0,5 mm²), V07 (1 mặt, 1,4 mm²) và L05 (7 mặt, 43 mm² tổng) lệch gốc: đó là mặt trong mảnh UV tí hon đã được gộp sang màu mặt kề, không phải vết màu. Ở các món tô lại, outlier lệch gốc là do chủ ý tô: sọc mới của L13, chữ trên vé số L04, tam giác dẹt vắt qua vòng xanh L12, nét mực L22.
 
 Bảng chi tiết từng món (khoảng đệm, tỷ lệ phủ texture, số mặt sửa UV, loang trước → sau, outlier khớp/lệch gốc, ΔE p99 so với gốc):
 
@@ -205,6 +206,6 @@ Bảng chi tiết từng món (khoảng đệm, tỷ lệ phủ texture, số m�
 | X05_trai_tim_robot | 4 | 33.6% | 46 | 21 → 25 | 34 → 23 | 272 → 21 | 15 → 2 | 1 (1 / 0) | 5.64 | 0.91 |
 | X06_phi_thuyen_mini | 4 | 46.1% | 7 | 8 → 12 | 7 → 11 | 42 → 8 | 1 → 2 | 1 (1 / 0) | 4.98 | 0.6 |
 
-Ảnh trước và sau từng món: `KiemTra3D/loang_mau/<tên>.jpg`. Hàng trên là bản trước (atlas 1024 chung), hàng dưới là bản sau; ô cuối phóng to vùng khác nhau nhiều nhất. Với 11 món tô lại, hàng trên là bản gốc trước mọi lần sửa.
+Ảnh trước và sau từng món: `KiemTra3D/loang_mau/<tên>.jpg`. Hàng trên là bản trước (atlas 1024 chung), hàng dưới là bản sau; ô cuối phóng to vùng khác nhau nhiều nhất. Với các món tô lại bằng `repaint_items_meshy.py` (11 món Legendary và X04), hàng trên là bản gốc trước mọi lần sửa.
 
 **Trong Unity:** mỗi món giờ có texture riêng và các mảnh UV đã có phần đệm, nên để mipmap bật như mặc định. Không cần gộp material dùng chung atlas như gợi ý cũ ở mục "Lỗi cần sửa" số 2.
