@@ -38,11 +38,8 @@ SETS = {
         ("chủ đề, Huyền thoại 5%", theme(tiers=dict(R=.13, T=.30, H=.30, X=.22, L=.05))),
         ("chủ đề, manh mối đúng 2 trên 3", theme(ntrue=2)),
     ],
-    "he": [("Cổ Phong %s" % p, one("Cổ Phong", price=p)) for p in (500, 550)] +
-          [("Cổ Phong 500, tạo tác 25%", one("Cổ Phong", price=500, tiers=dict(R=.10, T=.30, H=.25, X=.10, L=0)))] +
-          [("Thiên Cơ %s" % p, one("Thiên Cơ", price=p)) for p in (480, 500)] +
-          [("Thiên Cơ 480, tạo tác 25%", one("Thiên Cơ", price=480, tiers=dict(R=.10, T=.30, H=.25, X=.10, L=0)))] +
-          [("Tổng Hợp 650", one("Tổng Hợp", price=650)), ("Tổng Hợp 600, Rất hiếm 14%", one("Tổng Hợp", tiers=dict(R=.16, T=.39, H=.28, X=.14, L=.03)))],
+    "he": [("%s 4.500.000 đ, R%d T%d H%d X%d" % (nm, *[round(100 * v) for v in t[:4]]), one(nm, tiers=dict(zip("RTHXL", t))))
+           for nm in ("Cổ Phong", "Thiên Cơ") for t in ((.15, .30, .15, .06, 0), (.12, .29, .17, .08, 0))],
 }
 N = {"final": 1500, "sens": 1000, "he": 1000}
 
