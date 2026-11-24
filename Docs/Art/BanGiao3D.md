@@ -369,7 +369,7 @@ Còn lại: xem danh sách làm lại; 7 Thường và 5 Hiếm mới chưa làm
 | R13 | Que kem đã liếm sạch | Tuổi thơ Việt Nam | Có; dựng lại bằng Blender (que gỗ trơn 11,4 cm, 2 vết cắn, vệt kem sót), 84 tam giác |
 | R14 | Sổ liên lạc | Tuổi thơ Việt Nam | Có, bìa xanh nhàu; mép giấy bạc đã tô ngà; chưa có chữ ký |
 | R15 | Vỏ bim bim | Tuổi thơ Việt Nam | Có, nhàu, xé miệng, không nhãn hãng |
-| R16 | Gối ôm waifu bạc màu | Wibu | Có; Blender xoay thẳng, làm dày 1 m × 34 × 20 cm; mặt trên in cô gái anime bạc màu (nhân vật tự nghĩ, `retex/in_goi_om.py`); mặt bên đã xóa vệt sọc đỏ xanh |
+| R16 | Gối ôm waifu bạc màu | Wibu | Có; Blender xoay thẳng, làm dày 1 m × 34 × 20 cm; mặt trên in cô gái anime bạc màu (nhân vật tự nghĩ, `retex/in_goi_om.py`), hình thu vào giữa mặt phẳng để mặt không rơi xuống đầu gối; mặt bên đã xóa vệt sọc đỏ xanh |
 | R17 | Poster rách | Wibu | Có, hai ống cuộn |
 | R26 | Mảnh vệ tinh cháy | Không gian | Có, tấm pin cong cháy mép, lòi dây (gộp 3 mảnh); dây tô đỏ và đen |
 | R28 | Đĩa game lậu (hư) | Game | Có, đĩa nứt trong hộp vỡ, dẹt |
@@ -395,7 +395,7 @@ Cứu không tốn credit:
 
 | Mã | Món | Rương | Tình trạng |
 |---|---|---|---|
-| V42 | Sổ hộ khẩu giấy | Việt Nam | Có (Blender, `dung_mon.py V42`), 13 × 19 cm, bìa hồng cam có quốc hiệu, chữ "SỔ HỘ KHẨU", hình tròn trang trí (không dùng quốc huy), mở hé |
+| V42 | Sổ hộ khẩu giấy | Việt Nam | Có (Blender, `dung_mon.py V42`), 13 × 19 cm, bìa hồng cam có quốc hiệu, chữ "SỔ HỘ KHẨU", hình tròn trang trí (không dùng quốc huy), mở hé; mép bìa bo mềm, vân bìa cũ, mép trang không đều; 348 tam giác |
 | V43 | Tay cầm game kiểu cũ | Game | Có (Meshy), dây cuộn gọn; thân và dây cùng màu xám, đã xóa vết lem (`fix_thuong.py V43b`) |
 | V44 | Lightstick | Âm nhạc | Có (Blender), đầu tròn hồng phát sáng nhẹ, cán xám có gân |
 | V45 | Tượng nhân sư bằng đá | Ai Cập cổ đại | Có (làm lại 2026-11-24: Meshy, đủ thân, có đế, giảm lưới còn 6 nghìn tam giác) |
@@ -405,7 +405,7 @@ Cứu không tốn credit:
 | H37 | Mảnh vệ tinh thật | Không gian | Có (Blender), thân giấy vàng, 2 tấm pin, chảo, ăng-ten; rộng 82 cm |
 | H38 | Băng đội trưởng có chữ ký | Thể thao | Có (Blender), vòng vải vàng, chữ C, chữ ký bút dạ |
 | H39 | Bàn cầu cơ nguyên vẹn | Phim kinh dị | Có (Blender), chữ khắc cháy, con trỏ hình tim |
-| H40 | Chân gỗ thuyền trưởng | Hải tặc | Có (Meshy, tách chiếc đũa xuyên qua); tô lại gỗ nâu bóng, vòng đồng, dây da nâu sẫm (`fix_thuong.py H40`) |
+| H40 | Chân gỗ thuyền trưởng | Hải tặc | Có (Meshy, tách chiếc đũa xuyên qua); tô lại gỗ nâu bóng, vòng đồng, dây da nâu sẫm; mảng xám trên thân và miệng cối thành gỗ sẫm (`fix_thuong.py H40`) |
 
 Món Blender có ít tam giác (150–220) và màu phẳng hơn món Meshy; nếu lệch phong cách khi đặt cạnh nhau trong Unity thì gom vào danh sách làm lại.
 
@@ -420,7 +420,8 @@ Chuyển sang phiên sửa (không tốn credit):
 - [x] R30 Vé bóng đá giả: làm lại thành một tấm vé phẳng có chữ và dấu "FAKE" (Blender).
 - [x] V42 Sổ hộ khẩu: giống sổ Việt Nam hơn, bìa có chữ "SỔ HỘ KHẨU" (dựng lại bằng Blender).
 - [x] V43 Tay cầm: tô dây cùng màu thân, xóa chỗ lem.
-- [x] V46 Đũa, H40 Chân gỗ: tô lại màu. Dây da H40 chọn tay theo vùng (vòng dây tách khỏi thân), một mảng sát cối chân cũng thành da.
+- [x] V46 Đũa, H40 Chân gỗ: tô lại màu. Dây da H40 chọn tay theo vùng (vòng dây tách khỏi thân); mảng xám trên thân tô gỗ sẫm.
+- [x] Sửa thêm sau khi xem: R16 thu hình in vào giữa (trước đó mắt nhân vật rơi xuống mặt dốc đầu gối); V42 bo mép, thêm vân bìa và mép trang. R30 giữ (1,6 nghìn tam giác, texture đủ chi tiết).
 - [x] V48 Ô giấy dầu: chủ dự án quyết định bỏ (mảnh thừa dính sát mặt dưới tán không tách sạch; khoen che thì to). Đã xóa file, bỏ khỏi spec và bảng; R50 Ô giấy rách giữ, không còn cặp. Script thử `retex/xoa_manh_o.py` giữ làm mẫu.
 
 ## Danh sách làm lại

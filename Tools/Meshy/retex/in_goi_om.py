@@ -55,6 +55,8 @@ lo, hi = m.bounds
 # dau (dinh anh) o x lon; be ngang cua hinh in theo z
 vi = m.faces[up].ravel()
 t = (z[vi] - lo[2]) / (hi[2] - lo[2]); l = (hi[0] - x[vi]) / (hi[0] - lo[0])
+# thu hinh in vao giua mat phang tren (dau goi cuon xuong): ngoai vung nay keo mep (mau vai, da mo o vien)
+t = np.clip((t - 0.1) / 0.8, 0, 1); l = np.clip((l - 0.12) / 0.8, 0, 1)
 uv[vi, 0] = (OW + t * TW) / NW
 uv[vi, 1] = 1 - (l * TH) / NH
 mat = m.visual.material; mat.baseColorTexture = new

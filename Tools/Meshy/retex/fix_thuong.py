@@ -63,13 +63,15 @@ elif code=="H40": # chan go: go nau bong (giu van), vong dong, day da (cac phan 
     c=m.triangles_center;lo=m.bounds[0];sc=560/max(m.extents)
     X,Y=(c[:,0]-lo[0])*sc+30,(c[:,2]-lo[2])*sc+30   # anh nhin tu tren (x, z)
     loops=(X>525)|((X>285)&(X<360)&(Y>182))|((X>400)&(X<525)&(Y>200))   # vong day tach khoi than (chon tay)
-    leather=(sa<0.2)|loops
-    wood=~brass&~leather;print("brass",brass.sum(),"leather",leather.sum(),"wood",wood.sum())
+    leather=loops   # chi vong day
+    grey=(sa<0.2)&~loops&~brass   # mang xam tren than va mieng coi: go sam
+    wood=~brass&~leather&~grey;print("brass",brass.sum(),"leather",leather.sum(),"wood",wood.sum())
     wmu=cols[wood].mean()
     def woodf(px):return np.clip(np.array((112,60,30))*(px.mean(1,keepdims=True)/wmu)**1.3,0,255)
     def brassf(px):return np.clip(np.array((196,140,52))*(0.8+0.35*px.mean(1,keepdims=True)/255),0,255)
     def leatherf(px):return np.clip(np.array((58,38,28))*(0.75+0.5*px.mean(1,keepdims=True)/255),0,255)
     tex=paint(tex,[P[i] for i in np.where(wood)[0]],woodf)
+    tex=paint(tex,[P[i] for i in np.where(grey)[0]],lambda px:np.clip(np.array((82,46,24))*(0.8+0.4*px.mean(1,keepdims=True)/255),0,255))
     tex=paint(tex,[P[i] for i in np.where(leather)[0]],leatherf)
     tex=paint(tex,[P[i] for i in np.where(brass)[0]],brassf)
     m.visual.material.roughnessFactor=0.35

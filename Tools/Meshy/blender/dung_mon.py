@@ -68,12 +68,12 @@ def add_obj(bm, name, material):
     return ob
 
 
-def box(size, loc=(0, 0, 0), bevel=0.0):
+def box(size, loc=(0, 0, 0), bevel=0.0, seg=1):
     bm = bmesh.new()
     bmesh.ops.create_cube(bm, size=1.0)
     bmesh.ops.scale(bm, vec=Vector(size), verts=bm.verts)
     if bevel:
-        bmesh.ops.bevel(bm, geom=bm.edges[:] + bm.verts[:], offset=bevel, segments=1, affect="EDGES")
+        bmesh.ops.bevel(bm, geom=bm.edges[:] + bm.verts[:], offset=bevel, segments=seg, affect="EDGES")
     bmesh.ops.translate(bm, vec=Vector(loc), verts=bm.verts)
     return bm
 
@@ -411,34 +411,35 @@ elif code == "V42":  # so ho khau 13 x 19 cm, day 7 mm, bia truoc mo he 14 do
     n = np.asarray(Image.effect_noise((W, H), 25).filter(ImageFilter.GaussianBlur(6))).astype(float)
     a *= (0.95 + 0.1 * (n / 255))[..., None]
     front = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
-    plain = Image.new("RGB", (64, 64), tuple(int(c * 0.92) for c in cover))
+    nz = np.asarray(Image.effect_noise((128, 128), 40).filter(ImageFilter.GaussianBlur(2))).astype(float) / 255
+    plain = Image.fromarray(np.clip(np.array(cover) * 0.92 * (0.9 + 0.2 * nz)[..., None], 0, 255).astype(np.uint8))  # bia sau: van bia cu
     pg = Image.new("RGB", (64, 64), (212, 200, 172))  # canh giay: soc ngang
     dp = ImageDraw.Draw(pg)
-    for y in range(0, 64, 4):
-        dp.line([(0, y), (63, y)], fill=(180, 168, 140))
-    inner = Image.new("RGB", (W, H), (218, 208, 182))  # trang dau: ke dong
+    for y in range(0, 64, 2):  # mep tung trang, dam nhat khong deu
+        dp.line([(0, y), (63, y)], fill=tuple(int(c * rng.uniform(0.8, 0.95)) for c in (212, 200, 172)))
+    inner = Image.new("RGB", (W, H), (200, 186, 156))  # trang dau: ke dong
     di = ImageDraw.Draw(inner)
     di.text((W / 2, 80), "TRANG 1", font=ImageFont.truetype(FN, 28), fill=(90, 80, 70), anchor="mm")
     for y in range(150, H - 60, 46):
-        di.line([(50, y), (W - 50, y)], fill=(170, 160, 140), width=2)
+        di.line([(50, y), (W - 50, y)], fill=(140, 128, 108), width=3)
     inner = inner.filter(ImageFilter.GaussianBlur(0.8))
     m_front, m_plain = mat("bia", im=front, rough=0.8), mat("bia_tron", im=plain, rough=0.8)
     m_page, m_inner = mat("giay", im=pg, rough=0.9), mat("trang", im=inner, rough=0.9)
     # bia sau
-    bm = box((BW, BH, CT), (BW / 2, 0, CT / 2), 0.0004); uv_box(bm, 4)
+    bm = box((BW, BH, CT), (BW / 2, 0, CT / 2), 0.00035, 3); uv_box(bm, 4)
     parts = [add_obj(bm, "bia_sau", m_plain)]
     # khoi giay (hoi nho hon bia)
-    bm = box((BW - 0.004, BH - 0.006, PT), (BW / 2 - 0.001, 0, CT + PT / 2)); uv_box(bm, 30)
+    bm = box((BW - 0.004, BH - 0.006, PT), (BW / 2 - 0.001, 0, CT + PT / 2), 0.0008, 2); uv_box(bm, 30)
     parts.append(add_obj(bm, "giay", m_page))
     bm = box((BW - 0.004, BH - 0.006, 0.0002), (BW / 2 - 0.001, 0, CT + PT + 0.0001))
     uv_top(bm, (0.001, -BH / 2 + 0.003), (BW - 0.003, BH / 2 - 0.003))
     parts.append(add_obj(bm, "trang1", m_inner))
     # gay so
-    bm = box((CT * 1.2, BH, PT + 2 * CT), (0, 0, (PT + 2 * CT) / 2), 0.0004); uv_box(bm, 4)
+    bm = box((CT * 1.2, BH, PT + 2 * CT), (0, 0, (PT + 2 * CT) / 2), 0.0005, 3); uv_box(bm, 4)
     parts.append(add_obj(bm, "gay", m_plain))
     # bia truoc: mat ngoai co chu, xoay quanh gay (truc Y tai x=0, z=PT+CT) 14 do
     z0 = CT + PT
-    bm = box((BW, BH, CT), (BW / 2, 0, z0 + CT / 2), 0.0004)
+    bm = box((BW, BH, CT), (BW / 2, 0, z0 + CT / 2), 0.00035, 3)
     uvl = bm.loops.layers.uv.verify()
     for f in bm.faces:
         for lp in f.loops:
