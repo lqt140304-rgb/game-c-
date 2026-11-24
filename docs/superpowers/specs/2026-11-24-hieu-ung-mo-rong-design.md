@@ -89,26 +89,29 @@ Mỗi bậc khác nhau **cả hình dạng**, không chỉ màu, để người 
 - Kiểu mặc định **lõi tối màu bậc + viền sáng màu bậc** (`DarkTintWithRim`): lõi là màu bậc nhân 0,16, viền là bản phóng to 5% chỉ vẽ mặt sau (shader `Universal Render Pipeline/Unlit`, Cull Front). Có thêm `BlackWithRim` (lõi đen) và `DarkTintOnly`. Trong lúc quay, viền đổi theo màu đang nhảy; sau khi khoá, giữ màu bậc trúng.
 - Hình chỉ là bóng: game tự thay bằng vật thật khi nhận `onSilhouetteComplete`.
 
-## Âm thanh: âm thanh tạm tổng hợp bằng code
+## Âm thanh
 
-**Nhãn: âm thanh tạm tổng hợp bằng code.** Tất cả file ở `Assets/_Project/Audio/Chests/` do `Tools/Audio/make_chest_sfx.py` tạo bằng numpy (sóng sin, nhiễu, lọc), **không dùng mẫu có bản quyền, không dùng dịch vụ trả phí**. WAV mono 44,1 kHz 16-bit, tổng khoảng 1,4 MB. Thay bằng âm thật sau này chỉ cần giữ tên file hoặc kéo clip mới vào hồ sơ.
+**Bộ chính: mp3 tạo bằng ElevenLabs** (chủ dự án cho phép ngày 2026-11-24; phiên điều phối tạo và đẩy lên nhánh `claude/chest-sfx`, phiên này chỉ chép file, không gọi dịch vụ). Ở `Assets/_Project/Audio/Chests/`, mô tả từng file trong `README.md` cùng thư mục. **Chưa ai nghe thử.** **Cần chủ dự án kiểm điều khoản giấy phép theo gói ElevenLabs trước khi phát hành.**
 
-| File | Dùng cho |
+| File | Dùng cho (hồ sơ Chest_Golden) |
 |---|---|
-| `sfx_chest_tick_a/b.wav` | Tick mỗi lần đổi màu (Unity nâng cao độ dần) |
-| `sfx_chest_lock_0_rac` … `_4_huyenthoai.wav` | Tiếng chốt theo bậc |
-| `sfx_chest_whoosh.wav` | Bóng bật ra và phóng to |
-| `sfx_chest_open_shimmer.wav` | Nền lấp lánh lúc quay |
-| `sfx_chest_lid_creak.wav`, `sfx_chest_lid_thud.wav` | Kẽo kẹt lúc hé nắp, tiếng nắp mở hết |
-| `sfx_coin_clink_1..3.wav` | Xu lanh canh (Chest_Golden), số tiếng tăng theo bậc |
+| `sfx_tick.mp3` | Tick mỗi lần đổi màu (Unity nâng cao độ dần) |
+| `sfx_lock_rac` / `_thuong` / `_hiem` / `_ratHiem` / `_huyenThoai.mp3` | Tiếng chốt theo bậc |
+| `sfx_whoosh_grow.mp3` | Bóng bật ra và phóng to |
+| `sfx_lid_creak.mp3` | Kẽo kẹt lúc hé nắp |
+| `sfx_coin_jingle.mp3` | Xu lanh canh (Chest_Golden), số lần phát tăng theo bậc |
 
-Clip nào để trống trong hồ sơ thì **bỏ qua, không lỗi**.
+**Dự phòng: âm thanh tạm tổng hợp bằng code** ở `Audio/Chests/Synth/` (WAV mono 44,1 kHz), tạo bởi `Tools/Audio/make_chest_sfx.py` bằng numpy, không dùng mẫu có bản quyền. Script chỉ ghi vào `Synth/` và từ chối ghi vào thư mục có mp3. Hai âm chưa có bản mp3 nên vẫn lấy từ `Synth/`: nền lấp lánh lúc quay (`sfx_chest_open_shimmer.wav`) và tiếng nắp mở hết (`sfx_chest_lid_thud.wav`). Nếu thiếu mp3 nào, menu Editor tự lấy bản tương ứng trong `Synth/` và in cảnh báo.
+
+Clip nào để trống trong hồ sơ thì **bỏ qua, không lỗi**. Âm riêng từng rương sau này đặt tên `sfx_<tên rương>_<việc>.mp3`.
+
+Lưu ý: `sfx_tick.mp3` dài 0,5 s trong khi tick đầu vòng quay cách nhau 0,05 s, nên các tick sẽ chồng lên nhau lúc đầu; nếu nghe đục, cắt ngắn file hoặc tăng `minInterval`.
 
 ## Cách thêm hiệu ứng cho một rương mới
 
 1. Thêm hàm `ApplyTenRuong(ChestFxProfile p)` vào `ChestFxPresets.cs` (hoặc tạo asset bằng *Assets > Create > Cho Do La > Chest FX Profile* rồi chỉnh tay). Đặt `chestId` = tên file GLB, ví dụ `Chest_ThienCo`.
 2. Chọn kiểu: `rouletteStyle` (Cycle, PingPong "xếp hàng", Shuffle), `minInterval`/`maxInterval`/`slowdownCurve` (tốc độ), `particleLook` (SoftDot, Sparkle, Coin, Streak), `particleDirection` (Up, Radial, Swirl, Fountain), `secondaryColor`, `burstGravity`, `raySpin`…
-3. Âm riêng: thêm hàm tạo âm vào `make_chest_sfx.py` (tên `sfx_<ruong>_*.wav`), kéo vào hồ sơ (`tickClips`, `lockClipsByTier`, `accentClips`, `stageClips`).
+3. Âm riêng: thêm file `sfx_<ruong>_*.mp3` vào `Audio/Chests/` (hoặc âm tổng hợp vào `Synth/`), kéo vào hồ sơ (`tickClips`, `lockClipsByTier`, `accentClips`, `stageClips`).
 4. Hiệu ứng đặc biệt bằng code: viết lớp con `ChestFxHook` (xem `GoldenGlintHook`), gắn lên gốc rương hoặc lên prefab đặt ở `customFxPrefab`.
 5. Trên gốc rương: `BoxOpenSequence` + `ChestRevealSequence` (kéo hồ sơ vào `profile`) + `AudioSource`.
 
@@ -129,7 +132,7 @@ Khoảng 17 rương; các GLB ngoài Golden và Thiên Cơ đang ở nhánh khá
 
 - **Chưa chạy trong Unity** (máy dựng không có Unity). Mã đã biên dịch thử bằng `mcs` với **stub UnityEngine tự viết**, nên chỉ bắt lỗi cú pháp và kiểu, không bắt được sai khác API thật hay lỗi lúc chạy.
 - Hạt, tia, vòng, bóng dựng bằng mã **chưa thấy tận mắt**; màu, độ sáng, kích thước có thể cần chỉnh.
-- Âm thanh tổng hợp **chưa ai nghe**; chỉ kiểm tra định dạng và mức âm bằng script.
+- Âm thanh (mp3 ElevenLabs và WAV tổng hợp) **chưa ai nghe**. Giấy phép ElevenLabs chưa kiểm.
 - Shader tìm theo tên (`Shader.Find`): trong bản build phải giữ shader `Universal Render Pipeline/Unlit` và `Universal Render Pipeline/Particles/Unlit` (Always Included Shaders), nếu không sẽ rơi về shader dự phòng.
 - Màu `Glow` được tô qua MaterialPropertyBlock với các tên thuộc tính thường gặp (`_BaseColor`, `baseColorFactor`, `emissiveFactor`…); nếu vật liệu glTFast dùng tên khác, quầng sáng sẽ giữ màu gốc (đèn và hạt vẫn đổi màu).
 

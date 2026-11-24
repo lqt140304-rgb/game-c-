@@ -148,8 +148,8 @@ namespace ChoDoLa.Editor
             }
             if (missing > 0)
             {
-                Debug.LogWarning($"[ChestRevealTest] {missing} placeholder sound(s) not found in {ChestFxPresets.AudioFolder}. " +
-                                 "Run `python3 Tools/Audio/make_chest_sfx.py` to make them; the effect still runs without sound.");
+                Debug.LogWarning($"[ChestRevealTest] {missing} sound(s) not found in {ChestFxPresets.AudioFolder}. " +
+                                 "The mp3 set is on branch claude/chest-sfx; `python3 Tools/Audio/make_chest_sfx.py` remakes the Synth/ fallback. The effect still runs without sound.");
             }
 
             EditorUtility.SetDirty(p);
@@ -184,10 +184,15 @@ namespace ChoDoLa.Editor
             return result;
         }
 
+        /// <summary>Loads the mp3 (ElevenLabs); if it is missing, the synthesised placeholder in Synth/.</summary>
         private static AudioClip Clip(string file, ref int missing)
         {
             AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + file);
-            if (c == null) missing++;
+            if (c != null) return c;
+            string fallback = ChestFxPresets.SynthFallback(file);
+            if (fallback != null) c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + fallback);
+            if (c != null) Debug.LogWarning($"[ChestRevealTest] {file} not found; using the synthesised placeholder {fallback}.");
+            else missing++;
             return c;
         }
 

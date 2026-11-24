@@ -211,7 +211,7 @@ python Tools/Blender/make_chest_thien_co.py -- Assets/_Project/Art/Chests/Chest_
 Lõi dùng chung cho mọi rương: màu các bậc nhảy như vòng quay rồi dừng đúng bậc game đã quay, cùng lúc bóng của món trúng nhô ra khỏi rương và lớn dần tới hình hoàn chỉnh. Thiết kế, nhịp giây, bảng màu (đề xuất) và cách thêm hồ sơ cho rương mới: [spec](../../docs/superpowers/specs/2026-11-24-hieu-ung-mo-rong-design.md).
 
 - Mã: `Assets/_Project/Scripts/ChestFx/` (`ChestRevealSequence` đặt cạnh `BoxOpenSequence` trên gốc rương, hồ sơ `ChestFxProfile`, bảng màu `TierPalette`). Hạt, tia, vật liệu đều dựng bằng code, không cần prefab.
-- Âm thanh: `Assets/_Project/Audio/Chests/`, **âm thanh tạm tổng hợp bằng code** bởi `python3 Tools/Audio/make_chest_sfx.py` (chỉ cần numpy). Thay bằng âm thật sau.
+- Âm thanh: `Assets/_Project/Audio/Chests/*.mp3` tạo bằng **ElevenLabs** (chủ dự án cho phép), chưa ai nghe, cần kiểm giấy phép trước khi phát hành. Dự phòng ở `Audio/Chests/Synth/`: **âm thanh tạm tổng hợp bằng code** bởi `python3 Tools/Audio/make_chest_sfx.py` (chỉ ghi vào `Synth/`).
 - Hồ sơ mẫu duy nhất: Chest_Golden (`ScriptableObjects/ChestFx/ChestFx_Golden.asset`, do menu tạo ra, không có sẵn trong repo vì repo không lưu file `.meta`).
 
 **Chạy thử trong Unity:**
@@ -222,4 +222,4 @@ Lõi dùng chung cho mọi rương: màu các bậc nhảy như vòng quay rồi
 4. Bấm Play. **T** đổi bậc ép (vòng qua 5 bậc), **Y** chọn món minh hoạ ngẫu nhiên, **Space** mở rương, **R** đóng lại, **C** đổi rương. Hướng dẫn hiện ở góc trái trên.
 5. Nếu rương quay lưng về camera, xoay gốc rương 180° quanh Y; nếu nắp mở ngược, đổi `lidOpenSign` của `BoxOpenSequence`.
 
-**Chưa kiểm chứng:** chưa chạy trong Unity, hạt và bóng chưa thấy tận mắt, âm chưa nghe. Mã chỉ biên dịch thử với stub UnityEngine.
+**Chưa kiểm chứng:** chưa chạy trong Unity, hạt và bóng chưa thấy tận mắt, âm (mp3 và WAV) chưa nghe. Mã chỉ biên dịch thử với stub UnityEngine.

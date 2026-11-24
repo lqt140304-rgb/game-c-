@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Synthesise the PLACEHOLDER chest-opening sounds (âm thanh tạm tổng hợp bằng code).
+"""Synthesise the FALLBACK chest-opening sounds (âm thanh tạm tổng hợp bằng code).
+
+The sounds actually used are the ElevenLabs mp3 files in Assets/_Project/Audio/Chests/ (owner approved).
+This script is kept as a free fallback: it writes only into the Synth/ subfolder, never over the mp3 files.
 
 No samples, no paid service: every sound is built from sine waves, noise and simple filters with numpy,
 so there is no copyright question. Replace them with real recordings later; the file names are what
@@ -7,7 +10,7 @@ ChestFxPresets / the Chest FX profile expect.
 
     python3 Tools/Audio/make_chest_sfx.py [output_dir]
 
-Default output: Assets/_Project/Audio/Chests/ (WAV, mono, 44.1 kHz, 16-bit). Deterministic (fixed seed).
+Default output: Assets/_Project/Audio/Chests/Synth/ (WAV, mono, 44.1 kHz, 16-bit). Deterministic (fixed seed).
 Needs numpy only (the wave module is in the standard library).
 """
 import os
@@ -244,8 +247,10 @@ def open_shimmer():
 
 def main():
     repo = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-    out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(repo, "Assets", "_Project", "Audio", "Chests")
+    out = sys.argv[1] if len(sys.argv) > 1 else os.path.join(repo, "Assets", "_Project", "Audio", "Chests", "Synth")
     os.makedirs(out, exist_ok=True)
+    if any(f.endswith(".mp3") for f in os.listdir(out)):
+        sys.exit("Refusing to write: " + out + " holds the ElevenLabs mp3 files. Use the Synth/ folder.")
     print("Writing placeholder chest sounds to", out)
 
     sounds = [
