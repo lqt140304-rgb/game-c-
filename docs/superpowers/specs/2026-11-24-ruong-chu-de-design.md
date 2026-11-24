@@ -72,24 +72,26 @@ Chủ dự án đồng ý danh sách rương chủ đề gợi ý (2026-11-24). 
 
 ### Rương chủ đề (Huyền thoại là biểu tượng, có câu chuyện)
 
+**Chốt với chủ dự án:** món phải **mang tính biểu tượng** của chủ đề, người chơi nhìn là nhận ra. Chấp nhận sát bản quyền; chỉ cần **đổi nhỏ** (màu, chi tiết, tên) đủ để không phải bản gốc mà vẫn nhận ra.
+
 | Rương | Thường | Hiếm | Rất hiếm | Huyền thoại |
 |---|---|---|---|---|
-| Việt Nam | Quạt nan V11, Đèn dầu | Cassette H01, Nón lá H02 | Đàn thần X01, Trống đồng X02 | Ấn Ngọc Tỷ L01, Nỏ thần L05, Gậy sắt làng Gióng L06 |
-| Tuổi thơ Việt Nam | Bi ve, Con quay gỗ | Tò he, Hộp dế mèn | Đèn ông sao | Diều sáo |
-| Wibu | Băng đô ninja (nhại), Bát mì ramen (nhại) | Túi thần kỳ H03, Cục sạc chuột H04 | Quả cầu ngọc X04 | Quyển sổ định mệnh (nhại) |
-| Truyền thuyết Châu Âu | Hạt đậu thần, Guồng quay sợi | Gương cổ tích V08, Mũ phù thủy H05 | Sừng kỳ lân | Táo vàng L02, Giày thủy tinh L03, Chiếc nhẫn duy nhất (nhại) |
-| Robot | Tay robot thiếc, Robot dây cót | Đầu robot đồ chơi, Chó robot | Trái tim robot X05 | Bàn tay robot khổng lồ (nhại) |
-| Không gian | Đá mặt trăng, Thức ăn phi hành gia | Mũ phi hành gia | Phi thuyền mini X06, Kiếm sáng X03 (nhại) | Lá cờ trên mặt trăng (nhại) |
-| Game (gộp Mô hình) | Máy game 8-bit V12, Băng game | Tay cầm vàng, Máy điện tử thùng mini | Mô hình nhân vật game (nhại) | Hộp băng game vàng (nhại) |
-| Thể thao | Giày bóng đá, Huy chương đồng | Vợt cầu lông, Găng thủ môn | Áo đấu có chữ ký (nhại) | Cúp vàng thế giới (nhại) |
-| Âm nhạc | Đĩa than, Kèn harmonica | Micro cổ, Máy hát đĩa | Đàn bầu | Cây ghi-ta của danh ca (nhại) |
-| Phim kinh dị | Nến đen, Búp bê vải | Gương ám, Hộp nhạc tự kêu | Búp bê ma (nhại) | Băng video "7 ngày" (nhại) |
-| Ai Cập cổ đại | Bọ hung, Giấy cói | Tượng mèo, Bình đựng nội tạng | Con mắt Horus | Mặt nạ vàng pharaoh |
-| Hải tặc | La bàn, Đồng xu vàng | Ống nhòm, Móc tay | Bản đồ kho báu | Mũ rơm thuyền trưởng (nhại) |
-| Trung Hoa cổ | Quạt lông, Bình rượu sứ | Bàn tính, Đèn lồng đỏ | Kiếm Thanh Long | Gậy Như Ý |
-| Nhật Bản cổ | Quạt giấy, Mèo vẫy tay | Mặt nạ Noh, Ấm trà sắt | Giáp samurai mini | Thanh kiếm cắt sắt |
+| Việt Nam | Quạt nan V11, Guốc mộc | Cassette H01, Nón lá H02, Bánh chưng Lang Liêu | Đàn thần X01, Trống đồng X02 | Ấn Ngọc Tỷ L01, Nỏ thần L05, Gậy sắt làng Gióng L06, Gươm Thuận Thiên (Hồ Gươm) |
+| Tuổi thơ Việt Nam | Bi ve, Tò he | Hộp bút hai tầng, Máy nuôi gà ảo | Đèn ông sao | Truyện tranh thần đồng đất Việt tập 1 (nhại) |
+| Wibu | Băng đô làng ninja, Bát mì ramen (nhại Naruto) | Túi thần kỳ H03, Cục sạc chuột H04, Cánh cửa thần kỳ | Quả cầu ngọc X04, Đũa thủy thủ mặt trăng | Quyển sổ tử thần (nhại) |
+| Truyền thuyết Châu Âu | Hạt đậu thần, Guồng quay sợi | Gương thần V08, Mũ phù thủy H05 | Sừng kỳ lân, Đũa phép cậu bé phù thủy (nhại) | Táo vàng L02, Giày thủy tinh L03, Chiếc nhẫn duy nhất (nhại), Thanh gươm trong đá |
+| Robot | Robot dây cót, Tay robot thiếc | Robot vòm tròn bíp bíp (nhại R2), Chó robot | Trái tim lò phản ứng X05, Đầu mô hình Gundam (nhại) | Mũ giáp đỏ vàng của người sắt (nhại) |
+| Không gian | Đá mặt trăng, Thức ăn phi hành gia | Mũ phi hành gia | Phi thuyền mini X06, Kiếm sáng X03, Lá cờ trên mặt trăng | Mặt nạ thở của chúa tể bóng tối (nhại) |
+| Game (gộp Mô hình) | Máy game 8-bit V12, Băng game | Nấm đỏ, Khối gạch dấu hỏi (nhại) | Khối kim cương vuông (nhại), Kiếm thần của chàng áo xanh (nhại) | Mũ đỏ chữ M của anh thợ sửa ống nước (nhại) |
+| Thể thao | Giày bóng đá, Huy chương | Găng thủ môn, Bóng rổ chữ ký số 23 (nhại) | Áo đấu số 7 (nhại), Giày "biết bay" (nhại) | Cúp vàng thế giới (nhại) |
+| Âm nhạc | Đĩa than, Kèn harmonica | Micro cổ, Kính tròn ca sĩ tứ quái (nhại) | Đàn bầu, Cây ghi-ta đập vỡ trên sân khấu | Găng tay lấp lánh một chiếc của ông hoàng nhạc pop (nhại) |
+| Phim kinh dị | Nến đen, Búp bê vải | Mặt nạ khúc côn cầu (nhại), Hộp nhạc tự kêu | Búp bê ma (nhại), Bóng bay đỏ (nhại) | Băng video "7 ngày" (nhại) |
+| Ai Cập cổ đại | Bọ hung, Giấy cói | Tượng mèo Bastet, Kim tự tháp mini | Mắt Horus, Quan tài xác ướp mini | Mặt nạ vàng pharaoh |
+| Hải tặc | La bàn, Đồng xu vàng | Móc tay thuyền trưởng, Cờ đầu lâu | Bản đồ kho báu, Trái ác quỷ (nhại) | Mũ rơm (nhại) |
+| Trung Hoa cổ | Quạt lông Gia Cát, Đèn lồng đỏ | Bàn tính, Bình gốm Thanh Hoa | Thanh Long Yển Nguyệt Đao, Vòng kim cô | Gậy Như Ý |
+| Nhật Bản cổ | Mèo vẫy tay, Quạt giấy | Mặt nạ quỷ Oni, Búp bê Daruma | Giáp samurai mini, Tranh sóng lừng | Thần kiếm Kusanagi |
 
-**Thay đổi so với bảng chia cũ:** Mô hình gộp vào Game; Kiếm sáng chuyển sang Không gian; Áo đấu cũ và Vé cược thành rác chung. **Số món mới cần mô hình:** khoảng 75. Gom tối đa 8 món mỗi lượt Meshy, ước tính sẽ báo trước khi chạy.
+**Thay đổi so với bảng chia cũ:** Mô hình gộp vào Game; Kiếm sáng chuyển sang Không gian; Áo đấu cũ và Vé cược thành rác chung. **Số món mới cần mô hình:** khoảng 85. Gom tối đa 8 món mỗi lượt Meshy, ước tính sẽ báo trước khi chạy.
 
 ## Hệ quả cần xử lý
 
