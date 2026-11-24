@@ -148,3 +148,28 @@ Lưu ý: tất thối và trứng thối có vạch mùi xanh nổi trên đầu
 **Gậy sắt làng Gióng** (`L06`): theo truyền thuyết là gậy sắt thẳng và cứng, nên mô hình để dáng thẳng, không xương, không chuyển động. Công cụ `Tools/Blender/rig_whip.py` (gắn xương và sóng uốn cho vật thẳng) và video thử `Art/Source/roi_sat_uon_luon.mp4` chỉ giữ để tham khảo, không dùng cho món này.
 
 Lưu ý: Meshy không giữ vật trong suốt, nên trái tim robot (X05) không có chuông kính. Đệm giày thủy tinh (L03) có một vệt đỏ do texture.
+
+## Huyền thoại theo rương (đợt 2026-11-24, low-poly)
+
+Theo spec [rương chủ đề](../../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md). Meshy, 2 ảnh gộp 8 món, ~30 nghìn tam giác mỗi ảnh (như các bậc khác, không tăng poly). Ảnh nguồn `Art/Source/ref_huyen_thoai_chu_de_1.png`, `_2.png`; ảnh kiểm tra `render_huyen_thoai_chu_de_1.png`, `_2.png`. Kích thước đã đặt theo vật thật, đáy ở y=0.
+
+| Mã | Món | Rương |
+|---|---|---|
+| L07 | Gươm Thuận Thiên | Việt Nam |
+| L08 | Quyển sổ tử thần (nhại) | Wibu |
+| L09 | Mũ giáp người sắt (nhại) | Robot |
+| L10 | Mũ đỏ chữ M (nhại) | Game |
+| L11 | Gậy Như Ý | Trung Hoa cổ |
+| L12 | Cúp vàng thế giới (nhại) | Thể thao |
+| L13 | Mặt nạ vàng pharaoh | Ai Cập cổ đại |
+| L14 | Mũ rơm (nhại) | Hải tặc |
+| L15 | Truyện tranh thần đồng đất Việt (nhại) | Tuổi thơ Việt Nam |
+| L16 | Chiếc nhẫn duy nhất (nhại) | Truyền thuyết Châu Âu |
+| L17 | Thanh gươm trong đá | Truyền thuyết Châu Âu |
+| L18 | Mặt nạ chúa tể bóng tối (nhại) | Không gian |
+| L19 | Găng tay lấp lánh (nhại) | Âm nhạc |
+| L20 | Băng video "7 ngày" (nhại) | Phim kinh dị |
+| L21 | Thần kiếm Kusanagi | Nhật Bản cổ |
+| L22 | Bản đồ cổ vẽ tay | Vải Niêm (rương cơ bản) |
+
+Lưu ý: găng tay L19 mất lớp kim tuyến (ra màu trắng trơn); kiếm L21 hơi cong. Chưa có: Đồng hồ bỏ túi (Kim Khí), Két sắt (Đen), gom vào đợt làm lại sau.
