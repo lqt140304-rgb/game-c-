@@ -41,11 +41,11 @@ namespace ChoDoLa.ChestFx
         public AudioClip gulpClip;
         public AudioClip burpSmallClip;
         public AudioClip burpBigClip;
-        public AudioClip riserClip;       // dâng lên trước lúc chốt (giống nhau mọi bậc: giữ bí mật)
+        [Tooltip("Tiếng chốt theo bậc (Rác, Thường, Hiếm, Rất hiếm, Huyền thoại). Rỗng thì dùng deflate/burp cũ.")]
+        public AudioClip[] stingClips = new AudioClip[5];
         public AudioClip deflateClip;     // bậc thấp: xì hơi xịt
         public AudioClip boomClip;        // bậc cao: bùng nổ
         public AudioClip spitClip;
-        public AudioClip buzzLoopClip;
         public AudioClip tossClip;
         public AudioClip hopClip;
         public AudioClip giggleClip;      // lạch cạch răng khi né
@@ -54,12 +54,12 @@ namespace ChoDoLa.ChestFx
         [Header("Cho ăn")]
         [Tooltip("Giai đoạn BoxOpenSequence mà rương dừng lại đòi ăn (1 = Gỡ niêm, trước vòng màu).")]
         [SerializeField] private int feedStage = 1;
-        [SerializeField, Range(1, 4)] private int bitesNeeded = 2;
-        [SerializeField, Range(2, 6)] private int foodCount = 4;
+        [SerializeField, Range(1, 4)] private int bitesNeeded = 1;
+        [SerializeField, Range(2, 6)] private int foodCount = 3;
         [Tooltip("Giây không ai cho ăn (tính từ lúc rương đòi) trước khi rương tự bò đi vồ đồ.")]
-        [SerializeField] private float autoEatAfter = 4.5f;
+        [SerializeField] private float autoEatAfter = 2.0f;
         [Tooltip("An toàn: chờ tối đa bấy nhiêu giây ở giai đoạn cho ăn rồi tự đi tiếp.")]
-        [SerializeField] private float maxFeedWait = 14f;
+        [SerializeField] private float maxFeedWait = 5f;
         [SerializeField, Range(0f, 1f)] private float dodgeChance = 0.5f;
         [SerializeField] private float tossFlightSeconds = 0.55f;
 
@@ -68,7 +68,7 @@ namespace ChoDoLa.ChestFx
         [SerializeField] private float foodMass = 0.3f;
         [Tooltip("Xung lực nhảy cú lớn (Huyền thoại), tính theo m/s vận tốc lên.")]
         [SerializeField] private float legendJumpSpeed = 4.2f;
-        [SerializeField] private float shoveRadius = 1.6f;
+        [SerializeField] private float shoveRadius = 1.2f;   // nhân với kích thước rương
         [SerializeField] private float shoveSpeed = 3.5f;
 
         [Header("Trang trí")]
@@ -144,12 +144,15 @@ namespace ChoDoLa.ChestFx
         private float _rouletteT0;
         private float _plannedLock = 2f;
 
-        // fly
-        private Transform _fly;
-        private float _flyPhase;
+        // chống chồng tiếng (ChestAudioRule.TryGate)
+        private float _lastEventSfx = -999f;
 
+        [Header("Da rương (sửa rương trắng)")]
+        [Tooltip("Ảnh da Meshy. Nếu vật liệu của rương không có ảnh nền (hiện trắng), hook gắn ảnh này lúc bắt đầu.")]
+        public Texture skinTexture;
+        private readonly List<Material> _skinMats = new List<Material>();
         // audio
-        private AudioSource _loopSrc, _riserSrc, _fxSrc, _buzzSrc;
+        private AudioSource _loopSrc, _fxSrc;
 
         // timers
         private struct Timer { public float at; public Action act; }
@@ -184,7 +187,6 @@ namespace ChoDoLa.ChestFx
             UpdateTensionAudio(dt);
             if (_phase == Phase.Feeding) UpdateFeeding();
             UpdateJaw(dt);
-            UpdateFly(dt);
             UpdateSquash(dt);
         }
 
@@ -281,17 +283,13 @@ namespace ChoDoLa.ChestFx
             _phase = Phase.Chewing;
             _rouletteT0 = _t;
             _plannedLock = PlannedRouletteSeconds();
-            const float riserLead = 2.6f;
-            if (!CoreTension) After(Mathf.Max(0f, _plannedLock - riserLead), StartRiser);
-            SpawnFly();
-            After(_plannedLock * (0.35f + Rand(0.15f)), SnapAtFly);
         }
 
         public override void OnRouletteStep(ChestRevealSequence reveal, ChestTier shown, Color color)
         {
             if (!_running) return;
             Kick(0.05f);
-            if (_rng.NextDouble() < 0.35) Play(chewClip, 0.35f, 0.85f + Rand(0.35f));
+            if (_rng.NextDouble() < 0.35 && ChestAudioRule.TryGate(ref _lastEventSfx, ChestAudioRule.EventGap)) Play(chewClip, 0.35f, 0.85f + Rand(0.35f));
             if (_rng.NextDouble() < 0.12 && Grounded()) { SetBodyVelocity(Vector3.up * 1.1f + Side() * Rand(0.6f, true)); }
         }
 
@@ -299,36 +297,37 @@ namespace ChoDoLa.ChestFx
         {
             if (!_running) return;
             _phase = Phase.Locked;
-            RemoveFly();
             float rank = tier.Rank01();
             Vector3 mouth = MouthPos();
 
+            AudioClip sting = StingFor(tier);
             if (rank <= 0.26f)
             {
-                // THẤP: mọi thứ tắt phụt — một khoảng lặng ngắn — rồi tiếng xịt/ợ nhỏ. Rương xẹp lép.
+                // THẤP: mọi thứ tắt phụt — một khoảng lặng ngắn — rồi tiếng chốt. Rương xẹp lép.
                 StopSrc(_loopSrc);
-                StopSrc(_riserSrc);
+                _nextBeat = float.MaxValue;   // dừng nhịp tim
                 if (tier == ChestTier.Rac)
                 {
-                    After(0.14f, () => { if (!CoreTension) Play(deflateClip, 1f, 1f); _sqTarget = 0.3f; Kick(-0.2f); });
+                    After(ChestAudioRule.RacSilence, () => { Play(sting != null ? sting : deflateClip, 1f, 1f); _sqTarget = 0.3f; Kick(-0.2f); });
                     After(0.75f, () => SpitStomach(true, 0.9f));
-                    After(1.6f, () => { Play(burpSmallClip, 0.5f, 1.6f); Kick(0.15f); });   // nấc cụt
+                    After(1.6f, () => { Play(burpSmallClip, 0.4f, 1.6f); Kick(0.15f); });   // nấc cụt (đuôi)
                     After(2.6f, () => _sqTarget = 0f);
                 }
                 else
                 {
-                    After(0.14f, () => { Play(burpSmallClip, 0.9f, 1f); Kick(0.18f); });
+                    After(0.14f, () => { Play(sting != null ? sting : burpSmallClip, 0.9f, 1f); Kick(0.18f); });
                     After(0.5f, () => SpitStomach(false, 0.6f));
                 }
                 After(0.3f, () => { if (Grounded()) SetBodyVelocity(Vector3.up * 0.7f); });
             }
             else
             {
-                // CAO: tiếng dâng bùng nổ, độ mạnh theo bậc.
+                // CAO: tiếng nổ (hành động) + tiếng chốt; ợ lớn dời +0,4 s làm đuôi.
                 FadeSrc(_loopSrc, 0.4f);
-                StopSrc(_riserSrc);
-                if (!CoreTension) Play(boomClip, Mathf.Lerp(0.45f, 1f, (rank - 0.5f) * 2f), Mathf.Lerp(1.15f, 0.9f, rank));
-                Play(burpBigClip, 0.7f, Mathf.Lerp(1.25f, 0.85f, rank));
+                _nextBeat = float.MaxValue;
+                Play(boomClip, Mathf.Lerp(0.45f, 0.8f, (rank - 0.5f) * 2f), Mathf.Lerp(1.15f, 0.9f, rank));
+                if (sting != null) Play(sting, 1f, 1f);
+                After(0.4f, () => Play(burpBigClip, 0.4f, Mathf.Lerp(1.25f, 0.85f, rank)));
                 Kick(-0.25f);
                 float jump = Mathf.Lerp(1.6f, legendJumpSpeed, (rank - 0.5f) * 2f);
                 After(0.05f, () =>
@@ -345,6 +344,12 @@ namespace ChoDoLa.ChestFx
             }
 
             After(2.6f, () => { _homing = true; if (_body != null) _body.isKinematic = true; });
+        }
+
+        private AudioClip StingFor(ChestTier tier)
+        {
+            int i = (int)tier;
+            return stingClips != null && i >= 0 && i < stingClips.Length ? stingClips[i] : null;
         }
 
         public override void OnReset(ChestRevealSequence reveal)
@@ -377,6 +382,7 @@ namespace ChoDoLa.ChestFx
             if (_front.sqrMagnitude < 1e-4f) _front = Vector3.back;
             _front.Normalize();
 
+            ApplySkin();
             Measure();
             BuildAudio();
             BuildPhysics();
@@ -513,7 +519,6 @@ namespace ChoDoLa.ChestFx
             if (!_running || _phase == Phase.Locked || _t < _mouthOffUntil) return;
             Rigidbody rb = other.attachedRigidbody;
             if (rb == null || rb == _body || rb.isKinematic) return;   // kinematic = đang cầm trên tay: không giật
-            if (_fly != null && rb.transform == _fly) return;
             MimicFeedFood food = rb.GetComponent<MimicFeedFood>();
             if (food == null)
             {
@@ -536,15 +541,15 @@ namespace ChoDoLa.ChestFx
             _bites++;
             _tension = Mathf.Min(_phase == Phase.Feeding ? 0.48f : 0.95f, _tension + 0.12f);
 
-            Play(chompClip, 1f, 0.95f + Rand(0.1f));
+            Play(chompClip, ChestAudioRule.EventMax, 0.95f + Rand(0.1f));
             _jawSnapUntil = _t + 0.12f;
             Kick(0.3f);
             for (int i = 0; i < 3; i++)
             {
                 float at = 0.28f + 0.22f * i;
-                After(at, () => { Play(chewClip, 0.6f, 0.9f + Rand(0.25f)); Kick(0.12f); });
+                After(at, () => { if (ChestAudioRule.TryGate(ref _lastEventSfx, ChestAudioRule.EventGap)) Play(chewClip, 0.45f, 0.9f + Rand(0.25f)); Kick(0.12f); });
             }
-            After(1.05f, () => { Play(gulpClip, 0.8f, 1f); Kick(-0.08f); });
+            After(1.05f, () => { if (ChestAudioRule.TryGate(ref _lastEventSfx, ChestAudioRule.EventGap)) Play(gulpClip, ChestAudioRule.EventMax, 1f); Kick(-0.08f); });
 
             if (_phase == Phase.Feeding && _bites >= bitesNeeded && !_feedDone)
             {
@@ -658,61 +663,6 @@ namespace ChoDoLa.ChestFx
             Play(tossClip, 0.25f, 1.4f + Rand(0.3f));
         }
 
-        private void SpawnFly()
-        {
-            if (_fly != null) return;
-            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            go.name = "MimicFeed_Ruoi";
-            Collider c = go.GetComponent<Collider>();
-            if (c != null) Destroy(c);
-            go.transform.localScale = Vector3.one * (_size * 0.06f);
-            Renderer r = go.GetComponent<Renderer>();
-            if (r != null) { Material m = r.material; m.color = new Color(0.08f, 0.08f, 0.1f); _materials.Add(m); }
-            _fly = go.transform;
-            _flyPhase = Rand(6.28f);
-            if (_buzzSrc != null && buzzLoopClip != null)
-            {
-                _buzzSrc.clip = buzzLoopClip;
-                _buzzSrc.loop = true;
-                _buzzSrc.volume = 0.35f * masterVolume;
-                _buzzSrc.Play();
-            }
-        }
-
-        private void UpdateFly(float dt)
-        {
-            if (_fly == null) return;
-            _flyPhase += dt * 3.1f;
-            Vector3 m = MouthPos();
-            float r = _size * (0.8f + 0.15f * Mathf.Sin(_flyPhase * 2.3f));
-            _fly.position = m + new Vector3(Mathf.Cos(_flyPhase) * r, _size * (0.45f + 0.2f * Mathf.Sin(_flyPhase * 3.7f)), Mathf.Sin(_flyPhase) * r);
-            if (_buzzSrc != null) _buzzSrc.pitch = 1f + 0.08f * Mathf.Sin(_flyPhase * 5f);
-        }
-
-        private void SnapAtFly()
-        {
-            if (_fly == null || _phase != Phase.Chewing) return;
-            Vector3 to = _fly.position - _body.position;
-            to.y = 0f;
-            SetBodyVelocity(to.normalized * Mathf.Min(2.2f, to.magnitude * 3f) + Vector3.up * 2.4f);
-            Play(giggleClip, 0.6f, 1.4f);
-            After(0.32f, () =>
-            {
-                RemoveFly();
-                Play(chompClip, 1f, 1.2f);
-                _jawSnapUntil = _t + 0.12f;
-                Kick(0.3f);
-                After(0.4f, () => Play(gulpClip, 0.6f, 1.4f));
-            });
-        }
-
-        private void RemoveFly()
-        {
-            StopSrc(_buzzSrc);
-            if (_fly != null) Destroy(_fly.gameObject);
-            _fly = null;
-        }
-
         private void SpitStomach(bool includeJunk, float strength)
         {
             Vector3 mouth = MouthPos() + Vector3.up * (_size * 0.15f);
@@ -746,14 +696,15 @@ namespace ChoDoLa.ChestFx
 
         private void Shove(Vector3 center, float radius, float speed)
         {
-            Collider[] hits = Physics.OverlapSphere(center, radius * Mathf.Max(0.5f, _size * 2f));
+            float worldR = Mathf.Max(0.1f, radius * _size);
+            Collider[] hits = Physics.OverlapSphere(center, worldR);
             HashSet<Rigidbody> done = new HashSet<Rigidbody>();
             foreach (Collider c in hits)
             {
                 Rigidbody rb = c != null ? c.attachedRigidbody : null;
-                if (rb == null || rb == _body || rb.isKinematic || !done.Add(rb)) continue;
+                if (rb == null || rb == _body || rb.isKinematic || rb.GetComponent<MimicFeedFood>() == null || !done.Add(rb)) continue;   // chỉ đồ ăn, không đụng vật của cảnh
                 Vector3 d = rb.position - center;
-                float k = 1f - Mathf.Clamp01(d.magnitude / radius);
+                float k = 1f - Mathf.Clamp01(d.magnitude / worldR);
                 d.y = 0f;
                 Vector3 push = (d.sqrMagnitude > 1e-4f ? d.normalized : _front) * speed * (0.4f + k) + Vector3.up * speed * 0.6f * (0.4f + k);
                 rb.AddForce(push * rb.mass, ForceMode.Impulse);
@@ -893,14 +844,34 @@ namespace ChoDoLa.ChestFx
 
         // ------------------------------------------------------------------ Audio
 
+        /// <summary>
+        /// Rương hiện trắng = vật liệu của GLB không có ảnh nền. Gắn ảnh da Meshy (<see cref="skinTexture"/>) lên mọi
+        /// renderer của thân/nắp thiếu ảnh (bỏ "Glow" và hạt). Dùng bản sao vật liệu, trả lại lúc dọn.
+        /// </summary>
+        private void ApplySkin()
+        {
+            if (skinTexture == null) return;
+            foreach (Renderer r in GetComponentsInChildren<Renderer>(true))
+            {
+                if (r == null || r is ParticleSystemRenderer) continue;
+                if (r.name.IndexOf("Glow", StringComparison.OrdinalIgnoreCase) >= 0) continue;
+                Material m = r.material;   // bản sao, hook sở hữu
+                if (m.mainTexture != null) { Destroy(m); continue; }   // đã có ảnh: không đụng
+                m.mainTexture = skinTexture;
+                if (m.HasProperty("_BaseMap")) m.SetTexture("_BaseMap", skinTexture);
+                if (m.HasProperty("baseColorTexture")) m.SetTexture("baseColorTexture", skinTexture);
+                if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", Color.white);
+                if (m.HasProperty("_Color")) m.SetColor("_Color", Color.white);
+                _skinMats.Add(m);
+            }
+        }
+
         private void BuildAudio()
         {
             GameObject go = new GameObject("MimicFeed_Am");
             go.transform.SetParent(transform, false);
             _loopSrc = NewSource(go);
-            _riserSrc = NewSource(go);
             _fxSrc = NewSource(go);
-            _buzzSrc = NewSource(go);
         }
 
         private static AudioSource NewSource(GameObject go)
@@ -932,16 +903,6 @@ namespace ChoDoLa.ChestFx
                     _nextBeat = _t + Mathf.Lerp(0.95f, 0.26f, _tension);
                 }
             }
-        }
-
-        private void StartRiser()
-        {
-            if (_phase != Phase.Chewing || _riserSrc == null || riserClip == null) return;
-            _riserSrc.clip = riserClip;
-            _riserSrc.loop = false;
-            _riserSrc.volume = 0.85f * masterVolume;
-            _riserSrc.pitch = 1f;
-            _riserSrc.Play();
         }
 
         private float PlannedRouletteSeconds()
@@ -1020,15 +981,16 @@ namespace ChoDoLa.ChestFx
             foreach (MimicFeedFood f in _foods) if (f != null && f.spawnedByHook) Destroy(f.gameObject);
             _foods.Clear();
 
-            RemoveFly();
             if (_body != null) Destroy(_body.gameObject);
             if (_floor != null) Destroy(_floor);
             _body = null; _floor = null; _mouthCol = null;
             foreach (Material m in _materials) if (m != null) Destroy(m);
             _materials.Clear();
+            foreach (Material m in _skinMats) if (m != null) Destroy(m);
+            _skinMats.Clear();
 
-            if (_loopSrc != null) Destroy(_loopSrc.gameObject);   // all four sources share one child
-            _loopSrc = _riserSrc = _fxSrc = _buzzSrc = null;
+            if (_loopSrc != null) Destroy(_loopSrc.gameObject);   // các nguồn âm chung một object con
+            _loopSrc = _fxSrc = null;
 
             if (wasRunning && restorePose)
             {
