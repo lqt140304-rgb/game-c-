@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace ChoDoLa.ChestFx
 {
@@ -10,11 +13,11 @@ namespace ChoDoLa.ChestFx
     ///    tích tắc bắt đầu; pitch/âm lượng, tốc độ ô quay và độ rung cả rương dâng dần (độ căng).
     ///  • Mỗi nhịp màu của roulette: rương giật nảy nhẹ, một ô loé màu đang hiện (chỉ trang trí).
     ///  • Khi bậc đã chốt (OnTierLocked): ô 1, ô 2 dừng "thụp"; ô 3 giữ lâu hơn (giữ bí mật tới cuối).
-    ///    – Bậc THẤP (Rác/Thường): ô 3 lệch màu, vòng lặp tụt pitch rồi tắt, kèn hụt "uơ-uơ-uơơ", rương xẹp xuống
-    ///      như xì hơi, nhả 1–3 đồng xu èo uột; mèo thần tài nhô lên rồi bị đẩy ngã (Rigidbody).
-    ///    – Bậc CAO (Hiếm+): ba ô trùng màu, JACKPOT: rương nhảy bật lên (Huyền thoại xoay một vòng), đồng xu
-    ///      Rigidbody thật phun ra từ miệng rương, rơi, nảy, va nhau kêu leng keng; mèo thần tài vẫy tay.
-    ///  • TƯƠNG TÁC PHỤ: khe "xu mồi" trên bảng ô quay (trigger). Thả bất kỳ Rigidbody nào có <see cref="GoldenToken"/>
+    ///    – RÁC: ô 3 lệch màu, vòng lặp tắt hẳn, im 0,2 s rồi một tiếng xịt, rương xẹp như xì hơi, nhả 1 đồng xu
+    ///      èo uột; mèo thần tài nhô lên rồi bị đẩy ngã (Rigidbody).
+    ///    – THƯỜNG trở lên: ba ô trùng màu, rương nhảy bật (Huyền thoại xoay một vòng), đồng xu Rigidbody thật phun
+    ///      ra từ miệng rương, rơi, nảy, va nhau kêu leng keng; mèo thần tài vẫy tay (Thường: nhảy nhẹ, 3 xu).
+    ///  • TƯƠNG TÁC: phím [H] kéo cần gạt (≤ 3 lần, lần 3 tự thả xu mồi) và khe "xu mồi" trên bảng ô quay (trigger). Thả bất kỳ Rigidbody nào có <see cref="GoldenToken"/>
     ///    (hoặc tên chứa "Coin"/"Xu") vào khe — hoặc gọi <see cref="InsertToken"/> — thì mèo thần tài xuất hiện sớm,
     ///    vỗ cần gạt thêm một lần (độ căng +), và jackpot (nếu có) phun gấp rưỡi xu. KHÔNG đổi bậc.
     /// Bậc do game quyết qua ChestRevealSequence.Play; hook chỉ trang trí, mọi ngẫu nhiên dùng hạt giống riêng.
@@ -26,8 +29,8 @@ namespace ChoDoLa.ChestFx
         public AudioClip leverClip;
         public AudioClip spinLoopClip;
         public AudioClip reelStopClip;
-        public AudioClip fizzleClip;
-        public AudioClip jackpotClip;
+        [Tooltip("TC theo bậc (Rác…Huyền thoại): sfx_golden_lock_*.mp3. Hook tự phát đúng 1 tiếng lúc chốt.")]
+        public AudioClip[] stingClips = new AudioClip[ChestTierUtil.Count];
         public AudioClip coinClip;
         public AudioClip tokenClip;
 
@@ -39,7 +42,7 @@ namespace ChoDoLa.ChestFx
         [SerializeField] private float suspenseHold = 0.7f;
 
         [Header("Vật lý")]
-        [SerializeField] private int[] coinsPerTier = { 1, 3, 14, 26, 45 };
+        [SerializeField] private int[] coinsPerTier = { 1, 3, 12, 22, 36 };
         [SerializeField] private float coinImpulse = 1.6f;
         [SerializeField] private float coinLifetime = 6f;
         [SerializeField] private float maxShake = 0.012f;
@@ -66,7 +69,12 @@ namespace ChoDoLa.ChestFx
         private Vector3 _baseScale;
         private float _hop, _spinY, _squash;
 
-        private float _lastClink;
+        private float _lastEvent = -999f, _lastTail = -999f;
+        private float _tailFrom = float.MaxValue, _tailUntil;
+        private int _tails, _pulls;
+        private float _s = 0.5f;
+        private Quaternion _baseRot = Quaternion.identity;
+        private const int MaxPulls = 3, MaxTails = 6;
 
         // ------------------------------------------------------------------ vòng đời
 
@@ -104,13 +112,16 @@ namespace ChoDoLa.ChestFx
             _wasPlaying = playing;
             if (_rig == null) return;
 
+            if (_spinning && _pulls < MaxPulls && LeverPressed()) PullByPlayer();
+
             float k = Tension();
             if (_spinning)
             {
                 if (_loop != null)
                 {
-                    _loop.pitch = 0.7f + 0.9f * k;
-                    _loop.volume = 0.35f + 0.5f * k;
+                    // A2: nền 0,15 → 0,45, cao độ tăng ~45% tới lúc chốt
+                    _loop.pitch = 0.9f + 0.4f * k;
+                    _loop.volume = 0.15f + 0.3f * k;
                 }
                 for (int i = 0; i < 3; i++) _reelSpeed[i] = 360f + 1100f * k;
             }
@@ -148,20 +159,35 @@ namespace ChoDoLa.ChestFx
             _t0 = Time.time;
             _tensionBonus = 0f;
             _tokenUsed = false;
+            _pulls = _tails = 0;
+            _tailFrom = float.MaxValue;
+            _lastEvent = _lastTail = -999f;
             _baseScale = root.localScale;
+            _baseRot = root.localRotation;
             _appliedOffset = Vector3.zero;
             BuildRig(root);
             _spinning = true;
-            Play(leverClip, 1f);
+            PlayEvent(leverClip, 0.5f, 1f);
             StartCoroutine(PullLever(0.25f));
             if (spinLoopClip != null)
             {
                 _loop.clip = spinLoopClip;
                 _loop.loop = true;
-                _loop.pitch = 0.7f;
-                _loop.volume = 0.35f;
+                _loop.pitch = 0.9f;
+                _loop.volume = 0.15f;
                 _loop.Play();
             }
+        }
+
+        /// <summary>[H]: người chơi kéo cần (≤ 3 lần). Chỉ trang trí: căng hơn một chút, rương giật nhẹ; lần 3 thả xu mồi.</summary>
+        private void PullByPlayer()
+        {
+            _pulls++;
+            StartCoroutine(PullLever(0.2f));
+            PlayEvent(leverClip, 0.5f, 1f + 0.1f * _pulls);
+            _tensionBonus += 0.1f;
+            _hop = Mathf.Max(_hop, 0.01f);
+            if (_pulls >= MaxPulls) InsertToken();
         }
 
         private IEnumerator PullLever(float seconds)
@@ -179,66 +205,57 @@ namespace ChoDoLa.ChestFx
 
         private IEnumerator Finale(ChestTier tier, Color color)
         {
-            bool win = tier >= ChestTier.Hiem;
+            bool win = tier >= ChestTier.Thuong;
+            int ti = Mathf.Clamp((int)tier, 0, ChestTierUtil.Count - 1);
+            _tailUntil = Time.time + 3f;                       // A5: đuôi hết trước +3 s sau chốt
             for (int i = 0; i < 2; i++)
             {
                 StopReel(i, color);
                 yield return new WaitForSeconds(reelGap);
             }
-            // ô 3 giữ bí mật: còn quay, âm dâng thêm một nấc
-            float hold = suspenseHold * (win ? 1.3f : 1f);
-            for (float t = 0f; t < hold; t += Time.deltaTime)
-            {
-                if (_loop != null) _loop.pitch += Time.deltaTime * 0.6f;
-                yield return null;
-            }
+            // ô 3 giữ bí mật: còn quay (nền vẫn ngân, không thêm lớp nào)
+            yield return new WaitForSeconds(suspenseHold * (win ? 1.3f : 1f));
+
+            // Nền dừng ngay, không fade (A4)
+            _spinning = false;
+            for (int i = 0; i < 3; i++) _reelSpeed[i] = 0f;
+            if (_loop != null) _loop.Stop();
+            StopReel(2, win ? color : Dull, false);
 
             if (!win)
             {
-                StopReel(2, Dull);
-                _spinning = false;
-                StartCoroutine(SlideLoopDown());
-                Play(fizzleClip, 1f);
-                _squash = 0.18f;                                   // xì hơi
+                yield return new WaitForSeconds(ChestAudioRule.RacSilence);   // im phắc 0,2 s
+                Play(StingFor(ti), 0.8f);                                      // TC Rác: một tiếng xịt
+                _tailFrom = Time.time + 0.6f;                                  // 0,6 s sau đó không phát gì
+                _squash = 0.18f;                                               // xì hơi
                 if (_lever != null) _lever.localRotation = Quaternion.Euler(55f, 0f, 0f); // cần gạt rũ xuống
                 yield return new WaitForSeconds(0.5f);
-                SpawnCoins(coinsPerTier[Mathf.Clamp((int)tier, 0, coinsPerTier.Length - 1)], 0.35f, Gold);
+                SpawnCoins(coinsPerTier[ti], 0.35f, Gold);
                 ShowCat(false);
             }
             else
             {
-                StopReel(2, color);
-                _spinning = false;
-                if (_loop != null) _loop.Stop();
-                Play(jackpotClip, 1f);
-                _hop = tier == ChestTier.HuyenThoai ? 0.22f : 0.12f; // rương nhảy bật
+                float[] stingVol = { 0.8f, 0.7f, 0.85f, 1f, 1f };
+                Play(StingFor(ti), stingVol[ti]);                             // TC: đúng 1 tiếng
+                _tailFrom = Time.time + 0.4f;                                  // A5: đuôi từ +0,4 s
+                _hop = tier == ChestTier.HuyenThoai ? 0.22f : tier == ChestTier.Thuong ? 0.05f : 0.12f;
                 if (tier == ChestTier.HuyenThoai) StartCoroutine(SpinChest(0.5f));
-                int n = coinsPerTier[Mathf.Clamp((int)tier, 0, coinsPerTier.Length - 1)];
+                int n = coinsPerTier[ti];
                 if (_tokenUsed) n = Mathf.RoundToInt(n * 1.5f);
-                StartCoroutine(CoinFountain(n, color));
+                StartCoroutine(CoinFountain(Mathf.Min(40, n), color));
                 ShowCat(true);
             }
         }
 
-        private void StopReel(int i, Color c)
+        private AudioClip StingFor(int tierIndex) =>
+            stingClips != null && tierIndex < stingClips.Length ? stingClips[tierIndex] : null;
+
+        private void StopReel(int i, Color c, bool sound = true)
         {
             _reelSpeed[i] = 0f;
             if (_reels[i] != null) _reels[i].localRotation = Quaternion.identity;
             ChestFxFactory.SetColor(_reelMats[i], c);
-            Play(reelStopClip, 0.9f, 0.9f + 0.1f * i);
-        }
-
-        private IEnumerator SlideLoopDown()
-        {
-            if (_loop == null) yield break;
-            float p0 = _loop.pitch;
-            for (float t = 0f; t < 1f; t += Time.deltaTime / 0.45f)
-            {
-                _loop.pitch = Mathf.Lerp(p0, 0.25f, t);
-                for (int i = 0; i < 3; i++) _reelSpeed[i] = 0f;
-                yield return null;
-            }
-            _loop.Stop();
+            if (sound) Play(reelStopClip, 0.5f, 0.9f + 0.1f * i);
         }
 
         private IEnumerator SpinChest(float seconds)
@@ -282,13 +299,13 @@ namespace ChoDoLa.ChestFx
                 coin.name = "GoldenSlotCoin";
                 coin.transform.SetParent(_rig.transform, true);
                 coin.transform.position = mouth + new Vector3(Rand(-0.08f, 0.08f), 0.02f, Rand(-0.06f, 0.06f));
-                coin.transform.localScale = new Vector3(0.045f, 0.004f, 0.045f);
+                coin.transform.localScale = new Vector3(0.09f, 0.008f, 0.09f) * _s;
                 coin.transform.rotation = Quaternion.Euler(Rand(0f, 360f), Rand(0f, 360f), 0f);
                 coin.GetComponent<Renderer>().sharedMaterial = m;
                 Rigidbody rb = coin.AddComponent<Rigidbody>();
                 rb.mass = 0.02f;
                 Vector3 dir = (root.up * 2.2f + new Vector3(Rand(-1f, 1f), 0f, Rand(-1f, 1f))).normalized;
-                rb.AddForce(dir * coinImpulse * power * rb.mass * Rand(0.7f, 1.3f) * 1.6f, ForceMode.Impulse);
+                rb.AddForce(dir * coinImpulse * power * rb.mass * Rand(0.7f, 1.3f) * 1.6f * Mathf.Sqrt(_s / 0.5f), ForceMode.Impulse);
                 rb.angularVelocity = new Vector3(Rand(-20f, 20f), Rand(-20f, 20f), Rand(-20f, 20f));
                 coin.AddComponent<GoldenCoinClink>().owner = this;
                 Destroy(coin, coinLifetime + Rand(0f, 1f));
@@ -298,9 +315,12 @@ namespace ChoDoLa.ChestFx
         /// <summary>Đồng xu báo va chạm: phát tiếng leng keng (giới hạn mật độ, pitch theo hạt giống).</summary>
         internal void Clink(Vector3 at, float speed)
         {
-            if (coinClip == null || speed < 0.3f || Time.time - _lastClink < 0.03f) return;
-            _lastClink = Time.time;
-            Play(coinClip, Mathf.Clamp01(speed * 0.4f), Rand(0.85f, 1.25f));
+            // đuôi (A5): từ +0,4 s, ≤ 6 tiếng, cách ≥ 0,15 s, trước +3 s sau chốt, âm ≤ 0,4
+            if (coinClip == null || speed < 0.3f || _tails >= MaxTails) return;
+            if (Time.time < _tailFrom || Time.time > _tailUntil) return;
+            if (!ChestAudioRule.TryGate(ref _lastTail, Mathf.Max(ChestAudioRule.TailGap, ChestAudioRule.ImpactGap))) return;
+            _tails++;
+            Play(coinClip, Mathf.Min(ChestAudioRule.TailMax, speed * 0.3f), Rand(0.85f, 1.25f));
         }
 
         // ------------------------------------------------------------------ tương tác phụ
@@ -311,10 +331,9 @@ namespace ChoDoLa.ChestFx
             if (_rig == null || !_spinning || _tokenUsed) return;
             _tokenUsed = true;
             _tensionBonus += 0.2f;
-            Play(tokenClip, 1f);
+            PlayEvent(tokenClip, 0.5f, 1f);
             ShowCat(true);
             StartCoroutine(PullLever(0.2f));
-            Play(leverClip, 0.7f, 1.15f);
         }
 
         /// <summary>Thử nhanh trong Editor: thả một xu mồi vật lý từ trên khe xuống.</summary>
@@ -351,6 +370,7 @@ namespace ChoDoLa.ChestFx
         {
             Cleanup();
             Bounds b = ChestBounds(root);
+            _s = Mathf.Max(0.1f, b.size.x, b.size.y, b.size.z);
             float w = Mathf.Max(b.size.x, 0.3f);
             _rig = new GameObject("GoldenSlotRig");
             _rig.transform.SetPositionAndRotation(root.position, root.rotation);
@@ -442,6 +462,19 @@ namespace ChoDoLa.ChestFx
 
         private float Rand(float a, float b) => a + (float)(_rng ?? (_rng = new System.Random(1))).NextDouble() * (b - a);
 
+        /// <summary>Sự kiện lẻ trước chốt (A3): tối đa 1 tiếng mỗi 0,2 s, âm ≤ 0,5.</summary>
+        private void PlayEvent(AudioClip clip, float volume, float pitch)
+        {
+            if (clip == null || !ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap)) return;
+            Play(clip, Mathf.Min(volume, ChestAudioRule.EventMax), pitch);
+        }
+
+#if ENABLE_INPUT_SYSTEM
+        private static bool LeverPressed() => Keyboard.current != null && Keyboard.current[Key.H].wasPressedThisFrame;
+#else
+        private static bool LeverPressed() => Input.GetKeyDown(KeyCode.H);
+#endif
+
         private void Play(AudioClip clip, float volume, float pitch = 1f)
         {
             if (clip == null) return;
@@ -457,6 +490,7 @@ namespace ChoDoLa.ChestFx
             {
                 root.position -= _appliedOffset;
                 root.localScale = _baseScale;
+                root.localRotation = _baseRot;   // SpinChest xoay trực tiếp: trả đúng góc gốc
             }
             _appliedOffset = Vector3.zero;
             _hop = _squash = 0f;
@@ -465,6 +499,7 @@ namespace ChoDoLa.ChestFx
             _rig = null; _lever = null; _cat = null; _catPaw = null; _loop = null;
             for (int i = 0; i < 3; i++) { _reels[i] = null; _reelMats[i] = null; _reelSpeed[i] = 0f; }
             _spinning = false;
+            _pulls = 0;
         }
     }
 
