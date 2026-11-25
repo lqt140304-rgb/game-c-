@@ -18,9 +18,6 @@ namespace ChoDoLa.Editor
     {
         private const string ChestsFolder = "Assets/_Project/Art/Chests";
         private const string ItemsFolder = "Assets/_Project/Art/Items/LowPoly";
-        private const string ProfileFolder = "Assets/_Project/ScriptableObjects/ChestFx";
-        private const string GoldenProfilePath = ProfileFolder + "/ChestFx_Golden.asset";
-        private const string GoldenScriptPath = ProfileFolder + "/ChestScript_Golden.asset";
         private const string TestRootName = "ChestRevealTest";
 
         [MenuItem("Tools/Cho Do La/Add Chest Reveal Test")]
@@ -119,61 +116,8 @@ namespace ChoDoLa.Editor
             Selection.activeObject = p;
         }
 
-        /// <summary>Creates ChestFx_Golden.asset with the preset values, or fills only its missing clips if it exists.</summary>
-        public static ChestFxProfile CreateOrUpdateGoldenProfile()
-        {
-            ChestFxProfile p = AssetDatabase.LoadAssetAtPath<ChestFxProfile>(GoldenProfilePath);
-            bool created = p == null;
-            if (created)
-            {
-                EnsureFolder(ProfileFolder);
-                p = ScriptableObject.CreateInstance<ChestFxProfile>();
-                ChestFxPresets.ApplyGolden(p);
-                AssetDatabase.CreateAsset(p, GoldenProfilePath);
-            }
-
-            int missing = 0;
-            p.tickClips = FillClips(p.tickClips, ChestFxPresets.TickFiles, ref missing);
-            p.lockClipsByTier = FillClips(p.lockClipsByTier, ChestFxPresets.LockFiles, ref missing);
-            if (p.whooshClip == null) p.whooshClip = Clip(ChestFxPresets.WhooshFile, ref missing);
-            if (p.openAmbientClip == null) p.openAmbientClip = Clip(ChestFxPresets.AmbientFile, ref missing);
-            p.accentClips = FillClips(p.accentClips, ChestFxPresets.CoinFiles, ref missing);
-            if (p.stageClips == null || p.stageClips.Length == 0)
-            {
-                p.stageClips = new[]
-                {
-                    new ChestFxProfile.StageClip { stage = 2, clip = Clip(ChestFxPresets.CreakFile, ref missing), volume = 0.7f },
-                    new ChestFxProfile.StageClip { stage = 4, clip = Clip(ChestFxPresets.ThudFile, ref missing), volume = 0.6f },
-                };
-            }
-            if (missing > 0)
-            {
-                Debug.LogWarning($"[ChestRevealTest] {missing} sound(s) not found in {ChestFxPresets.AudioFolder}. " +
-                                 "The mp3 set is on branch claude/chest-sfx; `python3 Tools/Audio/make_chest_sfx.py` remakes the Synth/ fallback. The effect still runs without sound.");
-            }
-
-            // Kịch bản mở rương (mẫu cho các rương chủ đề): tạo lần đầu, không ghi đè bản người dùng đã chỉnh.
-            ChestScript script = AssetDatabase.LoadAssetAtPath<ChestScript>(GoldenScriptPath);
-            if (script == null)
-            {
-                EnsureFolder(ProfileFolder);
-                script = ScriptableObject.CreateInstance<ChestScript>();
-                ChestFxPresets.ApplyGoldenScript(script);
-                AssetDatabase.CreateAsset(script, GoldenScriptPath);
-            }
-            else
-            {
-                // Dựng lại mỗi lần chạy menu: bản cũ còn các bước xu/nổ sẽ bắn xu hai lần cùng GoldenSlotHook.
-                ChestFxPresets.ApplyGoldenScript(script);
-            }
-            EditorUtility.SetDirty(script);
-            if (p.script == null) p.script = script;
-
-            EditorUtility.SetDirty(p);
-            AssetDatabase.SaveAssets();
-            if (created) Debug.Log("[ChestRevealTest] Created " + GoldenProfilePath);
-            return p;
-        }
+        /// <summary>Dựng lại ChestFx_Golden.asset theo chuỗi mở bằng vật mở khoá (xem <see cref="ChestKeySetup"/>).</summary>
+        public static ChestFxProfile CreateOrUpdateGoldenProfile() => ChestKeySetup.CreateOrUpdate("Golden");
 
         // ------------------------------------------------------------------ Helpers
 
@@ -201,29 +145,6 @@ namespace ChoDoLa.Editor
             return result;
         }
 
-        /// <summary>Loads the mp3 (ElevenLabs); if it is missing, the synthesised placeholder in Synth/.</summary>
-        private static AudioClip Clip(string file, ref int missing)
-        {
-            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + file);
-            if (c != null) return c;
-            string fallback = ChestFxPresets.SynthFallback(file);
-            if (fallback != null) c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + fallback);
-            if (c != null) Debug.LogWarning($"[ChestRevealTest] {file} not found; using the synthesised placeholder {fallback}.");
-            else missing++;
-            return c;
-        }
-
-        private static AudioClip[] FillClips(AudioClip[] current, string[] files, ref int missing)
-        {
-            AudioClip[] result = new AudioClip[files.Length];
-            for (int i = 0; i < files.Length; i++)
-            {
-                AudioClip existing = current != null && i < current.Length ? current[i] : null;
-                result[i] = existing != null ? existing : Clip(files[i], ref missing);
-            }
-            return result;
-        }
-
         private static void FillList<T>(SerializedProperty list, List<T> values) where T : Object
         {
             list.ClearArray();
@@ -232,14 +153,6 @@ namespace ChoDoLa.Editor
                 list.InsertArrayElementAtIndex(i);
                 list.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
             }
-        }
-
-        private static void EnsureFolder(string folder)
-        {
-            if (AssetDatabase.IsValidFolder(folder)) return;
-            string parent = Path.GetDirectoryName(folder).Replace('\\', '/');
-            EnsureFolder(parent);
-            AssetDatabase.CreateFolder(parent, Path.GetFileName(folder));
         }
 
         /// <summary>Box chest made of cubes (Body, Lid with hinge pivot, Glow), used when no .glb loads.</summary>

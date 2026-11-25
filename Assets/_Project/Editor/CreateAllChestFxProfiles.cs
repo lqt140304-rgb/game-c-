@@ -11,11 +11,10 @@ using UnityEngine;
 namespace ChoDoLa.Editor
 {
     /// <summary>
-    /// Tools/Cho Do La/Create All Chest FX Profiles: runs the profile maker of all 17 chests (Golden from the core,
-    /// 16 from the per-chest <c>&lt;Name&gt;FxSetup</c> classes; existing profiles only get their missing clips filled),
-    /// then writes ScriptableObjects/ChestFx/ChestFxLibrary.asset (every profile, the hooks that belong on the chest
-    /// root, and every Art/Items/LowPoly/**/*.glb item) and gives it to each ChestHandMenu in the open scene,
-    /// so [P] in the hand menu can play the full reveal. Nothing is scanned at runtime.
+    /// Tools/Cho Do La/Create All Chest FX Profiles: dựng hồ sơ của cả 17 rương bằng <see cref="ChestKeySetup"/>
+    /// (chuỗi mở bằng vật mở khoá; hook nằm trong customFxPrefab của hồ sơ), rồi ghi
+    /// ScriptableObjects/ChestFx/ChestFxLibrary.asset (mọi hồ sơ và mọi món Art/Items/LowPoly/**/*.glb) và gán cho từng
+    /// ChestHandMenu trong cảnh đang mở, để [P] trong menu tay chạy được cả chuỗi mở. Không quét gì lúc chạy game.
     /// </summary>
     public static class CreateAllChestFxProfiles
     {
@@ -30,23 +29,23 @@ namespace ChoDoLa.Editor
         {
             var makers = new List<KeyValuePair<string, Func<ChestFxProfile>>>
             {
-                Maker("Golden", ChestRevealTestSetup.CreateOrUpdateGoldenProfile),   // dựng lại script Golden mỗi lần chạy
-                Maker("Magic", MagicFxSetup.CreateOrUpdate),
-                Maker("Mimic", CreateMimicProfile),
-                Maker("Miner", MinerFxSetup.CreateOrUpdate),
-                Maker("RacQuy", RacQuyFxSetup.CreateOrUpdate),
-                Maker("HaiTac", HaiTacSeqSetup.CreateOrUpdateProfile),
-                Maker("AmNhac", AmNhacBassSetup.CreateOrUpdateProfile),
-                Maker("VietNam", VietNamHoiLangSetup.CreateOrUpdateProfile),
-                Maker("TuoiTho", TuoiThoFxSetup.CreateOrUpdate),
-                Maker("Robot", RobotFxSetup.CreateOrUpdate),
-                Maker("KhongGian", KhongGianFxSetup.CreateOrUpdate),
-                Maker("Game", GameVoxelFxSetup.CreateOrUpdateProfile),
-                Maker("TheThao", ChoDoLa.EditorTools.TheThaoFxSetup.CreateOrUpdate),
-                Maker("TrungHoa", TrungHoaFxSetup.CreateOrUpdateProfile),
-                Maker("NhatBan", NhatBanFxSetup.CreateOrUpdate),
-                Maker("CoPhong", CoPhongNguKiemSetup.CreateOrUpdateProfile),
-                Maker("ThienCo", ThienCoFxSetup.CreateOrUpdate),
+                Maker("Golden", () => ChestKeySetup.CreateOrUpdate("Golden")),
+                Maker("HaiTac", () => ChestKeySetup.CreateOrUpdate("HaiTac")),
+                Maker("RacQuy", () => ChestKeySetup.CreateOrUpdate("RacQuy")),
+                Maker("Magic", () => ChestKeySetup.CreateOrUpdate("Magic")),
+                Maker("Mimic", () => ChestKeySetup.CreateOrUpdate("Mimic")),
+                Maker("Miner", () => ChestKeySetup.CreateOrUpdate("Miner")),
+                Maker("AmNhac", () => ChestKeySetup.CreateOrUpdate("AmNhac")),
+                Maker("VietNam", () => ChestKeySetup.CreateOrUpdate("VietNam")),
+                Maker("TuoiTho", () => ChestKeySetup.CreateOrUpdate("TuoiTho")),
+                Maker("Robot", () => ChestKeySetup.CreateOrUpdate("Robot")),
+                Maker("KhongGian", () => ChestKeySetup.CreateOrUpdate("KhongGian")),
+                Maker("Game", () => ChestKeySetup.CreateOrUpdate("Game")),
+                Maker("TheThao", () => ChestKeySetup.CreateOrUpdate("TheThao")),
+                Maker("TrungHoa", () => ChestKeySetup.CreateOrUpdate("TrungHoa")),
+                Maker("NhatBan", () => ChestKeySetup.CreateOrUpdate("NhatBan")),
+                Maker("CoPhong", () => ChestKeySetup.CreateOrUpdate("CoPhong")),
+                Maker("ThienCo", () => ChestKeySetup.CreateOrUpdate("ThienCo")),
             };
 
             EnsureFolder(HookFolder);
@@ -70,8 +69,8 @@ namespace ChoDoLa.Editor
                 {
                     chestId = string.IsNullOrEmpty(p.chestId) ? "Chest_" + m.Key : p.chestId,
                     profile = p,
-                    biteIntro = false,     // Mimic: màn cho ăn thay cho cú đớp mở đầu
-                    spinRecord = false,    // AmNhac: hook tự quay/scratch lớp Record
+                    biteIntro = false,
+                    spinRecord = false,
                 };
                 try { e.rootHookTemplate = RootHookTemplate(m.Key); }
                 catch (Exception ex) { Debug.LogError(Log + "Hook Chest_" + m.Key + ": " + ex); }
@@ -109,70 +108,10 @@ namespace ChoDoLa.Editor
         private static KeyValuePair<string, Func<ChestFxProfile>> Maker(string name, Func<ChestFxProfile> f) =>
             new KeyValuePair<string, Func<ChestFxProfile>>(name, f);
 
-        // ------------------------------------------------------------------ Hooks that sit on the chest root
+        // ------------------------------------------------------------------ Hook trên gốc rương
 
-        /// <summary>
-        /// The chests whose setup menu adds the hook to the selected chest (instead of the profile's customFxPrefab)
-        /// get a small prefab here holding that hook, configured like their own "Add ... To Selected" menu does.
-        /// Chests that use customFxPrefab return null (the reveal spawns their hook itself).
-        /// </summary>
-        private static ChestFxHook RootHookTemplate(string key)
-        {
-            switch (key)
-            {
-                case "Golden": return SaveHook<GoldenSlotHook>(key, GoldenSlotSetup.AssignClips);
-                case "Magic": return SaveHook<MagicRuneRitual>(key, MagicRuneFxSetup.FillClips);
-                case "Miner": return SaveHook<MinerDigSequence>(key, MinerDigSetup.FillClips);
-                case "Robot": return SaveHook<RobotTransformHook>(key, RobotTransformSetup.Fill);
-                case "Game": return SaveHook<GameVoxelHook>(key, GameVoxelFxSetup.FillClips);
-                case "TrungHoa": return SaveHook<TrungHoaHook>(key, TrungHoaFxSetup.WireHookClips);
-                case "TuoiTho": return SaveHook<TuoiThoHook>(key, null);
-                case "Mimic": return SaveHook<MimicFeedHook>(key, MimicFeedSetup.FillClips);
-                case "AmNhac": return SaveHook<AmNhacBassHook>(key, AmNhacBassSetup.FillClips);
-                case "TheThao":
-                    return SaveHook<TheThaoHook>(key, h =>
-                    {
-                        h.kickoffClip = Clip(TheThaoFxPreset.AudioFolder + TheThaoFxPreset.KickoffFile);
-                        h.airHornClip = Clip(TheThaoFxPreset.AudioFolder + TheThaoFxPreset.AirHornFile);
-                    });
-                case "HaiTac": return SaveHook<HaiTacSeqHook>(key, HaiTacSeqSetup.FillClips);   // kịch bản đại bác
-                default: return null;   // RacQuy, VietNam, KhongGian, NhatBan, CoPhong, ThienCo: hook nằm trong customFxPrefab
-            }
-        }
-
-        private static T SaveHook<T>(string key, Action<T> configure) where T : ChestFxHook
-        {
-            string path = HookFolder + "/RootHook_" + key + ".prefab";
-            GameObject temp = new GameObject("RootHook_" + key);
-            try
-            {
-                T hook = temp.AddComponent<T>();
-                configure?.Invoke(hook);
-                GameObject saved = PrefabUtility.SaveAsPrefabAsset(temp, path);
-                return saved != null ? saved.GetComponent<T>() : null;
-            }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(temp);
-            }
-        }
-
-        private static AudioClip Clip(string path)
-        {
-            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
-            if (c == null) Debug.LogWarning(Log + "Không thấy âm " + path + " (hiệu ứng vẫn chạy, chỉ thiếu tiếng).");
-            return c;
-        }
-
-        private static void SetClip(SerializedObject so, string field, string path, string fallback = null)
-        {
-            SerializedProperty prop = so.FindProperty(field);
-            if (prop == null) { Debug.LogWarning(Log + "Hook không có trường " + field); return; }
-            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
-            if (c == null && fallback != null) c = AssetDatabase.LoadAssetAtPath<AudioClip>(fallback);
-            if (c == null) Debug.LogWarning(Log + "Không thấy âm " + path);
-            prop.objectReferenceValue = c;
-        }
+        /// <summary>Hook của mọi rương nằm trong customFxPrefab của hồ sơ, nên không có hook gắn lên gốc rương.</summary>
+        private static ChestFxHook RootHookTemplate(string key) => null;
 
         // ------------------------------------------------------------------ Items, hand menus, folders
 
