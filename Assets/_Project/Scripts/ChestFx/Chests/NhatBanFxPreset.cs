@@ -76,6 +76,14 @@ namespace ChoDoLa.ChestFx
             p.rayDuration = 1.2f;
             p.raySpin = 6f;
             p.lightFlashIntensity = 5f;
+
+            // Âm căng thẳng của lõi (chest-fx-core): sáo shakuhachi làm nền lặp, trống tim làm nhịp. Giữ cao độ vừa phải
+            // (sáo có giai điệu, kéo 2,1x nghe như chim). Kết thúc do lockClipsByTier (fin_*.wav) đảm nhiệm.
+            p.tension.enabled = true;
+            p.tension.pitchStart = 0.95f;
+            p.tension.pitchEnd = 1.35f;
+            p.tension.pulseIntervalStart = 1.0f;
+            p.tension.pulseIntervalEnd = 0.35f;
         }
     }
 }

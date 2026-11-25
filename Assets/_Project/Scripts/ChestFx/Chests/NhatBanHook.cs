@@ -76,8 +76,22 @@ namespace ChoDoLa.ChestFx
 
         // ------------------------------------------------------------------ vòng đời
 
-        private void Start()
+        // Lõi mới gọi OnPress ngay trong Play(); Start là dự phòng cho lõi cũ.
+        public override void OnPress(ChestRevealSequence reveal) => Begin();
+
+        private void Start() => Begin();
+
+        /// <summary>Lõi có âm căng thẳng (ChestTension) thì nó phát sáo + tim (clip của rương này); hook chỉ lo hình.</summary>
+        private bool CoreTension => _reveal != null && _reveal.Tension != null;
+
+        public override void OnTensionPulse(ChestRevealSequence reveal, float tension)
         {
+            _pulse = Mathf.Lerp(0.015f, 0.04f, tension);
+        }
+
+        private void Begin()
+        {
+            if (_started || !enabled) return;
             _reveal = GetComponentInParent<ChestRevealSequence>();
             if (_reveal == null) { enabled = false; return; }
             _chest = _reveal.transform;
@@ -230,7 +244,7 @@ namespace ChoDoLa.ChestFx
             _droneSource.spatialBlend = 0.5f;
             _droneSource.volume = 0f;
             _droneSource.clip = sounds.drone;
-            if (sounds.drone != null) _droneSource.Play();
+            if (sounds.drone != null && !CoreTension) _droneSource.Play();
         }
 
         private ChestFxProfile Style(float speed, float size, float life, float gravity)
@@ -253,7 +267,7 @@ namespace ChoDoLa.ChestFx
 
         private IEnumerator Prelude()
         {
-            StartCoroutine(Heartbeat());
+            if (!CoreTension) StartCoroutine(Heartbeat());
             StartCoroutine(PetalDrift());
             if (_reveal.Box == null) StartCoroutine(StandaloneCut());
             float t = 0f;

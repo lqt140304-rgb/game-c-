@@ -56,6 +56,8 @@ namespace ChoDoLa.Editor
                 };
             }
             p.customFxPrefab = HookPrefab(ref missing);
+            p.tension.loopClip = Clip(NhatBanFxPreset.DroneFile, null, ref missing);
+            p.tension.pulseClip = Clip(NhatBanFxPreset.HeartbeatFile, null, ref missing);
             if (missing > 0) Debug.LogWarning($"[NhatBanFx] {missing} sound(s) not found; the effect still runs without them.");
 
             EditorUtility.SetDirty(p);

@@ -72,4 +72,11 @@ Bí mật: trước khoá, mọi bậc trông và nghe như nhau (cùng nhát ch
 
 ## Nối với lõi (claude/chest-fx-core)
 
-Xem mục cuối khi đã fetch.
+Đã merge `claude/chest-fx-core` (có `ChestTension`, `ChestScript`, `ChestMotion`, `OnPress`, `OnTensionPulse`, `OnCue`). Đã nối:
+- `profile.tension.loopClip` = sáo `sfx_nhatban_iai_drone.wav`, `pulseClip` = tim `sfx_nhatban_iai_heartbeat.wav`, cao độ 0,95 → 1,35, nhịp 1,0 → 0,35 s. Khi lõi có tension, hook **không** tự phát sáo/tim (tránh trùng), chỉ lấy `OnTensionPulse` để rương "thở" theo nhịp.
+- Hook khởi động ở `OnPress` (Start chỉ là dự phòng).
+
+Chưa nối / cần quyết sau:
+- `deflateClip` / `swellClip` của tension để trống → lõi phát tiếng xịt/dâng tổng hợp **chồng lên** đoạn kết `fin_*.wav` của rương này. Nếu nghe thừa: gán clip im lặng hoặc lõi cho chỉnh âm lượng riêng phần rẽ.
+- Không dùng `ChestScript`/`ChestMotion`: hook tự ghi tư thế rương. Nếu sau này thêm `ChestScript` cho rương này, **phải** chuyển nảy/xoay/xẹp sang `reveal.Motion.Run(...)`, vì hai bộ ghi cùng dùng mẹo "so với giá trị khung trước" sẽ cộng dồn lệch.
+- Ném quả hồng tự làm (phím K + `NhatBanOffering`), chưa dùng `ChestItemSlot`/bước `Gate` (cổng của lõi chặn tiến trình; ở đây quả chỉ cộng khí, không chặn). Lưu ý bàn thử của lõi cũng dùng phím **K** (thả xu cho Golden) — chỉ trùng khi thử Golden và Nhật Bản cùng lúc; đổi `tossKey` nếu vướng (bản InputSystem đang cố định kKey).
