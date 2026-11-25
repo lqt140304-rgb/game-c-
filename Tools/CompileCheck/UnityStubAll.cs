@@ -267,7 +267,8 @@ namespace UnityEngine
     public class TrailRenderer : Renderer { public float time, startWidth, endWidth, widthMultiplier, minVertexDistance; public Color startColor, endColor; public bool emitting, autodestruct; public Gradient colorGradient; public AnimationCurve widthCurve; public void Clear() {} }
     public class TextMesh : Component { public string text; public float characterSize; public int fontSize; public Color color; public TextAnchor anchor; public TextAlignment alignment; public Font font; }
     public enum TextAlignment { Left, Center, Right }
-    public class Font : Object {}
+    public class Font : Object { public Material material; }
+    public class Collision { public Vector3 relativeVelocity; public Rigidbody rigidbody; public Collider collider; public GameObject gameObject; }
 
     public partial class GUIStyle { public GUIStyle() {} public FontStyle fontStyle; public RectOffset padding, margin; public bool richText; public float CalcHeight(GUIContent c, float w) => 0; public Vector2 CalcSize(GUIContent c) => default; public GUIStyleState hover, active; public float fixedHeight, fixedWidth; public bool stretchWidth; }
     public partial class GUIStyleState { public Texture2D background; }
