@@ -61,9 +61,16 @@ Tiếng chốt/tick của profile ChestFx_Mimic (core) vẫn phát chồng lên.
 - **Chưa chạy trong Unity**, chỉ biên dịch với stub (`check_mimic_feed.sh`, 4 bộ define). Chưa nghe âm nào.
 - Rủi ro cần xem khi chạy: chiều trục nắp (đọc `lidHingeAxis` qua reflection); rương có collider lớn bao miệng có thể
   chặn đồ ném (đã IgnoreCollision với đồ ăn tự tạo, nhưng vật ngoài thì chưa); camera khoá chuột → bấm lấy tâm màn hình.
-- `Tools/CompileCheck/check_all.sh` (dùng chung) chưa biết API thêm (`RigidbodyInterpolation`, `Physics.OverlapSphere`,
-  `IgnoreCollision`, `Undo.RegisterFullObjectHierarchyUndo`): tôi để các stub đó trong `UnityStubMimicFeed.cs`; ai
-  gộp nên thêm file này vào lệnh mcs của check_all.sh.
-- Nhánh `claude/chest-fx-core` lúc làm **chưa tồn tại** trên origin → chưa nối API khung. Khi khung có sự kiện
-  "bấm mở"/"chèn bước chờ" chính thức thì nên thay: (a) việc dò `IsPlaying` trong Update bằng sự kiện bắt đầu,
-  (b) việc bật `waitForPlayer` stage 1 bằng API chờ của khung.
+- Kiểm biên dịch: `check_mimic_feed.sh` = `check_all.sh` (toàn bộ Scripts + Editor, 3 bộ define) + bộ define Unity 6.
+  Sửa file dùng chung duy nhất: thêm `RigidbodyInterpolation`/`interpolation` vào `UnityStubAll.cs` (stub, 2 dòng).
+
+## Nối với khung (`claude/chest-fx-core`, đã merge vào nhánh này)
+- Bắt đầu bằng `ChestFxHook.OnPress` (gọi trong `Play()`); việc dò `IsPlaying` trong Update chỉ còn là dự phòng.
+- **Âm căng chung**: khi `reveal.Tension` có (mặc định bật), hook KHÔNG tự phát nền bụng réo / nhịp tim / tiếng dâng /
+  xịt / nổ lúc chốt nữa — `MimicFeedSetup` gán clip Mimic vào `profile.tension` (loop = bụng réo, pulse = tim,
+  deflate = xì hơi, swell = nổ; `pitchEnd` 1,5) để khung lo phần "dâng rồi rẽ theo bậc". Hook vẫn phát khịt mũi lúc
+  bấm, ngoạm/nhai/ợ/nhổ/ruồi, cú nổ khi đáp đất, và rương co giật theo `OnTensionPulse`. Tắt `profile.tension.enabled`
+  thì hook tự phát bộ âm riêng như bảng trên.
+- Chưa dùng: `ChestScript`/`Gate`/`ChestItemSlot`/`ChestMotion` của khung. Màn cho ăn vẫn tự chặn bằng `waitForPlayer`
+  của stage 1; nếu muốn đồng bộ có thể đổi sang bước `Gate` + `ChestItemSlot` sau. Không bật `ChestMotion` cho rương
+  này: nó cũng ghi vị trí rương trong LateUpdate, sẽ giành với proxy vật lý của Rương Đói.

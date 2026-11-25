@@ -169,7 +169,8 @@ namespace UnityEngine
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
     public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
         public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {}
-        public Vector3 position; public CollisionDetectionMode collisionDetectionMode; public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
+        public Vector3 position; public CollisionDetectionMode collisionDetectionMode; public RigidbodyInterpolation interpolation; public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
+    public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
     public enum CollisionDetectionMode { Discrete, Continuous, ContinuousDynamic, ContinuousSpeculative }
     public enum PhysicsMaterialCombine { Average, Minimum, Multiply, Maximum }
     public class PhysicsMaterial : Object { public PhysicsMaterial(string n) {} public float bounciness, dynamicFriction, staticFriction; public PhysicsMaterialCombine bounceCombine; }

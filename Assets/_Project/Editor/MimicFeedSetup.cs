@@ -26,7 +26,7 @@ namespace ChoDoLa.Editor
                 Debug.LogError("[MimicFeed] Chọn rig rương Mimic (có BoxOpenSequence + ChestRevealSequence) trước.");
                 return;
             }
-            Undo.RegisterFullObjectHierarchyUndo(go, "Mimic Ruong Doi");
+            Undo.RecordObject(box, "Mimic Ruong Doi");
             go.GetComponent<ChestRevealSequence>().SetProfile(MimicFxSetup.CreateOrUpdateProfile());
 
             MimicHook old = go.GetComponent<MimicHook>();
@@ -53,6 +53,18 @@ namespace ChoDoLa.Editor
             h.tossClip = Clip("sfx_mf_toss.wav", ref missing);
             h.hopClip = Clip("sfx_mf_hop.wav", ref missing);
             h.giggleClip = Clip("sfx_mf_giggle.wav", ref missing);
+            // Nối khung: ChestTension (âm căng từ lúc bấm, rẽ theo bậc lúc chốt) dùng âm của Mimic.
+            ChestFxProfile prof = go.GetComponent<ChestRevealSequence>().Profile;
+            if (prof != null && prof.tension != null)
+            {
+                prof.tension.enabled = true;
+                prof.tension.loopClip = h.stomachLoopClip;
+                prof.tension.pulseClip = h.heartbeatClip;
+                prof.tension.deflateClip = h.deflateClip;
+                prof.tension.swellClip = h.boomClip;
+                prof.tension.pitchEnd = 1.5f;   // bụng réo, không phải còi: đừng vọt quá cao
+                EditorUtility.SetDirty(prof);
+            }
             EditorUtility.SetDirty(h);
             EditorUtility.SetDirty(box);
             if (missing > 0) Debug.LogWarning($"[MimicFeed] Thiếu {missing} file âm trong {AudioFolder} (chạy Tools/Audio/make_mimic_feed_sfx.py).");

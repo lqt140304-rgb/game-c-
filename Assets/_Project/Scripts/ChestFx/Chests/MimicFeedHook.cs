@@ -259,6 +259,21 @@ namespace ChoDoLa.ChestFx
 
         // ------------------------------------------------------------------ ChestFxHook
 
+        /// <summary>Khung (claude/chest-fx-core) gọi ngay trong Play(): bắt đầu tại đây, không đợi khung sau.</summary>
+        public override void OnPress(ChestRevealSequence reveal)
+        {
+            if (!_running) Begin();
+        }
+
+        /// <summary>Nhịp tim của ChestTension (khung): rương đập theo.</summary>
+        public override void OnTensionPulse(ChestRevealSequence reveal, float tension)
+        {
+            if (_running) Kick(0.03f + 0.05f * tension);
+        }
+
+        /// <summary>true = ChestTension của khung lo nền bụng réo, nhịp tim, xịt/nổ lúc chốt (clip Mimic gán ở profile).</summary>
+        private bool CoreTension => _reveal != null && _reveal.Tension != null;
+
         public override void OnRouletteStart(ChestRevealSequence reveal, Vector3 mouth)
         {
             if (!_running) Begin();
@@ -267,7 +282,7 @@ namespace ChoDoLa.ChestFx
             _rouletteT0 = _t;
             _plannedLock = PlannedRouletteSeconds();
             const float riserLead = 2.6f;
-            After(Mathf.Max(0f, _plannedLock - riserLead), StartRiser);
+            if (!CoreTension) After(Mathf.Max(0f, _plannedLock - riserLead), StartRiser);
             SpawnFly();
             After(_plannedLock * (0.35f + Rand(0.15f)), SnapAtFly);
         }
@@ -295,7 +310,7 @@ namespace ChoDoLa.ChestFx
                 StopSrc(_riserSrc);
                 if (tier == ChestTier.Rac)
                 {
-                    After(0.14f, () => { Play(deflateClip, 1f, 1f); _sqTarget = 0.3f; Kick(-0.2f); });
+                    After(0.14f, () => { if (!CoreTension) Play(deflateClip, 1f, 1f); _sqTarget = 0.3f; Kick(-0.2f); });
                     After(0.75f, () => SpitStomach(true, 0.9f));
                     After(1.6f, () => { Play(burpSmallClip, 0.5f, 1.6f); Kick(0.15f); });   // nấc cụt
                     After(2.6f, () => _sqTarget = 0f);
@@ -312,7 +327,7 @@ namespace ChoDoLa.ChestFx
                 // CAO: tiếng dâng bùng nổ, độ mạnh theo bậc.
                 FadeSrc(_loopSrc, 0.4f);
                 StopSrc(_riserSrc);
-                Play(boomClip, Mathf.Lerp(0.45f, 1f, (rank - 0.5f) * 2f), Mathf.Lerp(1.15f, 0.9f, rank));
+                if (!CoreTension) Play(boomClip, Mathf.Lerp(0.45f, 1f, (rank - 0.5f) * 2f), Mathf.Lerp(1.15f, 0.9f, rank));
                 Play(burpBigClip, 0.7f, Mathf.Lerp(1.25f, 0.85f, rank));
                 Kick(-0.25f);
                 float jump = Mathf.Lerp(1.6f, legendJumpSpeed, (rank - 0.5f) * 2f);
@@ -369,7 +384,7 @@ namespace ChoDoLa.ChestFx
 
             // ÂM BẮT ĐẦU NGAY KHI BẤM MỞ: khịt mũi + bụng réo + tim đập chậm.
             Play(wakeClip, 0.9f, 0.95f + Rand(0.1f));
-            if (_loopSrc != null && stomachLoopClip != null)
+            if (!CoreTension && _loopSrc != null && stomachLoopClip != null)
             {
                 _loopSrc.clip = stomachLoopClip;
                 _loopSrc.loop = true;
@@ -910,7 +925,7 @@ namespace ChoDoLa.ChestFx
                     _loopSrc.pitch = Mathf.Lerp(_loopSrc.pitch, 0.8f + 0.55f * _tension, 1f - Mathf.Exp(-3f * dt));
                     _loopSrc.volume = Mathf.Lerp(_loopSrc.volume, (0.25f + 0.45f * _tension) * masterVolume, 1f - Mathf.Exp(-3f * dt));
                 }
-                if (_t >= _nextBeat)
+                if (!CoreTension && _t >= _nextBeat)
                 {
                     Play(heartbeatClip, 0.35f + 0.55f * _tension, 0.9f + 0.25f * _tension);
                     Kick(0.03f + 0.05f * _tension);
