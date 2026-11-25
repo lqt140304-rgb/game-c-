@@ -29,12 +29,12 @@ namespace ChoDoLa.ChestFx
             p.chestId = ChestId;
 
             // Wooden temple-block tick: low pitch at the start, climbing like a drummer speeding up then slowing.
-            p.tickVolume = 0.6f;
+            p.tickVolume = 0.25f;     // mỗi tích đã kèm một tiếng pháo nổ của TrungHoaHook
             p.tickPitchStart = 0.8f;
             p.tickPitchEnd = 1.3f;
             p.lockVolume = 0.95f;
             p.whooshVolume = 0.55f;
-            p.ambientVolume = 0.4f;
+            p.ambientVolume = 0.15f;  // trống lân của TrungHoaHook làm nền chính, vang từ lúc bấm
             p.accentVolume = 0.45f;
             p.accentsBase = 0;       // Rác gets no festival, just the abacus joke
             p.accentsPerTier = 1;    // firecracker / bell are 1.5-2 s long
