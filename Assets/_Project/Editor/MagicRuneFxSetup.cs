@@ -8,17 +8,18 @@ namespace ChoDoLa.Editor
     /// <summary>
     /// Menu dựng kịch bản "Trận pháp Rune" cho Chest_Magic (file riêng, không đụng MagicFxSetup dùng chung).
     /// - Tools/Cho Do La/Magic Rune/Setup On Selected Chest: chọn gốc Chest_Magic (có ChestRevealSequence) rồi bấm.
-    ///   Thêm MagicRuneRitual, gán âm trong Audio/Chests/magic_rune/, tắt MagicHook cũ (nếu có) để khỏi chồng hiệu ứng.
+    ///   Thêm MagicRuneRitual, gán âm .mp3 ElevenLabs trong Audio/Chests/magic/ (theo Tools/Audio/elevenlabs_chest_manifest.json),
+    ///   tắt MagicHook cũ (nếu có), và ghi hồ sơ lõi gần như câm (ChestAudioRule.ApplyToProfile) MỖI lần chạy.
     /// - Tools/Cho Do La/Magic Rune/Create Player Rune Stone: tạo một viên đá rune có Rigidbody cạnh rương đang chọn,
     ///   để thử tương tác phụ (đặt sẵn vào điểm trận, hoặc ném vào vòng khi đang tụ phép).
     /// </summary>
     public static class MagicRuneFxSetup
     {
-        public const string AudioFolder = "Assets/_Project/Audio/Chests/magic_rune/";
-        public static readonly string[] EndFiles =
+        public const string AudioFolder = "Assets/_Project/Audio/Chests/magic/";
+        public static readonly string[] StingFiles =
         {
-            "sfx_magicrune_end_0_rac.wav", "sfx_magicrune_end_1_thuong.wav", "sfx_magicrune_end_2_hiem.wav",
-            "sfx_magicrune_end_3_rathiem.wav", "sfx_magicrune_end_4_huyenthoai.wav",
+            "sfx_magic_lock_rac.mp3", "sfx_magic_lock_thuong.mp3", "sfx_magic_lock_hiem.mp3",
+            "sfx_magic_lock_ratHiem.mp3", "sfx_magic_lock_huyenThoai.mp3",
         };
 
         [MenuItem("Tools/Cho Do La/Magic Rune/Setup On Selected Chest")]
@@ -40,6 +41,15 @@ namespace ChoDoLa.Editor
             if (r == null) r = Undo.AddComponent<MagicRuneRitual>(chest);
             FillClips(r);
 
+            // A1: hồ sơ lõi gần như câm, ghi lại MỖI lần chạy menu (không chỉ khi ô trống).
+            ChestFxProfile p = chest.GetComponent<ChestRevealSequence>()?.Profile;
+            if (p != null && p != ChestFxProfile.Default)
+            {
+                Undo.RecordObject(p, "Magic Rune audio rule");
+                ChestAudioRule.ApplyToProfile(p);
+                EditorUtility.SetDirty(p);
+            }
+
             foreach (MagicHook old in chest.GetComponentsInChildren<MagicHook>())
             {
                 Undo.RecordObject(old, "Disable MagicHook");
@@ -51,16 +61,17 @@ namespace ChoDoLa.Editor
             return r;
         }
 
-        /// <summary>Gán âm trong Audio/Chests/magic_rune/ (dùng chung cho menu Setup và thư viện menu cầm rương).</summary>
+        /// <summary>Gán âm ElevenLabs trong Audio/Chests/magic/ (dùng chung cho menu Setup và thư viện menu cầm rương).</summary>
         public static void FillClips(MagicRuneRitual r)
         {
             int missing = 0;
-            r.buildClip = Load("sfx_magicrune_build.wav", ref missing);
-            r.stoneClip = Load("sfx_magicrune_stone.wav", ref missing);
-            r.wispClip = Load("sfx_magicrune_wisp.wav", ref missing);
-            r.endClips = new AudioClip[EndFiles.Length];
-            for (int i = 0; i < EndFiles.Length; i++) r.endClips[i] = Load(EndFiles[i], ref missing);
-            if (missing > 0) Debug.LogWarning($"[MagicRune] Thiếu {missing} âm trong {AudioFolder} (chạy Tools/Audio/make_magic_rune_sfx.py). Hiệu ứng vẫn chạy, chỉ im.");
+            r.buildClip = Load("sfx_magic_rune_bed_loop.mp3", ref missing);
+            r.stoneClip = Load("sfx_magic_rune_stone.mp3", ref missing);
+            r.wispClip = Load("sfx_magic_rune_wisp.mp3", ref missing);
+            r.slamClip = Load("sfx_magic_rune_slam.mp3", ref missing);
+            r.stingClips = new AudioClip[StingFiles.Length];
+            for (int i = 0; i < StingFiles.Length; i++) r.stingClips[i] = Load(StingFiles[i], ref missing);
+            if (missing > 0) Debug.LogWarning($"[MagicRune] Thiếu {missing} âm trong {AudioFolder} (chạy Tools/Audio/make_elevenlabs_chest_sfx.py --chest magic). Hiệu ứng vẫn chạy, chỉ im.");
         }
 
         [MenuItem("Tools/Cho Do La/Magic Rune/Create Player Rune Stone")]
