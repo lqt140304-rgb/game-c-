@@ -4,10 +4,10 @@ namespace ChoDoLa.ChestFx
 {
     /// <summary>
     /// Chest_TuoiTho — "cỗ máy bi ve" (trò chơi tuổi thơ). Hiệu ứng chính nằm ở <see cref="TuoiThoHook"/>
-    /// (vật lý: bi, domino, xe, con quay, ná dây thun, máy bay giấy). Profile này chỉ giữ phần khung: tick là
-    /// tiếng bi ve gõ, chốt bậc là đồ chơi (pin hết / chuông xe đạp / còi xe đồ chơi / hộp nhạc / hội).
-    /// Không đặt âm nền (ambient): nhịp mộc cầm + còi trượt của hook đã chạy từ lúc bấm mở.
-    /// Âm riêng ở Audio/Chests/tuoi_tho/ và tuoi_tho/may_bi/.
+    /// (vật lý: bi, domino, xe, con quay, ná dây thun, máy bay giấy). Profile này chỉ giữ phần khung (hạt, màu, vòng
+    /// roulette). Mọi âm do hook phát (ChestAudioRule A1): tiếng chốt theo bậc là đồ chơi (pin hết / chuông xe đạp / còi
+    /// xe đồ chơi / hộp nhạc / hội) nằm ở TuoiThoHook.stingClips, nền = tiếng bi lăn, nhịp = mộc cầm.
+    /// Âm ElevenLabs ở Audio/Chests/tuoi_tho/.
     /// </summary>
     public static class TuoiThoFxPreset
     {
