@@ -101,6 +101,16 @@ if __name__ == "__main__":
                 del STATIC[k]
         STATIC["cả cây đề xuất (M1 = GT1, không M2, không M3)"] = dict(chests=ALL4, n_theme=2, gt="GT1")
         static(int(sys.argv[2]) if len(sys.argv) > 2 else 1500)
+    elif mode == "perm":   # kịch bản "vĩnh viễn" / cận trên của "trong ván": rương và chủ đề có từ ngày 1, luật soi mới
+        keep = ("nền (4 rương cơ bản)", "M2 vốn +1.000.000 đ", "M3 Rương Đen từ ngày 1", "M1 chọn GT1", "+ 4 rương mở khóa",
+                "+ 4 mở khóa + 2 chủ đề", "+ 4 mở khóa + 2 chủ đề + M2", "+ 4 mở khóa, shop 2 rương mới",
+                "+ 4 mở khóa + 2 chủ đề, shop 2 rương mới", "cả cây, M2 +1.000.000 đ")
+        for k in list(STATIC):
+            if k not in keep:
+                del STATIC[k]
+        if len(sys.argv) > 3 and sys.argv[3] == "goc":    # bảng Tổng Hợp gốc phần 2 (hàng giả 20%)
+            T.UNLOCK_OVER = {}
+        static(int(sys.argv[2]) if len(sys.argv) > 2 else 1500)
     elif mode == "static":
         static(int(sys.argv[2]) if len(sys.argv) > 2 else 1500)
     elif mode == "chain":
