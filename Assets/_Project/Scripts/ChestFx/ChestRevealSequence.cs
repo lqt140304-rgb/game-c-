@@ -1047,8 +1047,44 @@ namespace ChoDoLa.ChestFx
             return new Color(Mathf.Clamp01(c.r), Mathf.Clamp01(c.g), Mathf.Clamp01(c.b), c.a);
         }
 
+        private Color _glowTintNow = Color.black;
+        private Coroutine _pulseGlow;
+
+        /// <summary>
+        /// Nháy glow trong miệng rương theo màu chủ đề rồi tắt dần về màu hiện tại trong <paramref name="seconds"/> (thời gian thật).
+        /// Dùng SetGlowTint + revealLight sẵn có (không tạo Light/hạt mới); mỗi kênh màu ≤ 1; tôn trọng minimalGlowScale/minimalLightScale.
+        /// <paramref name="strength"/> 0..1 (trần 1, 0 = không nháy).
+        /// </summary>
+        public void PulseGlow(Color color, float strength, float seconds)
+        {
+            strength = Mathf.Clamp01(strength);
+            if (strength <= 0f || !isActiveAndEnabled) return;
+            if (_pulseGlow != null) StopCoroutine(_pulseGlow);
+            _pulseGlow = StartCoroutine(PulseGlowRoutine(ClampLdr(color), strength, Mathf.Max(0.05f, seconds)));
+        }
+
+        private IEnumerator PulseGlowRoutine(Color color, float strength, float seconds)
+        {
+            if (revealLight != null && revealLight.enabled)
+                _lightKick = Mathf.Max(_lightKick, Mathf.Max(0.3f, _lightBase) * strength);   // UpdateLight tự kẹp theo minimalLightScale
+            float t0 = Time.unscaledTime;
+            while (true)
+            {
+                // Màu nền đọc lại mỗi khung: nếu lõi đổi glow giữa chừng (chốt bậc) thì nháy tắt về đúng màu mới.
+                Color baseGlow = _glowTintNow;
+                float u = Mathf.Clamp01((Time.unscaledTime - t0) / seconds);
+                float k = strength * (1f - u) * (1f - u);
+                SetGlowTint(ClampLdr(Color.Lerp(baseGlow, color, k)));
+                _glowTintNow = baseGlow;
+                if (u >= 1f) break;
+                yield return null;
+            }
+            _pulseGlow = null;
+        }
+
         private void SetGlowTint(Color c)
         {
+            _glowTintNow = c;
             if (!tintGlow || _glowRenderers == null) return;
             ChestFxProfile mp = Profile;
             bool minimal = mp != null && mp.minimalFx;

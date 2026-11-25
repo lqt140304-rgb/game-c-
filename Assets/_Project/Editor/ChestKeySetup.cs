@@ -116,6 +116,9 @@ namespace ChoDoLa.Editor
                 hook.keyColor = preset.mainColor;
                 hook.bedClip = Clip(preset.audioFolder + preset.bedFile);
                 hook.keyClip = string.IsNullOrEmpty(preset.keyFile) ? null : Clip(preset.audioFolder + preset.keyFile);
+                hook.flyClip = string.IsNullOrEmpty(preset.flyFile) ? null : Clip(preset.audioFolder + preset.flyFile);
+                hook.actionClip = string.IsNullOrEmpty(preset.actionFile) ? null : Clip(preset.audioFolder + preset.actionFile);
+                // lightColor/lightMul/moveStyle không lưu ở hồ sơ: hook đọc thẳng từ Preset của lớp (GetPreset).
                 hook.stingClips = new AudioClip[KeyAudioNames.LockSuffix.Length];
                 for (int i = 0; i < hook.stingClips.Length; i++)
                     hook.stingClips[i] = Clip(preset.audioFolder + preset.filePrefix + KeyAudioNames.LockSuffix[i]);
