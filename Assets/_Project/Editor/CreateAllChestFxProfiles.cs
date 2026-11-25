@@ -90,20 +90,6 @@ namespace ChoDoLa.Editor
             Selection.activeObject = library;
         }
 
-        /// <summary>Hồ sơ Mimic + phần chỉnh hồ sơ của màn Rương Đói (không đụng hook, hook do RootHookTemplate lo).</summary>
-        private static ChestFxProfile CreateMimicProfile()
-        {
-            ChestFxProfile p = MimicFxSetup.CreateOrUpdateProfile();
-            MimicFeedHook probe = new GameObject("MimicFeedProbe").AddComponent<MimicFeedHook>();
-            try
-            {
-                MimicFeedSetup.FillClips(probe);
-                MimicFeedSetup.TuneProfile(p, probe);
-            }
-            finally { UnityEngine.Object.DestroyImmediate(probe.gameObject); }
-            EditorUtility.SetDirty(p);
-            return p;
-        }
 
         private static KeyValuePair<string, Func<ChestFxProfile>> Maker(string name, Func<ChestFxProfile> f) =>
             new KeyValuePair<string, Func<ChestFxProfile>>(name, f);
