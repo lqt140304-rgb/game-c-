@@ -129,18 +129,9 @@ namespace ChoDoLa.ChestFx
             fs.shapeType = ParticleSystemShapeType.Circle;
             fs.radius = radius;
             fs.rotation = new Vector3(90f, 0f, 0f);
-            ParticleSystem.VelocityOverLifetimeModule fv = _flies.velocityOverLifetime;
-            fv.enabled = true;
-            fv.space = ParticleSystemSimulationSpace.Local;
-            fv.x = new ParticleSystem.MinMaxCurve(-0.05f, 0.05f);
-            fv.y = new ParticleSystem.MinMaxCurve(-0.04f, 0.06f);
-            fv.z = new ParticleSystem.MinMaxCurve(-0.05f, 0.05f);
-            // Unity: orbitalX/Y/Z phải cùng chế độ (ở đây TwoConstants), nếu không báo
-            // "Particle Orbital Velocity curves must all be in the same mode".
-            fv.orbitalX = new ParticleSystem.MinMaxCurve(0f, 0f);
-            fv.orbitalY = new ParticleSystem.MinMaxCurve(3.5f, 6f);
-            fv.orbitalZ = new ParticleSystem.MinMaxCurve(0f, 0f);
-            fv.radial = new ParticleSystem.MinMaxCurve(0f);
+            // Vận tốc hạt đặt qua ChestFxFactory.SetVelocity (cả 9 đường cong cùng chế độ, tránh lỗi Unity "must all be in the same mode").
+            ChestFxFactory.SetVelocity(_flies, new Vector3(-0.05f, -0.04f, -0.05f), new Vector3(0.05f, 0.06f, 0.05f),
+                new Vector3(0f, 3.5f, 0f), new Vector3(0f, 6f, 0f), 0f, ParticleSystemSimulationSpace.Local);
             ParticleSystemRenderer fr = _flies.GetComponent<ParticleSystemRenderer>();
             Object.Destroy(fr.sharedMaterial);
             _flyMat = ChestFxFactory.CreateUnlit(flyColor, false, "RacQuy_Fly_Mat");
