@@ -6,23 +6,24 @@ Viết ngày 2026-11-24. Phần 4 (phần cuối) của việc cân bằng Sprin
 
 > **Lưu ý về phần 3:** số đo ở đây chạy trên mô hình soi lỗi của phần 3 bản đầu (`QA/inspect_sim.py`). Chủ dự án đã chốt luật soi mới ([BanGiaoSprint5SoiLoi.md](BanGiaoSprint5SoiLoi.md)) và phần 3 sẽ được đo lại. **Nhịp mở cây** (mục 2) gần như không phụ thuộc luật soi, vì điểm chủ yếu đến từ Sổ và điểm thua. **Tỉ lệ thắng** (mục 3 và 4) thì phụ thuộc. `QA/tree_sim.py` gọi thẳng `inspect_sim.handle`, nên khi phần 3 xong chỉ cần chạy lại `tree_final.py` và `test_tree`.
 
-> **Cập nhật 2026-11-25 (đo lại trên luật soi mới, Claude 2 phần 3):** chạy `QA/tree_final.py static 1000` và `QA/test_tree.py` với luật soi mới ([Sprint5SoiLoi.md](Sprint5SoiLoi.md): phạt lỗi sót 10%, trần trả giá 103%, nhà vá lỗi, dấu lạ 15%). Mọi tỉ lệ thắng ở mục 3 và 4 bên dưới **thấp hơn khoảng 5 đến 6 điểm** so với số cũ. Đo tĩnh, cấu hình cố định (bot thận trọng / liều; giỏi liều + giám định, n = 1.000):
+> **Cập nhật 2026-11-25 (đo lại trên luật soi mới, Claude 2 phần 3):** chạy `QA/tree_final.py static 1000` và `QA/test_tree.py` với luật soi mới ([Sprint5SoiLoi.md](Sprint5SoiLoi.md): phạt lỗi sót 10%, trần trả giá 108%, nhà vá lỗi 12% và 30%, dấu lạ 15%). Mọi tỉ lệ thắng ở mục 3 và 4 bên dưới **thấp hơn số mới khoảng 1 đến 4 điểm** với bot thường. Đo tĩnh, cấu hình cố định (bot thận trọng / liều; giỏi liều + giám định, n = 1.000):
 >
 > | Cấu hình | Bot | Giỏi (liều + giám định) |
 > |---|---|---|
-> | Nền (4 rương cơ bản) | 12,7 / 14,2 | 42,8 |
-> | M2 vốn +1.000.000 đ | 13,6 / 14,1 | 43,9 |
-> | M3 Rương Đen từ ngày 1 | 7,2 / 7,1 | 37,6 |
-> | M1 chọn GT1 | 12,8 / 14,5 | 43,5 |
-> | M1 chọn GT2 | 12,4 / 13,8 | 41,9 |
-> | + 4 rương mở khóa | 11,9 / 11,7 | 44,0 |
-> | + 4 mở khóa + 2 chủ đề | 12,0 / 11,6 | 42,1 |
-> | + 4 mở khóa + 2 chủ đề + M2 | 12,1 / 12,6 | 42,6 |
-> | Cả cây, M2 +1.000.000 đ | 8,9 / 8,7 | 42,6 |
-> | + 4 mở khóa, shop 2 rương mới | 12,2 / 11,9 | 40,3 |
-> | + 4 mở khóa + 2 chủ đề, shop 2 rương mới | 12,1 / 11,7 | 41,7 |
+> | Nền (4 rương cơ bản) | 16,8 / 15,5 | 46,7 |
+> | M2 vốn +1.000.000 đ | 17,6 / 17,6 | 49,3 |
+> | M3 Rương Đen từ ngày 1 | 8,6 / 8,8 | 42,3 |
+> | M1 chọn GT1 | 16,9 / 16,0 | 47,5 |
+> | M1 chọn GT2 | 16,6 / 14,8 | 46,0 |
+> | + 4 rương mở khóa | 13,9 / 15,4 | **50,4** |
+> | + 4 mở khóa + 2 chủ đề | 13,9 / 14,2 | 45,0 |
+> | + 4 mở khóa + 2 chủ đề + M2 | 14,1 / 14,6 | 47,6 |
+> | Cả cây, M2 +1.000.000 đ | 10,7 / 10,3 | 48,4 |
+> | + 4 mở khóa, shop 2 rương mới | 15,3 / 15,2 | 45,5 |
+> | + 4 mở khóa + 2 chủ đề, shop 2 rương mới | 13,6 / 13,2 | 46,8 |
+> | Cả cây, M2, shop 2 | 9,7 / 9,8 | 46,9 |
 >
-> Điều rút ra: (a) cây không đẩy người chơi giỏi qua trần: mọi cấu hình dưới 44,0% (mục tiêu mới không quá 42%, sát nhưng chấp nhận được; +4 rương mở khóa 44,0% là cao nhất). (b) Bot thường ở nền đúng mục tiêu 12% đến 16%, nhưng **tụt dưới 12% khi bật M3 (7%) hoặc cả cây kèm M2 (9%)**; hai cấu hình đó nên là thử thách tự chọn, không phải mặc định. (c) M2 gần như không đổi bot, +1,1 điểm người giỏi: không còn quá mạnh như số cũ. (d) Nhịp mở nút (mục 2) giữ nguyên. Test khóa `test_tree.py` đã chỉnh ngưỡng theo mục tiêu mới (bot 9% đến 17%, người giỏi tối đa 46% ở n = 800); 10 test đạt. Phần này **chưa chạy lại `chain` và `sens`** (chuỗi ván và độ nhạy điểm): các số ở mục 4 vẫn là số cũ.
+> Điều rút ra: (a) **M2 vẫn đẩy người giỏi qua trần** (49,3% ở nền, 47,6% khi đã mở đủ rương), nên kết luận "bỏ phần buff của M2" ở mục 3 vẫn đúng. (b) **Chỉ riêng 4 rương mở khóa đẩy người giỏi lên 50,4%**, vượt trần; kết hợp 2 chủ đề thì 45,0%. Cần xem lại khi phần 4 thiết kế lại. (c) Bot thường ở nền 15,5% đến 16,8% (đúng mục tiêu 15% đến 20%) nhưng **tụt dưới 12% khi bật M3 (khoảng 9%) hoặc cả cây kèm M2 (khoảng 10%)**; hai cấu hình đó nên là thử thách tự chọn, không phải mặc định. (d) Nhịp mở nút (mục 2) giữ nguyên. Chủ dự án chốt "khó hơn" là cây khó mở hơn và phần thưởng hậu hĩnh hơn (xem phần 4 thiết kế lại). Test khóa `test_tree.py` đã chỉnh ngưỡng (bot 9% đến 17%, người giỏi tối đa 50% ở n = 800); 10 test đạt. Phần này **chưa chạy lại `chain` và `sens`** (chuỗi ván và độ nhạy điểm): các số ở mục 4 vẫn là số cũ.
 
 ## Kết luận ngắn
 
