@@ -7,7 +7,8 @@ namespace ChoDoLa.ChestFx
     /// Hook chung cho 17 rương (kế hoạch 2026-11-26, mục 2, 3, 4.1). Làm đúng 3 việc: (1) vật mở khoá bay tới khe rồi làm
     /// một hành động mở rồi biến mất trong 1,35 s; (2) âm nền dâng dần; (3) tiếng chốt theo bậc. Không sinh thêm vật nào,
     /// không Rigidbody/hạt/Light/UnityEngine.Random. Mọi chuyển động tính bằng thời gian thật (unscaled).
-    /// Lớp con chỉ viết <see cref="GetPreset"/> và <see cref="BuildKey"/> (tuỳ chọn <see cref="AnimateAction"/>).
+    /// Lớp con chỉ viết <see cref="GetPreset"/> và <see cref="BuildKey"/>; tuỳ chọn <see cref="AnimateAction"/> và 3 móc theme
+    /// <see cref="ThemeFly"/>, <see cref="ThemeAction"/>, <see cref="OnKeyImpact"/> để bay/mở/nháy sáng đúng chủ đề.
     /// </summary>
     public abstract class ChestKeyHookBase : ChestFxHook
     {
@@ -19,6 +20,10 @@ namespace ChoDoLa.ChestFx
         [Header("Âm")]
         public AudioClip bedClip;
         public AudioClip keyClip;
+        [Tooltip("Tiếng BAY theo chủ đề, phát lúc vật bắt đầu bay (0 → 1,0 s), tắt hẳn khi hành động mở bắt đầu.")]
+        public AudioClip flyClip;
+        [Tooltip("Tiếng HÀNH ĐỘNG MỞ theo chủ đề, phát lúc 1,0 s. Rỗng thì dùng keyClip.")]
+        public AudioClip actionClip;
         [Tooltip("Tiếng chốt theo bậc: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại.")]
         public AudioClip[] stingClips = new AudioClip[5];
         [Range(0f, 1f)] public float volume = 0.8f;
@@ -38,6 +43,7 @@ namespace ChoDoLa.ChestFx
 
         private ChestRevealSequence _reveal;
         private AudioSource _bed;
+        private AudioSource _fly;
         private KeyContext _kc;
         private GameObject _keyRoot;
         private int _generation;
@@ -63,6 +69,45 @@ namespace ChoDoLa.ChestFx
         /// Không được sinh thêm vật.
         /// </summary>
         protected virtual void AnimateAction(KeyContext c, Transform root, float t01) { }
+
+        /// <summary>
+        /// MÓC THEME 1 — kiểu bay riêng (xoay tít, nhảy cóc, lướt, lăn...). Trả null (mặc định) = bay vòng cung Bezier chuẩn.
+        /// Nếu trả coroutine: nó tự đặt vị trí/xoay của <paramref name="root"/> mỗi khung trong <paramref name="seconds"/> giây
+        /// (thời gian thật), gọi c.Refresh() mỗi khung vì rương có thể đang bay/xoay, và kết thúc với gốc vật ở gần c.RestPos
+        /// (hoặc điểm chờ của hành động). Bị cắt cứng sau seconds + 0,05 s. AnimateAction KHÔNG được gọi trong lúc này.
+        /// </summary>
+        protected virtual IEnumerator ThemeFly(KeyContext c, Transform root, float seconds) { return null; }
+
+        /// <summary>
+        /// MÓC THEME 2 — hành động mở riêng theo chủ đề (xoay, đập, mổ, vồ, bật nắp, nhào lộn...). Trả null (mặc định) = hành
+        /// động chuẩn theo preset.openAction. Nếu trả coroutine: nó THAY HOÀN TOÀN 0,35 s hành động, tự lo chuyển động của vật và
+        /// các khối con, phải xong trong <paramref name="seconds"/> (bị cắt cứng sau seconds + 0,05 s) và để vật ở đúng khe
+        /// (c.RestPos). Nên gọi <see cref="ShrinkAtSlot"/> ở cuối để vật thu nhỏ biến mất tại khe; hết thì lõi xoá vật.
+        /// </summary>
+        protected virtual IEnumerator ThemeAction(KeyContext c, Transform root, float seconds) { return null; }
+
+        /// <summary>
+        /// MÓC THEME 3 — gọi đúng lúc hành động mở chạm khe (t = 1,0 s), cùng lúc phát tiếng hành động. Mặc định nháy glow
+        /// miệng rương theo preset.lightColor/lightMul trong 0,5 s. Lớp con ghi đè để đổi màu/nhịp (có thể gọi base).
+        /// </summary>
+        protected virtual void OnKeyImpact(KeyContext c)
+        {
+            if (Reveal != null && c.preset.lightMul > 0f) Reveal.PulseGlow(c.preset.lightColor, c.preset.lightMul, 0.5f);
+        }
+
+        /// <summary>Rương đang mở (để lớp con gọi PulseGlow, PlayOneShot...). Null trước OnPress.</summary>
+        protected ChestRevealSequence Reveal { get { return _reveal; } }
+
+        /// <summary>
+        /// Tiện ích cho ThemeAction: đặt gốc vật sao cho ĐẦU đứng ở khe và thu nhỏ chuẩn (0 đến 0,85 giữ nguyên, 0,85 → 1 về 0).
+        /// <paramref name="t01"/> là tiến độ hành động 0..1.
+        /// </summary>
+        protected static void ShrinkAtSlot(KeyContext c, Transform root, float t01)
+        {
+            float shrink = Sm(0.85f, 1f, t01);
+            root.position = c.slotPos + c.front * (c.tip * (1f - shrink));
+            root.localScale = Vector3.one * (c.keySize * (1f - shrink));
+        }
 
         /// <summary>true khi đang ở giai đoạn hành động mở (1,0 → 1,35 s); false khi đang bay.</summary>
         protected bool InActionPhase { get; private set; }
@@ -192,6 +237,52 @@ namespace ChoDoLa.ChestFx
                 Destroy(_bed.gameObject);
             }
             _bed = null;
+            StopFly();
+        }
+
+        private void StopFly()
+        {
+            if (_fly != null)
+            {
+                _fly.Stop();
+                Destroy(_fly.gameObject);
+            }
+            _fly = null;
+        }
+
+        private void PlayFly()
+        {
+            StopFly();
+            if (flyClip == null || _reveal == null) return;
+            AudioSource chestSrc = _reveal.GetComponent<AudioSource>();
+            GameObject go = new GameObject("KeyFly");
+            go.transform.SetParent(_reveal.transform, false);
+            _fly = go.AddComponent<AudioSource>();
+            _fly.playOnAwake = false;
+            _fly.loop = false;
+            _fly.clip = flyClip;
+            _fly.spatialBlend = chestSrc != null ? chestSrc.spatialBlend : 0.5f;
+            _fly.outputAudioMixerGroup = chestSrc != null ? chestSrc.outputAudioMixerGroup : null;
+            _fly.volume = 0.6f * volume;
+            _fly.Play();
+        }
+
+        /// <summary>Chạy coroutine theme, cắt cứng sau limit giây; trả false nếu bị huỷ (reset) giữa chừng.</summary>
+        private IEnumerator RunTheme(IEnumerator theme, int gen, GameObject root, float limit, bool[] ok)
+        {
+            float t0 = Time.unscaledTime;
+            ok[0] = false;
+            while (true)
+            {
+                if (gen != _generation || root == null) yield break;
+                if (Time.unscaledTime - t0 > limit) break;
+                bool more;
+                try { more = theme.MoveNext(); }
+                catch (System.Exception ex) { Debug.LogException(ex); break; }
+                if (!more) break;
+                yield return theme.Current;
+            }
+            ok[0] = gen == _generation && root != null;
         }
 
         private void CleanUp()
@@ -226,18 +317,38 @@ namespace ChoDoLa.ChestFx
             KeyAction action = preset.openAction;
             // Gốc vật ở giữa, đầu +Z cách gốc 0,5·size: lùi gốc ra trước chừng ấy để ĐẦU chạm đúng khe (không chui vào thân).
             float tip = 0.5f * size;
+            c.preset = preset;
+            c.keySize = size;
+            c.tip = tip;
 
             // Điểm khởi bay cố định trong thế giới; điểm đích bám rương mỗi khung (rương có thể đang lắc/cầm trên tay).
             Vector3 p0 = c.chestBase + c.front * (1.2f * S) + c.up * (0.6f * H);
+            c.startPos = p0;
             tr.position = p0;
             tr.rotation = Quaternion.LookRotation(-c.front, c.up);
             tr.localScale = baseScale;
 
-            // --- bay vòng cung
+            // t = 0: tiếng bay theo chủ đề (nguồn riêng, tắt hẳn lúc 1,0 s → tối đa 3 lớp âm).
+            PlayFly();
+
+            // --- bay: móc theme hoặc vòng cung chuẩn
             InActionPhase = false;
             float t0 = Time.unscaledTime;
             bool bad = false;
-            while (true)
+            bool[] ok = new bool[1];
+            IEnumerator themeFly = ThemeFly(c, tr, FlightTime);
+            if (themeFly != null)
+            {
+                yield return RunTheme(themeFly, gen, root, FlightTime + 0.05f, ok);
+                if (!ok[0]) yield break;
+                // Bù giờ nếu móc xong sớm: giữ tổng 1,0 s.
+                while (Time.unscaledTime - t0 < FlightTime)
+                {
+                    if (gen != _generation || root == null) yield break;
+                    yield return null;
+                }
+            }
+            else while (true)
             {
                 if (gen != _generation || root == null) { bad = true; break; }
                 c.Refresh();
@@ -257,13 +368,31 @@ namespace ChoDoLa.ChestFx
             }
             if (bad) yield break;
 
-            // Chìa chạm khe: tiếng cắm một lần.
-            if (_reveal != null) _reveal.PlayOneShot(keyClip, 0.6f * volume);
+            // t = 1,0 s: hành động mở chạm khe → tắt tiếng bay, phát tiếng hành động (rỗng thì tiếng cắm cũ), nháy sáng chủ đề.
+            StopFly();
+            if (_reveal != null)
+            {
+                if (actionClip != null) _reveal.PlayOneShot(actionClip, 0.7f * volume);
+                else _reveal.PlayOneShot(keyClip, 0.6f * volume);   // như cũ
+            }
+            try { OnKeyImpact(c); }
+            catch (System.Exception ex) { Debug.LogException(ex); }
 
-            // --- hành động mở
+            // --- hành động mở: móc theme hoặc hành động chuẩn
             InActionPhase = true;
             t0 = Time.unscaledTime;
-            while (true)
+            IEnumerator themeAct = ThemeAction(c, tr, ActionTime);
+            if (themeAct != null)
+            {
+                yield return RunTheme(themeAct, gen, root, ActionTime + 0.05f, ok);
+                if (!ok[0]) { InActionPhase = false; yield break; }
+                while (Time.unscaledTime - t0 < ActionTime)
+                {
+                    if (gen != _generation || root == null) { InActionPhase = false; yield break; }
+                    yield return null;
+                }
+            }
+            else while (true)
             {
                 if (gen != _generation || root == null) { bad = true; break; }
                 float u = Mathf.Clamp01((Time.unscaledTime - t0) / ActionTime);

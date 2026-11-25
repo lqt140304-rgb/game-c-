@@ -42,8 +42,8 @@ tiếng tick/nền/accent/whoosh/stage của lõi.
 | Giây | Việc | Âm (tối đa 3 lớp) |
 |---|---|---|
 | 0,00 | Bấm mở. Vật mở khoá hiện ở **1,2 S** trước rương, cao ngang 0,6 H, quay mặt về rương | **Nền** (vòng lặp chủ đề) vào ≤ 0,2 s, nhỏ |
-| 0,00 → 1,00 | Vật **bay/nhảy/lăn vòng cung** (Bezier, đỉnh cao hơn 0,25 S) tới điểm "khe" = mặt trước rương, cao 0,4 H | nền dâng nhẹ |
-| 1,00 → 1,35 | **Hành động mở** (bảng dưới) 0,35 s tại điểm khe, kết thúc bằng việc vật **thu nhỏ về 0** và biến mất | **Tiếng mở khoá** (`key_insert`) 1 lần, âm 0,6 |
+| 0,00 → 1,00 | Vật **bay theo chủ đề** (mặc định vòng cung Bezier; rương ghi đè `ThemeFly` để xoay tít, nhảy cóc, lướt, lăn…) tới điểm "khe" = mặt trước rương, cao 0,42 H | nền dâng nhẹ + **tiếng bay** (`flyClip`, 0,6) từ 0,00, tắt hẳn lúc 1,00 |
+| 1,00 → 1,35 | **Hành động mở theo chủ đề** 0,35 s tại khe (mặc định bảng dưới; rương ghi đè `ThemeAction`), kết thúc bằng việc vật **thu nhỏ về 0** và biến mất. Lúc 1,00 gọi `OnKeyImpact` → **nháy sáng** glow miệng rương màu chủ đề (`lightColor`, độ `lightMul`) tắt dần 0,5 s | **Tiếng hành động** (`actionClip`, 0,7) 1 lần; rỗng thì tiếng cắm cũ (`keyClip`, 0,6) |
 | 1,35 | Mốc sự kiện `chia_khoa_xong` (vật đã biến mất). Lõi bắt đầu mở nắp + vòng đổi màu (bước `OpenBox`) | |
 | 1,35 → chốt | **Rung lắc** tăng dần: 3 nấc, biên độ 0,004 → 0,007 → 0,011 (mét, nhân `S/0,5`) | nền dâng cao độ 0,9 → 1,3, âm lượng 0,25 → 0,45 |
 | chốt (OnLock) | **Bóp méo theo bậc** (bảng dưới) | Rác: nền **tắt phụt → lặng 0,2 s → tiếng chốt Rác**. Bậc khác: nền tắt trong 0,3 s + **tiếng chốt** (1 tiếng, to dần theo bậc) |
@@ -61,6 +61,25 @@ Tổng từ bấm tới chốt do lõi quyết (thường 5–7 s). Vật mở k
 | `Pounce` | nhảy vồ lên mặt trước, đè sát khe, ngoáy 2 nhịp rồi chui vào |
 | `Peck` | mổ/gõ 2 lần vào khe rồi chui vào |
 
+**Cập nhật (chủ dự án chạy thử): "chìa khoá không có nghĩa là cắm vào và vặn".** Cách mở phải theo CHỦ ĐỀ từng rương; âm và ánh
+sáng làm lại theo chủ đề và theo từng thời điểm. Khung đã có 3 móc theme trong `ChestKeyHookBase` (đều `protected virtual`):
+- `IEnumerator ThemeFly(KeyContext c, Transform root, float seconds)` — null = bay vòng cung chuẩn; trả coroutine = kiểu bay riêng (tự đặt vị trí/xoay
+  mỗi khung, gọi `c.Refresh()`, xong trong `seconds` = 1,0 s, kết thúc gần `c.RestPos`).
+- `IEnumerator ThemeAction(KeyContext c, Transform root, float seconds)` — null = hành động chuẩn theo `openAction`; trả coroutine = THAY HOÀN TOÀN
+  0,35 s hành động (xoay, đập, mổ, vồ, bật nắp, nhào lộn… bằng khối con của chính vật), xong trong `seconds`, để vật ở đúng khe; gọi
+  `ShrinkAtSlot(c, root, t01)` để thu nhỏ biến mất tại khe.
+- `void OnKeyImpact(KeyContext c)` — lúc 1,00 s; mặc định `Reveal.PulseGlow(preset.lightColor, preset.lightMul, 0.5f)` nếu `lightMul > 0`.
+Móc chạy quá `seconds + 0,05 s` bị cắt cứng; tổng vẫn 1,35 s và vẫn bắn `chia_khoa_xong`. `KeyContext` có thêm `preset`, `keySize`, `tip`,
+`startPos`, `Facing`, `RestPos`. `ChestRevealSequence.PulseGlow(Color, strength 0..1, seconds)` chỉ dùng glow/`revealLight` sẵn có (không thêm đèn/hạt),
+kẹp màu ≤ 1, tôn trọng `minimalGlowScale`/`minimalLightScale`.
+
+**Rương không cố định tại chỗ:** cả rương rung/bay lên/xoay/lắc mọi hướng theo `Preset.moveStyle` (`Shake`, `Float`, `Spin`, `Wobble`, `Bounce`);
+phần này do `ChestKeyScript` lo, hook không đụng. Vì rương đang chuyển động, móc theme phải `c.Refresh()` mỗi khung.
+
+**Mỗi phiên rương làm:** (1) cách bay riêng (`ThemeFly`) + hành động mở riêng (`ThemeAction`) đúng chủ đề; (2) `lightColor`/`lightMul` riêng
+(và `OnKeyImpact` riêng nếu cần nhịp khác); (3) `moveStyle` hợp chủ đề; (4) 2 tiếng riêng tạo bằng ElevenLabs: `flyFile` (≤ 1,0 s) và
+`actionFile` (~0,35 s), đặt trong `audioFolder`, ghi tên vào Preset, chạy lại Setup.
+
 Lớp con còn có thể ghi đè `AnimateAction(KeyContext c, Transform root, float t01)` để thêm chuyển động của **chính vật đó**
 (mèo vẫy đuôi, kiếm xoay, cánh vẹt vỗ…) bằng cách xoay/tịnh tiến các khối con của nó; **không** sinh thêm vật nào.
 
@@ -76,10 +95,13 @@ Lớp con còn có thể ghi đè `AnimateAction(KeyContext c, Transform root, f
 
 ## 3. Âm thanh (tất cả là mp3 ElevenLabs)
 
-Ba lớp, và **chỉ ba**:
+Tối đa **ba lớp cùng lúc** (nền + 1 tiếng ngắn + tiếng chốt; tiếng bay tắt hẳn trước khi tiếng hành động vang):
 
 1. **Nền** (`bedClip`, vòng lặp chủ đề): dâng cao độ 0,9 → 1,3 và âm lượng 0,25 → 0,45. Dừng ngay lúc chốt (Rác) hoặc fade 0,3 s.
-2. **Tiếng cắm chìa** (`keyClip`, mới): 1 lần, âm 0,6, lúc chìa chạm khe.
+2. **Tiếng ngắn theo chủ đề:** **tiếng bay** (`flyClip` ← `Preset.flyFile`, 0–1,0 s, âm 0,6, nguồn riêng bị tắt lúc 1,0 s) rồi **tiếng
+   hành động mở** (`actionClip` ← `Preset.actionFile`, 1,0–1,35 s, âm 0,7). `actionFile` rỗng thì phát tiếng cắm cũ (`keyClip`, âm 0,6).
+   Hai tiếng này tạo mới bằng ElevenLabs cho từng rương (mỗi phiên rương tự làm). `ChestKeySetup` nạp chúng vào prefab hook; rỗng thì bỏ qua,
+   thiếu tệp thì cảnh báo vàng.
 3. **Tiếng chốt** (`stingClips[5]`): đúng 1 tiếng theo bậc, âm 0,55 / 0,7 / 0,8 / 0,9 / 1,0 cho Rác→HT. Rác phát sau 0,2 s lặng.
 
 **Âm lượng:** `volume` (0,8) là hệ số tổng, nhân đúng MỘT lần vào mọi giá trị ghi ở trên (nền 0,25 → 0,45; cắm chìa 0,6; chốt 0,55 → 1,0); nguồn nền đặt `source.volume` = giá trị đã nhân, không nhân lần nữa ở `PlayOneShot`.
@@ -107,7 +129,8 @@ Hook một cho cả 17 rương, kế thừa `ChestFxHook`. Việc của nó (m�
 - `OnTierLocked`: Rác → `Stop()` nền, `WaitForSeconds(0.2)`, phát `stingClips[0]`; bậc khác → fade nền 0,3 s, phát `stingClips[rank]`.
 - `OnReset`/`OnDestroy`: dọn chìa, dừng âm, không để vật thừa.
 - Ngẫu nhiên (nếu cần) dùng `ctx.RngFor(salt)`; **không** dùng `UnityEngine.Random`.
-- Trường chỉnh được (có trong Inspector): `bedClip`, `keyClip`, `stingClips[5]`, `volume = 0.8`, `keyScale = 0.35`, `keyColor`.
+- 3 móc theme `ThemeFly` / `ThemeAction` / `OnKeyImpact` (xem mục 2) + tiện ích `ShrinkAtSlot`, thuộc tính `Reveal`.
+- Trường chỉnh được (có trong Inspector): `bedClip`, `keyClip`, `flyClip`, `actionClip`, `stingClips[5]`, `volume = 0.8`, `keyScale = 0.35`, `keyColor`.
 - `KeyContext` đưa: `float S` (cỡ rương), `float H`, `Vector3 front` (hướng trước của rương, như `RacQuyHook.Measure`/`BoxOpenSequence.FrontDirection`),
   `Vector3 slotPos` (điểm khe), `Material MakeMat(Color)` (dùng `ChestFxFactory.CreateUnlit`, tự dọn), `GameObject Part(PrimitiveType, name, localPos, localScale, localRot, color)`.
 - **Quy ước hình vật:** `BuildKey` trả về gốc vật với **trục +Z là hướng "đầu/mũi/mặt" quay về rương** (mũi kiếm, mặt mèo, đầu vẹt, mũi chìa), gốc toạ độ ở giữa; vật vừa trong hộp 1×1×1 (hook tự nhân `keyScale·S`).

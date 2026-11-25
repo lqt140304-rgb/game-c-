@@ -24,6 +24,20 @@ namespace ChoDoLa.ChestFx
         public Transform chest;
         public ChestScriptContext Script;
 
+        // --- Do ChestKeyHookBase điền trước khi bay, cho các móc theme (ThemeFly/ThemeAction/OnKeyImpact) dùng.
+        /// <summary>Preset của rương đang mở.</summary>
+        public KeyPreset preset;
+        /// <summary>Cỡ vật (keyScale·S), mét. Vật vừa hộp 1x1x1 nhân cỡ này.</summary>
+        public float keySize;
+        /// <summary>Nửa cỡ vật (0,5·keySize): gốc vật phải lùi ra trước khe chừng ấy để ĐẦU chạm đúng khe.</summary>
+        public float tip;
+        /// <summary>Điểm khởi bay cố định trong thế giới (trước rương 1,2 S, cao 0,6 H).</summary>
+        public Vector3 startPos;
+        /// <summary>Hướng chuẩn của vật: +Z quay vào rương, +Y theo trục lên của rương.</summary>
+        public Quaternion Facing { get { return Quaternion.LookRotation(-front, up); } }
+        /// <summary>Vị trí gốc vật khi ĐẦU vật nằm đúng khe (gọi Refresh trước nếu rương đang chuyển động).</summary>
+        public Vector3 RestPos { get { return slotPos + front * tip; } }
+
         /// <summary>Độ cao khe tính từ đáy thân, theo H (gần ổ khoá).</summary>
         public const float SlotHeight01 = 0.42f;
 
