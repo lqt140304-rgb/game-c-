@@ -13,7 +13,7 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 | Soi lỗi và trả giá | [soi-loi-tra-gia](../docs/superpowers/specs/2026-11-23-soi-loi-tra-gia-design.md) | Soi lỗi lấy bằng chứng, trả giá kiểu Ace Attorney; biến thể chất lượng là lớp phủ, không làm mô hình riêng |
 | Bậc đồ trong rương | [tier-do-trong-ruong](../docs/superpowers/specs/2026-11-23-tier-do-trong-ruong-design.md) | 5 bậc: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại |
 | Rương chủ đề | [ruong-chu-de](../docs/superpowers/specs/2026-11-24-ruong-chu-de-design.md) | Mở bằng thành tựu, có trong shop từ hôm sau; quay bậc rồi quay món; mỗi món thuộc một rương, Rác dùng chung; Rương Tổng Hợp ra đồ rương cơ bản; Huyền thoại chủ đề là biểu tượng có câu chuyện; nhại được, chỉ cần đổi nhỏ |
-| Hiệu ứng mở rương | [hieu-ung-mo-rong](../docs/superpowers/specs/2026-11-24-hieu-ung-mo-rong-design.md) | Mọi rương: màu các bậc có thể ra nhảy như vòng quay rồi dừng đúng bậc vừa quay; cùng lúc bóng món trúng nhô ra, to dần tới hình hoàn chỉnh; mỗi rương một kiểu hiệu ứng và âm riêng. Bảng màu bậc chỉ là **đề xuất**, chưa chốt |
+| Hiệu ứng mở rương (**ĐỀ XUẤT, chờ duyệt**) | [hieu-ung-mo-rong](../docs/superpowers/specs/2026-11-24-hieu-ung-mo-rong-design.md); spec riêng từng rương `docs/superpowers/specs/2026-11-24-hieu-ung-*-design.md` | Đã có mã thử: màu các bậc nhảy như vòng quay rồi dừng đúng bậc, bóng món trúng nhô ra to dần; mỗi rương một kiểu hiệu ứng và âm riêng. **Bảng màu bậc, nhịp giây và âm thanh là ĐỀ XUẤT, chờ duyệt, chưa ai nghe âm.** Chưa chốt điều gì ở mục này |
 
 ## Mỹ thuật 3D
 
