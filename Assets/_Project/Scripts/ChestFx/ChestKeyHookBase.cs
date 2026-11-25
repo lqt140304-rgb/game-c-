@@ -28,6 +28,12 @@ namespace ChoDoLa.ChestFx
         public float keyScale = 0.35f;
         public Color keyColor = Color.white;
 
+        [Header("Khe (chỉnh tay nếu một rương vẫn lệch)")]
+        [Tooltip("Dời điểm khe, đơn vị mét, theo trục của rương: x phải, y lên, z ra trước. Mặc định 0 = giữa mặt trước thân, cao 0,42 H.")]
+        public Vector3 slotOffset = Vector3.zero;
+        [Tooltip("Vẽ điểm khe (vàng) và hướng trước (xanh) trong Scene.")]
+        public bool debugDrawSlot = false;
+
         private static readonly float[] StingVolume = { 0.55f, 0.7f, 0.8f, 0.9f, 1.0f };
 
         private ChestRevealSequence _reveal;
@@ -207,7 +213,7 @@ namespace ChoDoLa.ChestFx
         {
             int gen = _generation;
             KeyPreset preset = GetPreset();
-            KeyContext c = new KeyContext(ctx);
+            KeyContext c = new KeyContext(ctx, slotOffset);
             _kc = c;
             GameObject root = BuildKey(c);
             if (root == null) { c.Dispose(); _kc = null; ctx.Raise(DoneEvent); yield break; }
@@ -215,33 +221,16 @@ namespace ChoDoLa.ChestFx
             Transform tr = root.transform;
 
             float S = c.S, H = c.H;
-            Vector3 front = c.front;
-            Vector3 dir = -front;                                   // hướng tiến vào rương
-            Quaternion baseRot = Quaternion.LookRotation(dir, Vector3.up);
             float size = keyScale * S;
             Vector3 baseScale = Vector3.one * size;
             KeyAction action = preset.openAction;
+            // Gốc vật ở giữa, đầu +Z cách gốc 0,5·size: lùi gốc ra trước chừng ấy để ĐẦU chạm đúng khe (không chui vào thân).
+            float tip = 0.5f * size;
 
-            // Điểm cuối chuyến bay (chuẩn bị cho hành động).
-            Vector3 up = Vector3.up;
-            Vector3 hover = c.slotPos;
-            switch (action)
-            {
-                case KeyAction.Drop: hover = c.slotPos + up * (0.12f * S); break;
-                case KeyAction.Strike: hover = c.slotPos + front * (0.25f * S); break;
-                case KeyAction.Pounce: hover = c.slotPos + front * (0.12f * S) + up * (0.12f * S); break;
-                case KeyAction.Peck: hover = c.slotPos + front * (0.15f * S); break;
-            }
-
-            Vector3 p0 = c.chestBase + front * (1.2f * S);
-            p0.y = c.chestBase.y + 0.6f * H;
-            float peakY = Mathf.Max(p0.y, hover.y) + 0.3f * S;      // đỉnh cao hơn 0,25 S
-            Vector3 p2 = hover;
-            Vector3 p1 = (p0 + p2) * 0.5f;
-            p1.y = 2f * peakY - 0.5f * (p0.y + p2.y);
-
+            // Điểm khởi bay cố định trong thế giới; điểm đích bám rương mỗi khung (rương có thể đang lắc/cầm trên tay).
+            Vector3 p0 = c.chestBase + c.front * (1.2f * S) + c.up * (0.6f * H);
             tr.position = p0;
-            tr.rotation = baseRot;
+            tr.rotation = Quaternion.LookRotation(-c.front, c.up);
             tr.localScale = baseScale;
 
             // --- bay vòng cung
@@ -251,11 +240,17 @@ namespace ChoDoLa.ChestFx
             while (true)
             {
                 if (gen != _generation || root == null) { bad = true; break; }
+                c.Refresh();
                 float u = Mathf.Clamp01((Time.unscaledTime - t0) / FlightTime);
                 float e = u * u * (3f - 2f * u);
                 float a = 1f - e;
+                Vector3 p2 = HoverPos(action, c) + c.front * tip;
+                float h0 = Vector3.Dot(p0, c.up), h2 = Vector3.Dot(p2, c.up);
+                float peak = Mathf.Max(h0, h2) + 0.3f * S;
+                Vector3 p1 = (p0 + p2) * 0.5f;
+                p1 += c.up * (2f * peak - 0.5f * (h0 + h2) - Vector3.Dot(p1, c.up));
                 tr.position = a * a * p0 + 2f * a * e * p1 + e * e * p2;
-                tr.rotation = baseRot;
+                tr.rotation = Quaternion.LookRotation(-c.front, c.up);
                 AnimateAction(c, tr, u);
                 if (u >= 1f) break;
                 yield return null;
@@ -272,9 +267,11 @@ namespace ChoDoLa.ChestFx
             {
                 if (gen != _generation || root == null) { bad = true; break; }
                 float u = Mathf.Clamp01((Time.unscaledTime - t0) / ActionTime);
+                c.Refresh();
                 Vector3 pos; Quaternion rot; float shrink;
-                ActionPose(action, u, c, hover, baseRot, out pos, out rot, out shrink);
-                tr.position = pos;
+                ActionPose(action, u, c, HoverPos(action, c), Quaternion.LookRotation(-c.front, c.up), out pos, out rot, out shrink);
+                // Thu nhỏ quanh ĐẦU vật: đầu đứng yên ở khe, gốc tiến dần vào khe → vật biến mất đúng tại khe.
+                tr.position = pos + c.front * (tip * (1f - shrink));
                 tr.rotation = rot;
                 tr.localScale = baseScale * (1f - shrink);
                 AnimateAction(c, tr, u);
@@ -290,6 +287,42 @@ namespace ChoDoLa.ChestFx
             _kc = null;
             _doneTime = Time.unscaledTime;
             ctx.Raise(DoneEvent);
+        }
+
+        /// <summary>Điểm chờ trước hành động (chưa tính độ lùi đầu vật).</summary>
+        private static Vector3 HoverPos(KeyAction action, KeyContext c)
+        {
+            float S = c.S;
+            switch (action)
+            {
+                case KeyAction.Drop: return c.slotPos + c.up * (0.12f * S);
+                case KeyAction.Strike: return c.slotPos + c.front * (0.25f * S);
+                case KeyAction.Pounce: return c.slotPos + c.front * (0.12f * S) + c.up * (0.12f * S);
+                case KeyAction.Peck: return c.slotPos + c.front * (0.15f * S);
+                default: return c.slotPos;
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (!debugDrawSlot) return;
+            KeyContext k = _kc;
+            if (k == null)
+            {
+                ChestRevealSequence rv = _reveal != null ? _reveal : GetComponentInParent<ChestRevealSequence>();
+                if (rv == null) rv = GetComponentInChildren<ChestRevealSequence>();
+                if (rv == null) return;
+                k = new KeyContext(rv.transform, rv.Box, slotOffset);
+            }
+            else k.Refresh();
+            // Debug.DrawLine gọi trong OnDrawGizmos hiện ngay trong cửa sổ Scene (cả lúc không chạy).
+            float r = Mathf.Max(0.01f, 0.04f * k.S);
+            Vector3 right = Vector3.Cross(k.up, k.front);
+            Debug.DrawLine(k.slotPos - right * r, k.slotPos + right * r, Color.yellow);
+            Debug.DrawLine(k.slotPos - k.up * r, k.slotPos + k.up * r, Color.yellow);
+            Debug.DrawLine(k.chestBase, k.slotPos, Color.yellow);
+            Debug.DrawLine(k.slotPos, k.slotPos + k.front * (0.5f * k.S), Color.cyan);
+            Debug.DrawLine(k.slotPos, k.slotPos + k.up * (0.25f * k.S), Color.green);
         }
 
         private static float Sm(float a, float b, float t) { float k = Mathf.Clamp01((t - a) / (b - a)); return k * k * (3f - 2f * k); }
@@ -320,7 +353,7 @@ namespace ChoDoLa.ChestFx
                     if (t < 0.4f) { float k = t / 0.4f; y = 0.12f * S * (1f - k * k); }
                     else if (t < 0.7f) y = 0.04f * S * Mathf.Sin(Mathf.PI * (t - 0.4f) / 0.3f);
                     else y = 0f;
-                    pos = slot + Vector3.up * y;
+                    pos = slot + c.up * y;
                     break;
                 }
                 case KeyAction.Strike:
@@ -337,7 +370,7 @@ namespace ChoDoLa.ChestFx
                 {
                     // nhảy vồ từ hover lên khe (0..0.35), đè sát, ngoáy 2 nhịp (0.35..0.85).
                     float e = Sm(0f, 0.35f, t);
-                    pos = Vector3.Lerp(hover, slot, e) + Vector3.up * (0.1f * S * Mathf.Sin(Mathf.PI * Mathf.Clamp01(t / 0.35f)));
+                    pos = Vector3.Lerp(hover, slot, e) + c.up * (0.1f * S * Mathf.Sin(Mathf.PI * Mathf.Clamp01(t / 0.35f)));
                     float wig = t > 0.35f ? Mathf.Sin(Mathf.PI * 4f * Mathf.Clamp01((t - 0.35f) / 0.5f)) * 18f : 0f;
                     rot = baseRot * Quaternion.Euler(0f, wig, 0f);
                     break;
