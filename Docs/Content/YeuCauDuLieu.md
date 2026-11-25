@@ -68,21 +68,27 @@ Hợp đồng hiện có `OnActionRejected(reasonCode, message)`. Các mã gợi
 
 **Một điểm cần Codex và Antigravity chốt:** luật nợ ([GDD mục 2](../GameDesign/README.md)) quy định Anh Bảy **tự thu vào cuối ngày** khi người chơi kết thúc ngày. Hợp đồng hiện có cả `RequestPayDebt` và `RequestEndDay`, dễ hiểu thành hai bước thu nợ. Đề xuất: việc thu nợ nằm trong `RequestEndDay`. Nếu giữ `RequestPayDebt` thì nó chỉ nên là bước xem trước hoặc xác nhận, không trừ tiền hai lần (đây là lỗi D-01 Claude 2 đã ghi ở [Sprint1.md](../Balance/Sprint1.md)).
 
-## 7. Cây phát triển giữa các ván (theo bản của Codex, nhánh `codex/skill-tree`)
+## 7. Cây kỹ năng trong ván
 
-Luật gốc ở [spec rương và sưu tập](../../docs/superpowers/specs/2026-11-23-ruong-suu-tap-design.md) mục 4. Điểm và giá nút là **số tạm**, Claude 2 cân lại ở [Sprint5CayPhatTrien.md](../Balance/Sprint5CayPhatTrien.md). Đừng gán cứng trong mã.
+**Đã chốt (chủ dự án, 2026-11-25), thay bản cũ "giữa các ván":** cây kỹ năng **chỉ dùng trong ván, không có tiến trình vĩnh viễn**. Mỗi ván bắt đầu với cây trống, hết ván thì mất. Chi tiết và số đo ở [spec rương và sưu tập](../../docs/superpowers/specs/2026-11-23-ruong-suu-tap-design.md) mục 4 và [Sprint5CayPhatTrien.md](../Balance/Sprint5CayPhatTrien.md). **Nhánh `codex/skill-tree` được làm theo luật cũ (điểm tích lũy, mở nút giữa các ván, `StartNextRun` giữ meta) và cần đổi hướng theo mục này.**
 
-**Dữ liệu** nằm ở khối `skill_tree` của `content.json`: `first_inspection_points`, `win_points`, `loss_points` và danh sách `nodes`. Mỗi nút có `id`, `name`, `branch` (Rương, Sưu tập, Thần lực, Câu chuyện), `parent` (null nếu là gốc), `cost`, `condition` (`kind` là `wins`, `collection` hoặc `origin`, kèm `target`, `label` và với `origin` thêm `origin`) và `reward`.
+**Đã chốt**
+1. **Nguồn điểm:** kiếm từ **từng công việc hằng ngày** trong ván (mở rương, chơi mini game), không phải điểm cuối ván. Số điểm mỗi việc do Claude 2 đo, bản đo hiện dùng 3 điểm mỗi ngày làm giả định. Không còn `win_points`, `loss_points` hay điểm theo lần soi đầu giữa các ván.
+2. **Rương mở khóa và rương chủ đề chỉ mở khóa trong ván**, không vĩnh viễn.
+3. **Cây khó mở, thưởng không buff:** tổng thưởng có tác động lên tiền hoặc rương không quá khoảng 1.000.000 đ quy đổi.
+4. **Bốn nhánh còn ba có nút:** Rương, Sưu tập, Thần lực. Nhánh "Câu chuyện" đổi tên thành **"Đời sống"**, tạm để trống, không có nút.
+5. **M3 (Rương Đen sớm) bỏ khỏi cây.** Rương Đen sớm, nếu có, là tùy chọn lúc vào ván ngoài cây (chưa chốt). **M2 bỏ phần cộng vốn.** M1 và M4 chưa có quyết định.
 
-**Luật bắt buộc**
-1. Mở nút cần **cả ba**: nút cha đã mở, điều kiện sưu tập đủ, đủ điểm. Thứ tự kiểm tra và mã từ chối: `SKILL_UNAVAILABLE`, `SKILL_UNLOCKED`, `PARENT_LOCKED`, `CONDITION_NOT_MET`, `NOT_ENOUGH_POINTS`.
-2. `UnlockSkill` **chỉ chạy giữa các ván**. Đang có ván chạy thì từ chối `RUN_ACTIVE`. Ngược lại mọi lệnh trong ván bị từ chối `RUN_ENDED` khi ván đã kết thúc.
-3. Điểm kiếm được: một lần cho mỗi mã hiện vật **soi lần đầu** (`RecordInspection`), cộng điểm thắng hoặc thua khi ván kết thúc (thắng nhiều hơn). Cộng đúng một lần, nhờ mã giao dịch.
-4. Điểm, sổ sưu tập, số ván thắng và nút đã mở **lưu cùng bản lưu ván** trong cùng một giao dịch, nên tải lại màn kết quả không đổi số. Bản lưu cũ không có khối meta nạp được với giá trị rỗng. Bản lưu có điểm hoặc số ván âm bị coi là hỏng.
-5. `StartNextRun` giữ nguyên tiến trình meta, đặt lại mọi thứ khác, và **lưu trước rồi mới thay trạng thái**. `earlyBlackChest` chỉ được bật khi nút M3 đã mở.
-6. Phần thưởng meta **không có buff chơi** (chỉ rương, sưu tập, cốt truyện, phản ứng thần lực). M1 chỉ ghi quyền chọn gia truyền, M2 và M4 chưa kích hoạt.
+**Hệ quả cho dữ liệu và mã (đề xuất, Codex chốt tên và cách làm)**
+- Trạng thái cây (điểm, nút đã mở, mục sổ sưu tập của ván) nằm **trong bản lưu ván** và **bị xóa khi bắt đầu ván mới**. Không có tệp meta riêng, `StartNextRun` không mang tiến trình sang ván sau.
+- `UnlockSkill(skillId)` chỉ chạy **khi ván đang diễn ra**. Ván đã kết thúc thì từ chối `RUN_ENDED` như mọi lệnh khác. Mã `RUN_ACTIVE` (mở nút giữa các ván) không còn dùng.
+- Cộng điểm theo từng việc hằng ngày vẫn phải **một lần** nhờ mã giao dịch. Tải lại giữa ngày không cộng hai lần.
+- Mở nút vẫn cần **cả ba**: nút cha đã mở, đủ điều kiện, đủ điểm. Mã từ chối giữ nguyên: `SKILL_UNAVAILABLE`, `SKILL_UNLOCKED`, `PARENT_LOCKED`, `CONDITION_NOT_MET`, `NOT_ENOUGH_POINTS`.
+- Khối `skill_tree` trong `content.json` cần làm lại theo quy tắc điểm mới. Khối `meta_unlocks` (M1 đến M4) trong `content.json` là **bản cũ, chưa cập nhật**: M3 bỏ, M2 bỏ cộng vốn. Số đo cân bằng mới nằm ở `Docs/Content/data/balance_sprint5.json`.
+- Điều kiện của nút dựa trên Sổ Sưu Tập chỉ đếm trong ván.
 
 **Còn mở**
-- Hệ rương mới (5 bậc, rương mở khóa và chủ đề) chưa có nút nào trong cây. Cần thêm nút mở Tổng Hợp, Cổ Phong, Thiên Cơ, Rác Quý, Việt Nam, Nhại theo spec.
-- M3 hiện bật Rương Đen từ ngày 1. Ngày 1 của lần chơi đầu chỉ bán Rương Gỗ và Vải Niêm, nên cần định nghĩa lại cho khớp.
-- Giao diện đọc `SkillNodes` nên đọc qua bản sao hoặc trong khóa, để không thấy số cũ khi đang ghi.
+- Giá điểm từng nút và cách chia điểm cho từng việc hằng ngày (Claude 2 đo lại).
+- M2 sau khi bỏ cộng vốn thì giữ làm nút gì, hay bỏ hẳn. M1 (chọn gia truyền) và M4 (Bí Khế quen mặt) có nghĩa gì khi cây chỉ trong ván.
+- Hệ rương mới chưa có nút nào trong cây: các nút mở Tổng Hợp, Cổ Phong, Thiên Cơ, Rác Quý, Việt Nam, Nhại cần được định nghĩa.
+- Giao diện đọc cây nên đọc qua bản sao hoặc trong khóa, để không thấy số cũ khi đang ghi.

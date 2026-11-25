@@ -148,7 +148,10 @@ Bản nháp của Claude 1 cho Sprint 4. Mọi con số là **[ĐỀ XUẤT]** �
 | 9 | Chuộc CP3 khi 3 ô trang bị đã đầy. | Trả 3.450.000 đ. CP3 ở trong túi tạo tác, chưa có hiệu ứng cho đến khi người chơi thay món. Không chiếm kho 8 ô. |
 | 10 | Không chuộc CP3 trước hết ngày hạn. | Mất CP3, không hoàn tiền cầm. |
 
-## 5. Mở khóa meta
+## 5. Mở khóa meta (BẢN CŨ, đã bị thay một phần ngày 2026-11-25)
+
+> **Cập nhật 2026-11-25:** chủ dự án chốt **cây kỹ năng chỉ dùng trong ván, không có tiến trình vĩnh viễn** (xem [YeuCauDuLieu.md](YeuCauDuLieu.md) mục 7). Hệ quả cho mục này: **M3 bỏ khỏi cây** (Rương Đen sớm, nếu có, là tùy chọn lúc vào ván ngoài cây, chưa chốt), **M2 bỏ phần cộng vốn**, nhánh "Câu chuyện" đổi tên "Đời sống" và để trống. **M1 và M4 chưa có quyết định.** Bảng và ca kiểm thử bên dưới là bản cũ (mở khóa giữa các ván), giữ lại để tham chiếu, không dùng để cài đặt.
+
 
 **Vai trò.** Cho người chơi cảm giác tiến bộ giữa các ván bằng cách mở thêm lựa chọn và thông tin, nhưng không biến ván sau thành dễ hơn nhiều.
 
