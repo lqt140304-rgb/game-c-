@@ -1,0 +1,1201 @@
+{
+  "_note": "Số liệu cân bằng Sprint 5 gom từ Docs/Balance/Sprint5*.md. Tiền bằng đồng nguyên (suffix _vnd), tỉ lệ là số thực 0 đến 1. Mỗi khối có status: ĐÃ CHỐT (chủ dự án duyệt), ĐỀ XUẤT (chưa duyệt), GIẢ ĐỊNH. Bảng đọc được: Docs/Balance/BangSoLieuSprint5.md. Không thay content.json.",
+  "version": "2026-11-25",
+  "currency": "VND",
+  "status_legend": {
+    "ĐÃ CHỐT": "chủ dự án duyệt, dẫn nguồn DaChot hoặc spec",
+    "ĐỀ XUẤT": "Claude 2 đề xuất, chưa duyệt",
+    "GIẢ ĐỊNH": "giả định của mô hình, chưa kiểm tra"
+  },
+  "tiers": {
+    "R": "Rác",
+    "T": "Thường",
+    "H": "Hiếm",
+    "X": "Rất hiếm",
+    "L": "Huyền thoại"
+  },
+  "economy": {
+    "start_cash_vnd": {
+      "value": 10000000,
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Tiền tệ)"
+    },
+    "debt_vnd": {
+      "value": [
+        2000000,
+        3500000,
+        5000000,
+        7500000,
+        10500000,
+        15000000,
+        22000000
+      ],
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Tiền tệ): nợ 7 kỳ 2 đến 22 triệu đ"
+    },
+    "lose_arrears_over_vnd": {
+      "value": 10000000,
+      "status": "ĐÃ CHỐT",
+      "source": "content.json rules; Sprint5Ruong.md mục 3"
+    },
+    "round_step_vnd": {
+      "value": 10000,
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Tiền tệ)"
+    },
+    "box_price_swing": {
+      "value": 0.2,
+      "status": "ĐÃ CHỐT",
+      "source": "GiaHopDaoDong.md (phương án C); BanGiaoSprint5.md"
+    },
+    "max_boxes_per_day": {
+      "value": 3,
+      "status": "ĐÃ CHỐT",
+      "source": "README.md; content.json rules"
+    },
+    "penalty_rate": {
+      "value": 0.2,
+      "status": "ĐÃ CHỐT",
+      "source": "content.json rules; Sprint5Ruong.md mục 2"
+    },
+    "equip_slots": {
+      "value": 4,
+      "with_bk1": 5,
+      "status": "ĐÃ CHỐT",
+      "source": "ruong-suu-tap (4 ô tạo tác); TASKS.md (BK1 mở ô thứ 5)"
+    },
+    "duplicate_artifact_refund_of_kho_price": {
+      "value": 0.5,
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Giá và tỉ lệ 4 rương cơ bản)"
+    },
+    "junk_sell_price_vnd": {
+      "value": 30000,
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md mục 1"
+    },
+    "shop_layout": {
+      "basic_chests": 4,
+      "max_extra_chests": 4,
+      "rotation": "xoay vòng theo hạt giống ván và ngày",
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Rương chủ đề)"
+    }
+  },
+  "chests_basic": [
+    {
+      "id": "GO",
+      "name": "Gỗ",
+      "price_vnd": 1400000,
+      "tier_rates": {
+        "R": 0.18,
+        "T": 0.795,
+        "H": 0.01,
+        "X": 0.01,
+        "L": 0.005
+      },
+      "fake_rate": 0.1,
+      "true_clues_of_3": 2,
+      "artifact_share": 0.0,
+      "pools": {
+        "T": [
+          "V01",
+          "V03",
+          "V09"
+        ],
+        "H": [
+          "N01",
+          "N02"
+        ],
+        "X": [
+          "N03"
+        ],
+        "L": [
+          "L04"
+        ]
+      },
+      "status": {
+        "status": "ĐÃ CHỐT",
+        "source": "DaChot.md (hàng Giá và tỉ lệ 4 rương cơ bản); Sprint5Ruong.md mục 1"
+      },
+      "fake_rate_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "Sprint5Ruong.md mục 1 (bảng duyệt 2026-11-24)"
+      },
+      "available_from_day": 1,
+      "available_from_day_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "lõi mô phỏng đã duyệt (Rương Đen bán từ ngày 4); Sprint5Ruong.md mục 2"
+      }
+    },
+    {
+      "id": "VAI_NIEM",
+      "name": "Vải Niêm",
+      "price_vnd": 3500000,
+      "tier_rates": {
+        "R": 0.3,
+        "T": 0.39,
+        "H": 0.25,
+        "X": 0.05,
+        "L": 0.01
+      },
+      "fake_rate": 0.15,
+      "true_clues_of_3": 2,
+      "artifact_share": 0.0,
+      "pools": {
+        "T": [
+          "V02",
+          "V04"
+        ],
+        "H": [
+          "N04",
+          "N05"
+        ],
+        "X": [
+          "V10"
+        ],
+        "L": [
+          "N13"
+        ]
+      },
+      "status": {
+        "status": "ĐÃ CHỐT",
+        "source": "DaChot.md (hàng Giá và tỉ lệ 4 rương cơ bản); Sprint5Ruong.md mục 1"
+      },
+      "fake_rate_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "Sprint5Ruong.md mục 1 (bảng duyệt 2026-11-24)"
+      },
+      "available_from_day": 1,
+      "available_from_day_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "lõi mô phỏng đã duyệt (Rương Đen bán từ ngày 4); Sprint5Ruong.md mục 2"
+      }
+    },
+    {
+      "id": "KIM_KHI",
+      "name": "Kim Khí",
+      "price_vnd": 4500000,
+      "tier_rates": {
+        "R": 0.1,
+        "T": 0.25,
+        "H": 0.22,
+        "X": 0.08,
+        "L": 0.01
+      },
+      "fake_rate": 0.0,
+      "true_clues_of_3": 1,
+      "artifact_share": 0.34,
+      "artifact_tier_mix": {
+        "1": 0.6,
+        "2": 0.35,
+        "3": 0.05
+      },
+      "artifact_system": "CP+TC",
+      "pools": {
+        "T": [
+          "V05",
+          "N07"
+        ],
+        "H": [
+          "V06",
+          "N06"
+        ],
+        "X": [
+          "V07"
+        ],
+        "L": [
+          "N14"
+        ]
+      },
+      "status": {
+        "status": "ĐÃ CHỐT",
+        "source": "DaChot.md (hàng Giá và tỉ lệ 4 rương cơ bản); Sprint5Ruong.md mục 1"
+      },
+      "fake_rate_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "Sprint5Ruong.md mục 1 (bảng duyệt 2026-11-24)"
+      },
+      "available_from_day": 1,
+      "available_from_day_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "lõi mô phỏng đã duyệt (Rương Đen bán từ ngày 4); Sprint5Ruong.md mục 2"
+      },
+      "note": "34% còn lại là tạo tác: tạo tác chưa có thì vào ô trống, trùng hoặc hết ô thì đổi 50% giá Kho (DaChot.md)"
+    },
+    {
+      "id": "DEN",
+      "name": "Đen",
+      "price_vnd": 12000000,
+      "tier_rates": {
+        "R": 0.3,
+        "T": 0.03,
+        "H": 0.04,
+        "X": 0.58,
+        "L": 0.05
+      },
+      "fake_rate": 0.3,
+      "true_clues_of_3": 1,
+      "artifact_share": 0.0,
+      "pools": {
+        "T": [
+          "N08",
+          "N09"
+        ],
+        "H": [
+          "N10",
+          "N11"
+        ],
+        "X": [
+          "N12"
+        ],
+        "L": [
+          "N15"
+        ]
+      },
+      "status": {
+        "status": "ĐÃ CHỐT",
+        "source": "DaChot.md (hàng Giá và tỉ lệ 4 rương cơ bản); Sprint5Ruong.md mục 1"
+      },
+      "fake_rate_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "Sprint5Ruong.md mục 1 (bảng duyệt 2026-11-24)"
+      },
+      "available_from_day": 4,
+      "available_from_day_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "lõi mô phỏng đã duyệt (Rương Đen bán từ ngày 4); Sprint5Ruong.md mục 2"
+      }
+    }
+  ],
+  "chests_unlock": [
+    {
+      "id": "TONG_HOP",
+      "name": "Tổng Hợp",
+      "price_vnd": 6000000,
+      "tier_rates": {
+        "R": 0.16,
+        "T": 0.39,
+        "H": 0.28,
+        "X": 0.14,
+        "L": 0.03
+      },
+      "fake_rate": 0.2,
+      "true_clues_of_3": 2,
+      "artifact_share": 0.0,
+      "pools": "union_of_basic_chests",
+      "status": {
+        "status": "ĐỀ XUẤT",
+        "source": "Sprint5RuongMoKhoa.md mục 2",
+        "note": "chưa duyệt; chủ dự án chốt chỉ luật mở khóa trong ván (DaChot.md) và luật shop 4 + tối đa 4"
+      },
+      "pools_note": "ra đúng các món của 4 rương cơ bản, quay đều trong hợp bộ sưu tập ở bậc vừa quay (ruong-chu-de mục 9)"
+    },
+    {
+      "id": "CO_PHONG",
+      "name": "Cổ Phong",
+      "price_vnd": 4500000,
+      "tier_rates": {
+        "R": 0.14,
+        "T": 0.3,
+        "H": 0.15,
+        "X": 0.07,
+        "L": 0
+      },
+      "fake_rate": 0.1,
+      "true_clues_of_3": 2,
+      "artifact_share": 0.34,
+      "artifact_tier_mix": {
+        "1": 0.6,
+        "2": 0.35,
+        "3": 0.05
+      },
+      "artifact_system": "CP",
+      "pools": {
+        "T": [
+          "PC1",
+          "PC2"
+        ],
+        "H": [
+          "PC3"
+        ],
+        "X": [
+          "PC4"
+        ]
+      },
+      "status": {
+        "status": "ĐỀ XUẤT",
+        "source": "Sprint5RuongMoKhoa.md mục 2",
+        "note": "chưa duyệt; chủ dự án chốt chỉ luật mở khóa trong ván (DaChot.md) và luật shop 4 + tối đa 4"
+      },
+      "pools_status": {
+        "status": "GIẢ ĐỊNH",
+        "source": "Sprint5RuongMoKhoa.md mục 2",
+        "note": "bộ sưu tập chưa có món (Claude 1); bản đo dùng món giữ chỗ giá bằng giá trung bình bậc"
+      }
+    },
+    {
+      "id": "THIEN_CO",
+      "name": "Thiên Cơ",
+      "price_vnd": 4500000,
+      "tier_rates": {
+        "R": 0.12,
+        "T": 0.29,
+        "H": 0.17,
+        "X": 0.08,
+        "L": 0
+      },
+      "fake_rate": 0.1,
+      "true_clues_of_3": 2,
+      "artifact_share": 0.34,
+      "artifact_tier_mix": {
+        "1": 0.6,
+        "2": 0.35,
+        "3": 0.05
+      },
+      "artifact_system": "TC",
+      "pools": {
+        "T": [
+          "PT1",
+          "PT2"
+        ],
+        "H": [
+          "PT3"
+        ],
+        "X": [
+          "PT4"
+        ]
+      },
+      "status": {
+        "status": "ĐỀ XUẤT",
+        "source": "Sprint5RuongMoKhoa.md mục 2",
+        "note": "chưa duyệt; chủ dự án chốt chỉ luật mở khóa trong ván (DaChot.md) và luật shop 4 + tối đa 4"
+      },
+      "pools_status": {
+        "status": "GIẢ ĐỊNH",
+        "source": "Sprint5RuongMoKhoa.md mục 2",
+        "note": "bộ sưu tập chưa có món (Claude 1); bản đo dùng món giữ chỗ giá bằng giá trung bình bậc"
+      }
+    },
+    {
+      "id": "RAC_QUY",
+      "name": "Rác Quý",
+      "price_vnd": 600000,
+      "tier_rates": {
+        "R": 0.86,
+        "T": 0.11,
+        "H": 0.025,
+        "X": 0,
+        "L": 0.005
+      },
+      "fake_rate": 0.05,
+      "true_clues_of_3": 2,
+      "artifact_share": 0.0,
+      "pools": {
+        "T": [
+          "PR1",
+          "PR2"
+        ],
+        "H": [
+          "PR3"
+        ],
+        "X": [
+          "PR4"
+        ],
+        "L": [
+          "PR5"
+        ]
+      },
+      "status": {
+        "status": "ĐỀ XUẤT",
+        "source": "Sprint5RuongMoKhoa.md mục 2",
+        "note": "chưa duyệt; chủ dự án chốt chỉ luật mở khóa trong ván (DaChot.md) và luật shop 4 + tối đa 4"
+      },
+      "pools_status": {
+        "status": "GIẢ ĐỊNH",
+        "source": "Sprint5RuongMoKhoa.md mục 2",
+        "note": "bộ sưu tập chưa có món (Claude 1); bản đo dùng món giữ chỗ giá bằng giá trung bình bậc"
+      }
+    }
+  ],
+  "chest_theme_frame": {
+    "price_vnd": 8000000,
+    "tier_rates": {
+      "R": 0.13,
+      "T": 0.3,
+      "H": 0.3,
+      "X": 0.24,
+      "L": 0.03
+    },
+    "fake_rate": 0.2,
+    "true_clues_of_3": 1,
+    "artifact_share": 0.0,
+    "legend_base_price_vnd": 90000000,
+    "placeholder_collection": {
+      "T": 2,
+      "H": 2,
+      "X": 2,
+      "L": 1
+    },
+    "status": {
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5RuongMoKhoa.md mục 5",
+      "note": "khung chung mọi rương chủ đề; mở bằng thành tựu (thành tựu chưa chốt)"
+    }
+  },
+  "placeholder_tier_avg_price_vnd": {
+    "value": {
+      "T": 3960000,
+      "H": 16870000,
+      "X": 28140000,
+      "L": 52500000
+    },
+    "status": "GIẢ ĐỊNH",
+    "source": "Sprint5RuongMoKhoa.md mục 2"
+  },
+  "legend_basic_price_vnd": {
+    "value": {
+      "L04": 40000000,
+      "N13": 50000000,
+      "N14": 50000000,
+      "N15": 70000000
+    },
+    "status": "ĐỀ XUẤT",
+    "source": "Sprint5Ruong.md mục 1"
+  },
+  "junk_items": {
+    "R01": {
+      "id": "R01",
+      "name": "Giày cũ",
+      "origin": "Quá khứ",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    },
+    "R02": {
+      "id": "R02",
+      "name": "Tất thối",
+      "origin": "Hiện đại",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    },
+    "R03": {
+      "id": "R03",
+      "name": "Trứng thối",
+      "origin": "Hiện đại",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    },
+    "R04": {
+      "id": "R04",
+      "name": "Xương cá",
+      "origin": "Quá khứ",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    },
+    "R05": {
+      "id": "R05",
+      "name": "Dép tổ ong",
+      "origin": "Hiện đại",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    },
+    "R06": {
+      "id": "R06",
+      "name": "Lon bẹp",
+      "origin": "Hiện đại",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    },
+    "R07": {
+      "id": "R07",
+      "name": "Áo đấu cũ",
+      "origin": "Hiện đại",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    },
+    "R08": {
+      "id": "R08",
+      "name": "Bao thuốc rồng",
+      "origin": "Hiện đại",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    },
+    "R09": {
+      "id": "R09",
+      "name": "Vé cược nhàu",
+      "origin": "Hiện đại",
+      "base_price_vnd": 30000,
+      "tier": "R"
+    }
+  },
+  "items": {
+    "V01": {
+      "id": "V01",
+      "name": "Bình sứ men xanh",
+      "origin": "Quá khứ",
+      "base_price_vnd": 2300000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "V02": {
+      "id": "V02",
+      "name": "Sách cổ bìa da",
+      "origin": "Quá khứ",
+      "base_price_vnd": 3850000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "V03": {
+      "id": "V03",
+      "name": "Đồng hồ quả lắc cũ",
+      "origin": "Quá khứ",
+      "base_price_vnd": 4950000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "V04": {
+      "id": "V04",
+      "name": "Mảnh kính thiên văn",
+      "origin": "Hiện đại",
+      "base_price_vnd": 4150000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "V05": {
+      "id": "V05",
+      "name": "Thiết bị liên lạc hỏng",
+      "origin": "Tương lai",
+      "base_price_vnd": 3100000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "V06": {
+      "id": "V06",
+      "name": "Bộ pin lượng tử",
+      "origin": "Tương lai",
+      "base_price_vnd": 18450000,
+      "tier": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "V07": {
+      "id": "V07",
+      "name": "Tinh thể lam",
+      "origin": "Ngoài hành tinh",
+      "base_price_vnd": 26950000,
+      "tier": "X",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "V09": {
+      "id": "V09",
+      "name": "Lá bùa giấy vàng",
+      "origin": "Thần thoại",
+      "base_price_vnd": 8950000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "V10": {
+      "id": "V10",
+      "name": "Mảnh vảy long",
+      "origin": "Thần thoại",
+      "base_price_vnd": 28600000,
+      "tier": "X",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+    },
+    "N01": {
+      "id": "N01",
+      "name": "Ấm trà đất nứt",
+      "origin": "Quá khứ",
+      "base_price_vnd": 15500000,
+      "tier": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N02": {
+      "id": "N02",
+      "name": "Hộp nữ trang gỗ khảm",
+      "origin": "Quá khứ",
+      "base_price_vnd": 17500000,
+      "tier": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N03": {
+      "id": "N03",
+      "name": "Tượng Di Lặc gỗ",
+      "origin": "Thần thoại",
+      "base_price_vnd": 27000000,
+      "tier": "X",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N04": {
+      "id": "N04",
+      "name": "Tranh cuộn thủy mặc",
+      "origin": "Quá khứ",
+      "base_price_vnd": 17000000,
+      "tier": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N05": {
+      "id": "N05",
+      "name": "Con dấu đồng",
+      "origin": "Quá khứ",
+      "base_price_vnd": 16000000,
+      "tier": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N06": {
+      "id": "N06",
+      "name": "Máy ảnh phim cổ",
+      "origin": "Cổ tích",
+      "base_price_vnd": 19000000,
+      "tier": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N07": {
+      "id": "N07",
+      "name": "Radio bóng đèn",
+      "origin": "Hiện đại",
+      "base_price_vnd": 3500000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N08": {
+      "id": "N08",
+      "name": "Xúc xắc chì",
+      "origin": "Hiện đại",
+      "base_price_vnd": 2600000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N09": {
+      "id": "N09",
+      "name": "Bộ bài cũ",
+      "origin": "Quá khứ",
+      "base_price_vnd": 2200000,
+      "tier": "T",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N10": {
+      "id": "N10",
+      "name": "Bật lửa mạ vàng",
+      "origin": "Tương lai",
+      "base_price_vnd": 16500000,
+      "tier": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N11": {
+      "id": "N11",
+      "name": "Đồng hồ xách tay",
+      "origin": "Hiện đại",
+      "base_price_vnd": 15000000,
+      "tier": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N12": {
+      "id": "N12",
+      "name": "Nhẫn kim cương không rõ nguồn",
+      "origin": "Cổ tích",
+      "base_price_vnd": 30000000,
+      "tier": "X",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "L04": {
+      "id": "L04",
+      "name": "Vé số độc đắc",
+      "origin": "Hiện đại",
+      "base_price_vnd": 40000000,
+      "tier": "L",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N13": {
+      "id": "N13",
+      "name": "Bản đồ cổ vẽ tay",
+      "origin": "Quá khứ",
+      "base_price_vnd": 50000000,
+      "tier": "L",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N14": {
+      "id": "N14",
+      "name": "Đồng hồ bỏ túi không hết pin",
+      "origin": "Tương lai",
+      "base_price_vnd": 50000000,
+      "tier": "L",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    },
+    "N15": {
+      "id": "N15",
+      "name": "Két sắt chưa ai mở được",
+      "origin": "Ngoài hành tinh",
+      "base_price_vnd": 70000000,
+      "tier": "L",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5Ruong.md",
+      "note": "giá nền mới do Claude 2 đề xuất, Claude 1 hoặc chủ dự án chốt thì đo lại"
+    }
+  },
+  "first_run": {
+    "day1_shop_only": {
+      "value": [
+        "GO",
+        "VAI_NIEM"
+      ],
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Mở màn); mo-man mục 5"
+    },
+    "scripted_boxes": {
+      "value": [
+        "rác hài",
+        "đồ Thường bán được"
+      ],
+      "status": "ĐÃ CHỐT",
+      "source": "mo-man mục 5",
+      "note": "chỉ ở lần chơi đầu"
+    },
+    "day1_cannot_lose": {
+      "value": true,
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Mở màn)"
+    }
+  },
+  "inspect": {
+    "time_limit_seconds": {
+      "value": 120,
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Soi lỗi và trả giá, 2026-11-25)"
+    },
+    "condition_price_mult": {
+      "value": {
+        "nguyen": 1.0,
+        "xuoc": 0.7,
+        "hong": 0.3
+      },
+      "status": "ĐÃ CHỐT",
+      "source": "soi-loi-tra-gia mục 1; content.json rules.quality"
+    },
+    "light_defects_per_scratched_item": {
+      "value": {
+        "T": 1,
+        "H": 2,
+        "X": 3,
+        "L": 3
+      },
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1"
+    },
+    "light_defect_cut": {
+      "value": 0.3,
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1",
+      "note": "Xước trừ tổng 30%"
+    },
+    "big_defect_cut": {
+      "value": 0.4,
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1",
+      "note": "Hỏng = 30% + 40% = trừ 70%"
+    },
+    "fake_marks_per_fake_item": {
+      "value": {
+        "T": 1,
+        "H": 1,
+        "X": 2,
+        "L": 2
+      },
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1"
+    },
+    "odd_mark_rate_on_genuine": {
+      "value": 0.15,
+      "status": "ĐÃ CHỐT",
+      "source": "Sprint5SoiLoi.md phần Chủ dự án đã chốt (2026-11-25)",
+      "note": "cố ý giống dấu hàng giả"
+    },
+    "fake_sell_fraction": {
+      "value": 0.2,
+      "status": "ĐÃ CHỐT",
+      "source": "soi-loi-tra-gia mục 1; content.json fake_price_factor"
+    },
+    "fake_declared_genuine_fine": {
+      "value": 0.2,
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1",
+      "note": "giả mà khai thật bị tịch thu (phạt 20%, 0 đ); phạt 0% đẩy người giỏi lên 49,8%"
+    },
+    "day1_fine": {
+      "value": 0.0,
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1",
+      "note": "ngày 1 miễn phạt"
+    },
+    "missed_defect_penalty_of_appraised_price": {
+      "value": 0.1,
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1"
+    },
+    "repair_shop": {
+      "exists": true,
+      "exists_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "Sprint5SoiLoi.md phần Chủ dự án đã chốt (2026-11-25)"
+      },
+      "light_fee_of_base_price": 0.12,
+      "big_fee_of_base_price": 0.3,
+      "fee_status": {
+        "status": "ĐỀ XUẤT",
+        "source": "Sprint5SoiLoi.md mục 1",
+        "note": "phí phải đắt: 6% và 15% đẩy người giỏi lên 49,9%"
+      },
+      "only_found_defects_repairable": true
+    },
+    "skip_defect_click_allowed": {
+      "value": true,
+      "status": "ĐÃ CHỐT",
+      "source": "Sprint5SoiLoi.md phần Chủ dự án đã chốt (2026-11-25)",
+      "note": "người thu mua soi thấy thì trừ tiền và cộng phạt"
+    },
+    "haggle": {
+      "rounds": 3,
+      "open_fraction": 1.0,
+      "win_step": 0.08,
+      "lose_step": 0.05,
+      "floor_fraction": 0.7,
+      "cap_fraction": 1.08,
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1",
+      "note": "trần 108% là điểm nhạy nhất; trần 110% đẩy người giỏi lên 49,0%, đề xuất dự phòng 105%"
+    },
+    "haggle_round_win_rule": {
+      "value": "trả giá kỹ năng × tỉ lệ lỗi đã tìm",
+      "status": "ĐÃ CHỐT",
+      "source": "Sprint5SoiLoi.md phần Chủ dự án đã chốt (2026-11-25)"
+    },
+    "haggle_applies_from_tier": {
+      "value": "H",
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1",
+      "note": "Thường bán nhanh, từ Hiếm trở lên trả giá"
+    },
+    "professor_hint": {
+      "rate_of_base_price": 0.05,
+      "min_fee_vnd": 200000,
+      "certificate_bonus": 0.25,
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5SoiLoi.md mục 1"
+    },
+    "profiles": {
+      "value": {
+        "giỏi": {
+          "find_rate": 0.95,
+          "haggle_skill": 0.95
+        },
+        "thường": {
+          "find_rate": 0.75,
+          "haggle_skill": 0.75
+        },
+        "ẩu": {
+          "find_rate": 0.45,
+          "haggle_skill": 0.5
+        },
+        "bỏ qua soi": {
+          "find_rate": 0,
+          "haggle_skill": 0
+        }
+      },
+      "status": "GIẢ ĐỊNH",
+      "source": "Sprint5SoiLoi.md mục 1",
+      "note": "xác suất tìm lỗi trong 2 phút (giỏi 95%, thường 75%, ẩu 45%) là giả định, chưa kiểm tra bằng người thật"
+    },
+    "first_run_loosening": {
+      "value": "two_first_boxes_cost_cheapest_chest",
+      "loosening_status": {
+        "status": "ĐÃ CHỐT",
+        "source": "Sprint5SoiLoi.md phần Chủ dự án đã chốt (2026-11-25): lần chơi đầu nới"
+      },
+      "method_status": {
+        "status": "ĐỀ XUẤT",
+        "source": "Sprint5SoiLoi.md mục 6",
+        "note": "cách cài `cheap` cần Codex chốt và Claude 1 xác nhận"
+      }
+    }
+  },
+  "tree": {
+    "scope": {
+      "value": "in_run_only",
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md (hàng Rương, rác, sưu tập; 2026-11-25)"
+    },
+    "unlockable_chests_and_themes": {
+      "value": "in_run_only",
+      "status": "ĐÃ CHỐT",
+      "source": "ruong-suu-tap mục Đã chốt sau khi cây chỉ trong ván"
+    },
+    "hard_tree": {
+      "value": true,
+      "status": "ĐÃ CHỐT",
+      "source": "ruong-suu-tap mục Đã chốt (phương án cây khó)"
+    },
+    "reward_cash_cap_vnd": {
+      "value": 1000000,
+      "status": "ĐÃ CHỐT",
+      "source": "ruong-suu-tap mục Đã chốt",
+      "note": "tổng thưởng có tác động lên tiền hoặc rương không quá khoảng mức này"
+    },
+    "points_per_day": {
+      "value": 3,
+      "status": "GIẢ ĐỊNH",
+      "source": "Sprint5CayPhatTrien.md mục 1",
+      "note": "nguồn điểm chốt là việc hằng ngày (mở rương, mini game); cách chia điểm từng việc còn mở, đo lại"
+    },
+    "node_prices": {
+      "status": "ĐỀ XUẤT",
+      "source": "Sprint5CayPhatTrien.md mục 2",
+      "note": "giá đủ = cây khó; giá nửa làm người hoàn hảo vượt trần 47% (48,0%)"
+    },
+    "node_conditions_status": {
+      "status": "GIẢ ĐỊNH",
+      "source": "Sprint5CayPhatTrien.md mục 2"
+    },
+    "branches": [
+      "Rương",
+      "Sưu tập",
+      "Thần lực",
+      "Đời sống"
+    ],
+    "empty_branches": [
+      "Đời sống"
+    ],
+    "empty_branch_status": {
+      "status": "ĐÃ CHỐT",
+      "source": "DaChot.md; ruong-suu-tap mục Đã chốt (2026-11-25): tạm để trống"
+    },
+    "removed_nodes": {
+      "M3": "bỏ khỏi cây (DaChot.md); là tùy chọn lúc vào ván nếu chủ dự án muốn",
+      "C1_C4": "nhánh Câu chuyện đổi tên Đời sống, không có nút"
+    },
+    "nodes": [
+      {
+        "id": "R1",
+        "branch": "Rương",
+        "parent": null,
+        "cost_points": 3,
+        "condition": [
+          "book",
+          3
+        ],
+        "effect": null
+      },
+      {
+        "id": "R2",
+        "branch": "Rương",
+        "parent": "R1",
+        "cost_points": 4,
+        "condition": [
+          "junk",
+          2
+        ],
+        "effect": {
+          "chest": "Rác Quý"
+        }
+      },
+      {
+        "id": "R3",
+        "branch": "Rương",
+        "parent": "R1",
+        "cost_points": 6,
+        "condition": [
+          "origins",
+          3
+        ],
+        "effect": {
+          "chest": "Tổng Hợp"
+        }
+      },
+      {
+        "id": "R4",
+        "branch": "Rương",
+        "parent": "R3",
+        "cost_points": 7,
+        "condition": [
+          "art",
+          "CP:1"
+        ],
+        "effect": {
+          "chest": "Cổ Phong"
+        }
+      },
+      {
+        "id": "R5",
+        "branch": "Rương",
+        "parent": "R3",
+        "cost_points": 7,
+        "condition": [
+          "art",
+          "TC:1"
+        ],
+        "effect": {
+          "chest": "Thiên Cơ"
+        }
+      },
+      {
+        "id": "S1",
+        "branch": "Sưu tập",
+        "parent": null,
+        "cost_points": 3,
+        "condition": [
+          "book",
+          3
+        ],
+        "effect": null
+      },
+      {
+        "id": "S2",
+        "branch": "Sưu tập",
+        "parent": "S1",
+        "cost_points": 4,
+        "condition": [
+          "book",
+          6
+        ],
+        "effect": null
+      },
+      {
+        "id": "M1",
+        "branch": "Sưu tập",
+        "parent": "S2",
+        "cost_points": 5,
+        "condition": [
+          "book",
+          8
+        ],
+        "effect": {
+          "heirloom_choice": true
+        }
+      },
+      {
+        "id": "M2",
+        "branch": "Sưu tập",
+        "parent": "M1",
+        "cost_points": 7,
+        "condition": [
+          "book",
+          10
+        ],
+        "effect": null,
+        "note": "phần cộng vốn đã bỏ (DaChot.md); thưởng khác không buff do Claude 1 và chủ dự án gán sau"
+      },
+      {
+        "id": "S3",
+        "branch": "Sưu tập",
+        "parent": "S2",
+        "cost_points": 6,
+        "condition": [
+          "legend",
+          1
+        ],
+        "effect": null
+      },
+      {
+        "id": "M4",
+        "branch": "Sưu tập",
+        "parent": "S3",
+        "cost_points": 7,
+        "condition": [
+          "art_any",
+          2
+        ],
+        "effect": null
+      },
+      {
+        "id": "T1",
+        "branch": "Thần lực",
+        "parent": null,
+        "cost_points": 3,
+        "condition": [
+          "book",
+          3
+        ],
+        "effect": null
+      },
+      {
+        "id": "T2",
+        "branch": "Thần lực",
+        "parent": "T1",
+        "cost_points": 4,
+        "condition": [
+          "origins",
+          3
+        ],
+        "effect": null
+      },
+      {
+        "id": "T3",
+        "branch": "Thần lực",
+        "parent": "T2",
+        "cost_points": 6,
+        "condition": [
+          "book",
+          9
+        ],
+        "effect": null
+      },
+      {
+        "id": "T4",
+        "branch": "Thần lực",
+        "parent": "T3",
+        "cost_points": 7,
+        "condition": [
+          "legend",
+          1
+        ],
+        "effect": null
+      }
+    ]
+  }
+}
