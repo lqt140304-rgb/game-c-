@@ -47,3 +47,9 @@ Thả/ném vật có Rigidbody vào khe trên lưng (trigger). Gắn `RobotCharg
 - Vật thể rơi cần collider của rương/sàn để không xuyên; khe dùng lực hút nên vẫn trúng.
 - Hồ sơ `ChestFx_Robot` vẫn phát stageClips cũ (windup, steam…) của lõi — có thể chồng âm; nếu ồn, xoá stageClips trong hồ sơ.
 - Chưa nối với khung `claude/chest-fx-core` (xem mục dưới).
+
+## Nối với khung chung (claude/chest-fx-core)
+Ngày 2026-11-25 nhánh `claude/chest-fx-core` **chưa tồn tại trên origin**, nên chưa merge. Khi khung có:
+- Thay việc bắt cạnh `IsPlaying` trong `Update` bằng sự kiện "bấm mở" của khung (nếu có).
+- Nếu khung có API nhịp/thời gian chung (độ dài pha, độ căng), cho `_bootT0`/2,8 s đọc từ đó thay vì hằng số.
+- Nếu khung đăng ký kịch bản theo `chestId`, đăng ký `RobotTransformHook` cho "Robot" thay cho menu gắn tay.
