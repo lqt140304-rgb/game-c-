@@ -263,7 +263,7 @@ namespace ChoDoLa.ChestFx
         /// <summary>
         /// CÁCH DUY NHẤT trong dự án để đặt <c>velocityOverLifetime</c> (có kiểm: Tools/CompileCheck/check_particle_velocity.sh).
         /// Unity báo lỗi "Particle Velocity curves must all be in the same mode" / "Orbital Velocity curves must all be in
-        /// the same mode" khi x/y/z (hoặc orbitalX/Y/Z, hoặc offsetX/Y/Z) ở chế độ khác nhau, kể cả khi chỉ một trục có
+        /// the same mode" khi x/y/z (hoặc orbitalX/Y/Z, hoặc orbitalOffsetX/Y/Z) ở chế độ khác nhau, kể cả khi chỉ một trục có
         /// giá trị. Hàm này đặt CẢ 9 đường cong cùng chế độ TwoConstants (min = max nghĩa là không ngẫu nhiên), nên không
         /// bao giờ lệch chế độ. <paramref name="radial"/> là đường riêng (không thuộc nhóm trên) nên để hằng số.
         /// </summary>
@@ -279,9 +279,9 @@ namespace ChoDoLa.ChestFx
             v.orbitalX = new ParticleSystem.MinMaxCurve(orbitalMin.x, orbitalMax.x);
             v.orbitalY = new ParticleSystem.MinMaxCurve(orbitalMin.y, orbitalMax.y);
             v.orbitalZ = new ParticleSystem.MinMaxCurve(orbitalMin.z, orbitalMax.z);
-            v.offsetX = new ParticleSystem.MinMaxCurve(0f, 0f);
-            v.offsetY = new ParticleSystem.MinMaxCurve(0f, 0f);
-            v.offsetZ = new ParticleSystem.MinMaxCurve(0f, 0f);
+            v.orbitalOffsetX = new ParticleSystem.MinMaxCurve(0f, 0f);
+            v.orbitalOffsetY = new ParticleSystem.MinMaxCurve(0f, 0f);
+            v.orbitalOffsetZ = new ParticleSystem.MinMaxCurve(0f, 0f);
             v.radial = new ParticleSystem.MinMaxCurve(radial);
         }
 
