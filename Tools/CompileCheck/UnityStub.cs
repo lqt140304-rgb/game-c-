@@ -116,8 +116,9 @@ namespace UnityEngine
 namespace UnityEngine.Audio { public class AudioMixerGroup : UnityEngine.Object {} }
 namespace UnityEngine.Rendering { public enum CullMode { Off, Front, Back } public enum BlendMode { One = 1, SrcAlpha = 5 } public enum RenderQueue { Transparent = 3000 }
     public enum ShadowCastingMode { Off } public enum LightProbeUsage { Off } public enum ReflectionProbeUsage { Off } }
-namespace UnityEngine.Events { public class UnityEvent { public void Invoke() {} public void AddListener(Action a) {} public void RemoveListener(Action a) {} }
-    public class UnityEvent<T> { public void Invoke(T t) {} public void AddListener(Action<T> a) {} public void RemoveListener(Action<T> a) {} } }
+namespace UnityEngine.Events { public delegate void UnityAction(); public delegate void UnityAction<T>(T a);
+    public class UnityEvent { public void Invoke() {} public void AddListener(UnityAction a) {} public void RemoveListener(UnityAction a) {} }
+    public class UnityEvent<T> { public void Invoke(T t) {} public void AddListener(UnityAction<T> a) {} public void RemoveListener(UnityAction<T> a) {} } }
 namespace UnityEngine.InputSystem { public enum Key { T, Y, Space, R, C, F, Q, Escape } public class KeyControl { public bool wasPressedThisFrame, isPressed; }
     public class Keyboard { public static Keyboard current; public KeyControl this[Key k] => null; } }
 namespace UnityEditor

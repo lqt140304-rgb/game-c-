@@ -22,7 +22,7 @@ namespace UnityEngine
     public enum QueryTriggerInteraction { UseGlobal, Ignore, Collide }
     public enum CollisionFlags { None }
     public enum CameraClearFlags { Skybox, SolidColor }
-    public enum ForceMode { Force, Impulse }
+    public enum ForceMode { Force, Impulse, Acceleration, VelocityChange }
     public enum RigidbodyConstraints { None, FreezeRotation }
     public enum LightmapBakeType { Realtime }
     public enum RuntimePlatform { WindowsEditor }
@@ -168,7 +168,15 @@ namespace UnityEngine
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
     public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
-        public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
+        public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {}
+        public Vector3 position; public CollisionDetectionMode collisionDetectionMode; public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
+    public enum CollisionDetectionMode { Discrete, Continuous, ContinuousDynamic, ContinuousSpeculative }
+    public enum PhysicsMaterialCombine { Average, Minimum, Multiply, Maximum }
+    public class PhysicsMaterial : Object { public PhysicsMaterial(string n) {} public float bounciness, dynamicFriction, staticFriction; public PhysicsMaterialCombine bounceCombine; }
+    public partial class Collider { public PhysicsMaterial sharedMaterial; }
+    public static partial class Physics { public static void IgnoreCollision(Collider a, Collider b, bool ignore) {} public static void IgnoreCollision(Collider a, Collider b) {} public static Collider[] OverlapSphere(Vector3 p, float r) => null; }
+    public partial struct Quaternion { public static bool operator ==(Quaternion a, Quaternion b) => true; public static bool operator !=(Quaternion a, Quaternion b) => false; public override bool Equals(object o) => true; public override int GetHashCode() => 0; }
+    public partial class AudioClip { public static AudioClip Create(string n, int len, int ch, int freq, bool stream) => null; public bool SetData(float[] d, int off) => true; }
     public class CharacterController : Collider { public float height, radius, slopeLimit, stepOffset, skinWidth, minMoveDistance; public Vector3 center, velocity; public bool isGrounded;
         public CollisionFlags Move(Vector3 m) => CollisionFlags.None; public bool SimpleMove(Vector3 s) => false; }
     public partial class Mesh
