@@ -46,8 +46,8 @@ git lfs pull
 Unity không tự đọc `.glb`. Cần gói **glTFast**:
 
 1. Menu trên cùng: `Window → Package Manager`.
-2. Bấm nút **`+`** ở góc trên bên trái → **`Install package by name...`** (bản cũ ghi "Add package by name").
-3. Ô **Name** gõ: `com.unity.cloud.gltfast` (ô Version để trống) → **Install**.
+2. Bấm nút **`+`** ở góc trên bên trái → chọn dòng **`Install package by technical name...`** (dòng thứ 4 trong menu; không chọn "from disk", "tarball" hay "git URL").
+3. Ô **Name** gõ: `com.unity.cloud.gltfast` (ô Version để trống) → **Install**. Nếu ô có sẵn số phiên bản, cứ để nguyên.
 4. Chờ Unity cài và nhập lại các `.glb` (vài phút).
 
 Nếu Package Manager báo **thiếu gói phụ thuộc** (ví dụ dòng đỏ nhắc tới `Newtonsoft` / `com.unity.nuget.newtonsoft-json`), lặp lại bước 2–3 với tên `com.unity.nuget.newtonsoft-json`. Bình thường glTFast tự kéo gói phụ thuộc, không cần làm gì thêm.

@@ -454,7 +454,7 @@ Lõi dùng chung cho mọi rương: màu các bậc nhảy như vòng quay rồi
 
 **Chạy thử trong Unity:**
 
-1. `git lfs pull`, và cài gói glTF **com.unity.cloud.gltfast** (Window > Package Manager > + > Add package by name). Thiếu gói thì menu sẽ cảnh báo và dùng rương giả làm bằng khối hộp, món giả là hình cầu.
+1. `git lfs pull`, và cài gói glTF **com.unity.cloud.gltfast** (Window > Package Manager > + > Install package by technical name). Thiếu gói thì menu sẽ cảnh báo và dùng rương giả làm bằng khối hộp, món giả là hình cầu.
 2. Mở hoặc tạo cảnh có camera `MainCamera` (ví dụ `Tools/Cho Do La/Create Sprint 0 Test Scene`).
 3. Chạy `Tools/Cho Do La/Add Chest Reveal Test`. Menu đặt Chest_Golden lên bục trước camera, gắn `BoxOpenSequence`, `ChestRevealSequence`, `AudioSource`, `GoldenGlintHook`, tạo `ChestFx_Golden.asset` (gán sẵn âm) và đối tượng `ChestRevealDemo` chứa danh sách mọi món `Art/Items/LowPoly/**/*.glb` và mọi `Chest_*.glb`.
 4. Bấm Play. **T** đổi bậc ép (vòng qua 5 bậc), **Y** chọn món minh hoạ ngẫu nhiên, **Space** mở rương, **R** đóng lại, **C** đổi rương. Hướng dẫn hiện ở góc trái trên.
@@ -469,7 +469,7 @@ Menu thử nghiệm để **cầm từng rương trên tay** (góc nhìn thứ n
 ### Chạy từng bước
 
 1. **Git LFS:** cài Git LFS (https://git-lfs.com), rồi trong thư mục dự án chạy `git lfs install` và `git lfs pull`. Thiếu bước này thì mỗi `.glb` chỉ là file con trỏ vài trăm byte; menu sẽ báo "con trỏ Git LFS" trong Console.
-2. **glTFast:** trong Unity mở `Window → Package Manager → + → Install package by name...`, gõ `com.unity.cloud.gltfast`, bấm Install, đợi Unity nhập lại các `.glb`. (Script không tự sửa `Packages/manifest.json`.)
+2. **glTFast:** trong Unity mở `Window → Package Manager → + → Install package by technical name...`, gõ `com.unity.cloud.gltfast`, bấm Install, đợi Unity nhập lại các `.glb`. (Script không tự sửa `Packages/manifest.json`.)
 3. Mở project bằng Unity 6000.6.9f1.
 4. `Tools → Cho Do La → Create Sprint 0 Test Scene` (tạo cảnh có người chơi và camera `MainCamera`).
 5. `Tools → Cho Do La → Add Chest Hand Menu`. Lệnh này thêm `HeldItemViewmodel` vào camera nếu chưa có (object con `HeldItemAnchor`), thêm `ChestHandMenu`, rồi nạp danh sách rương. Console in `[ChestHandMenu] Tìm thấy N rương: ...`.
