@@ -158,7 +158,7 @@ class Chests(unittest.TestCase):
 
     def test_basic_expected_return_matches_report(self):
         """Thu kỳ vọng / giá tính chéo từ bảng bậc và giá món (hệ số tình trạng 0,79, hàng giả bán 20%) khớp báo cáo
-        Sprint5Ruong.md mục 1: Vải Niêm 1,51, Đen 1,08. Gỗ tính chéo ra 2,56 còn báo cáo ghi 2,29 (điểm lệch, xem BangSoLieuSprint5.md).
+        Sprint5Ruong.md mục 1: Gỗ 2,29, Vải Niêm 1,51, Đen 1,08. Lá bùa V09 có hàng giả ít nhất 35% ở mọi rương (fake_rate_floor), nên Gỗ ra 2,29 chứ không phải 2,56.
         Kim Khí bỏ qua (tạo tác tính theo giá Kho, không nằm trong JSON này)."""
         q = sum(p * m for p, m in ((.5, 1.0), (.35, .7), (.15, .3)))
         pr = {}
@@ -169,11 +169,18 @@ class Chests(unittest.TestCase):
             for t in "THXL":
                 ids = c["pools"][t]
                 ev += c["tier_rates"][t] * sum(D["items"][i]["base_price_vnd"] for i in ids) / len(ids)
-            pr[c["name"]] = ev * q * (1 - .8 * c["fake_rate"]) / c["price_vnd"]
+            ids_all = [(t, i) for t in "THXL" for i in c["pools"][t]]
+            ev = c["tier_rates"]["R"] * D["junk_items"]["R01"]["base_price_vnd"]
+            for t in "THXL":
+                ids = c["pools"][t]
+                for i in ids:
+                    it = D["items"][i]
+                    f = max(c["fake_rate"], it.get("fake_rate_floor", 0))
+                    ev += c["tier_rates"][t] / len(ids) * it["base_price_vnd"] * q * (1 - .8 * f) / q
+            pr[c["name"]] = ev * q / c["price_vnd"]
         self.assertAlmostEqual(pr["Vải Niêm"], 1.51, delta=.04)
         self.assertAlmostEqual(pr["Đen"], 1.08, delta=.04)
-        self.assertGreater(pr["Gỗ"], 2.2)
-        self.assertLess(pr["Gỗ"], 2.7)
+        self.assertAlmostEqual(pr["Gỗ"], 2.29, delta=.04)
 
 
 class Economy(unittest.TestCase):

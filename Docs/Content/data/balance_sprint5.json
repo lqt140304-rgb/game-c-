@@ -607,7 +607,8 @@
       "tier": "T",
       "status": "ĐỀ XUẤT",
       "source": "Sprint5Ruong.md",
-      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt"
+      "note": "món đã có, giữ giá đang dùng của lõi mô phỏng; mã mô phỏng, mã chính thức chưa chốt; hàng giả ít nhất 35% ở mọi rương (content.json item_fake_rate_floor.V09, NoiDungMau.md mục 3), cao hơn tỉ lệ giả của rương",
+      "fake_rate_floor": 0.35
     },
     "V10": {
       "id": "V10",
