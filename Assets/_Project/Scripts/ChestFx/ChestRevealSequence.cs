@@ -779,12 +779,13 @@ namespace ChoDoLa.ChestFx
                 _burst.Emit(Mathf.RoundToInt(p.burstCount * (1f + 2f * _rolled.Rank01())));
             }
 
+            // Hào quang (chớp/tia/vòng) luôn chạy, kể cả minimalFx: chủ dự án muốn giữ hào quang bản cũ.
+            SpawnFlash(style);
+            SpawnRays(style);
+            for (int i = 0; i < style.ringCount; i++) StartCoroutine(RingRoutine(style, i * 0.12f, 1.1f + 0.45f * i));
+
             if (!p.minimalFx)
             {
-                SpawnFlash(style);
-                SpawnRays(style);
-                for (int i = 0; i < style.ringCount; i++) StartCoroutine(RingRoutine(style, i * 0.12f, 1.1f + 0.45f * i));
-
                 PlayOneShot(p.LockClipFor(_rolled), p.lockVolume);
                 PlayOneShot(p.whooshClip, p.whooshVolume);
                 StartCoroutine(AccentRoutine());
@@ -1001,7 +1002,14 @@ namespace ChoDoLa.ChestFx
         {
             if (revealLight == null || !revealLight.enabled) return;
             _lightKick *= Mathf.Exp(-dt * 5f);
-            revealLight.intensity = _lightBase + _lightKick;
+            ChestFxProfile mp = Profile;
+            if (mp != null && mp.minimalFx)
+            {
+                // Tối giản: đèn dịu, có trần; nháy nhỏ không vượt 20% nền -> không lấp mặt rương.
+                float kick = Mathf.Min(_lightKick, _lightBase * 0.2f);
+                revealLight.intensity = Mathf.Min((_lightBase + kick) * mp.minimalLightScale, MinimalLightCap);
+            }
+            else revealLight.intensity = _lightBase + _lightKick;
         }
 
         private void ShowPips(ChestTier tier, Color c)
@@ -1032,9 +1040,19 @@ namespace ChoDoLa.ChestFx
         private static readonly string[] GlowColorProps = { "_BaseColor", "_Color", "baseColorFactor" };
         private static readonly string[] GlowEmissionProps = { "_EmissionColor", "emissiveFactor" };
 
+        private const float MinimalLightCap = 1.5f;
+
+        private static Color ClampLdr(Color c)
+        {
+            return new Color(Mathf.Clamp01(c.r), Mathf.Clamp01(c.g), Mathf.Clamp01(c.b), c.a);
+        }
+
         private void SetGlowTint(Color c)
         {
             if (!tintGlow || _glowRenderers == null) return;
+            ChestFxProfile mp = Profile;
+            bool minimal = mp != null && mp.minimalFx;
+            if (minimal) c = ClampLdr(c * mp.minimalGlowScale);   // không HDR -> không bloom lấp rương
             foreach (Renderer r in _glowRenderers)
             {
                 if (r == null || r.sharedMaterial == null) continue;
@@ -1049,7 +1067,7 @@ namespace ChoDoLa.ChestFx
                 }
                 foreach (string prop in GlowEmissionProps)
                 {
-                    if (sm.HasProperty(prop)) _mpb.SetColor(prop, c * glowEmissionBoost);
+                    if (sm.HasProperty(prop)) _mpb.SetColor(prop, minimal ? ClampLdr(c * glowEmissionBoost) : c * glowEmissionBoost);
                 }
                 r.SetPropertyBlock(_mpb);
             }

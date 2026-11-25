@@ -29,11 +29,11 @@ K, L, Z, X…) và hook riêng của 17 rương **bị bỏ**. Mọi rương dù
 | **Bóp méo** | Cả rương ép dẹt/giãn (`ChestMotion` Squash, có thể kèm 1 cú nảy Jump nhỏ) lúc chốt theo bậc. |
 | **Âm thanh** | Tối đa 3 lớp (mục 3): nền, tiếng cắm chìa, tiếng chốt theo bậc. |
 
-Lõi vẫn chạy **vòng đổi màu 5 bậc + bóng vật phẩm to dần + ánh sáng glow quanh miệng** (đây là việc "mở rương" của game,
+Lõi vẫn chạy **vòng đổi màu 5 bậc + bóng vật phẩm to dần + ánh sáng glow quanh miệng + hào quang chớp/tia/vòng lúc chốt** (chủ dự án muốn giữ hào quang bản cũ; đây là việc "mở rương" của game,
 không phải hiệu ứng thừa). Bậc do game quyết, không đổi.
 
 **CẤM (xoá khỏi mọi đường chạy):** nhân vật/diễn viên phụ · cảnh dựng (nước, mây, sàn, khung thành, sân…) · vật Rigidbody
-rải ra (xu, rác, đá, bi, bóng…) · hệ hạt riêng của hook · Light riêng · tia/vòng/chớp sáng và hạt của lõi (mục 4.5 tắt chúng) ·
+rải ra (xu, rác, đá, bi, bóng…) · hệ hạt riêng của hook · Light riêng · hạt của lõi (mục 4.5 tắt chúng) ·
 phím tương tác · chữ nổi · đổi `Time.timeScale` · âm tạo bằng mã (`MinerSynth`…) · âm numpy (`*.wav` trong thư mục con) ·
 tiếng tick/nền/accent/whoosh/stage của lõi.
 
@@ -132,7 +132,7 @@ Mỗi lớp con có thêm `public static readonly KeyPreset Preset` (struct `Key
 - Menu mỗi rương: `Tools/Cho Do La/Chia Khoa/Setup <Tên> Chest`, và `Setup All`.
 
 ### 4.5 Lõi tối giản (`ChestFxProfile` + `ChestRevealSequence`, chỉ phiên A được sửa)
-Thêm ô `public bool minimalFx = false` trên `ChestFxProfile`. Khi `true`, `ChestRevealSequence` **bỏ**: hạt `_motes`/`_burst`, `SpawnFlash`, `SpawnRays`, `RingRoutine`, `AccentRoutine`, tick, âm khoá/whoosh/ambient/stage (đã tắt bằng A1), và giữ: vòng đổi màu, `SetGlowTint`, bóng vật phẩm, `revealLight` (đèn glow). Hồ sơ của cả 17 rương đặt `minimalFx = true`. Kiểm: rương không còn tia/vòng/hạt khi chốt.
+Thêm ô `public bool minimalFx = false` trên `ChestFxProfile`. Khi `true`, `ChestRevealSequence` **bỏ**: hạt `_motes`/`_burst`, `AccentRoutine`, tick, âm khoá/whoosh/ambient/stage (đã tắt bằng A1), và giữ: vòng đổi màu, `SetGlowTint`, bóng vật phẩm, `revealLight` (đèn glow), và hào quang `SpawnFlash`/`SpawnRays`/`RingRoutine` màu theo bậc (chủ dự án muốn giữ hào quang bản cũ). Glow và đèn trong miệng được làm dịu bằng `minimalGlowScale` (0,35, không HDR) và `minimalLightScale` (0,25, trần 1,5, không nháy chói) để không lấp mặt rương. Hồ sơ của cả 17 rương đặt `minimalFx = true`. Kiểm: rương không còn hạt khi chốt, vẫn có hào quang chớp/tia/vòng; trong miệng không chói.
 
 ### 4.6 Dọn mã cũ
 - Phiên A xoá khỏi `ChestRevealDemo`/`ChestRevealTestSetup`/`CreateAllChestFxProfiles` mọi dòng gắn hook cũ.
@@ -216,7 +216,7 @@ Hình vật: **≥ 4 khối cơ bản, nhìn từ xa nhận ra chủ đề, màu
 
 Mỗi phiên: `bash Tools/CompileCheck/check_all.sh` + `check_chia_khoa.sh` (phiên A viết: biên dịch 17 lớp con, kiểm mỗi `Preset` đủ trường).
 Chủ dự án (Unity): *Create All Chest FX Profiles* (đã đổi thành `Chia Khoa/Setup All`), mở từng rương 5 bậc:
-(a) vật mở khoá đến, làm hành động mở, âm "cạch" · (b) rương rung tăng dần · (c) chốt: Rác bẹp + im rồi tiếng buồn, bậc cao nảy · (d) không còn hạt/tia/vòng/vật rải · (e) màu dừng đúng bậc, bóng vật phẩm to đủ · (f) Reset sạch.
+(a) vật mở khoá đến, làm hành động mở, âm "cạch" · (b) rương rung tăng dần · (c) chốt: Rác bẹp + im rồi tiếng buồn, bậc cao nảy · (d) không còn hạt/vật rải, vẫn có hào quang chớp/tia/vòng · (e) màu dừng đúng bậc, bóng vật phẩm to đủ · (f) Reset sạch.
 
 ## 8. Chưa kiểm chứng (trung thực)
 - Chưa chạy Unity, chưa nghe âm nào. Con số rung/bóp méo là đề xuất, sẽ chỉnh theo cảm giác.
