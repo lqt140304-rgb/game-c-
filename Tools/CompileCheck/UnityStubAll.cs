@@ -22,7 +22,7 @@ namespace UnityEngine
     public enum QueryTriggerInteraction { UseGlobal, Ignore, Collide }
     public enum CollisionFlags { None }
     public enum CameraClearFlags { Skybox, SolidColor }
-    public enum ForceMode { Force, Impulse }
+    public enum ForceMode { Force, Impulse, Acceleration, VelocityChange }
     public enum RigidbodyConstraints { None, FreezeRotation }
     public enum LightmapBakeType { Realtime }
     public enum RuntimePlatform { WindowsEditor }
@@ -167,7 +167,7 @@ namespace UnityEngine
     public class SphereCollider : Collider { public Vector3 center; public float radius; }
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
-    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
+    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 position, velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
         public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
     public class CharacterController : Collider { public float height, radius, slopeLimit, stepOffset, skinWidth, minMoveDistance; public Vector3 center, velocity; public bool isGrounded;
         public CollisionFlags Move(Vector3 m) => CollisionFlags.None; public bool SimpleMove(Vector3 s) => false; }
@@ -210,7 +210,7 @@ namespace UnityEngine
         public static bool SphereCast(Vector3 o, float rad, Vector3 d, out RaycastHit h, float m, int mask, QueryTriggerInteraction q) { h = default; return false; }
         public static Vector3 gravity;
     }
-    public partial class AudioClip { public string name; public int samples, frequency, channels; }
+    public partial class AudioClip { public static AudioClip Create(string n, int len, int ch, int f, bool s) => null; public bool SetData(float[] d, int o) => true; public string name; public int samples, frequency, channels; }
     public partial class AudioSource
     {
         public AudioClip clip; public float volume, minDistance, maxDistance, time; public bool loop, isPlaying, mute; public float dopplerLevel; public int priority;
@@ -405,3 +405,4 @@ namespace UnityEditor.SceneManagement
         public static UnityEngine.SceneManagement.Scene OpenScene(string p) => default;
     }
 }
+namespace UnityEngine { public class DefaultExecutionOrder : System.Attribute { public DefaultExecutionOrder(int o) {} } }
