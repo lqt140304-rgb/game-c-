@@ -9,21 +9,22 @@ using UnityEngine.InputSystem;
 namespace ChoDoLa.ChestFx
 {
     /// <summary>
-    /// Chest_TheThao — kịch bản "LOẠT LUÂN LƯU PHÚT BÙ GIỜ". Rương là khung thành.
+    /// Chest_TheThao — kịch bản "LOẠT LUÂN LƯU PHÚT BÙ GIỜ" (đã thu gọn theo kế hoạch 2026-11-25). Rương là khung thành.
     ///
-    ///  0,0 s (ngay khi bấm mở): còi khai cuộc, khán đài rì rầm, trống cổ vũ đập chậm; khung thành mọc lên quanh rương,
-    ///        trọng tài trượt vào, quả bóng thật (Rigidbody) nằm ở chấm phạt đền.
-    ///  ~0,9 s: cú sút 1 trúng cột dọc (keng!), bóng nảy lung tung bằng vật lý, rương bị rung lắc.
-    ///  bắt đầu quay màu: bảng thay người giơ lên, bóng thứ hai rơi từ trên xuống; cú sút 2 xoáy cong (Magnus) dội xà.
-    ///  ~2 s trước khi chốt: bảng "bù giờ" giơ lên, trống dồn nhanh, tiếng riser dâng.
+    ///  0,0 s (ngay khi bấm mở): còi khai cuộc, trống cổ vũ đập chậm; khung thành mọc lên quanh rương, quả bóng thật
+    ///        (Rigidbody) nằm ở chấm phạt đền (1,6 S).
+    ///  ~0,9 s: cú sút 1 trúng cột dọc (keng! + "ồ"), bóng nảy bằng vật lý, rương bị rung lắc.
+    ///  bắt đầu quay màu: bóng thứ hai rơi từ trên xuống; cú sút 2 xoáy cong (Magnus) dội xà.
+    ///  ~1,2 s trước khi chốt: tiếng riser dâng, trống dồn nhanh.
     ///  ~0,7 s trước khi chốt: mọi thứ lặng (chỉ còn tiếng bóng bay) → cú sút quyết định. Bí mật tới tận lúc bóng tới khung.
-    ///  Chốt: Rác = bóng bay vọt qua xà ra ngoài, âm "xịt" + kèn buồn, rương xẹp xuống; Thường = bóng lăn chậm vào, vỗ tay lẹt đẹt;
-    ///        Hiếm = sút căng vào lưới, rương nảy lên; Rất hiếm = siêu phẩm cong + VAR chiếu lại chậm;
-    ///        Huyền thoại = như Rất hiếm + rương lộn vòng trên không, mọi quả bóng bị thổi bay, mưa bóng, kèn hơi.
+    ///  Chốt: Rác = bóng bay vọt qua xà, rương xẹp, "xịt" + "aaaw"; Thường = bóng lăn chậm vào, vỗ tay lẹt đẹt;
+    ///        Hiếm = sút căng vào lưới, rương nảy lên; Rất hiếm = siêu phẩm cong + kèn hơi;
+    ///        Huyền thoại = như Rất hiếm + rương lộn vòng trên không, mọi quả bóng bị thổi bay, mưa 4 bóng.
     ///
-    /// Tương tác phụ (chỉ trang trí): phím B = "thay người" thả thêm bóng từ trên xuống (đập vào rương thì rương nảy),
+    /// Tương tác phụ (chỉ trang trí): phím B = "thay người" thả thêm bóng từ trên xuống (tối đa 4, đập vào rương thì rương nảy),
     /// phím K = sút quả bóng tự do gần nhất vào khung (có xoáy, cong thật).
     ///
+    /// ÂM (A1–A8): hook tự phát; hồ sơ lõi câm. Trước chốt chỉ 2 lớp (trống + riser); tiếng chốt (TC) = stingClips[bậc].
     /// BẤT BIẾN: chỉ ĐỌC <see cref="ChestRevealSequence.RolledTier"/> để chọn kết cục; không đổi nó. Ngẫu nhiên chỉ trang trí,
     /// theo <see cref="decorationSeed"/>. Màu 5 bậc và bóng vật phẩm vẫn do ChestRevealSequence lo.
     /// Đặt component lên gốc rương (TheThaoFxSetup làm việc này và điền âm).
@@ -31,23 +32,24 @@ namespace ChoDoLa.ChestFx
     public class TheThaoHook : ChestFxHook
     {
         [Header("Âm (TheThaoFxSetup / OnValidate tự điền từ Audio/Chests/the_thao/)")]
-        public AudioClip kickoffClip;     // còi khai cuộc
-        public AudioClip airHornClip;     // kèn hơi
-        public AudioClip crowdLoopClip, drumClip, kickClip, bounceClip, postClip, netClip;
-        public AudioClip oohClip, roarClip, awwClip, deflateClip, tromboneClip, whistleEndClip;
-        public AudioClip varBeepClip, rewindClip, riserClip, clapClip;
-        [Range(0f, 1f)] public float extraVolume = 0.75f;
+        public AudioClip kickoffClip;     // còi khai cuộc (Rác: còi kết ở đuôi)
+        public AudioClip airHornClip;     // kèn hơi (đuôi Rất hiếm/Huyền thoại)
+        public AudioClip drumClip, kickClip, bounceClip, postClip, netClip;
+        public AudioClip oohClip, roarClip, awwClip, riserClip, clapClip;
+        [Tooltip("TC theo bậc (A11): sfx_thethao_lock_<bậc>.mp3, thứ tự Rác..Huyền thoại.")]
+        public AudioClip[] stingClips = new AudioClip[5];
+        [Range(0f, 1f)] public float extraVolume = 0.8f;
 
         [Header("Tương tác")]
         [Tooltip("B = thả bóng thay người, K = sút bóng tự do gần nhất.")]
         public bool allowPlayerInput = true;
-        public int maxExtraBalls = 10;
+        public int maxExtraBalls = 4;
         [Tooltip("Hạt giống trang trí (0 = mỗi lần một khác). KHÔNG ảnh hưởng bậc trúng.")]
         public int decorationSeed;
 
         [Header("Kích thước (theo cỡ rương)")]
         [SerializeField] private float ballRadiusFactor = 0.15f;
-        [SerializeField] private float spotDistanceFactor = 2.6f;
+        [SerializeField] private float spotDistanceFactor = 1.6f;
 
         // ------------------------------------------------------------------ trạng thái
         private ChestRevealSequence _reveal;
@@ -57,15 +59,18 @@ namespace ChoDoLa.ChestFx
         private System.Random _rng;
         private float _startTime, _lockEta;
         private int _extraBalls;
+        private const int MaxExtraBallsCap = 4;      // T3: trần cứng, kể cả khi prefab cũ lưu số lớn hơn
+        private const float SpotFactorCap = 1.6f;
 
         private GameObject _stage;   // gốc mọi đồ dựng (không gắn vào rương để rương rung không kéo theo)
         private readonly List<Object> _owned = new List<Object>();
         private readonly List<TheThaoBall> _balls = new List<TheThaoBall>();
         private Collider _chestCollider, _postL, _postR, _bar;
-        private Transform _referee, _refArm, _subBoard, _addedBoard, _varScreen;
         private PhysicsMaterial _bouncy;
-        private AudioSource _crowd, _riser;
-        private float _crowdTarget, _crowdPitch = 1f;
+        private AudioSource _riser;
+        private float _lastSfx = -999f;       // mốc chung ChestAudioRule.TryGate (sự kiện/va chạm trước chốt)
+        private float _lockedAt = -1f;        // Time.time lúc chốt (bóng vào/Rác xẹp); <0 = chưa chốt
+        private int _tailBudget = 6;          // A5: tổng tiếng đuôi + va chạm sau chốt
 
         private Vector3 _center, _ground, _front, _right, _spot;
         private float _size, _height, _halfWidth, _ballR;
@@ -78,8 +83,6 @@ namespace ChoDoLa.ChestFx
         private Vector3 _baseScale = Vector3.one;
         private bool _scaleTouched;
 
-        private readonly List<Vector3> _replay = new List<Vector3>();
-        private TheThaoBall _finalBall;
         private Coroutine _drums;
 
         // ------------------------------------------------------------------ vòng đời
@@ -100,12 +103,6 @@ namespace ChoDoLa.ChestFx
             if (!_running && _reveal != null && _reveal.IsPlaying) Begin(_reveal);
             if (!_running) return;
 
-            if (_crowd != null)
-            {
-                _crowd.volume = Mathf.Lerp(_crowd.volume, _crowdTarget * extraVolume, Time.deltaTime * 4f);
-                _crowd.pitch = Mathf.Lerp(_crowd.pitch, _crowdPitch, Time.deltaTime * 3f);
-            }
-            if (_finalBall != null && _finalBall.gameObject.activeSelf && _replay.Count < 600) _replay.Add(_finalBall.transform.position);
             if (allowPlayerInput) HandleInput();
         }
 
@@ -187,6 +184,9 @@ namespace ChoDoLa.ChestFx
             _applied = Vector3.zero;
             _appliedRot = Quaternion.identity;
             _lockEta = Time.time + EstimateLockSeconds(reveal);
+            _lastSfx = -999f;
+            _lockedAt = -1f;
+            _tailBudget = 6;
 
             Measure();
             BuildPitch();
@@ -205,26 +205,20 @@ namespace ChoDoLa.ChestFx
 
         private IEnumerator Match()
         {
-            Play(kickoffClip, 1f);
-            StartCrowd();
+            Event(kickoffClip, 0.6f);                      // còi khai cuộc (sự kiện, ≤ 0,2 s sau bấm)
+            StartRiserSource();
             _drums = StartCoroutine(Drums());
-            StartCoroutine(RefereeWalkIn());
             StartCoroutine(Rise(_postL.transform.parent, 0.5f));
 
             yield return new WaitForSeconds(0.9f);
             // Cú sút 1: trúng cột dọc (với MỌI bậc, để giữ bí mật).
             TheThaoBall b1 = _balls.Count > 0 ? _balls[0] : SpawnBall(_spot, false);
             Kickoff(b1, PostPoint(_postL, 0.55f) + _right * (_ballR * 0.6f), 0.55f, -_right * (0.25f * _size), 0.25f * _size, TheThaoBall.Ending.ReleaseAtEnd, 0.88f);
-            _crowdTarget = 0.35f;
 
-            // Chuẩn bị cú sút quyết định: bảng bù giờ ~2 s trước chốt, sút 0,7 s trước chốt.
-            while (Time.time < _lockEta - 2.0f) yield return null;
+            // Riser dâng ≤ 1,2 s trước chốt, rồi sút quyết định 0,7 s trước chốt.
+            while (Time.time < _lockEta - 1.2f) yield return null;
             if (_finalFired) yield break;
-            _addedBoard = Board("BuGio", new Color(0.1f, 0.9f, 0.3f), _center + _right * (_halfWidth + 1.3f * _size) + Vector3.up * _height * 1.4f);
-            StartCoroutine(Pop(_addedBoard, 0.35f));
-            Play(riserClip, 0.8f);
-            _crowdTarget = 0.6f;
-            _crowdPitch = 1.08f;
+            PlayRiser(0.5f);
 
             while (Time.time < _lockEta - 0.7f) yield return null;
             if (!_finalFired) yield return FinalShot(0.7f);
@@ -232,28 +226,21 @@ namespace ChoDoLa.ChestFx
 
         private IEnumerator Substitution()
         {
-            // Bảng thay người giơ lên, bóng mới rơi xuống chấm phạt đền, rồi cú sút 2 xoáy dội xà.
-            _subBoard = Board("ThayNguoi", new Color(1f, 0.55f, 0.1f), _spot + _right * (0.8f * _size) + Vector3.up * _height * 1.1f);
-            StartCoroutine(Pop(_subBoard, 0.3f));
+            // Bóng mới rơi xuống chấm phạt đền, rồi cú sút 2 xoáy dội xà.
             TheThaoBall b2 = SpawnBall(_spot + Vector3.up * (_height * 2.2f), true);
             yield return new WaitForSeconds(0.75f);
             if (_finalFired || b2 == null) yield break;
             float side = _rng.NextDouble() < 0.5 ? 1f : -1f;
             Kickoff(b2, BarPoint(0.3f * side), 0.6f, _right * (side * 0.45f * _size), 0.4f * _size, TheThaoBall.Ending.ReleaseAtEnd, 0.9f);
-            _crowdTarget = 0.45f;
         }
 
         private IEnumerator FinalShot(float flight)
         {
             _finalFired = true;
-            // Lặng như tờ: tắt trống, khán đài nín thở. Chỉ còn tiếng sút.
-            _crowdTarget = 0.06f;
-            _crowdPitch = 0.92f;
+            // Lặng như tờ: trống ngừng (vòng Drums thoát vì _finalFired), riser tắt. Chỉ còn tiếng sút.
             if (_riser != null) _riser.Stop();
 
             TheThaoBall ball = SpawnBall(_spot, false);
-            _finalBall = ball;
-            _replay.Clear();
             yield return null;
 
             Vector3 mouth = _reveal != null ? _reveal.MouthPosition : _center + Vector3.up * _height * 0.5f;
@@ -287,61 +274,59 @@ namespace ChoDoLa.ChestFx
             }
         }
 
-        /// <summary>Bậc thấp: âm rơi đột ngột, "xịt", rương xẹp.</summary>
+        /// <summary>Bậc thấp: nhịp ngừng, lặng, "xịt" (TC), rương xẹp; đuôi "aaaw" + còi kết.</summary>
         private void Flop()
         {
-            if (_crowd != null) _crowd.Stop();     // cắt phụt
-            _crowdTarget = 0f;
             if (_drums != null) StopCoroutine(_drums);
-            Play(deflateClip, 1f);
-            Play(awwClip, 0.8f);
-            StartCoroutine(Later(0.5f, () => Play(tromboneClip, 0.9f)));
-            StartCoroutine(Later(1.6f, () => Play(whistleEndClip, 0.8f)));
+            if (_riser != null) _riser.Stop();
+            _lockedAt = Time.time;                       // 0,6 s tiếp theo không phát gì khác ngoài TC (xem Impact)
+            PlaySting(0, 1f);                            // TC Rác: lặng đã có từ cú sút (≥ 0,2 s), 1 tiếng xịt
+            Tail(awwClip, 0.6f, 0.5f);
+            Tail(kickoffClip, 0.6f, 1.2f, 0.85f);        // còi kết thúc (dùng lại còi khai cuộc, trầm hơn)
             _squash = 0.8f;             // rương xẹp xuống như bóng xì hơi
             _squashVel = -1.5f;
             _hopVel += Vector3.down * 0.4f * _size;
             _tiltAxis = _front;
             _tiltVel += 90f;
-            StartCoroutine(RefereeWave(false));
         }
 
         /// <summary>Gọi khi một quả bóng lọt vào miệng rương (bóng của cú sút quyết định).</summary>
         public void OnBallScored(TheThaoBall ball)
         {
-            Play(netClip, 0.9f);
-            Play(kickClip, 0.6f, 0.7f);
+            if (_lockedAt < 0f) _lockedAt = Time.time;
             int rank = (int)_tier;
             // Rương nảy lên, nén rồi giãn: mạnh dần theo bậc.
             _hopVel += Vector3.up * (0.6f + 0.6f * rank) * _size;
             _squash = 1.18f + 0.04f * rank;
             _tiltAxis = _right;
             _tiltVel += 120f + 60f * rank;
-            StartCoroutine(RefereeWave(true));
 
+            // A4: trong 0,3 s đầu tối đa 2 tiếng = TC (stingClips[bậc]) + HĐ (lưới, từ Hiếm).
             switch (_tier)
             {
                 case ChestTier.Thuong:
-                    _crowdTarget = 0.25f;
-                    Play(clapClip, 0.7f);
+                    PlaySting(1, 0.75f);
+                    Tail(clapClip, 0.45f, 0.5f);
                     break;
                 case ChestTier.Hiem:
-                    _crowdTarget = 0.7f; _crowdPitch = 1.15f;
-                    Play(roarClip, 0.8f);
+                    Play(netClip, 0.85f);
+                    PlaySting(2, 1f);
+                    Tail(roarClip, 0.5f, 0.4f);
                     break;
                 case ChestTier.RatHiem:
-                    _crowdTarget = 0.85f; _crowdPitch = 1.2f;
-                    Play(roarClip, 1f);
-                    Play(airHornClip, 0.8f);
-                    StartCoroutine(Var());
+                    Play(netClip, 0.9f);
+                    PlaySting(3, 1f);
+                    Tail(roarClip, 0.5f, 0.4f);
+                    Tail(airHornClip, 0.5f, 0.6f);
                     break;
                 case ChestTier.HuyenThoai:
-                    _crowdTarget = 1f; _crowdPitch = 1.25f;
-                    Play(roarClip, 1f);
-                    Play(airHornClip, 1f);
+                    Play(netClip, 0.9f);
+                    PlaySting(4, 1f);
+                    Tail(roarClip, 0.5f, 0.4f);
+                    Tail(airHornClip, 0.5f, 0.6f);
                     StartCoroutine(LegendaryFlip());
-                    StartCoroutine(Var());
                     Blast();
-                    StartCoroutine(BallRain(8));
+                    StartCoroutine(BallRain(4));
                     break;
             }
         }
@@ -353,17 +338,16 @@ namespace ChoDoLa.ChestFx
             float v = Mathf.Clamp01(speed / 6f);
             if (other == _postL || other == _postR || other == _bar)
             {
-                Play(postClip, 0.4f + 0.6f * v, 0.95f + 0.1f * (float)_rng.NextDouble());
-                if (!_finalFired || _tier == ChestTier.Rac) Play(oohClip, 0.7f);
+                Impact(postClip, 0.3f + 0.2f * v, 0.95f + 0.1f * (float)_rng.NextDouble());
+                if (!_finalFired || _tier == ChestTier.Rac) StartCoroutine(Later(0.25f, () => Event(oohClip, 0.55f)));   // sau tiếng keng, qua mốc 0,2 s
                 // Khung thành gắn với rương: cột rung thì rương rung.
                 _tiltAxis = _front;
                 _tiltVel += (other == _postL ? 1f : -1f) * 140f * v;
                 _hopVel += Vector3.up * 0.25f * v * _size;
-                _crowdTarget = Mathf.Min(1f, _crowdTarget + 0.08f);
             }
             else if (other == _chestCollider)
             {
-                Play(kickClip, 0.3f + 0.6f * v, 1.2f);
+                Impact(kickClip, 0.2f + 0.3f * v, 1.2f);
                 Vector3 push = ball.Body != null ? ball.Body.mass * relVel : relVel * 0.4f;
                 _hopVel += (Vector3.up * 0.6f * v * _size) - push * 0.02f;
                 _tiltAxis = Vector3.Cross(Vector3.up, relVel.normalized);
@@ -373,7 +357,7 @@ namespace ChoDoLa.ChestFx
             }
             else
             {
-                Play(bounceClip, 0.2f + 0.5f * v, 0.9f + 0.25f * (float)_rng.NextDouble());
+                Impact(bounceClip, 0.15f + 0.35f * v, 0.9f + 0.25f * (float)_rng.NextDouble());
             }
         }
 
@@ -388,44 +372,11 @@ namespace ChoDoLa.ChestFx
                 float remain = Mathf.Max(0f, _lockEta - 0.7f - Time.time);
                 float total = Mathf.Max(0.5f, _lockEta - 0.7f - _startTime);
                 float u = 1f - Mathf.Clamp01(remain / total);
-                float interval = Mathf.Lerp(0.7f, 0.13f, u * u);
-                Play(drumClip, 0.45f + 0.45f * u, (n % 2 == 0 ? 1f : 1.25f) + 0.15f * u);
+                float interval = Mathf.Lerp(0.7f, 0.15f, u * u);
+                Play(drumClip, 0.32f + 0.37f * u, (n % 2 == 0 ? 1f : 1.25f) + 0.15f * u);   // Nhịp: 0,25 → 0,55 sau nhân extraVolume
                 n++;
                 yield return new WaitForSeconds(interval);
             }
-        }
-
-        private IEnumerator Var()
-        {
-            // VAR: màn hình hiện, tua lại (rewind), bóng "ma" chiếu chậm 0,3x đường bóng vừa vào lưới, tít tít, xác nhận.
-            yield return new WaitForSeconds(0.6f);
-            if (!_running || _replay.Count < 3) yield break;
-            _varScreen = Board("VAR", new Color(0.15f, 0.35f, 1f), _center - _right * (_halfWidth + 1.4f * _size) + Vector3.up * _height * 1.6f);
-            StartCoroutine(Pop(_varScreen, 0.3f));
-            Play(rewindClip, 0.8f);
-            _crowdTarget = 0.3f;
-            GameObject ghost = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            ghost.name = "TheThao_VarGhost";
-            Destroy(ghost.GetComponent<Collider>());
-            Own(ghost);
-            ghost.transform.SetParent(_stage.transform, true);
-            ghost.transform.localScale = Vector3.one * (_ballR * 2f);
-            ghost.GetComponent<Renderer>().sharedMaterial = Mat(new Color(0.5f, 0.8f, 1f));
-            List<Vector3> path = new List<Vector3>(_replay);
-            float beepAt = 0f;
-            for (float i = 0; i < path.Count - 1; i += 0.3f)
-            {
-                if (!_running) yield break;
-                int k = (int)i;
-                ghost.transform.position = Vector3.Lerp(path[k], path[k + 1], i - k);
-                beepAt += Time.deltaTime;
-                if (beepAt > 0.4f) { beepAt = 0f; Play(varBeepClip, 0.5f); }
-                yield return null;
-            }
-            Play(varBeepClip, 0.8f, 1.5f);
-            Play(roarClip, 0.9f);
-            _crowdTarget = 0.9f;
-            Destroy(ghost);
         }
 
         private IEnumerator LegendaryFlip()
@@ -441,7 +392,7 @@ namespace ChoDoLa.ChestFx
             }
             _flip = 0f;
             _squash = 0.75f;
-            Play(bounceClip, 1f, 0.6f);
+            Tail(bounceClip, 0.5f, 0f, 0.6f);
         }
 
         /// <summary>Huyền thoại: lực nổ thật đẩy mọi quả bóng trên sân bay toé ra.</summary>
@@ -468,36 +419,10 @@ namespace ChoDoLa.ChestFx
             }
         }
 
-        private IEnumerator RefereeWalkIn()
-        {
-            if (_referee == null) yield break;
-            Vector3 to = _referee.position;
-            Vector3 from = to + _right * (2.5f * _size);
-            for (float t = 0f; t < 1f; t += Time.deltaTime / 0.6f)
-            {
-                _referee.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t)) + Vector3.up * (Mathf.Abs(Mathf.Sin(t * 18f)) * 0.03f * _size);
-                yield return null;
-            }
-            _referee.position = to;
-        }
-
-        private IEnumerator RefereeWave(bool goal)
-        {
-            if (_refArm == null) yield break;
-            // Bàn thắng: giơ tay chỉ vào giữa sân; trượt: thổi còi kết thúc, tay buông.
-            float target = goal ? -150f : -20f;
-            for (float t = 0f; t < 1f; t += Time.deltaTime / 0.3f)
-            {
-                _refArm.localRotation = Quaternion.Euler(0f, 0f, Mathf.Lerp(0f, target, t));
-                yield return null;
-            }
-        }
-
         private IEnumerator Outro()
         {
             // Giữ sân thêm một lúc cho bóng lăn nốt, rồi dọn.
             yield return new WaitForSeconds(_tier >= ChestTier.RatHiem ? 4.5f : 3f);
-            if (_crowd != null) _crowdTarget = 0f;
             for (float t = 0f; t < 1f; t += Time.deltaTime / 0.6f)
             {
                 if (_stage != null) _stage.transform.localScale = Vector3.one * (1f - t);
@@ -511,14 +436,14 @@ namespace ChoDoLa.ChestFx
 
         private void HandleInput()
         {
-            if (Pressed(true) && _extraBalls < maxExtraBalls)
+            if (Pressed(true) && _extraBalls < Mathf.Min(maxExtraBalls, MaxExtraBallsCap))
             {
                 // Thay người: thả bóng từ trên ngay trên rương, đập vào rương thì rương nảy.
                 _extraBalls++;
                 Vector3 p = _center + Vector3.up * (_height * 2.5f) + _right * (((float)_rng.NextDouble() - 0.5f) * _size * 0.6f);
                 TheThaoBall b = SpawnBall(p, true);
                 if (b != null) b.Kick(Vector3.zero, Random3() * 10f);
-                Play(kickoffClip, 0.35f, 1.3f);
+                Event(kickoffClip, 0.4f, 1.3f);
             }
             if (Pressed(false))
             {
@@ -534,7 +459,7 @@ namespace ChoDoLa.ChestFx
                 Vector3 to = (_center + Vector3.up * _height * 0.6f - best.transform.position);
                 float side = _rng.NextDouble() < 0.5 ? -1f : 1f;
                 best.Kick(to.normalized * 5f + Vector3.up * 1.2f, Vector3.up * (side * 30f));
-                Play(kickClip, 0.8f);
+                Event(kickClip, 0.6f);
             }
         }
 
@@ -568,7 +493,7 @@ namespace ChoDoLa.ChestFx
             _ballR = _size * ballRadiusFactor;
             // Chấm phạt đền chéo 40° phía trước: bóng không che máy quay nhìn thẳng vào rương.
             Vector3 dir = (_front * 0.75f + _right * 0.65f).normalized;
-            _spot = _ground + dir * (_size * spotDistanceFactor) + Vector3.up * _ballR;
+            _spot = _ground + dir * (_size * Mathf.Min(spotDistanceFactor, SpotFactorCap)) + Vector3.up * _ballR;
         }
 
         private void BuildPitch()
@@ -588,7 +513,7 @@ namespace ChoDoLa.ChestFx
             GameObject floor = new GameObject("Floor");
             floor.transform.SetParent(_stage.transform, false);
             BoxCollider fc = floor.AddComponent<BoxCollider>();
-            fc.size = new Vector3(_size * 14f, 0.02f, _size * 14f);
+            fc.size = new Vector3(_size * 4f, 0.02f, _size * 4f);
             fc.center = new Vector3(0f, -0.01f, 0f);
             fc.sharedMaterial = _bouncy;
 
@@ -610,22 +535,6 @@ namespace ChoDoLa.ChestFx
             _postR = Bar(goal.transform, "PostR", new Vector3(halfW, postH * 0.5f, 0f), new Vector3(thick, postH * 0.5f, thick), Quaternion.identity);
             _bar = Bar(goal.transform, "Crossbar", new Vector3(0f, postH, 0f), new Vector3(thick, halfW, thick), Quaternion.Euler(0f, 0f, 90f));
             goal.transform.localScale = new Vector3(1f, 0.01f, 1f);   // mọc lên trong Rise()
-
-            // Trọng tài: thân con nhộng đen, đầu tròn, một cánh tay xoay được.
-            GameObject refRoot = new GameObject("Referee");
-            refRoot.transform.SetParent(_stage.transform, false);
-            refRoot.transform.position = _ground - _right * (halfW + _size * 0.9f) + _front * (_size * 0.6f);
-            refRoot.transform.rotation = Quaternion.LookRotation(_right);
-            float rh = _height * 1.3f;
-            Deco(refRoot.transform, PrimitiveType.Capsule, new Vector3(0f, rh * 0.5f, 0f), new Vector3(rh * 0.35f, rh * 0.5f, rh * 0.35f), new Color(0.08f, 0.08f, 0.1f));
-            Deco(refRoot.transform, PrimitiveType.Sphere, new Vector3(0f, rh * 1.12f, 0f), Vector3.one * rh * 0.3f, new Color(0.95f, 0.75f, 0.6f));
-            Deco(refRoot.transform, PrimitiveType.Sphere, new Vector3(0f, rh * 1.05f, rh * 0.16f), Vector3.one * rh * 0.07f, new Color(0.9f, 0.9f, 0.2f));
-            GameObject arm = new GameObject("Arm");
-            arm.transform.SetParent(refRoot.transform, false);
-            arm.transform.localPosition = new Vector3(rh * 0.2f, rh * 0.85f, 0f);
-            Deco(arm.transform, PrimitiveType.Cube, new Vector3(0f, -rh * 0.22f, 0f), new Vector3(rh * 0.09f, rh * 0.45f, rh * 0.09f), new Color(0.08f, 0.08f, 0.1f));
-            _referee = refRoot.transform;
-            _refArm = arm.transform;
 
             // Quả bóng đầu tiên nằm sẵn ở chấm phạt đền.
             SpawnBall(_spot, false);
@@ -665,7 +574,7 @@ namespace ChoDoLa.ChestFx
             Transform mouth = null;
             if (ending == TheThaoBall.Ending.SwallowIntoMouth && _chestCollider != null) mouth = _chestCollider.transform;
             ball.Shoot(target, flight, curve, lift, ending, mouth, release);
-            Play(kickClip, 0.9f, 0.9f + 0.2f * (float)_rng.NextDouble());
+            Event(kickClip, 0.6f, 0.9f + 0.2f * (float)_rng.NextDouble());
         }
 
         private Vector3 PostPoint(Collider post, float h) => post.transform.position + Vector3.up * (_height * 1.6f * (h - 0.5f));
@@ -684,18 +593,6 @@ namespace ChoDoLa.ChestFx
             Collider c = go.GetComponent<Collider>();
             c.sharedMaterial = _bouncy;
             return c;
-        }
-
-        private Transform Board(string n, Color color, Vector3 at)
-        {
-            GameObject go = Deco(_stage.transform, PrimitiveType.Cube, Vector3.zero, new Vector3(_size * 0.7f, _size * 0.45f, _size * 0.04f), color);
-            go.name = "Board_" + n;
-            go.transform.SetPositionAndRotation(at, Quaternion.LookRotation(_front));
-            // Viền đen + "chữ số" là hai vạch trắng (bảng của trọng tài thứ tư).
-            Deco(go.transform, PrimitiveType.Cube, new Vector3(-0.18f, 0f, -0.6f), new Vector3(0.12f, 0.6f, 0.2f), Color.white);
-            Deco(go.transform, PrimitiveType.Cube, new Vector3(0.18f, 0f, -0.6f), new Vector3(0.12f, 0.6f, 0.2f), Color.white);
-            go.transform.localScale = Vector3.zero;
-            return go.transform;
         }
 
         private GameObject Deco(Transform parent, PrimitiveType type, Vector3 local, Vector3 scale, Color color) =>
@@ -732,18 +629,6 @@ namespace ChoDoLa.ChestFx
             if (t != null) t.localScale = full;
         }
 
-        private IEnumerator Pop(Transform t, float seconds)
-        {
-            Vector3 target = new Vector3(_size * 0.7f, _size * 0.45f, _size * 0.04f);
-            for (float u = 0f; u < 1f && t != null; u += Time.deltaTime / seconds)
-            {
-                float k = 1f + 0.25f * Mathf.Sin(u * Mathf.PI);
-                t.localScale = target * (u * k);
-                yield return null;
-            }
-            if (t != null) t.localScale = target;
-        }
-
         private IEnumerator Later(float s, System.Action a)
         {
             yield return new WaitForSeconds(s);
@@ -755,41 +640,75 @@ namespace ChoDoLa.ChestFx
 
         // ------------------------------------------------------------------ âm
 
-        private void StartCrowd()
+        private void StartRiserSource()
         {
-            _crowd = LoopSource("Crowd", crowdLoopClip, true);
-            _riser = LoopSource("Riser", null, false);
-            _crowdTarget = 0.18f;
-            _crowdPitch = 1f;
-        }
-
-        private AudioSource LoopSource(string n, AudioClip clip, bool play)
-        {
-            if (_stage == null) return null;
-            GameObject go = new GameObject("TheThao_" + n);
+            if (_stage == null) return;
+            GameObject go = new GameObject("TheThao_Riser");
             go.transform.SetParent(_stage.transform, false);
-            AudioSource s = go.AddComponent<AudioSource>();
-            s.playOnAwake = false;
-            s.loop = clip != null;
-            s.clip = clip;
-            s.volume = 0f;
-            s.spatialBlend = 0f;
-            if (play && clip != null) s.Play();
-            return s;
+            _riser = go.AddComponent<AudioSource>();
+            _riser.playOnAwake = false;
+            _riser.loop = false;
+            _riser.spatialBlend = 0f;
+            _riser.volume = 0f;
         }
 
+        /// <summary>Riser: một nguồn riêng (lớp thứ 2 trước chốt, ≤ 1,2 s), tắt ngay ở cú sút quyết định.</summary>
+        private void PlayRiser(float volume)
+        {
+            if (riserClip == null || _riser == null) return;
+            _riser.clip = riserClip;
+            _riser.volume = Mathf.Min(volume, 0.5f) * extraVolume;   // ≈ 0,4 sau nhân
+            _riser.Play();
+        }
+
+        /// <summary>Phát qua lõi, nhân extraVolume MỘT lần duy nhất (A6).</summary>
         private void Play(AudioClip clip, float volume, float pitch = 1f)
         {
             if (clip == null || _reveal == null) return;
-            if (clip == riserClip && _riser != null)
+            _reveal.PlayOneShot(clip, Mathf.Clamp01(volume) * extraVolume, pitch);
+        }
+
+        /// <summary>TC theo bậc (A11): stingClips[bậc], luôn do hook phát.</summary>
+        private void PlaySting(int index, float volume)
+        {
+            if (stingClips == null || index < 0 || index >= stingClips.Length) return;
+            Play(stingClips[index], volume);
+        }
+
+        /// <summary>Sự kiện trước chốt (A3): tối đa 1 tiếng lẻ mỗi 0,2 s, âm ≤ 0,5 sau nhân.</summary>
+        private void Event(AudioClip clip, float volume, float pitch = 1f)
+        {
+            if (_lockedAt >= 0f) return;
+            if (!ChestAudioRule.TryGate(ref _lastSfx, ChestAudioRule.EventGap)) return;
+            Play(clip, Mathf.Min(volume, ChestAudioRule.EventMax / Mathf.Max(0.01f, extraVolume)), pitch);
+        }
+
+        /// <summary>
+        /// Va chạm vật lý (A3/A5): trước chốt dùng chung mốc sự kiện (≥ 0,2 s, chặt hơn mức 0,12 s), âm ≤ 0,4 sau nhân;
+        /// 0,6 s đầu sau chốt im; từ đó tới +3 s chỉ còn trong ngân sách đuôi (tối đa 6 tiếng, cách ≥ 0,15 s).
+        /// </summary>
+        private void Impact(AudioClip clip, float volume, float pitch = 1f)
+        {
+            float cap = 0.4f / Mathf.Max(0.01f, extraVolume);
+            if (_lockedAt >= 0f)
             {
-                _riser.clip = clip;
-                _riser.loop = false;
-                _riser.volume = volume * extraVolume;
-                _riser.Play();
-                return;
+                float since = Time.time - _lockedAt;
+                if (since < 0.6f || since > 3f || _tailBudget <= 0) return;
+                if (!ChestAudioRule.TryGate(ref _lastSfx, ChestAudioRule.TailGap)) return;
+                _tailBudget--;
             }
-            _reveal.PlayOneShot(clip, volume * extraVolume, pitch);
+            else if (!ChestAudioRule.TryGate(ref _lastSfx, ChestAudioRule.EventGap)) return;
+            Play(clip, Mathf.Min(volume, cap), pitch);
+        }
+
+        /// <summary>Đuôi (A5): phát sau <paramref name="delay"/> giây kể từ chốt, âm ≤ 0,4 sau nhân, tính vào ngân sách 6 tiếng.</summary>
+        private void Tail(AudioClip clip, float volume, float delay, float pitch = 1f)
+        {
+            if (clip == null || _tailBudget <= 0) return;
+            _tailBudget--;
+            float vol = Mathf.Min(volume, ChestAudioRule.TailMax / Mathf.Max(0.01f, extraVolume));
+            if (delay <= 0f) Play(clip, vol, pitch);
+            else StartCoroutine(Later(delay, () => Play(clip, vol, pitch)));
         }
 
         // ------------------------------------------------------------------ dọn
@@ -802,8 +721,7 @@ namespace ChoDoLa.ChestFx
             _owned.Clear();
             _balls.Clear();
             _stage = null;
-            _crowd = _riser = null;
-            _finalBall = null;
+            _riser = null;
         }
 
         private void Cleanup()
@@ -824,12 +742,14 @@ namespace ChoDoLa.ChestFx
             _scaleTouched = false;
             _running = _finalFired = _finished = false;
             _extraBalls = 0;
-            _replay.Clear();
+            _lockedAt = -1f;
+            _lastSfx = -999f;
+            _tailBudget = 6;
         }
 
 #if UNITY_EDITOR
         /// <summary>Tự điền âm còn trống từ Audio/Chests/the_thao/ (không cần sửa menu dùng chung).</summary>
-        private void OnValidate() => TheThaoFxPreset.FillHookClips(this);
+        private void OnValidate() => TheThaoFxPreset.FillHookClips(this, false);
 #endif
     }
 }
