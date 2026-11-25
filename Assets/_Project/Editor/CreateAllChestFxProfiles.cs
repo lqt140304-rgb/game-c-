@@ -122,7 +122,7 @@ namespace ChoDoLa.Editor
             {
                 case "Golden": return SaveHook<GoldenSlotHook>(key, GoldenSlotSetup.AssignClips);
                 case "Magic": return SaveHook<MagicRuneRitual>(key, MagicRuneFxSetup.FillClips);
-                case "Miner": return SaveHook<MinerDigSequence>(key, null);
+                case "Miner": return SaveHook<MinerDigSequence>(key, MinerDigSetup.FillClips);
                 case "Robot": return SaveHook<RobotTransformHook>(key, RobotTransformSetup.Fill);
                 case "Game": return SaveHook<GameVoxelHook>(key, GameVoxelFxSetup.FillClips);
                 case "TrungHoa": return SaveHook<TrungHoaHook>(key, TrungHoaFxSetup.WireHookClips);
