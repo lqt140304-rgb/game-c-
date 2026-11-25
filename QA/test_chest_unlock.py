@@ -1,6 +1,6 @@
 """Khóa Sprint 5 phần 2: rương mở khóa (chest_unlock.UNLOCK) và khung rương chủ đề (chest_unlock.THEME), ĐỀ XUẤT, chưa chốt.
 Nền là 4 rương cơ bản đã chốt (chest_sim.FINAL). Số liệu đầy đủ: Docs/Balance/Sprint5RuongMoKhoa.md.
-Ở đây đo kịch bản 'tất cả' (4 cơ bản + 4 mở khóa + 2 chủ đề cùng có trong shop) với n nhỏ (khoảng 2 phút), biên rộng hơn.
+Ở đây đo kịch bản 'tất cả' (4 cơ bản + 4 mở khóa + 2 chủ đề đã mở, shop bày tối đa 4 rương mới mỗi ngày theo luật đã chốt) với n nhỏ (khoảng 2 phút), biên rộng hơn.
 Số tiền trong mã tính theo đơn vị 10.000 đ (price=600 là 6.000.000 đ)."""
 import unittest
 import chest_sim as CS
@@ -52,7 +52,7 @@ class UnlockRules(unittest.TestCase):
 class UnlockBalance(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        c = U.apply(U.scenario("tat_ca"))
+        c = U.apply(U.scenario("tat_ca", shop_extra=4))   # luật shop đã chốt: bày tối đa 4 rương mới mỗi ngày
         C.setup_done = True
         try:
             cls.table = U.box_table()
