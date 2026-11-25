@@ -18,3 +18,14 @@ Tạo bằng ElevenLabs sound-generation ngày 2026-11-24, `prompt_influence` 0,
 | sfx_mimic_drool.mp3 | 0,8 | nhỏ dãi trong vòng quay, accent | Thick slimy drool drip, gooey wet splat |
 | sfx_mimic_lick.mp3 | 0,8 | accent sau khi chốt | Wet tongue lick slurp, gross and comedic |
 | sfx_mimic_creak_jaw.mp3 | 1,5 | giai đoạn 2 Hé nắp | Old wooden chest lid creaking open slowly like a jaw, with a wet sticky saliva stretch |
+| `sfx_mimic_stomach_loop.mp3` | 8 | hungry monster stomach rumbling and gurgling, low growl, seamless loop |
+| `sfx_mimic_chew.mp3` | 0.8 | wooden monster jaw chewing noisily, crunchy, three chews |
+| `sfx_mimic_gulp.mp3` | 0.6 | big cartoon gulp swallow |
+| `sfx_mimic_burp_small.mp3` | 0.8 | small polite cartoon burp |
+| `sfx_mimic_burp_big.mp3` | 1.2 | huge satisfied monster burp, comedic |
+| `sfx_mimic_boom.mp3` | 1.5 | wooden chest monster bursting open with a cartoon boom and wood creak |
+| `sfx_mimic_hop.mp3` | 0.5 | heavy wooden box hopping and landing, bouncy thump |
+| `sfx_mimic_toss.mp3` | 0.5 | small object tossed through the air, quick whoosh |
+| `sfx_mimic_deflate.mp3` | 1.2 | wooden monster deflating with a long sad raspberry fart, comedic |
+
+Lưu ý: `sfx_mimic_stomach_loop.mp3` có khoảng lặng ngắn ở ~5,8–6,0 s (giữa file, không phải hai đầu); cần nghe thử.

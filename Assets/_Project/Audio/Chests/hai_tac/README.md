@@ -22,3 +22,12 @@ Tạo bằng ElevenLabs Sound Generation (`/v1/sound-generation`, mp3 44,1 kHz 1
 | `sfx_haitac_seagull.mp3` | 1,0 | accent + HaiTacHook: hải âu chế giễu khi ra Rác | a single seagull squawking cry |
 
 Tiếng nắp mở hết (giai đoạn Mở toang) dùng bộ chung: `../Synth/sfx_chest_lid_thud.wav`.
+| `sfx_haitac_bed_loop.mp3` | 8 | pirate war drums pounding steadily with ocean waves and creaking ship ropes, tense building sea shanty rhythm, no melody, seamless loop |
+| `sfx_haitac_cannon_close.mp3` | 1.5 | close powerful ship cannon shot, sharp boom with wooden carriage recoil thunk, short |
+| `sfx_haitac_splash.mp3` | 1.0 | heavy iron cannonball plunging into sea water, big splash |
+| `sfx_haitac_thud.mp3` | 0.8 | cannonball smacking into a wooden treasure chest, heavy hollow thud |
+| `sfx_haitac_load.mp3` | 1.0 | cannon being loaded, ramrod scraping and iron ball clanking into barrel |
+| `sfx_haitac_fuse.mp3` | 2.0 | cannon fuse burning, sparkling hiss and crackle |
+| `sfx_haitac_parrot.mp3` | 0.8 | cartoon pirate parrot squawk, single cheeky call |
+| `sfx_haitac_drain.mp3` | 2.0 | sea water draining down a huge plughole, comedic glugging gurgle |
+| `sfx_haitac_barrel.mp3` | 0.8 | wooden barrel bumping in water, hollow knock and slosh |

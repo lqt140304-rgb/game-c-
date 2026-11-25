@@ -19,3 +19,13 @@ Tạo bằng ElevenLabs sound-generation ngày 2026-11-24 (prompt_influence 0.6)
 | sfx_trunghoa_thud.mp3 | 1,2 | bước 4 (Mở toang) | heavy bronze lid dropping on stone with resonant metallic clang |
 
 Ghi chú: lần gọi song song đầu bị 429 (giới hạn 6 yêu cầu đồng thời); các file trên lấy từ lần gọi tuần tự, không tạo lại hàng loạt.
+| `sfx_trunghoa_lion_drum_loop.mp3` | 8 | Chinese lion dance drums and cymbals, steady festive rhythm, seamless loop |
+| `sfx_trunghoa_pop.mp3` | 0.4 | single small firecracker pop |
+| `sfx_trunghoa_big_bang.mp3` | 1.5 | huge Chinese firecracker explosion, loud bang with crackle |
+| `sfx_trunghoa_dud.mp3` | 1.5 | firecracker fuse fizzling out with a weak puff, dud |
+| `sfx_trunghoa_match.mp3` | 0.6 | incense stick lighting a fuse, sizzle start |
+| `sfx_trunghoa_rocket.mp3` | 1.2 | firework rocket whistling upward |
+| `sfx_trunghoa_rocket_burst.mp3` | 1.5 | firework bursting in the sky, crackling sparkle |
+| `sfx_trunghoa_sneeze.mp3` | 0.6 | cartoon lion sneeze, comedic achoo |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_trunghoa_pop.mp3` (0.4 s).

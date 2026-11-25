@@ -21,3 +21,12 @@
 \* Đoạn cắt 0,1 s; ffprobe báo 0,13 s do khung mp3 (phần thừa là im lặng sau fade).
 
 Lần gọi song song đầu tiên bị 429 (quá số yêu cầu đồng thời) với 6 mô tả; gọi lại tuần tự một lần thì được. Không có âm nào tổng hợp bằng Python.
+| `sfx_nhatban_shakuhachi_loop.mp3` | 8 | Japanese shakuhachi flute, breathy slow tense melody, seamless loop |
+| `sfx_nhatban_taiko.mp3` | 0.6 | single deep taiko drum hit like a heartbeat |
+| `sfx_nhatban_katana_draw.mp3` | 1.0 | katana being drawn from its scabbard, sharp metallic shing |
+| `sfx_nhatban_slash.mp3` | 0.5 | fast katana slash swoosh |
+| `sfx_nhatban_sheath.mp3` | 0.4 | katana snapping back into its scabbard, crisp click |
+| `sfx_nhatban_rope_cut.mp3` | 0.8 | rope cut and paper seal falling softly |
+| `sfx_nhatban_sandal.mp3` | 0.8 | wooden sandal slapping down then a cartoon boing |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_nhatban_sheath.mp3` (0.4 s).

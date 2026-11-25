@@ -18,3 +18,11 @@ Tạo bằng ElevenLabs sound-generation (`prompt_influence` 0,6), ngày 2026-11
 | `sfx_khonggian_meteor.mp3` | 1,0 | accent sau khoá + hook (sao băng, số lần = hạng bậc) | "Small shooting star streak, quick sparkling whoosh passing by, airy and magical" |
 
 Thiếu file nào thì `Tools/Cho Do La/Create Khong Gian Chest FX Profile` lấy bộ âm chung ở `Audio/Chests/` (rồi `Synth/`).
+| `sfx_khonggian_engine_loop.mp3` | 8 | spaceship engine idling, low rumbling thrusters with piston pulse, seamless loop |
+| `sfx_khonggian_radio_blip.mp3` | 0.4 | short sci-fi radio blip beep |
+| `sfx_khonggian_fuel_dock.mp3` | 0.7 | metal fuel canister docking into a ship with an energy zap |
+| `sfx_khonggian_rocket_launch.mp3` | 1.2 | small guided missile launching, whoosh with fizz |
+| `sfx_khonggian_rocket_hit.mp3` | 1.5 | small missile hitting a metal hatch, sharp explosion |
+| `sfx_khonggian_engine_die.mp3` | 1.5 | spaceship engine sputtering and dying with puffs, comedic |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_khonggian_radio_blip.mp3` (0.4 s).

@@ -17,3 +17,7 @@ Tạo bằng ElevenLabs sound-generation (`prompt_influence` 0.6, mp3 44,1 kHz 1
 | `sfx_magic_stone_lid.mp3` | 1,5 | giai đoạn 2 Hé nắp | "heavy stone lid grinding and sliding open, rough rock scrape with a faint crystal ring" |
 | `sfx_magic_stone_thud.mp3` | 1,0 | giai đoạn 4 Mở toang | "heavy stone slab lands with a deep thud and a short ringing crystal resonance" |
 | `sfx_magic_shard_tinkle.mp3` | 1,0 | accent sau khi chốt (0 cho Rác, +1 mỗi bậc) | "small crystal shards tinkling and chiming like falling glass sparkles, delicate magical" |
+| `sfx_magic_rune_bed_loop.mp3` | 8 | mystical ritual, low hand drum pulse with rune stones knocking, swirling wind and a rising ethereal choir hum, seamless loop |
+| `sfx_magic_rune_stone.mp3` | 0.7 | heavy carved rune stone landing on a stone floor, deep thud with grit |
+| `sfx_magic_rune_wisp.mp3` | 0.6 | tiny magical wisp touching a stone, bright twinkling chime |
+| `sfx_magic_rune_slam.mp3` | 1.5 | deep magical impact boom with crystal shards shattering outward |
