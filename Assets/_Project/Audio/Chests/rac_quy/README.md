@@ -22,3 +22,8 @@ Tạo bằng ElevenLabs Sound Generation (`/v1/sound-generation`, mp3 44,1 kHz 1
 | `sfx_racquy_lid_clang.mp3` | 1,3 | giai đoạn 4 Mở toang | metal trash can lid falling and clanging on the ground, wobbling to a stop |
 
 Âm nền lúc quay dùng bộ chung (`Synth/sfx_chest_open_shimmer.wav`).
+
+## meo/ — kịch bản "Mèo hoang lật thùng rác" (2026-11-25)
+
+WAV tổng hợp bằng `Tools/Audio/make_racquy_meo_sfx.py` (numpy, không mẫu, không bản quyền). **Chưa ai nghe.** Thay bằng âm thật cùng tên nếu cần.
+build_loop (lặp 2 s, code tăng pitch/âm lượng), meow, meow_wants, yowl, hiss, clatter, clank, deflate (bậc Rác "xịt"), boom (bậc cao), throw.
