@@ -7,13 +7,13 @@ using UnityEngine;
 namespace ChoDoLa.Editor
 {
     /// <summary>
-    /// Creates ChestFx_Miner.asset (MinerFxPreset values + the clips in Audio/Chests/miner/), and adds MinerHook to the
-    /// selected chest. A missing Miner mp3 falls back to the shared chest sound of the same role (Audio/Chests/).
+    /// Creates ChestFx_Miner.asset (MinerFxPreset values + ChestScript_Miner, core audio muted per ChestAudioRule).
     /// </summary>
     public static class MinerFxSetup
     {
         private const string ProfileFolder = "Assets/_Project/ScriptableObjects/ChestFx";
         private const string ProfilePath = ProfileFolder + "/ChestFx_Miner.asset";
+        private const string ScriptPath = ProfileFolder + "/ChestScript_Miner.asset";
 
         [MenuItem("Tools/Cho Do La/Create Miner Chest FX Profile")]
         public static void CreateMenu()
@@ -24,16 +24,14 @@ namespace ChoDoLa.Editor
         [MenuItem("Tools/Cho Do La/Add Miner Hook To Selected Chest")]
         public static void AddHookMenu()
         {
-            GameObject go = Selection.activeGameObject;
-            if (go == null) { Debug.LogWarning("[MinerFx] Select the chest root (the object with ChestRevealSequence) first."); return; }
-            if (go.GetComponent<MinerHook>() == null) go.AddComponent<MinerHook>();
-            ChestRevealSequence reveal = go.GetComponent<ChestRevealSequence>();
-            if (reveal != null) reveal.SetProfile(CreateOrUpdate());
-            else Debug.LogWarning("[MinerFx] No ChestRevealSequence on " + go.name + ": the hook is added but nothing will call it.");
-            EditorUtility.SetDirty(go);
+            // MinerHook cũ không còn được gắn: menu này chuyển sang kịch bản đào (một rương chỉ một hook).
+            MinerDigSetup.AddMenu();
         }
 
-        /// <summary>Creates the asset with the preset values, or fills only its missing clips if it exists.</summary>
+        /// <summary>
+        /// Creates the asset with the preset values (or reuses it), then EVERY run: rebuilds ChestScript_Miner and mutes the core
+        /// audio (ChestAudioRule.ApplyToProfile). The miner hook (MinerDigSequence) plays its own ElevenLabs sounds.
+        /// </summary>
         public static ChestFxProfile CreateOrUpdate()
         {
             ChestFxProfile p = AssetDatabase.LoadAssetAtPath<ChestFxProfile>(ProfilePath);
@@ -46,23 +44,19 @@ namespace ChoDoLa.Editor
                 AssetDatabase.CreateAsset(p, ProfilePath);
             }
 
-            int missing = 0;
-            p.tickClips = Fill(p.tickClips, MinerFxPreset.TickFiles, ChestFxPresets.TickFiles, ref missing);
-            p.lockClipsByTier = Fill(p.lockClipsByTier, MinerFxPreset.LockFiles, ChestFxPresets.LockFiles, ref missing);
-            if (p.whooshClip == null) p.whooshClip = Clip(MinerFxPreset.WhooshFile, ChestFxPresets.WhooshFile, ref missing);
-            if (p.openAmbientClip == null) p.openAmbientClip = Clip(MinerFxPreset.AmbientFile, ChestFxPresets.AmbientFile, ref missing);
-            p.accentClips = Fill(p.accentClips, MinerFxPreset.AccentFiles, ChestFxPresets.CoinFiles, ref missing);
-            if (p.stageClips == null || p.stageClips.Length == 0)
+            // Kịch bản: bấm → cue "dao_mo" (đào + nổ, ≤ 3 s) → mở rương. Dựng lại MỖI lần chạy menu.
+            ChestScript script = AssetDatabase.LoadAssetAtPath<ChestScript>(ScriptPath);
+            if (script == null)
             {
-                p.stageClips = new[]
-                {
-                    new ChestFxProfile.StageClip { stage = 1, clip = Clip(MinerFxPreset.LanternFile, null, ref missing), volume = 0.45f },
-                    new ChestFxProfile.StageClip { stage = 2, clip = Clip(MinerFxPreset.LidFile, ChestFxPresets.CreakFile, ref missing), volume = 0.7f },
-                    new ChestFxProfile.StageClip { stage = 4, clip = Clip(MinerFxPreset.CartFile, null, ref missing), volume = 0.35f },
-                    new ChestFxProfile.StageClip { stage = 4, clip = Shared(ChestFxPresets.ThudFile), volume = 0.6f },
-                };
+                script = ScriptableObject.CreateInstance<ChestScript>();
+                BuildScript(script);
+                AssetDatabase.CreateAsset(script, ScriptPath);
             }
-            if (missing > 0) Debug.LogWarning($"[MinerFx] {missing} sound(s) not found (neither Miner nor shared). The effect still runs without them.");
+            else BuildScript(script);
+            EditorUtility.SetDirty(script);
+            p.script = script;
+
+            ChestAudioRule.ApplyToProfile(p);   // A1: lõi câm, tension tắt (mỗi lần chạy)
 
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();
@@ -70,27 +64,13 @@ namespace ChoDoLa.Editor
             return p;
         }
 
-        private static AudioClip Shared(string file) => file == null ? null : AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + file);
-
-        private static AudioClip Clip(string minerFile, string sharedFile, ref int missing)
+        private static void BuildScript(ChestScript s)
         {
-            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(MinerFxPreset.AudioFolder + minerFile);
-            if (c != null) return c;
-            c = Shared(sharedFile);
-            if (c != null) Debug.LogWarning($"[MinerFx] {minerFile} not found; using shared {sharedFile}.");
-            else missing++;
-            return c;
-        }
-
-        private static AudioClip[] Fill(AudioClip[] current, string[] files, string[] shared, ref int missing)
-        {
-            AudioClip[] result = new AudioClip[files.Length];
-            for (int i = 0; i < files.Length; i++)
-            {
-                AudioClip existing = current != null && i < current.Length ? current[i] : null;
-                result[i] = existing != null ? existing : Clip(files[i], shared != null && i < shared.Length ? shared[i] : null, ref missing);
-            }
-            return result;
+            s.description = "Thợ Mỏ: bấm là đào ngay (cue dao_mo của MinerDigSequence, ≤ 3 s), xong mới mở rương.";
+            s.steps.Clear();
+            ChestStep dig = ChestStepBuilder.Add(s, "dao-mo", StepKind.Cue, StepStart.OnPress);
+            dig.cue = "dao_mo";
+            ChestStepBuilder.Add(s, "mo-ruong", StepKind.OpenBox, StepStart.AfterPrevious);
         }
 
         private static void EnsureFolder(string folder)
