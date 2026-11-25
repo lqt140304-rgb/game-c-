@@ -7,7 +7,7 @@ Viết ngày 2026-11-24. Phần 2 của việc cân bằng Sprint 5: giá và t�
 ## Kết luận ngắn
 
 1. **Nghiệm thu đạt trên các kịch bản shop đã đo**, với một trường hợp sát trần. Shop có cả 4 rương mở khóa và 2 rương chủ đề (n = 1.500): bot thường **17,2% (thận trọng) và 19,2% (liều)**, người chơi tính toán hoàn hảo tối đa **44,0%**, không rương nào quá 19% lượt mua. Nền chỉ 4 rương cơ bản: 17,5% / 18,3% và 43,4%.
-2. **Trường hợp sát trần:** shop có đủ 4 rương mở khóa nhưng chưa có rương chủ đề nào: người chơi giỏi **47,1%** (trần 47%), bot 14,7% / 16,7%. Một phần là nhiễu đo (khoảng 2 đến 3 điểm, xem mục 1), nhưng không có biên. Hai cách giữ biên: shop mỗi ngày chỉ bày 2 rương mở khóa (đo 44,1%), hoặc hạ Tổng Hợp thêm một nấc. Chủ dự án chọn (câu hỏi 2).
+2. **Luật shop đã chốt (2026-11-25): mỗi ngày bày 4 rương cơ bản và tối đa 4 rương mở khóa hoặc chủ đề, xoay vòng.** Với luật này, 4 rương mở khóa và 2 hoặc 4 rương chủ đề cho bot thường 16% đến 18%, người chơi giỏi 42,6% đến 45,0% (mục 3a). Trường hợp còn sát trần: đủ 4 rương mở khóa mà chưa có rương chủ đề nào, người chơi giỏi **47,1%**, bot 14,7% / 16,7%, vì luật không bớt rương nào. Đây là giai đoạn tạm, nằm trong nhiễu đo; hạ Tổng Hợp không giúp (47,9% và bot tụt 13,9%), nên giữ bảng.
 3. **Tổng Hợp** là rương mở khóa có sức nặng nhất: được chọn 17% đến 25% lượt mua, lời mỗi hộp 1.780.000 đ, bằng Gỗ và Vải Niêm. Lý do mua: Huyền thoại cơ bản 3% (cao nhất ngoài Rương Đen) và đủ 4 loại đồ của rương cơ bản.
 4. **Cổ Phong và Thiên Cơ là khó nhất**: tạo tác đúng hệ đáng giá hơn giá Kho vì có combo (CB1 cộng giá bán). Đắt hơn Kim Khí thì bot thường mua chúng thay Kim Khí và tụt còn 7% đến 11%; ngang Kim Khí mà nhiều đồ thì người chơi giỏi lên 48% đến 53%. Bảng đề xuất giữ giá **4.500.000 đ** (bằng Kim Khí) và cho lời thấp hơn Kim Khí: người chơi giỏi chọn 2% đến 5%. **Vai của hai rương này là "Kim Khí theo hệ"**, không phải đường tắt lên combo: mua rương hệ để săn combo vẫn kém hơn mua tạo tác ở Kho (36% đến 45% so với 44%). Nếu chủ dự án muốn chúng hấp dẫn hơn, cần đổi thiết kế, không chỉ đổi giá (câu hỏi 4).
 5. **Rác Quý** là vé số rẻ 600.000 đ: 86% rác, hiếm khi ra đồ thật (trông như rác nên manh mối không tách được). Lời mỗi hộp nhỏ (270.000 đ), người chơi giỏi mua 1,5% đến 3,5% lượt, chủ yếu khi thiếu tiền. Bỏ hẳn Huyền thoại của Rác Quý không đổi kết quả (47,1% cả hai), nên giữ 0,5% cho vui.
@@ -83,6 +83,20 @@ Tổng Hợp riêng (bảng trước, Rất hiếm 16%): bot 17,0 / 18,0, ngư�
 
 Bot thường mua Tổng Hợp nhiều nhất khi nó có trong shop (khoảng 49% lượt mua của bot), vì nó là rương đắt nhất bot mua được trước ngày 4. Lời mỗi hộp của Tổng Hợp thấp hơn Kim Khí một chút nên bot thận trọng tụt nhẹ (14,7% khi có đủ 4 rương mở khóa). Có rương chủ đề thì bot mua rương chủ đề thay vào và lên lại 17%.
 
+### 3a. Luật shop đã chốt: bày tối đa 4 rương mới mỗi ngày (n = 1.500)
+
+Chủ dự án chốt (2026-11-25): mỗi ngày shop bày 4 rương cơ bản và tối đa 4 rương mở khóa hoặc chủ đề, xoay vòng theo hạt giống ván và ngày (`scenario(..., shop_extra=4)`).
+
+| Rương đã mở | Bot thận trọng / liều | Người chơi giỏi | Lượt mua cao nhất |
+|---|---|---|---|
+| 4 mở khóa + 2 chủ đề, bày 4 | 16,9 / 18,3 | 39,1 / **45,0** / 39,4 / 39,7 | Kim Khí 22,3% (Tổng Hợp 9,2%, mỗi chủ đề 12% đến 13%) |
+| 4 mở khóa + 4 chủ đề, bày 4 | 16,4 / 17,8 | 36,5 / **42,6** / 38,0 / 39,8 | 19,4% |
+| 4 mở khóa (luật không bớt rương nào) | 14,7 / 16,7 | 41,6 / **47,1** / 41,7 / 41,5 | Kim Khí 29,7% |
+| 4 mở khóa, thử hạ Tổng Hợp (R18 T39 H26 X14 L3) | 13,9 / 15,5 | 40,6 / 47,9 / 41,7 / 41,3 | 31,0% |
+| 4 mở khóa + 2 chủ đề, bày 4, thử hạ Tổng Hợp | 16,5 / 18,3 | 39,7 / 44,8 / 39,1 / 40,1 | 22,6% |
+
+Kết luận: với luật bày 4, mọi trạng thái có ít nhất một rương chủ đề nằm trong mục tiêu có biên (người chơi giỏi 42,6% đến 45,0%, bot 16% đến 18%). Trạng thái "đủ 4 rương mở khóa, chưa có chủ đề nào" sát trần 47,1%, trong nhiễu đo; hạ Tổng Hợp không đổi được người chơi giỏi mà làm bot tụt, nên giữ bảng đề xuất.
+
 ## 4. Rương Cổ Phong và Thiên Cơ: vì sao khó nhất
 
 Dò trên kịch bản "4 cơ bản + một rương hệ" (n = 1.000 đến 1.500). "Săn hệ" là người chơi giỏi ưu tiên mua rương hệ ở ngày 1 đến 5 cho đến khi có đủ cặp combo (CB1 hoặc CB2), rồi chơi bình thường.
@@ -137,6 +151,7 @@ nohup python3 chest_unlock_final.py final > final.log &   # nền và từng k�
 nohup python3 chest_unlock_final.py sens > sens.log &     # đối chứng, shop xoay vòng, mở khóa giữa ván, độ nhạy (khoảng 25 phút)
 nohup python3 chest_unlock_final.py he > he.log &         # dò bảng Cổ Phong / Thiên Cơ (khoảng 10 phút)
 nohup python3 chest_unlock_final.py xacnhan > xn.log &    # xác nhận bảng cuối: đủ 4 rương mở khóa, tất cả, shop 2 rương mới mỗi ngày (khoảng 20 phút)
+nohup python3 chest_unlock_final.py shop4 > shop4.log &     # luật shop đã chốt: bày tối đa 4 rương mới mỗi ngày (khoảng 20 phút)
 ```
 
 Mã: `QA/chest_unlock.py` (`UNLOCK`, `THEME`, `THEME_LEG` là bảng đề xuất; `scenario()` dựng kịch bản shop; `shop_extra` cho shop xoay vòng; `from_day` cho mở khóa giữa ván; `hunt_strategy` là người chơi "săn hệ"; `restore()` trả lõi về như cũ).
@@ -144,10 +159,13 @@ Mã: `QA/chest_unlock.py` (`UNLOCK`, `THEME`, `THEME_LEG` là bảng đề xuấ
 ## 7. Câu hỏi mở cho chủ dự án
 
 1. **Duyệt bảng đề xuất** ở mục 2 (Tổng Hợp 6.000.000 đ, Cổ Phong và Thiên Cơ 4.500.000 đ, Rác Quý 600.000 đ, khung rương chủ đề 8.000.000 đ với Huyền thoại chủ đề 3% giá nền 90.000.000 đ).
-2. **Shop bày bao nhiêu rương một ngày?** Spec chưa nói. Bày tất cả rương đã mở thì trường hợp "đủ 4 rương mở khóa, chưa có chủ đề" sát trần (47,1%). Đề xuất: mỗi ngày shop bày 4 rương cơ bản và **tối đa 2 rương mở khóa hoặc chủ đề**, xoay vòng theo hạt giống ván (đo 44,1%, bot 15,8% / 16,6%). Cách khác: hạ Tổng Hợp thêm (ví dụ Hiếm 26%).
+2. ~~Shop bày bao nhiêu rương một ngày?~~ **Đã chốt (2026-11-25):** 4 rương cơ bản và tối đa 4 rương mở khóa hoặc chủ đề, xoay vòng (mục 3a). Trường hợp "đủ 4 rương mở khóa, chưa có chủ đề" vẫn sát trần (47,1%) vì luật không bớt rương nào; đây là giai đoạn tạm (thêm rương chủ đề thì xuống 45%). Hạ Tổng Hợp không giúp (đo 47,9% và bot tụt 13,9%), nên giữ bảng.
 3. **Bộ sưu tập của Cổ Phong, Thiên Cơ, Rác Quý** chưa có món nào (spec chỉ có tên rương). Cần Claude 1 đề xuất món; giá trung bình theo bậc nên giữ gần giá giữ chỗ ở mục 2.
 4. **Vai của Rương Cổ Phong / Thiên Cơ.** Mở khóa khi "đủ 1 hệ tạo tác", nhưng về kinh tế rương hệ không thể vừa rẻ vừa ra tạo tác đúng hệ mà không làm game dễ hơn. Bản đề xuất là "Kim Khí theo hệ", lời thấp, ít người mua. Nếu muốn rương có vai rõ hơn mà vẫn không buff, có thể đổi thiết kế: ví dụ tạo tác từ rương hệ **không cho đổi tiền khi trùng** (chỉ là món sưu tập), hoặc rương hệ ra **phiên bản sưu tập** của tạo tác (không có hiệu ứng). Việc của chủ dự án và Claude 1.
 5. **Rác Quý ra gì:** bản đo giả định "rác quý" là đồ trông như rác (cùng nhóm nguồn gốc với rác) nên manh mối không tách được. Nếu đồ của Rác Quý có nhóm riêng dễ nhận ra, người chơi giỏi lọc được hộp tốt và cần đo lại (bảng đầu với nhóm khác cho người chơi giỏi 50%).
 6. **Tạo tác của Cổ Phong / Thiên Cơ có tính trùng như Kim Khí** (đổi 50% giá Kho, đã chốt cho Kim Khí) hay không: bản đo giả định có.
 7. **Chủ đề có nhiều Huyền thoại** (Việt Nam 4 món, Truyền thuyết Châu Âu 4 món): bản đo dùng 1 món 90 triệu đ. Đề xuất giữ tỉ lệ bậc 3% chung và giá trung bình 90 triệu đ; chủ dự án quyết món nào đắt nhất.
 8. **Ngưỡng nhiễu đo:** trần 47% là tuyệt đối, nhưng chênh 2 đến 3 điểm giữa hai kịch bản là nhiễu. Nếu chủ dự án muốn chắc hơn, chạy lại kịch bản tổ hợp với n = 5.000 (khoảng 1 giờ).
+
+
+> **Ghi chú 2026-11-25 (Claude 2, phần 4):** luật shop đã chốt là tối đa 4 rương mở khóa hoặc chủ đề mỗi ngày, nên phương án "tối đa 2" ở trên không cần. Đo lại dưới luật soi mới nhất ([Sprint5SoiLoi.md](Sprint5SoiLoi.md)), n = 3.000: người chơi giỏi (liều + giám định) 4 mở khóa **44,3%** (cả khi bày hết lẫn tối đa 4), 4 mở khóa + 2 chủ đề **42,8% / 42,7%**; bot 12% đến 14%. Trường hợp "sát trần 47,1%" của đo cũ nằm trong nhiễu và không lặp lại. Chi tiết và kịch bản rương chỉ mở trong ván: [Sprint5CayPhatTrien.md](Sprint5CayPhatTrien.md).
