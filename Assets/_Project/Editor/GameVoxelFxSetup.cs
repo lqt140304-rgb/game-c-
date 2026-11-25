@@ -24,7 +24,7 @@ namespace ChoDoLa.Editor
             if (hook == null) hook = reveal.gameObject.AddComponent<GameVoxelHook>();
             GamePixelHook old = reveal.GetComponent<GamePixelHook>();
             if (old != null) old.enabled = false;   // tránh chồng hiệu ứng cũ
-            AssignClips(hook);
+            FillClips(hook);
             reveal.SetProfile(CreateOrUpdateProfile());
             EditorUtility.SetDirty(hook);
             EditorUtility.SetDirty(reveal);
@@ -52,7 +52,7 @@ namespace ChoDoLa.Editor
             return p;
         }
 
-        private static void AssignClips(GameVoxelHook h)
+        public static void FillClips(GameVoxelHook h)
         {
             h.insertCoinClip = C("insert_coin"); h.countBeepClip = C("count_beep"); h.countGoClip = C("count_go");
             h.loopBarClip = C("loop_bar"); h.bumpClip = C("bump"); h.jumpClip = C("jump"); h.coinClip = C("coin");

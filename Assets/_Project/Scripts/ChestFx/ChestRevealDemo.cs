@@ -115,7 +115,6 @@ namespace ChoDoLa.ChestFx
             reveal = rig.gameObject.AddComponent<ChestRevealSequence>();
             reveal.SetProfile(ProfileFor(prefab.name));
             reveal.Setup(possibleTiers);
-            if (prefab.name.Contains("Golden")) rig.gameObject.AddComponent<GoldenGlintHook>();
             Hook();
             _status = "Rương: " + prefab.name;
         }

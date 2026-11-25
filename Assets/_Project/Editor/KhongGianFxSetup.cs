@@ -9,7 +9,7 @@ namespace ChoDoLa.Editor
     /// <summary>
     /// Tools/Cho Do La/Create Khong Gian Chest FX Profile: creates ChestFx_KhongGian.asset (KhongGianFxPreset values),
     /// attaches the khong_gian sounds by file name (shared Audio/Chests set for anything missing), and builds the
-    /// KhongGianFx prefab (KhongGianHook) used as the profile's customFxPrefab. Re-running only fills missing clips.
+    /// KhongGianFx prefab (chỉ KhongGianMissionHook) used as the profile's customFxPrefab. Re-running only fills missing clips.
     /// </summary>
     public static class KhongGianFxSetup
     {
@@ -66,10 +66,7 @@ namespace ChoDoLa.Editor
             if (existing != null) return existing;
             EnsureFolder(PrefabFolder);
             GameObject go = new GameObject("KhongGianFx");
-            KhongGianHook hook = go.AddComponent<KhongGianHook>();
-            go.AddComponent<KhongGianMissionHook>();   // kịch bản "phi vụ tiếp tế" (âm tổng hợp trong code, không cần file)
-            hook.staticClip = Clip(KhongGianFxPreset.StaticFile, null, ref missing);
-            hook.meteorClip = Clip(KhongGianFxPreset.MeteorFile, null, ref missing);
+            go.AddComponent<KhongGianMissionHook>();   // CHỈ hook kịch bản "phi vụ tiếp tế"; KhongGianHook cũ không còn được gắn (T10)
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(go, PrefabPath);
             Object.DestroyImmediate(go);
             return prefab;
@@ -78,14 +75,17 @@ namespace ChoDoLa.Editor
         /// <summary>Prefab cũ (tạo trước khi có kịch bản mới) chưa có KhongGianMissionHook: thêm vào, giữ nguyên phần khác.</summary>
         private static void EnsureMission(GameObject prefab)
         {
-            if (prefab == null || prefab.GetComponent<KhongGianMissionHook>() != null) return;
+            if (prefab == null) return;
+            if (prefab.GetComponent<KhongGianMissionHook>() != null && prefab.GetComponent<KhongGianHook>() == null) return;
             string path = AssetDatabase.GetAssetPath(prefab);
             if (string.IsNullOrEmpty(path)) return;
             GameObject root = PrefabUtility.LoadPrefabContents(path);
-            root.AddComponent<KhongGianMissionHook>();
+            if (root.GetComponent<KhongGianMissionHook>() == null) root.AddComponent<KhongGianMissionHook>();
+            KhongGianHook old = root.GetComponent<KhongGianHook>();
+            if (old != null) Object.DestroyImmediate(old);   // hai hook chạy song song = chồng hiệu ứng; file KhongGianHook.cs vẫn giữ
             PrefabUtility.SaveAsPrefabAsset(root, path);
             PrefabUtility.UnloadPrefabContents(root);
-            Debug.Log("[KhongGianFx] Đã thêm KhongGianMissionHook vào " + path);
+            Debug.Log("[KhongGianFx] Prefab " + path + " chỉ còn KhongGianMissionHook.");
         }
 
         /// <summary>Own sound from khong_gian/, else the shared chest sound (with its Synth fallback).</summary>

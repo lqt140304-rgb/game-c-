@@ -42,7 +42,7 @@ namespace ChoDoLa.Editor
 
             AmNhacBassHook hook = reveal.GetComponent<AmNhacBassHook>();
             if (hook == null) hook = Undo.AddComponent<AmNhacBassHook>(reveal.gameObject);
-            hook.SetClips(LoadClips());
+            FillClips(hook);
             EditorUtility.SetDirty(hook);
 
             BoxOpenSequence box = reveal.GetComponent<BoxOpenSequence>();
@@ -55,6 +55,8 @@ namespace ChoDoLa.Editor
             }
             Debug.Log("[AmNhacBass] " + reveal.name + " đã nối kịch bản Loa Bass. Play → B = bấm theo nhịp, V/click = thả đĩa than.");
         }
+
+        public static void FillClips(AmNhacBassHook hook) => hook.SetClips(LoadClips());
 
         public static AmNhacBassHook.Clips LoadClips()
         {
@@ -75,7 +77,7 @@ namespace ChoDoLa.Editor
             return c;
         }
 
-        private static ChestFxProfile CreateOrUpdateProfile()
+        public static ChestFxProfile CreateOrUpdateProfile()
         {
             // Start from the Am Nhac profile (clips, colours), copy it, then quiet the shared layers.
             ChestFxProfile src = AmNhacFxSetup.CreateOrUpdate();

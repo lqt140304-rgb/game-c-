@@ -18,6 +18,9 @@ namespace ChoDoLa.Editor
         {
             GameObject go = Selection.activeGameObject;
             if (go == null) { Debug.LogWarning("[GoldenSlot] Chọn gốc rương (có ChestRevealSequence) trước."); return; }
+            // Hook cũ cùng loại: GoldenGlintHook và các bước xu của script cũ bắn xu hai lần (T10).
+            GoldenGlintHook old = go.GetComponent<GoldenGlintHook>();
+            if (old != null) Undo.DestroyObjectImmediate(old);
             GoldenSlotHook h = go.GetComponent<GoldenSlotHook>();
             if (h == null) h = go.AddComponent<GoldenSlotHook>();
             AssignClips(h);

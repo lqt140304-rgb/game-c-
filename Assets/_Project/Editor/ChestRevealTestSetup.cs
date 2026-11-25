@@ -96,7 +96,6 @@ namespace ChoDoLa.Editor
             so.FindProperty("profile").objectReferenceValue = golden;
             so.FindProperty("audioSource").objectReferenceValue = audio;
             so.ApplyModifiedPropertiesWithoutUndo();
-            if (chest.name.Contains("Golden") && rig.GetComponent<GoldenGlintHook>() == null) rig.gameObject.AddComponent<GoldenGlintHook>();
 
             GameObject demoGo = new GameObject("ChestRevealDemo");
             demoGo.transform.SetParent(testRoot.transform, false);
@@ -161,8 +160,13 @@ namespace ChoDoLa.Editor
                 script = ScriptableObject.CreateInstance<ChestScript>();
                 ChestFxPresets.ApplyGoldenScript(script);
                 AssetDatabase.CreateAsset(script, GoldenScriptPath);
-                EditorUtility.SetDirty(script);
             }
+            else
+            {
+                // Dựng lại mỗi lần chạy menu: bản cũ còn các bước xu/nổ sẽ bắn xu hai lần cùng GoldenSlotHook.
+                ChestFxPresets.ApplyGoldenScript(script);
+            }
+            EditorUtility.SetDirty(script);
             if (p.script == null) p.script = script;
 
             EditorUtility.SetDirty(p);

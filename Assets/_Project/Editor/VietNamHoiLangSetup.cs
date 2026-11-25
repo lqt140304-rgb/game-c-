@@ -18,12 +18,18 @@ namespace ChoDoLa.Editor
         [MenuItem("Tools/Cho Do La/Create Viet Nam Hoi Lang FX")]
         public static void CreateMenu()
         {
+            Selection.activeObject = CreateOrUpdateProfile();
+        }
+
+        /// <summary>Tạo/cập nhật hồ sơ ChestFx_VietNam với prefab Hồi Làng; trả hồ sơ (làm maker cho thư viện menu cầm rương).</summary>
+        public static ChestFxProfile CreateOrUpdateProfile()
+        {
             ChestFxProfile p = VietNamFxSetup.CreateOrUpdate();
             p.customFxPrefab = BuildPrefab();
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();
-            Selection.activeObject = p;
             Debug.Log("[VietNamHoiLang] ChestFx_VietNam dùng kịch bản Đêm hội làng (" + PrefabPath + ").");
+            return p;
         }
 
         private static GameObject BuildPrefab()

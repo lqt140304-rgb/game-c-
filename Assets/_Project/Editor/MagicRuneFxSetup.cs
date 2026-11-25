@@ -38,13 +38,7 @@ namespace ChoDoLa.Editor
         {
             MagicRuneRitual r = chest.GetComponent<MagicRuneRitual>();
             if (r == null) r = Undo.AddComponent<MagicRuneRitual>(chest);
-            int missing = 0;
-            r.buildClip = Load("sfx_magicrune_build.wav", ref missing);
-            r.stoneClip = Load("sfx_magicrune_stone.wav", ref missing);
-            r.wispClip = Load("sfx_magicrune_wisp.wav", ref missing);
-            r.endClips = new AudioClip[EndFiles.Length];
-            for (int i = 0; i < EndFiles.Length; i++) r.endClips[i] = Load(EndFiles[i], ref missing);
-            if (missing > 0) Debug.LogWarning($"[MagicRune] Thiếu {missing} âm trong {AudioFolder} (chạy Tools/Audio/make_magic_rune_sfx.py). Hiệu ứng vẫn chạy, chỉ im.");
+            FillClips(r);
 
             foreach (MagicHook old in chest.GetComponentsInChildren<MagicHook>())
             {
@@ -55,6 +49,18 @@ namespace ChoDoLa.Editor
             EditorUtility.SetDirty(r);
             Debug.Log("[MagicRune] Xong. Play, bấm mở Chest_Magic: âm tụ phép phải vang NGAY lúc bấm.");
             return r;
+        }
+
+        /// <summary>Gán âm trong Audio/Chests/magic_rune/ (dùng chung cho menu Setup và thư viện menu cầm rương).</summary>
+        public static void FillClips(MagicRuneRitual r)
+        {
+            int missing = 0;
+            r.buildClip = Load("sfx_magicrune_build.wav", ref missing);
+            r.stoneClip = Load("sfx_magicrune_stone.wav", ref missing);
+            r.wispClip = Load("sfx_magicrune_wisp.wav", ref missing);
+            r.endClips = new AudioClip[EndFiles.Length];
+            for (int i = 0; i < EndFiles.Length; i++) r.endClips[i] = Load(EndFiles[i], ref missing);
+            if (missing > 0) Debug.LogWarning($"[MagicRune] Thiếu {missing} âm trong {AudioFolder} (chạy Tools/Audio/make_magic_rune_sfx.py). Hiệu ứng vẫn chạy, chỉ im.");
         }
 
         [MenuItem("Tools/Cho Do La/Magic Rune/Create Player Rune Stone")]

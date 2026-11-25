@@ -36,6 +36,32 @@ namespace ChoDoLa.Editor
 
             MimicFeedHook h = go.GetComponent<MimicFeedHook>();
             if (h == null) h = Undo.AddComponent<MimicFeedHook>(go);
+            FillClips(h);
+            TuneProfile(go.GetComponent<ChestRevealSequence>().Profile, h);
+            EditorUtility.SetDirty(h);
+            EditorUtility.SetDirty(box);
+            Debug.Log("[MimicFeed] Đã gắn Rương Đói. Play → mở rương → bấm chuột vào đồ rơi (hoặc phím F) để cho ăn.");
+        }
+
+        /// <summary>Phần chỉnh hồ sơ ChestFx_Mimic cho màn Rương Đói (dùng chung với thư viện menu cầm rương).</summary>
+        public static void TuneProfile(ChestFxProfile prof, MimicFeedHook h)
+        {
+            // Nối khung: ChestTension (âm căng từ lúc bấm, rẽ theo bậc lúc chốt) dùng âm của Mimic.
+            if (prof != null && prof.tension != null)
+            {
+                prof.tension.enabled = true;
+                prof.tension.loopClip = h.stomachLoopClip;
+                prof.tension.pulseClip = h.heartbeatClip;
+                prof.tension.deflateClip = h.deflateClip;
+                prof.tension.swellClip = h.boomClip;
+                prof.tension.pitchEnd = 1.5f;   // bụng réo, không phải còi: đừng vọt quá cao
+                EditorUtility.SetDirty(prof);
+            }
+        }
+
+        /// <summary>Gán 16 âm trong Audio/Chests/mimic_feed/.</summary>
+        public static void FillClips(MimicFeedHook h)
+        {
             int missing = 0;
             h.wakeClip = Clip("sfx_mf_wake.wav", ref missing);
             h.stomachLoopClip = Clip("sfx_mf_stomach_loop.wav", ref missing);
@@ -53,22 +79,7 @@ namespace ChoDoLa.Editor
             h.tossClip = Clip("sfx_mf_toss.wav", ref missing);
             h.hopClip = Clip("sfx_mf_hop.wav", ref missing);
             h.giggleClip = Clip("sfx_mf_giggle.wav", ref missing);
-            // Nối khung: ChestTension (âm căng từ lúc bấm, rẽ theo bậc lúc chốt) dùng âm của Mimic.
-            ChestFxProfile prof = go.GetComponent<ChestRevealSequence>().Profile;
-            if (prof != null && prof.tension != null)
-            {
-                prof.tension.enabled = true;
-                prof.tension.loopClip = h.stomachLoopClip;
-                prof.tension.pulseClip = h.heartbeatClip;
-                prof.tension.deflateClip = h.deflateClip;
-                prof.tension.swellClip = h.boomClip;
-                prof.tension.pitchEnd = 1.5f;   // bụng réo, không phải còi: đừng vọt quá cao
-                EditorUtility.SetDirty(prof);
-            }
-            EditorUtility.SetDirty(h);
-            EditorUtility.SetDirty(box);
             if (missing > 0) Debug.LogWarning($"[MimicFeed] Thiếu {missing} file âm trong {AudioFolder} (chạy Tools/Audio/make_mimic_feed_sfx.py).");
-            Debug.Log("[MimicFeed] Đã gắn Rương Đói. Play → mở rương → bấm chuột vào đồ rơi (hoặc phím F) để cho ăn.");
         }
 
         private static AudioClip Clip(string file, ref int missing)

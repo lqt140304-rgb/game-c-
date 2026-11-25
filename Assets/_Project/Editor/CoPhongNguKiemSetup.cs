@@ -18,6 +18,12 @@ namespace ChoDoLa.Editor
         [MenuItem("Tools/Cho Do La/Setup Co Phong Ngu Kiem")]
         public static void Run()
         {
+            Selection.activeObject = CreateOrUpdateProfile();
+        }
+
+        /// <summary>Tạo/cập nhật hồ sơ ChestFx_CoPhong và đặt prefab Ngự Kiếm làm customFxPrefab; trả hồ sơ (làm maker cho thư viện menu cầm rương).</summary>
+        public static ChestFxProfile CreateOrUpdateProfile()
+        {
             ChestFxProfile p = CoPhongFxSetup.CreateOrUpdate();
             GameObject go = new GameObject("ChestFx_CoPhongNguKiem");
             CoPhongNguKiemHook h = go.AddComponent<CoPhongNguKiemHook>();
@@ -32,8 +38,8 @@ namespace ChoDoLa.Editor
             Object.DestroyImmediate(go);
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();
-            Selection.activeObject = p;
             Debug.Log("[NguKiem] ChestFx_CoPhong dùng " + PrefabPath);
+            return p;
         }
 
         private static AudioClip Clip(string n)
