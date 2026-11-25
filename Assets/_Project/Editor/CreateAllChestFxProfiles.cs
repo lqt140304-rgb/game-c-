@@ -35,7 +35,7 @@ namespace ChoDoLa.Editor
                 Maker("Mimic", MimicFxSetup.CreateOrUpdateProfile),
                 Maker("Miner", MinerFxSetup.CreateOrUpdate),
                 Maker("RacQuy", RacQuyFxSetup.CreateOrUpdate),
-                Maker("HaiTac", HaiTacFxSetup.CreateOrUpdateProfile),
+                Maker("HaiTac", HaiTacSeqSetup.CreateOrUpdateProfile),
                 Maker("AmNhac", AmNhacFxSetup.CreateOrUpdate),
                 Maker("VietNam", VietNamFxSetup.CreateOrUpdate),
                 Maker("TuoiTho", TuoiThoFxSetup.CreateOrUpdate),
@@ -127,15 +127,7 @@ namespace ChoDoLa.Editor
                         h.kickoffClip = Clip(TheThaoFxPreset.AudioFolder + TheThaoFxPreset.KickoffFile);
                         h.airHornClip = Clip(TheThaoFxPreset.AudioFolder + TheThaoFxPreset.AirHornFile);
                     });
-                case "HaiTac":
-                    return SaveHook<HaiTacHook>(key, h =>
-                    {
-                        SerializedObject so = new SerializedObject(h);
-                        SetClip(so, "cannonClip", HaiTacFxPreset.AudioFolder + HaiTacFxPreset.CannonFile);
-                        SetClip(so, "coinsClip", HaiTacFxPreset.AudioFolder + HaiTacFxPreset.CoinsFile, ChestFxPresets.AudioFolder + "sfx_coin_jingle.mp3");
-                        SetClip(so, "seagullClip", HaiTacFxPreset.AudioFolder + HaiTacFxPreset.SeagullFile);
-                        so.ApplyModifiedPropertiesWithoutUndo();
-                    });
+                case "HaiTac": return SaveHook<HaiTacSeqHook>(key, HaiTacSeqSetup.FillClips);   // kịch bản đại bác
                 default: return null;   // RacQuy, VietNam, KhongGian, NhatBan, CoPhong, ThienCo: hook in customFxPrefab
             }
         }
