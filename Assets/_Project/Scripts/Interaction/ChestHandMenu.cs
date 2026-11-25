@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ChoDoLa.ChestFx;
 using ChoDoLa.Player;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
@@ -13,6 +14,8 @@ namespace ChoDoLa.Interaction
     /// <see cref="HeldItemViewmodel"/>. While holding: [O] open (BoxOpenSequence.Play, with the key intro if the
     /// model has a "Key" child), [R] close again, [F] inspect and [Q] put away (handled by the viewmodel),
     /// [ and ] previous / next chest, [L] flip which side counts as the front if the lid opens the wrong way.
+    /// [P] opens with the full reveal effect (ChestRevealSequence + the chest's FX profile from <see cref="fxLibrary"/>,
+    /// a random demo item), [T] cycles the tier: random, then Rác ... Huyền thoại forced.
     ///
     /// Each chest is wrapped before it is handed to the viewmodel: Template (inactive) / Facing (turns the front
     /// toward the camera) / chest model. The viewmodel only moves and scales the outer copy, so BoxOpenSequence,
@@ -32,12 +35,15 @@ namespace ChoDoLa.Interaction
         [Tooltip("Used when the front cannot be detected. glTF models face +Z.")]
         [SerializeField] private bool fallbackFrontIsPositiveZ = true;
 
+        [Header("Full reveal [P] (filled by Tools/Cho Do La/Create All Chest FX Profiles)")]
+        [SerializeField] private ChestFxLibrary fxLibrary;
+
         [Header("Screen")]
         [SerializeField] private bool showKeyHelp = true;
 
         private const string Prefix = "Chest_";
 
-        private enum Act { Menu, Open, Close, Prev, Next, Up, Down, Confirm, Flip }
+        private enum Act { Menu, Open, Close, Prev, Next, Up, Down, Confirm, Flip, FullOpen, Tier }
 
         private bool _menuOpen;
         private int _cursor;
@@ -49,6 +55,8 @@ namespace ChoDoLa.Interaction
         private int _serial;
         private string _status = string.Empty;
         private Vector2 _listScroll;
+        private int _forcedTier = -1;          // [T]: -1 random, else ChestTier rank
+        private ChestRevealSequence _heldReveal;
 
         private FirstPersonController _controller;
         private bool _controllerWasEnabled;
@@ -139,9 +147,39 @@ namespace ChoDoLa.Interaction
 
             if (Pressed(Act.Close) && _heldBox != null)
             {
+                if (_heldReveal != null) _heldReveal.ResetReveal();
                 _heldBox.ResetToClosed();
             }
+
+            if (Pressed(Act.Tier))
+            {
+                _forcedTier = _forcedTier + 1 >= ChestTierUtil.Count ? -1 : _forcedTier + 1;
+                _status = "Bậc khi bấm P: " + TierLabel();
+            }
+
+            if (Pressed(Act.FullOpen)) PlayFullReveal();
         }
+
+        /// <summary>[P]: open the held chest with the full reveal effect (roulette, silhouette, the chest's own FX).</summary>
+        private void PlayFullReveal()
+        {
+            if (_heldBox == null) { _status = "Rương này không có lớp Lid, không mở được."; return; }
+            if (fxLibrary == null)
+            {
+                _status = "Chưa có thư viện hiệu ứng: chạy Tools/Cho Do La/Create All Chest FX Profiles (khi cảnh đang mở), rồi Play lại.";
+                return;
+            }
+            if (_heldReveal != null && _heldReveal.IsPlaying) return;
+
+            ChestTier tier = _forcedTier >= 0 ? (ChestTier)_forcedTier : (ChestTier)Random.Range(0, ChestTierUtil.Count);
+            GameObject item = fxLibrary.RandomItem();
+            Transform rig = _heldBox.transform;
+            float scale = Mathf.Max(rig.lossyScale.x, Mathf.Max(rig.lossyScale.y, rig.lossyScale.z));   // the hand shrinks the chest
+            _heldReveal = fxLibrary.PlayOn(rig, chests[_heldIndex].name, tier, item, scale, out string message);
+            _status = $"Mở đầy đủ: bậc {tier.DisplayName()}, món {(item != null ? item.name : "(hình cầu)")}." + (string.IsNullOrEmpty(message) ? string.Empty : "\n" + message);
+        }
+
+        private string TierLabel() => _forcedTier < 0 ? "ngẫu nhiên" : ((ChestTier)_forcedTier).DisplayName();
 
         private int CurrentIndex()
         {
@@ -269,6 +307,7 @@ namespace ChoDoLa.Interaction
 
             _heldCopy = FindChild(viewmodel.transform, templateName + "(Clone)");
             _heldBox = _heldCopy != null ? _heldCopy.GetComponentInChildren<BoxOpenSequence>(true) : null;
+            _heldReveal = null;
             _heldIndex = _heldCopy != null ? index : -1;
             if (_heldCopy == null) _status = "Không cầm được rương (tay đang bận?).";
         }
@@ -376,7 +415,8 @@ namespace ChoDoLa.Interaction
             string text = holding + "\n"
                 + "[C] Menu rương    [ / ] Rương trước / sau\n"
                 + "[O] Mở nắp    [R] Đóng lại    [F] Soi    [Q] Cất\n"
-                + "[L] Đảo mặt trước (nếu nắp mở ngược)";
+                + "[L] Đảo mặt trước (nếu nắp mở ngược)\n"
+                + $"[P] Mở đầy đủ có hiệu ứng    [T] Bậc: {TierLabel()}";
             if (_flipFront) text += "\n(đang đảo mặt trước)";
             if (!string.IsNullOrEmpty(_status)) text += "\n" + _status;
 
@@ -449,6 +489,8 @@ namespace ChoDoLa.Interaction
                 case Act.Down: return k.downArrowKey.wasPressedThisFrame;
                 case Act.Confirm: return k.enterKey.wasPressedThisFrame || k.numpadEnterKey.wasPressedThisFrame;
                 case Act.Flip: return k.lKey.wasPressedThisFrame;
+                case Act.FullOpen: return k.pKey.wasPressedThisFrame;
+                case Act.Tier: return k.tKey.wasPressedThisFrame;
             }
             return false;
 #else
@@ -463,6 +505,8 @@ namespace ChoDoLa.Interaction
                 case Act.Down: return Input.GetKeyDown(KeyCode.DownArrow);
                 case Act.Confirm: return Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter);
                 case Act.Flip: return Input.GetKeyDown(KeyCode.L);
+                case Act.FullOpen: return Input.GetKeyDown(KeyCode.P);
+                case Act.Tier: return Input.GetKeyDown(KeyCode.T);
             }
             return false;
 #endif

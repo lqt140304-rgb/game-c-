@@ -11,17 +11,19 @@ namespace UnityEngine
         public static T FindFirstObjectByType<T>() where T : Object => null;
         public static implicit operator bool(Object o) => o != null; }
     public enum HideFlags { None, DontSave }
-    public class Component : Object { public Transform transform; public GameObject gameObject;
+    public partial class Component : Object { public Transform transform; public GameObject gameObject;
         public T GetComponent<T>() => default; public T[] GetComponentsInChildren<T>() => null; public T[] GetComponentsInChildren<T>(bool b) => null; }
+    public partial class Component { public Component GetComponent(Type t) => null; }   // used by ChestFxLibrary
     public class Behaviour : Component { public bool enabled; }
     public class MonoBehaviour : Behaviour { public Coroutine StartCoroutine(IEnumerator e) => null; public void StopAllCoroutines() {} }
     public class Coroutine {}
     public class WaitForSeconds { public WaitForSeconds(float s) {} }
     public class ScriptableObject : Object { public static T CreateInstance<T>() where T : ScriptableObject => default; }
-    public class GameObject : Object { public GameObject() {} public GameObject(string n) {} public Transform transform; public bool activeSelf; public bool activeInHierarchy;
+    public partial class GameObject : Object { public GameObject() {} public GameObject(string n) {} public Transform transform; public bool activeSelf; public bool activeInHierarchy;
         public void SetActive(bool b) {} public T AddComponent<T>() where T : Component => default; public T GetComponent<T>() => default;
         public T[] GetComponentsInChildren<T>() => null; public T[] GetComponentsInChildren<T>(bool b) => null; public string tag;
         public static GameObject CreatePrimitive(PrimitiveType t) => null; public static GameObject Find(string n) => null; }
+    public partial class GameObject { public Component AddComponent(Type t) => null; }   // used by ChestFxLibrary
     public enum PrimitiveType { Sphere, Capsule, Cylinder, Cube, Plane, Quad }
     public class Transform : Component, IEnumerable { public Vector3 position, localPosition, localScale, lossyScale, up, forward, right; public Quaternion rotation, localRotation;
         public Transform parent; public Transform root; public Matrix4x4 worldToLocalMatrix, localToWorldMatrix;
