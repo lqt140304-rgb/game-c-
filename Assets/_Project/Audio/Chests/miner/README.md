@@ -18,3 +18,14 @@ Tạo bằng ElevenLabs sound-generation (prompt_influence 0,6) ngày 2026-11-24
 | sfx_miner_cart.mp3 | 1,5 | giai đoạn 4 (Mở toang), nhỏ | Rusty mine cart wheels rolling briefly on iron rails then a bump |
 
 Dùng chung (không làm riêng): `../Synth/sfx_chest_lid_thud.wav` ở giai đoạn 4. Thiếu file Miner nào thì `MinerFxSetup` lấy âm chung cùng vai trò.
+| `sfx_miner_rumble_loop.mp3` | 8 | deep underground mine rumble, low creaking timber supports, distant water drips, seamless loop |
+| `sfx_miner_thump.mp3` | 0.5 | deep muffled underground thump like a heartbeat in rock |
+| `sfx_miner_pick.mp3` | 0.6 | pickaxe striking hard rock, metallic clink and crack |
+| `sfx_miner_crumble.mp3` | 1.0 | chunks of rock breaking off and tumbling |
+| `sfx_miner_fuse.mp3` | 2.0 | dynamite fuse sizzling and spitting sparks |
+| `sfx_miner_dynamite.mp3` | 2.0 | dynamite explosion in a mine tunnel, rocks blasting apart, rumble |
+| `sfx_miner_canary.mp3` | 0.8 | canary bird chirping happily |
+| `sfx_miner_canary_faint.mp3` | 0.8 | tiny bird letting out a weak squeak and falling, comedic |
+| `sfx_miner_nugget.mp3` | 0.4 | gold nugget clinking on rock |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_miner_nugget.mp3` (0.4 s).

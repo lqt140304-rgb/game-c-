@@ -16,19 +16,22 @@ namespace ChoDoLa.ChestFx
     ///   Người chơi bấm chuột vào nó hoặc phím G để nhét vào khớp; không thì chim cu bật ra khỏi cửa nhỏ, gáy, và hút nó vào.
     ///   Lần nhét đầu có thể lệch răng (theo hạt giống, chỉ trang trí): kẹt, rung, bật ra rồi vào lại.
     ///   Khớp xong cả đoàn răng quay theo nhau đúng tỉ số bán kính.
-    /// - Con lắc thật (Rigidbody + HingeJoint) được đẩy mỗi nhịp tắc. Đồng hồ cát: hạt đồng là Rigidbody rơi qua cổ, chồng đống.
-    /// - Chuông điểm giờ ở 35 %, 65 %, 90 % thời gian chờ (1, 2, 3 tiếng) — GIỐNG NHAU mọi bậc, giữ bí mật tới lúc chốt.
+    /// - Con lắc thật (Rigidbody + HingeJoint) được đẩy mỗi nhịp tắc.
+    /// - Chuông điểm giờ chỉ 2 mốc: 50 % (1 tiếng) và 85 % (2 tiếng) thời gian chờ — GIỐNG NHAU mọi bậc, giữ bí mật tới lúc chốt.
     /// - Chốt bậc (OnTierLocked):
-    ///   Rác: tích tắc tắt phựt, kẹt răng, LÒ XO BUNG: bánh răng thành vật thể tự do văng tứ tung, con lắc đứt rơi,
-    ///        đồng hồ cát đổ nghiêng tràn hạt, rương xẹp lệch, chim cu ló ra gáy méo rồi rũ xuống. Âm rớt cụt: hết dây cót.
-    ///   Thường..Huyền thoại: chuông đánh (số tiếng = hạng), lò xo bật rương nhảy lên (cao theo hạng). Rất hiếm+: hộp nhạc dâng.
-    ///        Huyền thoại: chuông lớn, rương bay xoay một vòng, bánh răng tách ra quay quanh rương như mô hình thiên văn,
-    ///        hạt cát nổ tung lên thành mưa đồng (lực nổ thật).
+    ///   Rác: tích tắc dừng, lặng 0,2 s, một tiếng xịt; LÒ XO BUNG: bánh răng thành vật thể tự do văng tứ tung, con lắc đứt rơi,
+    ///        rương xẹp lệch, chim cu ló ra gáy méo rồi rũ xuống.
+    ///   Thường..Huyền thoại: tiếng chốt theo bậc (stingClips), lò xo bật rương nhảy lên (cao theo hạng, theo chiều cao rương).
+    ///        Rất hiếm+: thêm tiếng phóng. Huyền thoại: rương xoay một vòng, bánh răng tách ra quay quanh rương như mô hình
+    ///        thiên văn (≤ 3 s rồi về chỗ), 12 bánh răng nhỏ bắn ra từ miệng rương.
+    /// Đã thu gọn theo kế hoạch 2026-11-25 (bỏ đồng hồ cát, chuông còn 2 mốc, âm ElevenLabs theo A1–A11).
     /// Chỉ TRANG TRÍ: không đọc/đổi gì ngoài RolledTier lúc đã chốt; ngẫu nhiên dùng System.Random theo hạt giống.
     /// </summary>
     public class ThienCoHook : ChestFxHook
     {
-        [Header("Âm (ThienCoFxSetup điền từ Audio/Chests/thien_co/clockwork/)")]
+        [Header("Âm (ThienCoFxSetup điền từ Audio/Chests/thien_co/*.mp3, theo Tools/Audio/elevenlabs_chest_manifest.json)")]
+        [Tooltip("TC: tiếng chốt theo bậc [Rác, Thường, Hiếm, Rất hiếm, Huyền thoại] = sfx_thienco_lock_*.mp3")]
+        public AudioClip[] stingClips = new AudioClip[5];
         public AudioClip tick;
         public AudioClip tock;
         public AudioClip wind;
@@ -36,25 +39,24 @@ namespace ChoDoLa.ChestFx
         public AudioClip meshOk;
         public AudioClip jam;
         public AudioClip bell;
-        public AudioClip bellBig;
         public AudioClip sproing;
-        public AudioClip winddown;
         public AudioClip cuckoo;
         public AudioClip cuckooSad;
         public AudioClip launch;
-        public AudioClip sandLoop;
-        public AudioClip musicBoxRise;
 
         [Header("Nhịp")]
         [Tooltip("Hạt giống trang trí (0 = mỗi lần một khác). Không ảnh hưởng bậc.")]
         public int decorationSeed;
         [Tooltip("Số giai đoạn BoxOpenSequence khoá màu (khớp lockStage của ChestRevealSequence, mặc định 3).")]
         public int lockStageGuess = 3;
-        public float tickIntervalStart = 0.55f;
-        public float tickIntervalEnd = 0.11f;
+        public float tickIntervalStart = 0.65f;
+        public float tickIntervalEnd = 0.14f;
+        [Tooltip("Hệ số âm lượng chung, chỉ nhân MỘT lần trong Play (hồ sơ lõi đã câm).")]
         public float volume = 0.8f;
-        [Tooltip("Giây chờ người chơi nhét bánh răng trước khi chim cu tự làm (tính theo phần thời gian tới chốt).")]
-        [Range(0.2f, 0.9f)] public float autoInsertAt = 0.5f;
+        [Tooltip("Giây chờ người chơi nhét bánh răng (kể từ lúc nó rơi) trước khi chim cu tự làm. Tối đa 3 s.")]
+        [Range(0.5f, 3f)] public float autoInsertAfter = 2.2f;
+        [Tooltip("Số bánh răng nhỏ bắn ra từ miệng rương ở Huyền thoại.")]
+        [Range(0, 12)] public int smallGears = 12;
 
         // ------------------------------------------------------------------ trạng thái
 
@@ -65,7 +67,10 @@ namespace ChoDoLa.ChestFx
         private float _t0, _eta;
         private Transform _root;
         private readonly List<Object> _owned = new List<Object>();
-        private AudioSource _sfx, _loop;
+        private AudioSource _sfx;
+        private float _lastEvent = -999f, _lastImpact = -999f, _lastTail = -999f;
+        private int _tails;
+        private float _tailFrom;
 
         // Khung toạ độ (thế giới) đo lúc bắt đầu
         private Vector3 _base, _right, _front;
@@ -81,22 +86,17 @@ namespace ChoDoLa.ChestFx
         private bool _wrongFirst, _byPlayer;
         private Vector3 _slotPos;
 
-        // Con lắc, đồng hồ cát, chim cu
+        // Con lắc, chim cu
         private Rigidbody _pivot, _bob;
         private HingeJoint _hinge;
         private int _kickSign = 1;
-        private Transform _glass, _sandTop;
-        private readonly List<Rigidbody> _grains = new List<Rigidbody>();
-        private readonly List<Collider> _glassWalls = new List<Collider>();
-        private float _nextGrain;
         private Transform _birdArm, _bird;
         private float _birdOut, _birdTarget, _birdDroop;
 
         // Âm theo nhịp
         private float _nextTick;
         private int _tickCount;
-        private readonly bool[] _chimed = new bool[3];
-        private bool _wound2;
+        private readonly bool[] _chimed = new bool[2];
 
         // Chốt và cú bật
         private bool _locked;
@@ -105,6 +105,7 @@ namespace ChoDoLa.ChestFx
         private readonly List<KeyValuePair<float, System.Action>> _cues = new List<KeyValuePair<float, System.Action>>();
         private float _hopY, _hopV, _spin, _spinV, _slump, _tilt;
         private bool _orrery;
+        private float _orreryEnd;
 
         // Lệch đã áp lên gốc rương (gỡ ra đầu mỗi khung, áp lại cuối khung)
         private Vector3 _appliedPos, _appliedScale = Vector3.one;
@@ -126,9 +127,8 @@ namespace ChoDoLa.ChestFx
             _started = true;
 
             // ÂM BẮT ĐẦU NGAY KHI BẤM MỞ
-            Play(wind, 0.8f, 1f);
-            _nextTick = Time.time + 0.45f;
-            if (_loop != null && sandLoop != null) { _loop.clip = sandLoop; _loop.loop = true; _loop.volume = 0f; _loop.Play(); }
+            PlayEvent(wind, 0.6f, 1f);
+            _nextTick = Time.time + 0.3f;
             _wrongFirst = _rng.NextDouble() < 0.5;
         }
 
@@ -213,19 +213,13 @@ namespace ChoDoLa.ChestFx
 
             _sfx = _root.gameObject.AddComponent<AudioSource>();
             _sfx.playOnAwake = false; _sfx.spatialBlend = 0.5f;
-            _loop = _root.gameObject.AddComponent<AudioSource>();
-            _loop.playOnAwake = false; _loop.spatialBlend = 0.5f;
 
             Material brass = Mat(ThienCoRig.Brass, "ThienCo_Brass");
             Material dark = Mat(ThienCoRig.DarkBrass, "ThienCo_DarkBrass");
             Material steel = Mat(ThienCoRig.Steel, "ThienCo_Steel");
-            Material sand = Mat(ThienCoRig.Sand, "ThienCo_Sand");
-            Material glass = ChestFxFactory.CreateAdditive(null, "ThienCo_Glass");
-            ChestFxFactory.SetColor(glass, new Color(0.35f, 0.7f, 0.8f, 0.25f));
-            _owned.Add(glass);
 
-            // Sàn và thân rương vô hình để vật rơi có chỗ chạm.
-            ThienCoRig.StaticBox("Floor", _root, Vector3.down * 0.02f, Quaternion.identity, new Vector3(4f, 0.04f, 4f) * _k);
+            // Sàn và thân rương vô hình để vật rơi có chỗ chạm (sàn chỉ đủ rộng cho vùng ≤ 1,5 S).
+            ThienCoRig.StaticBox("Floor", _root, Vector3.down * 0.02f, Quaternion.identity, new Vector3(3f, 0.04f, 3f) * _k);
             ThienCoRig.StaticBox("ChestBody", _root, Vector3.up * _height * 0.5f, Quaternion.identity,
                                  new Vector3(_halfW * 2f, _height, _halfD * 2f));
 
@@ -272,30 +266,6 @@ namespace ChoDoLa.ChestFx
             _hinge.anchor = Vector3.up * len;
             _hinge.axis = Vector3.forward;
             _bob.AddForce(_right * 0.05f * _k, ForceMode.Impulse);
-
-            // --- Đồng hồ cát bên phải: vỏ kính + tường va chạm khoang dưới + hạt Rigidbody rơi qua cổ.
-            float hg = Mathf.Min(_height * 0.75f, 0.22f * _k), wg = hg * 0.45f;
-            _glass = new GameObject("Hourglass") { hideFlags = HideFlags.DontSave }.transform;
-            _glass.SetParent(_root, false);
-            _glass.localPosition = new Vector3(_halfW + wg * 0.5f + 0.03f * _k, 0f, 0f);
-            Transform shell = ThienCoRig.Visual("Glass", _glass, null, ThienCoRig.HourglassMesh(), glass);
-            _owned.Add(shell.GetComponent<MeshFilter>().sharedMesh);
-            shell.localScale = new Vector3(wg, hg, wg);
-            Transform cap = ThienCoRig.Visual("CapTop", _glass, PrimitiveType.Cylinder, null, dark);
-            cap.localPosition = Vector3.up * hg; cap.localScale = new Vector3(wg * 1.1f, 0.006f * _k, wg * 1.1f);
-            Transform capB = ThienCoRig.Visual("CapBottom", _glass, PrimitiveType.Cylinder, null, dark);
-            capB.localScale = cap.localScale;
-            _sandTop = ThienCoRig.Visual("SandTop", _glass, PrimitiveType.Sphere, null, sand);
-            _sandTop.localPosition = Vector3.up * hg * 0.66f;
-            _sandTop.localScale = new Vector3(wg * 0.7f, hg * 0.22f, wg * 0.7f);
-            float inner = wg * 0.42f, low = hg * 0.5f;
-            for (int i = 0; i < 4; i++)
-            {
-                Quaternion q = Quaternion.Euler(0f, 90f * i, 0f);
-                _glassWalls.Add(ThienCoRig.StaticBox("Wall" + i, _glass, q * (Vector3.forward * (inner + 0.004f * _k)) + Vector3.up * low * 0.5f, q,
-                                                     new Vector3(inner * 2f, low, 0.008f * _k)));
-            }
-            _glassWalls.Add(ThienCoRig.StaticBox("GlassFloor", _glass, Vector3.up * 0.004f * _k, Quaternion.identity, new Vector3(inner * 2f, 0.008f * _k, inner * 2f)));
 
             // --- Chim cu: cửa nhỏ trên nóc phía trước, tay lò xo thò ra.
             _birdArm = new GameObject("CuckooArm") { hideFlags = HideFlags.DontSave }.transform;
@@ -363,12 +333,9 @@ namespace ChoDoLa.ChestFx
             if (!_locked) UpdateTension(now, u);
             UpdateSlot(now, u);
             UpdateGears(dt);
-            UpdateHourglass(now, u);
             UpdateBird(dt);
             RunCues(now);
             UpdateHop(dt);
-            if (_loop != null && _loop.clip != null && _slot != Slot.Free)
-                _loop.volume = Mathf.MoveTowards(_loop.volume, _locked ? 0f : 0.15f + 0.25f * u, dt * 0.6f);
         }
 
         private void LateUpdate()
@@ -404,7 +371,7 @@ namespace ChoDoLa.ChestFx
             {
                 bool isTick = (_tickCount & 1) == 0;
                 float pitch = Mathf.Lerp(0.95f, 1.35f, u);
-                Play(isTick ? tick : tock, Mathf.Lerp(0.5f, 1f, u), pitch);
+                PlayBeat(isTick ? tick : tock, Mathf.Lerp(0.3f, 0.65f, u), pitch);
                 _twitch += 0.6f + u;
                 if (_slot != Slot.Meshed) _driveAngle += isTick ? 4f : -4f;   // thiếu khớp: chỉ lắc qua lại
                 if (!isTick) KickPendulum(u);
@@ -412,14 +379,13 @@ namespace ChoDoLa.ChestFx
                 float ease = 1f - (1f - u) * (1f - u);
                 _nextTick += Mathf.Lerp(tickIntervalStart, tickIntervalEnd, ease);
             }
-            float[] marks = { 0.35f, 0.65f, 0.9f };
-            for (int i = 0; i < 3; i++)
+            float[] marks = { 0.5f, 0.85f };          // 2 mốc: 1 tiếng rồi 2 tiếng (cách nhau 0,22 s > cổng 0,2 s)
+            for (int i = 0; i < 2; i++)
             {
                 if (_chimed[i] || u < marks[i]) continue;
                 _chimed[i] = true;
-                for (int s = 0; s <= i; s++) { int n = s; Cue(now + 0.22f * n, () => Play(bell, 0.45f, 1f + 0.12f * n)); }
+                for (int s = 0; s <= i; s++) { int n = s; Cue(now + 0.22f * n, () => { if (!_locked) PlayEvent(bell, 0.45f, 1f + 0.12f * n); }); }
             }
-            if (!_wound2 && u > 0.5f) { _wound2 = true; Play(wind, 0.6f, 1.15f); }
         }
 
         private void KickPendulum(float u)
@@ -442,7 +408,7 @@ namespace ChoDoLa.ChestFx
                 case Slot.Grounded:
                     if (_slot == Slot.Falling && now - _slotT > 0.8f) _slot = Slot.Grounded;
                     if (PlayerWantsInsert()) { _byPlayer = true; BeginInsert(); }
-                    else if (u >= autoInsertAt) { _birdTarget = 1f; if (_birdOut > 0.9f) { Play(cuckoo, 0.6f, 1f); BeginInsert(); } }
+                    else if (now - _slotT >= autoInsertAfter) { _birdTarget = 1f; if (_birdOut > 0.9f) { PlayEvent(cuckoo, 0.6f, 1f); BeginInsert(); } }
                     break;
                 case Slot.Inserting:
                 {
@@ -453,7 +419,7 @@ namespace ChoDoLa.ChestFx
                     _b.t.localRotation = Quaternion.Slerp(_b.t.localRotation, Quaternion.identity, k);
                     if (k >= 1f)
                     {
-                        if (_wrongFirst) { _wrongFirst = false; _slot = Slot.Jammed; _slotT = now; Play(jam, 0.7f, 1.1f); }
+                        if (_wrongFirst) { _wrongFirst = false; _slot = Slot.Jammed; _slotT = now; PlayEvent(jam, 0.6f, 1.1f); }
                         else Mesh(now);
                     }
                     break;
@@ -480,7 +446,7 @@ namespace ChoDoLa.ChestFx
             _b.rb = ThienCoRig.Body(_b.t.gameObject, 0.15f, false);
             _b.rb.AddTorque(new Vector3((float)_rng.NextDouble(), (float)_rng.NextDouble(), (float)_rng.NextDouble()) * 0.002f, ForceMode.Impulse);
             ThienCoImpact imp = _b.t.gameObject.AddComponent<ThienCoImpact>();
-            imp.onHit = (i, speed) => Play(gearClank, Mathf.Clamp01(speed * 0.4f), 1f + (float)_rng.NextDouble() * 0.15f);
+            imp.onHit = (i, speed) => PlayImpact(gearClank, Mathf.Clamp01(speed * 0.4f), 1f + (float)_rng.NextDouble() * 0.15f);
             _slot = Slot.Falling;
             _slotT = Time.time;
         }
@@ -498,8 +464,7 @@ namespace ChoDoLa.ChestFx
             _slot = Slot.Meshed;
             _b.t.localPosition = _slotPos;
             _b.t.localRotation = Quaternion.identity;
-            Play(meshOk, 0.8f, _byPlayer ? 1.1f : 1f);
-            if (_byPlayer) Play(cuckoo, 0.45f, 1.2f);     // người chơi tự làm: chim cu khen một tiếng
+            if (!_locked) PlayEvent(meshOk, 0.6f, _byPlayer ? 1.1f : 1f);
             _birdTarget = 0f;
             _twitch += 3f;
         }
@@ -534,6 +499,13 @@ namespace ChoDoLa.ChestFx
             {
                 // Huyền thoại: các bánh răng quay quanh rương như mô hình thiên văn (động học, không trọng lực).
                 float t = Time.time - _lockT;
+                if (t >= _orreryEnd)
+                {
+                    // Hết 3 s: ba bánh răng về đúng chỗ trên mặt rương và đứng yên (vật thừa ≤ 4 s sau chốt).
+                    _orrery = false;
+                    RestGear(_a); RestGear(_b); RestGear(_c);
+                    return;
+                }
                 OrbitGear(_a, t, 0f, 1.0f);
                 OrbitGear(_b, t, 2.1f, 1.35f);
                 OrbitGear(_c, t, 4.2f, 0.8f);
@@ -552,37 +524,21 @@ namespace ChoDoLa.ChestFx
             g.t.localRotation = Quaternion.AngleAxis(deg, Vector3.forward);
         }
 
+        private void RestGear(Gear g)
+        {
+            g.t.localPosition = g == _b ? _slotPos : g.home;
+            g.t.localRotation = Quaternion.identity;
+        }
+
         private void OrbitGear(Gear g, float t, float phase, float speed)
         {
             float ang = phase + t * speed * 2f;
-            float rad = (_halfW + 0.18f * _k) * Mathf.Min(1f, t * 1.5f);
+            float rad = (_halfW + 0.18f * _k) * Mathf.Min(1f, t * 1.5f);   // vào dần, ≤ 1,5 S
             Vector3 c = Vector3.up * (_height * 0.6f + _hopY);
             Vector3 target = c + new Vector3(Mathf.Cos(ang) * rad, Mathf.Sin(t * 2f + phase) * 0.05f * _k, Mathf.Sin(ang) * rad);
+            target = Vector3.Lerp(g == _b ? _slotPos : g.home, target, Mathf.Clamp01((_orreryEnd - t) / 0.6f));   // 0,6 s cuối: về chỗ cũ trên mặt rương
             g.t.localPosition = Vector3.Lerp(g.t.localPosition, target, Time.deltaTime * 6f);
             g.t.localRotation = Quaternion.AngleAxis(t * 400f * speed, Vector3.forward) * Quaternion.Euler(0f, -ang * Mathf.Rad2Deg, 0f);
-        }
-
-        // ------------------------------------------------------------------ đồng hồ cát
-
-        private void UpdateHourglass(float now, float u)
-        {
-            if (_glass == null || _locked || now < _nextGrain || _grains.Count >= 48) return;
-            _nextGrain = now + Mathf.Lerp(0.16f, 0.05f, u);
-            float hg = _sandTop.localPosition.y / 0.66f;
-            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            go.name = "Grain"; go.hideFlags = HideFlags.DontSave;
-            go.transform.SetParent(_glass, false);
-            float jitter = 0.004f * _k;
-            go.transform.localPosition = Vector3.up * hg * 0.47f + new Vector3((float)(_rng.NextDouble() - 0.5) * jitter, 0f, (float)(_rng.NextDouble() - 0.5) * jitter);
-            go.transform.localScale = Vector3.one * 0.016f * _k;
-            Renderer r = go.GetComponent<Renderer>();
-            r.sharedMaterial = _sandTop.GetComponent<Renderer>().sharedMaterial;
-            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            Rigidbody rb = ThienCoRig.Body(go, 0.002f, false);
-            rb.linearDamping = 0.4f;
-            _grains.Add(rb);
-            float left = 1f - _grains.Count / 48f;
-            _sandTop.localScale = new Vector3(_sandTop.localScale.x, hg * 0.22f * Mathf.Max(0.05f, left), _sandTop.localScale.z);
         }
 
         // ------------------------------------------------------------------ chim cu
@@ -618,16 +574,19 @@ namespace ChoDoLa.ChestFx
             }
         }
 
-        /// <summary>Bậc Rác: tích tắc tắt phựt, kẹt, lò xo bung văng bánh răng, mọi thứ xẹp. Âm rớt cụt.</summary>
+        /// <summary>
+        /// Bậc Rác (A4): tích tắc đã dừng (không đặt thêm nhịp), lặng 0,2 s, MỘT tiếng xịt (stingClips[0]) cùng lúc lò xo bung;
+        /// 0,6 s sau đó không phát gì; đuôi: sproing, chim cu méo. Không có tiếng hành động.
+        /// </summary>
         private void PlanFlop()
         {
             float t = Time.time;
             _driveSpeed = 0f;
-            Play(jam, 0.9f, 0.85f);
             _twitch += 6f;
-            Cue(t + 0.35f, () =>
+            _tailFrom = t + ChestAudioRule.RacSilence + 0.6f;
+            Cue(t + ChestAudioRule.RacSilence, () =>
             {
-                Play(sproing, 1f, 1f);
+                PlaySting(0);
                 _slot = Slot.Free;
                 Vector3 boom = _root.position + Vector3.up * _height * 0.3f;
                 foreach (Gear g in new[] { _a, _b, _c })
@@ -640,49 +599,76 @@ namespace ChoDoLa.ChestFx
                     }
                     g.rb = ThienCoRig.Body(g.t.gameObject, 0.15f, false);
                     if (g.t.GetComponent<ThienCoImpact>() == null)
-                        g.t.gameObject.AddComponent<ThienCoImpact>().onHit = (i, s) => Play(gearClank, Mathf.Clamp01(s * 0.3f), 0.8f + (float)_rng.NextDouble() * 0.3f);
+                        g.t.gameObject.AddComponent<ThienCoImpact>().onHit = (i, s) => PlayImpact(gearClank, Mathf.Clamp01(s * 0.3f), 0.8f + (float)_rng.NextDouble() * 0.3f);
                     g.rb.AddExplosionForce(1.2f * _k, boom, 1f * _k, 0.6f, ForceMode.Impulse);
                     g.rb.AddTorque(new Vector3((float)_rng.NextDouble() - 0.5f, (float)_rng.NextDouble() - 0.5f, (float)_rng.NextDouble() - 0.5f) * 0.008f, ForceMode.Impulse);
                 }
                 if (_hinge != null) { Destroy(_hinge); _hinge = null; }       // con lắc đứt
-                foreach (Collider w in _glassWalls) if (w != null) w.enabled = false;
                 _hopV = 0.6f;
             });
-            Cue(t + 0.6f, () => Play(winddown, 0.9f, 1f));
-            Cue(t + 1.3f, () => { _birdTarget = 0.7f; Play(cuckooSad, 0.7f, 1f); });
+            Cue(t + 0.9f, () => PlayTail(sproing, 0.5f, 1f));
+            Cue(t + 1.3f, () => { _birdTarget = 0.7f; PlayTail(cuckooSad, 0.5f, 1f); });
             Cue(t + 2.1f, () => _birdDroop = 1f);
         }
 
-        /// <summary>Bậc Thường..Huyền thoại: chuông = hạng, lò xo bật rương nhảy, Rất hiếm+ hộp nhạc dâng, Huyền thoại bay xoay.</summary>
+        /// <summary>
+        /// Bậc Thường..Huyền thoại (A4): đúng 1 tiếng chốt TC (stingClips[bậc]) ngay lúc chốt; Rất hiếm/Huyền thoại thêm 1 tiếng
+        /// hành động (launch). Lò xo bật rương nhảy (cao theo chiều cao rương), Huyền thoại xoay một vòng, bánh răng quay quanh
+        /// rương 3 s rồi về chỗ, 12 bánh răng nhỏ bắn ra từ miệng. Đuôi: chim cu (Hiếm trở lên).
+        /// </summary>
         private void PlanTriumph(int rank)
         {
             float t = Time.time;
             _driveSpeed = 0f;
-            float build = rank >= 3 ? 1.0f : 0.15f;
-            if (rank >= 3) Play(musicBoxRise, 0.75f, 1f);
-            for (int i = 0; i < rank; i++) { int n = i; Cue(t + build * 0.3f + 0.18f * n, () => Play(bell, 0.7f, 1f + 0.12f * n)); }
-            float pop = t + build + 0.18f * rank;
+            _tailFrom = t + 0.4f;
+            PlaySting(rank);                                      // TC
+            float pop = t + (rank >= 3 ? 0.2f : 0.15f);           // HĐ (launch) vẫn trong 0,3 s đầu
             Cue(pop, () =>
             {
-                Play(rank >= 3 ? launch : sproing, 0.9f, rank >= 3 ? 1f : 1.4f);
+                if (rank >= 3) PlayAction(launch, 1f, 1f);
                 _squash = 0f;
-                _hopV = new[] { 0f, 0.9f, 1.4f, 2.0f, 3.2f }[rank] * Mathf.Sqrt(_k);
-                if (rank >= 4) _spinV = 720f;
-                foreach (Rigidbody g in _grains)
-                {
-                    if (g == null) continue;
-                    g.AddExplosionForce((0.004f + 0.006f * rank) * _k, _glass.position, 0.3f * _k, 1.5f, ForceMode.Impulse);
-                }
-                if (rank >= 4) foreach (Collider w in _glassWalls) if (w != null) w.enabled = false;
+                float hopH = new[] { 0f, 0.35f, 0.55f, 0.8f, 1.15f }[rank] * _height;      // ≤ 1,2 H (T8)
+                _hopV = Mathf.Sqrt(2f * 9.81f * hopH);
+                if (rank >= 4) { _spinV = 720f; _orrery = true; _orreryEnd = 3f; _birdTarget = 1f; SpawnSmallGears(pop); }
             });
             if (rank >= 4)
             {
-                Cue(pop + 0.1f, () => { _orrery = true; _birdTarget = 1f; });
-                Cue(pop + 0.5f, () => Play(bellBig, 1f, 1f));
-                Cue(pop + 1.1f, () => Play(cuckoo, 0.8f, 1f));
-                Cue(pop + 1.9f, () => Play(cuckoo, 0.8f, 1.06f));
+                Cue(pop + 1.1f, () => PlayTail(cuckoo, 0.5f, 1f));
+                Cue(pop + 1.9f, () => PlayTail(cuckoo, 0.5f, 1.06f));
             }
-            else if (rank >= 2) Cue(pop + 0.6f, () => { _birdTarget = 1f; Play(cuckoo, 0.6f, 1f); });
+            else if (rank >= 2) Cue(pop + 0.6f, () => { _birdTarget = 1f; PlayTail(cuckoo, 0.5f, 1f); });
+        }
+
+        /// <summary>Huyền thoại: "mưa đồng" bằng 12 bánh răng nhỏ (0,3 cỡ bánh A) bắn từ miệng rương, rải trong 0,5 s, có trần cứng 12.</summary>
+        private void SpawnSmallGears(float at)
+        {
+            int n = Mathf.Clamp(smallGears, 0, 12);
+            if (n == 0) return;
+            float r = 0.3f * 0.085f * _k;
+            Mesh m = ThienCoRig.GearMesh(8, 0.22f, 0.8f, 0.18f);
+            _owned.Add(m);
+            Material brass = Mat(ThienCoRig.Brass, "ThienCo_SmallGear");
+            for (int i = 0; i < n; i++)
+            {
+                int idx = i;
+                Cue(at + 0.04f * i, () =>
+                {
+                    if (_root == null) return;
+                    var go = new GameObject("SmallGear" + idx) { hideFlags = HideFlags.DontSave };
+                    go.transform.SetParent(_root, false);
+                    go.transform.localPosition = new Vector3(0f, _height * 0.95f, 0f) + new Vector3((float)(_rng.NextDouble() - 0.5), 0f, (float)(_rng.NextDouble() - 0.5)) * 0.05f * _k;
+                    go.transform.localRotation = Quaternion.Euler((float)_rng.NextDouble() * 360f, (float)_rng.NextDouble() * 360f, 0f);
+                    Transform vis = ThienCoRig.Visual("Mesh", go.transform, null, m, brass);
+                    vis.localScale = Vector3.one * r * 1.08f;
+                    SphereCollider col = go.AddComponent<SphereCollider>();
+                    col.radius = r * 0.9f;
+                    Rigidbody rb = ThienCoRig.Body(go, 0.03f, false);
+                    rb.linearDamping = 0.6f;
+                    Vector3 side = _right * (float)(_rng.NextDouble() - 0.5) * 1.2f + _front * (float)(_rng.NextDouble() - 0.2) * 1.0f;
+                    rb.AddForce((side + Vector3.up * (1.6f + (float)_rng.NextDouble() * 0.6f)) * Mathf.Sqrt(_k), ForceMode.VelocityChange);   // ≤ 3 S
+                    rb.AddTorque(new Vector3((float)_rng.NextDouble(), (float)_rng.NextDouble(), (float)_rng.NextDouble()) * 0.0005f, ForceMode.Impulse);
+                });
+            }
         }
 
         /// <summary>Cú bật/nảy của cả rương (mô phỏng rơi tự do + nảy), xoay khi bay, xẹp lệch nếu Rác.</summary>
@@ -698,7 +684,7 @@ namespace ChoDoLa.ChestFx
                     _hopY = 0f;
                     bool hard = _hopV < -1f;
                     _hopV = hard ? -_hopV * 0.35f : 0f;
-                    if (hard) { Play(gearClank, 0.6f, 0.6f); _twitch += 2f; _squash = 0.08f; }
+                    if (hard) { PlayImpact(gearClank, 0.6f, 0.6f); _twitch += 2f; _squash = 0.08f; }
                 }
             }
             if (_spinV > 0f) { float d = Mathf.Min(_spinV * dt, 360f - _spin); _spin += d; if (_spin >= 360f) { _spin = 0f; _spinV = 0f; } }
@@ -707,20 +693,62 @@ namespace ChoDoLa.ChestFx
                 _slump = Mathf.MoveTowards(_slump, 1f, dt * 2f);
                 _tilt = Mathf.MoveTowards(_tilt, 7f, dt * 14f);
                 _squash = Mathf.MoveTowards(_squash, 0.1f, dt * 0.5f);
-                if (_glass != null) _glass.localRotation = Quaternion.Slerp(_glass.localRotation, Quaternion.Euler(0f, 0f, -80f), dt * 3f);
             }
             else _squash = Mathf.MoveTowards(_squash, 0f, dt * 0.4f);
         }
 
-        private void Play(AudioClip clip, float vol, float pitch)
+        // ------------------------------------------------------------------ âm (quy tắc A1–A11, kế hoạch 2026-11-25)
+
+        /// <summary>
+        /// Chỗ DUY NHẤT nhân <see cref="volume"/> (không nhân hai lần), rồi chặn trần theo loại tiếng. Cao độ khác 1 đi qua
+        /// ChestRevealSequence.PlayOneShot (lõi tạo nguồn riêng, A7).
+        /// </summary>
+        private void Play(AudioClip clip, float level, float pitch, float cap)
         {
-            if (clip == null || _sfx == null) return;
-            // AudioSource.pitch áp cho cả nguồn: dùng nguồn tạm cho cao độ khác 1 để không bóp méo tiếng khác đang kêu.
-            if (Mathf.Abs(pitch - 1f) < 0.01f) { _sfx.PlayOneShot(clip, vol * volume); return; }
-            AudioSource s = _root.gameObject.AddComponent<AudioSource>();
-            s.playOnAwake = false; s.spatialBlend = 0.5f; s.pitch = pitch;
-            s.PlayOneShot(clip, vol * volume);
-            Destroy(s, clip.length / Mathf.Max(0.1f, pitch) + 0.1f);
+            if (clip == null || _reveal == null) return;
+            float v = Mathf.Min(level * volume, cap);
+            if (v <= 0.001f) return;
+            _reveal.PlayOneShot(clip, v, pitch);
+        }
+
+        /// <summary>Nhịp tích–tắc (≤ 0,55).</summary>
+        private void PlayBeat(AudioClip clip, float level, float pitch) => Play(clip, level, pitch, ChestAudioRule.BeatMax);
+
+        /// <summary>Sự kiện lẻ trước chốt: tối đa 1 tiếng mỗi 0,2 s (≤ 0,5). Sau chốt: bỏ.</summary>
+        private void PlayEvent(AudioClip clip, float level, float pitch)
+        {
+            if (_locked || !ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap)) return;
+            Play(clip, level, pitch, ChestAudioRule.EventMax);
+        }
+
+        /// <summary>Va chạm vật lý: cách nhau ≥ 0,12 s, ≤ 0,4. Trước chốt = sự kiện (qua cổng 0,2 s); sau chốt = đuôi.</summary>
+        private void PlayImpact(AudioClip clip, float level, float pitch)
+        {
+            if (!ChestAudioRule.TryGate(ref _lastImpact, ChestAudioRule.ImpactGap)) return;
+            if (_locked) { PlayTail(clip, Mathf.Min(level, 0.5f), pitch); return; }
+            if (!ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap)) return;
+            Play(clip, level, pitch, 0.4f);
+        }
+
+        /// <summary>Đuôi: từ _tailFrom (≥ +0,4 s sau chốt) tới +3 s, mỗi 0,15 s, tối đa 6 tiếng, ≤ 0,4.</summary>
+        private void PlayTail(AudioClip clip, float level, float pitch)
+        {
+            float now = Time.time;
+            if (!_locked || now < _tailFrom || now > _lockT + 3f || _tails >= 6) return;
+            if (!ChestAudioRule.TryGate(ref _lastTail, ChestAudioRule.TailGap)) return;
+            _tails++;
+            Play(clip, level, pitch, ChestAudioRule.TailMax);
+        }
+
+        /// <summary>HĐ (tiếng hành động, ≤ 0,8): chỉ Rất hiếm trở lên.</summary>
+        private void PlayAction(AudioClip clip, float level, float pitch) => Play(clip, level, pitch, ChestAudioRule.ActionMax);
+
+        /// <summary>TC: đúng 1 tiếng chốt theo bậc (A4: Rác 0,7 · Thường 0,7 · Hiếm 0,85 · Rất hiếm/Huyền thoại 1,0 sau khi nhân volume).</summary>
+        private void PlaySting(int rank)
+        {
+            if (stingClips == null || rank < 0 || rank >= stingClips.Length) return;
+            float target = new[] { 0.7f, 0.7f, 0.85f, 1f, 1f }[rank];
+            Play(stingClips[rank], target / Mathf.Max(0.01f, volume), 1f, ChestAudioRule.StingMax);
         }
     }
 }

@@ -117,7 +117,7 @@ namespace ChoDoLa.ChestFx
             Vector3 right = _cam != null ? _cam.right : Vector3.right;
             Vector3 up = _cam != null ? Vector3.ProjectOnPlane(_cam.up, right).normalized : Vector3.up;
             ParticleSystem.EmitParams ep = new ParticleSystem.EmitParams();
-            float spacing = height * 0.025f;
+            float spacing = height * 0.05f; // ≤ ~140 hạt (T4: cú Huyền thoại ≤ 160)
             foreach (Vector2[] stroke in PhucStrokes)
             {
                 for (int k = 1; k < stroke.Length; k++)
@@ -253,13 +253,13 @@ namespace ChoDoLa.ChestFx
             Color gold = new Color(1f, 0.85f, 0.35f);
             if (r.phuc)
             {
-                SparkBurst(pos, r.color, gold, 120, _size * 3f, 1.1f);
+                SparkBurst(pos, r.color, gold, 10, _size * 3f, 1.1f);
                 PhucGlyph(pos, _size * 2.2f, gold, r.color);
             }
             else
             {
-                SparkBurst(pos, r.color, gold, 160, _size * 2.6f, 1.4f);
-                SparkBurst(pos, Color.white, gold, 30, _size * 1.2f, 0.6f);
+                SparkBurst(pos, r.color, gold, 45, _size * 2.6f, 1.4f); // T4: ≤ 60 hạt mỗi lần phát
+                SparkBurst(pos, Color.white, gold, 15, _size * 1.2f, 0.6f);
             }
             SmokePuff(pos, new Color(0.7f, 0.65f, 0.6f, 0.4f), 6, 0.1f);
             Burst?.Invoke(pos, r.phuc);

@@ -7,14 +7,14 @@ namespace ChoDoLa.Editor
 {
     /// <summary>
     /// Kịch bản "Trục vớt bằng đại bác" cho Chest_HaiTac (thay HaiTacHook cũ).
-    /// - Tạo hồ sơ ScriptableObjects/ChestFx/ChestFx_HaiTacSeq.asset: như HaiTacFxPreset nhưng BỎ âm chốt bậc và âm tiếng cười
-    ///   giai đoạn 0 của lõi (đoạn kết theo bậc do HaiTacSeqHook phát, khớp với phát đại bác cuối).
+    /// - Tạo hồ sơ ScriptableObjects/ChestFx/ChestFx_HaiTacSeq.asset, rồi MỖI LẦN chạy menu gọi ChestAudioRule.ApplyToProfile
+    ///   (lõi gần như câm, tension tắt; nền + tiếng chốt do HaiTacSeqHook phát).
     /// - Menu "Add Hai Tac Seq To Selected Chest": gắn HaiTacSeqHook (đã điền âm) + hồ sơ lên rương đang chọn, gỡ HaiTacHook cũ.
-    /// Âm: Audio/Chests/hai_tac/seq/ (tạo bằng Tools/Audio/make_haitac_seq_sfx.py).
+    /// Âm: Audio/Chests/hai_tac/*.mp3 (ElevenLabs, danh mục Tools/Audio/elevenlabs_chest_manifest.json, mục hai_tac).
     /// </summary>
     public static class HaiTacSeqSetup
     {
-        public const string AudioFolder = "Assets/_Project/Audio/Chests/hai_tac/seq/";
+        public const string AudioFolder = "Assets/_Project/Audio/Chests/hai_tac/";
         private const string ProfilePath = "Assets/_Project/ScriptableObjects/ChestFx/ChestFx_HaiTacSeq.asset";
         private const string Tag = "[HaiTacSeq] ";
 
@@ -45,13 +45,11 @@ namespace ChoDoLa.Editor
             ChestFxProfile p = AssetDatabase.LoadAssetAtPath<ChestFxProfile>(ProfilePath);
             if (p == null)
             {
-                ChestFxProfile baseProfile = HaiTacFxSetup.CreateOrUpdateProfile();   // lấy âm tick/whoosh/sóng nền của hải tặc
+                ChestFxProfile baseProfile = HaiTacFxSetup.CreateOrUpdateProfile();   // lấy phần hạt/màu của hải tặc (âm lõi bị tắt ngay sau đó)
                 p = Object.Instantiate(baseProfile);
                 AssetDatabase.CreateAsset(p, ProfilePath);
             }
-            p.lockClipsByTier = new AudioClip[5];   // đoạn kết do hook phát
-            if (p.stageClips != null)
-                p.stageClips = System.Array.FindAll(p.stageClips, s => s.stage != 0 && s.stage != 4);
+            ChestAudioRule.ApplyToProfile(p);   // A1: ghi lại MỖI lần chạy menu, không chỉ khi hồ sơ trống
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();
             return p;
@@ -59,17 +57,17 @@ namespace ChoDoLa.Editor
 
         public static void FillClips(HaiTacSeqHook h)
         {
-            h.buildClip = C("build"); h.cannonClip = C("cannon"); h.splashClip = C("splash"); h.thudClip = C("thud");
-            h.loadClip = C("load"); h.fuseClip = C("fuse"); h.fizzleClip = C("fizzle"); h.parrotClip = C("parrot");
-            h.drainClip = C("drain"); h.barrelClip = C("barrel"); h.coinClip = C("coin");
-            string[] ends = { "0_rac", "1_thuong", "2_hiem", "3_rathiem", "4_huyenthoai" };
-            h.endingClips = new AudioClip[5];
-            for (int i = 0; i < 5; i++) h.endingClips[i] = C("end_" + ends[i]);
+            h.buildClip = C("bed_loop"); h.cannonClip = C("cannon_close"); h.splashClip = C("splash"); h.thudClip = C("thud");
+            h.loadClip = C("load"); h.fuseClip = C("fuse"); h.parrotClip = C("parrot");
+            h.drainClip = C("drain"); h.barrelClip = C("barrel"); h.coinClip = C("coins");
+            string[] locks = { "lock_rac", "lock_thuong", "lock_hiem", "lock_ratHiem", "lock_huyenThoai" };
+            h.stingClips = new AudioClip[5];
+            for (int i = 0; i < 5; i++) h.stingClips[i] = C(locks[i]);
         }
 
         private static AudioClip C(string key)
         {
-            string path = AudioFolder + "sfx_haitac_seq_" + key + ".wav";
+            string path = AudioFolder + "sfx_haitac_" + key + ".mp3";
             AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
             if (c == null) Debug.LogWarning(Tag + "Thiếu âm " + path + " (vẫn chạy, chỉ im).");
             return c;

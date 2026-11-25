@@ -8,8 +8,8 @@ namespace ChoDoLa.Editor
 {
     /// <summary>
     /// Tools/Cho Do La/Create Khong Gian Chest FX Profile: creates ChestFx_KhongGian.asset (KhongGianFxPreset values),
-    /// attaches the khong_gian sounds by file name (shared Audio/Chests set for anything missing), and builds the
-    /// KhongGianFx prefab (KhongGianHook) used as the profile's customFxPrefab. Re-running only fills missing clips.
+    /// writes the profile silent (ChestAudioRule.ApplyToProfile, every run), builds the KhongGianFx prefab
+    /// (chỉ KhongGianMissionHook) used as the profile's customFxPrefab and assigns the ElevenLabs .mp3 clips to the hook.
     /// </summary>
     public static class KhongGianFxSetup
     {
@@ -37,21 +37,11 @@ namespace ChoDoLa.Editor
             }
 
             int missing = 0;
-            p.tickClips = Fill(p.tickClips, KhongGianFxPreset.TickFiles, ChestFxPresets.TickFiles, ref missing);
-            p.lockClipsByTier = Fill(p.lockClipsByTier, KhongGianFxPreset.LockFiles, ChestFxPresets.LockFiles, ref missing);
-            if (p.whooshClip == null) p.whooshClip = Clip(KhongGianFxPreset.WhooshFile, ChestFxPresets.WhooshFile, ref missing);
-            if (p.openAmbientClip == null) p.openAmbientClip = Clip(KhongGianFxPreset.AmbientFile, ChestFxPresets.AmbientFile, ref missing);
-            p.accentClips = Fill(p.accentClips, new[] { KhongGianFxPreset.MeteorFile }, new string[] { null }, ref missing);
-            if (p.stageClips == null || p.stageClips.Length == 0)
-            {
-                p.stageClips = new[]
-                {
-                    new ChestFxProfile.StageClip { stage = 3, clip = Clip(KhongGianFxPreset.HatchFile, ChestFxPresets.CreakFile, ref missing), volume = 0.7f },
-                    new ChestFxProfile.StageClip { stage = 4, clip = Clip(KhongGianFxPreset.LandingFile, ChestFxPresets.ThudFile, ref missing), volume = 0.6f },
-                };
-            }
-            if (p.customFxPrefab == null) p.customFxPrefab = BuildPrefab(ref missing);
-            EnsureMission(p.customFxPrefab);
+            // A1: hồ sơ lõi gần như câm, ghi lại MỖI LẦN chạy menu (tension.enabled = false, mọi ô âm lõi trống).
+            // Tiếng chốt do KhongGianMissionHook phát qua stingClips (A11).
+            ChestAudioRule.ApplyToProfile(p);
+            if (p.customFxPrefab == null) p.customFxPrefab = BuildPrefab();
+            EnsureMission(p.customFxPrefab, ref missing);
 
             if (missing > 0) Debug.LogWarning($"[KhongGianFx] {missing} sound(s) not found. The effect still runs; empty clips are skipped.");
             EditorUtility.SetDirty(p);
@@ -60,60 +50,58 @@ namespace ChoDoLa.Editor
             return p;
         }
 
-        private static GameObject BuildPrefab(ref int missing)
+        private static GameObject BuildPrefab()
         {
             GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
             if (existing != null) return existing;
             EnsureFolder(PrefabFolder);
             GameObject go = new GameObject("KhongGianFx");
-            KhongGianHook hook = go.AddComponent<KhongGianHook>();
-            go.AddComponent<KhongGianMissionHook>();   // kịch bản "phi vụ tiếp tế" (âm tổng hợp trong code, không cần file)
-            hook.staticClip = Clip(KhongGianFxPreset.StaticFile, null, ref missing);
-            hook.meteorClip = Clip(KhongGianFxPreset.MeteorFile, null, ref missing);
+            go.AddComponent<KhongGianMissionHook>();   // CHỈ hook kịch bản "phi vụ tiếp tế"; KhongGianHook cũ không còn được gắn (T10)
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(go, PrefabPath);
             Object.DestroyImmediate(go);
             return prefab;
         }
 
-        /// <summary>Prefab cũ (tạo trước khi có kịch bản mới) chưa có KhongGianMissionHook: thêm vào, giữ nguyên phần khác.</summary>
-        private static void EnsureMission(GameObject prefab)
+        /// <summary>
+        /// Mỗi lần chạy menu: prefab chỉ còn KhongGianMissionHook (gỡ KhongGianHook cũ nếu có; file .cs giữ nguyên) và
+        /// các ô âm của hook trỏ tới file .mp3 ElevenLabs. Ô nào đã có người gán tay thì giữ; file thiếu thì để trống.
+        /// </summary>
+        private static void EnsureMission(GameObject prefab, ref int missing)
         {
-            if (prefab == null || prefab.GetComponent<KhongGianMissionHook>() != null) return;
+            if (prefab == null) return;
             string path = AssetDatabase.GetAssetPath(prefab);
             if (string.IsNullOrEmpty(path)) return;
             GameObject root = PrefabUtility.LoadPrefabContents(path);
-            root.AddComponent<KhongGianMissionHook>();
+            KhongGianMissionHook hook = root.GetComponent<KhongGianMissionHook>();
+            if (hook == null) hook = root.AddComponent<KhongGianMissionHook>();
+            KhongGianHook old = root.GetComponent<KhongGianHook>();
+            if (old != null) Object.DestroyImmediate(old);   // hai hook chạy song song = chồng hiệu ứng; file KhongGianHook.cs vẫn giữ
+
+            if (hook.engineClip == null) hook.engineClip = Clip(KhongGianFxPreset.EngineFile, ref missing);
+            if (hook.blipClip == null) hook.blipClip = Clip(KhongGianFxPreset.BlipFile, ref missing);
+            if (hook.fuelClip == null) hook.fuelClip = Clip(KhongGianFxPreset.FuelFile, ref missing);
+            if (hook.rocketClip == null) hook.rocketClip = Clip(KhongGianFxPreset.RocketFile, ref missing);
+            if (hook.impactClip == null) hook.impactClip = Clip(KhongGianFxPreset.ImpactFile, ref missing);
+            if (hook.hatchClip == null) hook.hatchClip = Clip(KhongGianFxPreset.HatchFile, ref missing);
+            if (hook.sputterClip == null) hook.sputterClip = Clip(KhongGianFxPreset.SputterFile, ref missing);
+            AudioClip[] sting = new AudioClip[KhongGianFxPreset.LockFiles.Length];
+            for (int i = 0; i < sting.Length; i++)
+            {
+                AudioClip cur = hook.stingClips != null && i < hook.stingClips.Length ? hook.stingClips[i] : null;
+                sting[i] = cur != null ? cur : Clip(KhongGianFxPreset.LockFiles[i], ref missing);
+            }
+            hook.stingClips = sting;
+
             PrefabUtility.SaveAsPrefabAsset(root, path);
             PrefabUtility.UnloadPrefabContents(root);
-            Debug.Log("[KhongGianFx] Đã thêm KhongGianMissionHook vào " + path);
         }
 
-        /// <summary>Own sound from khong_gian/, else the shared chest sound (with its Synth fallback).</summary>
-        private static AudioClip Clip(string own, string shared, ref int missing)
+        /// <summary>Âm riêng trong khong_gian/ (không còn lấy bộ âm chung hay Synth).</summary>
+        private static AudioClip Clip(string file, ref int missing)
         {
-            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(KhongGianFxPreset.AudioFolder + own);
-            if (c != null || shared == null)
-            {
-                if (c == null) missing++;
-                return c;
-            }
-            Debug.LogWarning($"[KhongGianFx] {own} not found; using the shared {shared}.");
-            c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + shared);
-            string synth = c == null ? ChestFxPresets.SynthFallback(shared) : null;
-            if (synth != null) c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + synth);
-            if (c == null) missing++;
+            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(KhongGianFxPreset.AudioFolder + file);
+            if (c == null) { missing++; Debug.LogWarning("[KhongGianFx] Không thấy " + file); }
             return c;
-        }
-
-        private static AudioClip[] Fill(AudioClip[] current, string[] own, string[] shared, ref int missing)
-        {
-            AudioClip[] result = new AudioClip[own.Length];
-            for (int i = 0; i < own.Length; i++)
-            {
-                AudioClip existing = current != null && i < current.Length ? current[i] : null;
-                result[i] = existing != null ? existing : Clip(own[i], i < shared.Length ? shared[i] : null, ref missing);
-            }
-            return result;
         }
 
         private static void EnsureFolder(string folder)

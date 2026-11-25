@@ -30,22 +30,22 @@ namespace ChoDoLa.Editor
         {
             var makers = new List<KeyValuePair<string, Func<ChestFxProfile>>>
             {
-                Maker("Golden", ChestRevealTestSetup.CreateOrUpdateGoldenProfile),
+                Maker("Golden", ChestRevealTestSetup.CreateOrUpdateGoldenProfile),   // dựng lại script Golden mỗi lần chạy
                 Maker("Magic", MagicFxSetup.CreateOrUpdate),
-                Maker("Mimic", MimicFxSetup.CreateOrUpdateProfile),
+                Maker("Mimic", CreateMimicProfile),
                 Maker("Miner", MinerFxSetup.CreateOrUpdate),
                 Maker("RacQuy", RacQuyFxSetup.CreateOrUpdate),
                 Maker("HaiTac", HaiTacSeqSetup.CreateOrUpdateProfile),
-                Maker("AmNhac", AmNhacFxSetup.CreateOrUpdate),
-                Maker("VietNam", VietNamFxSetup.CreateOrUpdate),
+                Maker("AmNhac", AmNhacBassSetup.CreateOrUpdateProfile),
+                Maker("VietNam", VietNamHoiLangSetup.CreateOrUpdateProfile),
                 Maker("TuoiTho", TuoiThoFxSetup.CreateOrUpdate),
                 Maker("Robot", RobotFxSetup.CreateOrUpdate),
                 Maker("KhongGian", KhongGianFxSetup.CreateOrUpdate),
-                Maker("Game", GameFxSetup.CreateOrUpdate),
+                Maker("Game", GameVoxelFxSetup.CreateOrUpdateProfile),
                 Maker("TheThao", ChoDoLa.EditorTools.TheThaoFxSetup.CreateOrUpdate),
                 Maker("TrungHoa", TrungHoaFxSetup.CreateOrUpdateProfile),
                 Maker("NhatBan", NhatBanFxSetup.CreateOrUpdate),
-                Maker("CoPhong", CoPhongFxSetup.CreateOrUpdate),
+                Maker("CoPhong", CoPhongNguKiemSetup.CreateOrUpdateProfile),
                 Maker("ThienCo", ThienCoFxSetup.CreateOrUpdate),
             };
 
@@ -70,8 +70,8 @@ namespace ChoDoLa.Editor
                 {
                     chestId = string.IsNullOrEmpty(p.chestId) ? "Chest_" + m.Key : p.chestId,
                     profile = p,
-                    biteIntro = m.Key == "Mimic",
-                    spinRecord = m.Key == "AmNhac",
+                    biteIntro = false,     // Mimic: màn cho ăn thay cho cú đớp mở đầu
+                    spinRecord = false,    // AmNhac: hook tự quay/scratch lớp Record
                 };
                 try { e.rootHookTemplate = RootHookTemplate(m.Key); }
                 catch (Exception ex) { Debug.LogError(Log + "Hook Chest_" + m.Key + ": " + ex); }
@@ -91,6 +91,21 @@ namespace ChoDoLa.Editor
             Selection.activeObject = library;
         }
 
+        /// <summary>Hồ sơ Mimic + phần chỉnh hồ sơ của màn Rương Đói (không đụng hook, hook do RootHookTemplate lo).</summary>
+        private static ChestFxProfile CreateMimicProfile()
+        {
+            ChestFxProfile p = MimicFxSetup.CreateOrUpdateProfile();
+            MimicFeedHook probe = new GameObject("MimicFeedProbe").AddComponent<MimicFeedHook>();
+            try
+            {
+                MimicFeedSetup.FillClips(probe);
+                MimicFeedSetup.TuneProfile(p, probe);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(probe.gameObject); }
+            EditorUtility.SetDirty(p);
+            return p;
+        }
+
         private static KeyValuePair<string, Func<ChestFxProfile>> Maker(string name, Func<ChestFxProfile> f) =>
             new KeyValuePair<string, Func<ChestFxProfile>>(name, f);
 
@@ -105,22 +120,15 @@ namespace ChoDoLa.Editor
         {
             switch (key)
             {
-                case "Golden": return SaveHook<GoldenGlintHook>(key, null);
-                case "Magic": return SaveHook<MagicHook>(key, null);
-                case "Miner": return SaveHook<MinerHook>(key, null);
-                case "Robot": return SaveHook<RobotHook>(key, null);
-                case "Game": return SaveHook<GamePixelHook>(key, null);
+                case "Golden": return SaveHook<GoldenSlotHook>(key, GoldenSlotSetup.AssignClips);
+                case "Magic": return SaveHook<MagicRuneRitual>(key, MagicRuneFxSetup.FillClips);
+                case "Miner": return SaveHook<MinerDigSequence>(key, MinerDigSetup.FillClips);
+                case "Robot": return SaveHook<RobotTransformHook>(key, RobotTransformSetup.Fill);
+                case "Game": return SaveHook<GameVoxelHook>(key, GameVoxelFxSetup.FillClips);
                 case "TrungHoa": return SaveHook<TrungHoaHook>(key, TrungHoaFxSetup.WireHookClips);
                 case "TuoiTho": return SaveHook<TuoiThoHook>(key, null);
-                case "Mimic":
-                    return SaveHook<MimicHook>(key, h =>
-                    {
-                        h.biteClip = Clip(MimicFxPreset.AudioFolder + MimicFxPreset.BiteFile);
-                        h.chatterClip = Clip(MimicFxPreset.AudioFolder + MimicFxPreset.ChatterFile);
-                        h.droolClip = Clip(MimicFxPreset.AudioFolder + MimicFxPreset.DroolFile);
-                    });
-                case "AmNhac":
-                    return SaveHook<AmNhacHook>(key, h => h.SetCrowdClip(Clip(AmNhacFxPreset.AudioFolder + AmNhacFxPreset.CrowdFile)));
+                case "Mimic": return SaveHook<MimicFeedHook>(key, MimicFeedSetup.FillClips);
+                case "AmNhac": return SaveHook<AmNhacBassHook>(key, AmNhacBassSetup.FillClips);
                 case "TheThao":
                     return SaveHook<TheThaoHook>(key, h =>
                     {
@@ -128,7 +136,7 @@ namespace ChoDoLa.Editor
                         h.airHornClip = Clip(TheThaoFxPreset.AudioFolder + TheThaoFxPreset.AirHornFile);
                     });
                 case "HaiTac": return SaveHook<HaiTacSeqHook>(key, HaiTacSeqSetup.FillClips);   // kịch bản đại bác
-                default: return null;   // RacQuy, VietNam, KhongGian, NhatBan, CoPhong, ThienCo: hook in customFxPrefab
+                default: return null;   // RacQuy, VietNam, KhongGian, NhatBan, CoPhong, ThienCo: hook nằm trong customFxPrefab
             }
         }
 

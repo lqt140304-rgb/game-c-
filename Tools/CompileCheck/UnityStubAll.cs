@@ -238,7 +238,7 @@ namespace UnityEngine
         public partial struct EmissionModule { public bool enabled; public MinMaxCurve rateOverDistance; public void SetBursts(Burst[] b) {} public int burstCount; }
         public struct Burst { public Burst(float t, short c) {} public Burst(float t, short a, short b) {} public Burst(float t, MinMaxCurve c) {} }
         public partial struct ShapeModule { public Vector3 position, scale; public float radiusThickness, arc, length; public float randomDirectionAmount; public Mesh mesh; }
-        public partial struct VelocityOverLifetimeModule { public MinMaxCurve orbitalX, orbitalZ, speedModifier, offsetX, offsetY, offsetZ; }
+        public partial struct VelocityOverLifetimeModule { public MinMaxCurve orbitalX, orbitalZ, speedModifier, orbitalOffsetX, orbitalOffsetY, orbitalOffsetZ; }
         public partial struct SizeOverLifetimeModule { }
         public struct NoiseModule { public bool enabled; public MinMaxCurve strength; public float frequency; public float scrollSpeed_; public MinMaxCurve scrollSpeed; public int octaveCount; }
         public struct TrailModule { public bool enabled; public float ratio; public MinMaxCurve lifetime, widthOverTrail; public MinMaxGradient colorOverLifetime; public bool dieWithParticles; }

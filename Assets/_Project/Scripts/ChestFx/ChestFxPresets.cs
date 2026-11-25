@@ -93,7 +93,7 @@ namespace ChoDoLa.ChestFx
         /// </summary>
         public static void ApplyGoldenScript(ChestScript s)
         {
-            s.description = "Golden: xu bắn ra bằng vật lý theo bậc (Rác chỉ rớt vài xu và rương xẹp, Huyền thoại nổ xu, rương bay lơ lửng và xoay), rung lúc hé nắp, cổng đồng xu tuỳ chọn.";
+            s.description = "Golden: chỉ cổng đồng xu (tắt mặc định) rồi mở rương; xu và chuyển động do GoldenSlotHook lo.";
             s.steps.Clear();
 
             // 1) Cổng đồng xu (tắt mặc định) rồi mở rương. Bước tắt tính là xong ngay nên OpenBox chạy luôn.
@@ -103,44 +103,7 @@ namespace ChoDoLa.ChestFx
             gate.timeoutSeconds = 25f;
             ChestStepBuilder.Add(s, "mo-ruong", StepKind.OpenBox, StepStart.AfterPrevious);
 
-            // 2) Rung nhẹ lúc hé nắp (mọi bậc, giống nhau để không lộ kết quả).
-            ChestStep shake = ChestStepBuilder.Motion(s, "rung-he-nap", StepMotionKind.Shake, 0.006f, 30f, 2.4f, StepStart.OnStage);
-            shake.startStage = 2;
-
-            // 3) Khoảnh khắc chốt, theo bậc.
-            ChestStep sad = ChestStepBuilder.Motion(s, "rac-xep", StepMotionKind.Squash, 0.3f, 1.5f, 0.7f, StepStart.OnLock);
-            sad.maxTier = ChestTier.Rac;
-            ChestStep sadCoins = ChestStepBuilder.Burst(s, "rac-vai-xu", BodyShape.Coin, 3, 0, StepStart.WithPrevious, 0.1f);
-            sadCoins.maxTier = ChestTier.Rac;
-            sadCoins.speedMin = 0.8f; sadCoins.speedMax = 1.6f; sadCoins.coneAngle = 14f; sadCoins.spread = 0.5f;
-
-            ChestStep few = ChestStepBuilder.Burst(s, "thuong-xu", BodyShape.Coin, 9, 0, StepStart.OnLock);
-            few.minTier = ChestTier.Thuong; few.maxTier = ChestTier.Thuong;
-
-            ChestStep hop = ChestStepBuilder.Motion(s, "hiem-nhay", StepMotionKind.Jump, 0.08f, 2f, 0.8f, StepStart.OnLock);
-            hop.minTier = ChestTier.Hiem; hop.maxTier = ChestTier.RatHiem;
-            ChestStep many = ChestStepBuilder.Burst(s, "hiem-xu", BodyShape.Coin, 14, 7, StepStart.WithPrevious);
-            many.minTier = ChestTier.Hiem; many.maxTier = ChestTier.RatHiem;
-            many.spread = 0.4f; many.speedMax = 4.6f;
-            ChestStep blast = ChestStepBuilder.Add(s, "hiem-no", StepKind.Explosion, StepStart.WithPrevious, 0.15f);
-            blast.minTier = ChestTier.Hiem; blast.maxTier = ChestTier.RatHiem;
-            blast.explosionForce = 2.5f; blast.explosionRadius = 1.2f;
-
-            ChestStep hover = ChestStepBuilder.Motion(s, "huyen-thoai-bay", StepMotionKind.Hover, 0.12f, 0f, 3f, StepStart.OnLock);
-            hover.minTier = ChestTier.HuyenThoai;
-            ChestStep spin = ChestStepBuilder.Motion(s, "huyen-thoai-xoay", StepMotionKind.Spin, 360f, 0f, 1.6f, StepStart.WithPrevious);
-            spin.minTier = ChestTier.HuyenThoai;
-            ChestStep storm = ChestStepBuilder.Burst(s, "huyen-thoai-xu", BodyShape.Coin, 40, 0, StepStart.WithPrevious);
-            storm.minTier = ChestTier.HuyenThoai;
-            storm.spread = 0.9f; storm.speedMin = 2.5f; storm.speedMax = 5.5f; storm.coneAngle = 38f;
-            ChestStep boom = ChestStepBuilder.Add(s, "huyen-thoai-no", StepKind.Explosion, StepStart.WithPrevious, 0.3f);
-            boom.minTier = ChestTier.HuyenThoai;
-            boom.explosionForce = 4f; boom.explosionRadius = 1.6f;
-
-            // 4) Cue gọi code của GoldenGlintHook (lấp lánh quanh miệng rương), từ Hiếm trở lên.
-            ChestStep glint = ChestStepBuilder.Add(s, "lap-lanh", StepKind.Cue, StepStart.OnLock);
-            glint.cue = GoldenGlintHook.CueName;
-            glint.minTier = ChestTier.Hiem;
+            // Xu + chuyển động cả rương do GoldenSlotHook làm (chạy thêm bước vật lý ở đây sẽ bắn xu hai lần).
         }
     }
 }

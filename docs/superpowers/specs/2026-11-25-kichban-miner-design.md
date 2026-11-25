@@ -1,6 +1,32 @@
 # Kịch bản mở rương Thợ Mỏ (Chest_Miner) — "Đào rương ra khỏi mỏ"
 
-Trạng thái: **đã viết code, biên dịch stub qua; CHƯA chạy trong Unity, CHƯA ai nghe âm.**
+Trạng thái: **đã thu gọn theo kế hoạch 2026-11-25 (mục 5.6); biên dịch stub qua (`check_all.sh`, `check_miner_dig.sh`); CHƯA chạy trong Unity, CHƯA ai nghe âm.**
+
+### Bản thu gọn (thay cho các số cũ bên dưới)
+- **Tự chạy khi bấm:** hồ sơ `ChestFx_Miner` mang `ChestScript_Miner`: bước 1 `Cue "dao_mo"` (OnPress), bước 2 `OpenBox` (AfterPrevious).
+  `MinerDigSequence.OnCue` trả coroutine đào + nổ; xong thì lõi mới mở nắp và quay màu. `TryBegin` còn lại làm API cũ
+  (`[Obsolete]`, chỉ gọi `reveal.Play`).
+- **Cắt:** đá 26 → 12 (cỡ 0,38), nhát 4–6 → 2–3 (cách 0,55 s), ngòi 2,2 → 1,0 s, vàng HT 18 → 10, sỏi trần cứng 6 trước chốt /
+  0 (Thường) / 1 (Rác) / 4 (RH) / 6 (HT), mỗi 4 bước màu rơi 1 sỏi. Đoạn đào ≈ 2–3 s (không còn chờ 0,35 s, còn 0,2 s).
+- **Âm:** chỉ mp3 ElevenLabs (không còn `MinerSynth`; file cũ để nguyên). `tension.enabled = false`, lõi câm (`ChestAudioRule.ApplyToProfile` mỗi lần chạy Setup).
+
+| t | Việc | Âm |
+|---|---|---|
+| 0 | Bấm → dựng 12 khối đá, cuốc hiện | Nền `rumble_loop` vào ngay (0,15, +45% pitch tới chốt) |
+| 0,3 → | Nhịp `thump` 0,7 s → 0,15 s sát chốt (vol 0,25 → 0,55) | |
+| 0,4 → ~2 | 2–3 nhát; mỗi nhát 1 sự kiện (`pick`, nhát cuối `crumble`) qua cổng 0,2 s | |
+| nhát áp chót | Tự cắm thuốc nổ, ngòi 1,0 s | `fuse` (nhịp tạm nghỉ, còn 2 lớp), nổ `dynamite` (trần 0,5) |
+| ~2,5–3 | Đá sạch → OpenBox → bánh xe màu 5 màu (lõi) | nền + nhịp dâng tới chốt |
+| chốt | Rác: nền tắt phụt, lặng 0,2 s, `lock_rac`; Thường: nền fade 0,3 s + `lock_thuong` (chim vẫn đậu); Hiếm: nền dừng + `lock_hiem`; RH/HT: nền dừng + `lock_ratHiem`/`lock_huyenThoai` (không thêm tiếng nổ) | 1 tiếng chốt mỗi bậc |
+| +0,4 → | Đuôi: chim hót thưa, vàng leng keng (HT), Rác: chim ngất + sỏi "cốc" | ≤ 6 tiếng, cách ≥ 0,15 s, trần 0,4 |
+
+Bản chốt: diễn viên 2 (cuốc, chim) + vỏ đá; đá/vàng HT/sỏi = 12 / 10 / ≤ 6; đào ≤ 3 s; 2 lớp âm trước chốt (rền + thình); `tension.enabled = false`.
+
+### Chưa kiểm (trung thực)
+Chưa chạy Unity, chưa ai nghe; chưa đo thời gian đào thật; `CreateAllChestFxProfiles` còn gọi `SaveHook<MinerDigSequence>(key, null)` nên prefab hook của menu cầm rương chưa có âm (cần đổi `null` → `MinerDigSetup.FillClips`, file ngoài phạm vi phiên này).
+
+---
+### Bản gốc trước khi thu gọn (số liệu cũ, để đối chiếu)
 
 ## Ý tưởng
 Rương không "mở nắp" ngay mà bị **vùi trong vỏ đá**. Người chơi (hoặc cuốc tự đập) phá đá từng nhát; đá là khối

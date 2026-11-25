@@ -20,3 +20,9 @@ Tạo bằng ElevenLabs sound-generation (prompt_influence 0.6), ngày 2026-11-2
 | sfx_vietnam_thud.mp3 | 0,6 | bước 4 (mở toang) | conical straw hat landing softly on woven bamboo basket, light rustle thump |
 
 Tất cả < 82 KB. Tick có thể có khoảng lặng đầu: nếu nghe trễ nhịp, cắt lại từ bản gốc (đã xoá) hoặc tạo lại riêng tick.
+| `sfx_vietnam_dan_bau_loop.mp3` | 8 | Vietnamese dan bau monochord playing a slow wavering melody over soft night festival ambience with crickets, seamless loop |
+| `sfx_vietnam_trong.mp3` | 0.6 | Vietnamese temple drum, single deep hit |
+| `sfx_vietnam_lantern_in.mp3` | 0.8 | soft paper lantern floating down into a wooden box, gentle papery whoosh and soft tap |
+| `sfx_vietnam_dan_bau_xit.mp3` | 1.2 | dan bau string bending down comically, sad sliding pitch drop |
+| `sfx_vietnam_frog.mp3` | 0.6 | single frog croak, ribbit |
+| `sfx_vietnam_trong_dong.mp3` | 2.0 | ancient Dong Son bronze drum struck hard, deep resonant boom with gong shimmer |

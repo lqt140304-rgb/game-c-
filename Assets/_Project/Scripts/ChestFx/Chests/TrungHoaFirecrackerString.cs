@@ -193,7 +193,7 @@ namespace ChoDoLa.ChestFx
             rb.angularVelocity = new Vector3((float)rng.NextDouble() - 0.5f, (float)rng.NextDouble() - 0.5f, (float)rng.NextDouble() - 0.5f) * 40f;
             // vỏ pháo cháy đen, tự dọn sau vài giây
             t.GetComponent<Renderer>().sharedMaterial = Mat(new Color(0.2f, 0.08f, 0.06f), "TrungHoaShell");
-            Destroy(t.gameObject, 7f + (float)rng.NextDouble() * 2f);
+            Destroy(t.gameObject, 3f + (float)rng.NextDouble()); // T6: vật thừa biến mất ≤ 4 s
             return pos;
         }
 

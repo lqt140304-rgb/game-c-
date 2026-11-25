@@ -6,8 +6,8 @@ namespace ChoDoLa.ChestFx
     /// Chest_TheThao (split low-poly football on an orange tee): "match day". The roulette swings up and down
     /// like a power-shot meter (PingPong), ticks are ball kicks, confetti streams shoot up and fall back with gravity,
     /// rays are short and spin fast like a spinning ball. Locks go from a whiffed kick (Rác) to a whole stadium goal roar
-    /// (Huyền thoại). Extras (side confetti cannons, fireworks, whistle, air horn) live in <see cref="TheThaoHook"/>.
-    /// Clips are filled by Editor/TheThaoFxSetup.cs.
+    /// (Huyền thoại). Extras (kick-off whistle, air horn, drums) live in <see cref="TheThaoHook"/>.
+    /// Hook clips are .mp3 (ElevenLabs) filled by Editor/TheThaoFxSetup.cs; core profile audio is empty (ChestAudioRule).
     /// </summary>
     public static class TheThaoFxPreset
     {
@@ -27,45 +27,49 @@ namespace ChoDoLa.ChestFx
         public const string KickoffFile = "sfx_thethao_kickoff.mp3";
         public const string AirHornFile = "sfx_thethao_airhorn.mp3";
 
-        /// <summary>Âm riêng của kịch bản luân lưu (tổng hợp bằng Tools/Audio/make_thethao_match_sfx.py).</summary>
-        public const string MatchFolder = AudioFolder + "match/";
-
 #if UNITY_EDITOR
-        /// <summary>Điền các clip còn trống của <see cref="TheThaoHook"/> từ the_thao/ và the_thao/match/.</summary>
-        public static void FillHookClips(TheThaoHook h)
+        /// <summary>
+        /// Gán các clip .mp3 ElevenLabs của <see cref="TheThaoHook"/> (theo ô `field` trong Tools/Audio/elevenlabs_chest_manifest.json,
+        /// mục the_thao). Không nạp .wav numpy nữa (A9). <paramref name="overwrite"/> = true (menu Setup): ghi đè ô đã có;
+        /// false (OnValidate): chỉ điền ô còn trống. File mp3 thiếu thì để nguyên ô (báo trong log của Setup).
+        /// </summary>
+        public static int FillHookClips(TheThaoHook h, bool overwrite)
         {
-            if (h == null) return;
-            if (h.kickoffClip == null) h.kickoffClip = Load(MatchFolder + "whistle_start.wav") ?? Load(AudioFolder + KickoffFile);
-            if (h.airHornClip == null) h.airHornClip = Load(AudioFolder + AirHornFile) ?? Load(MatchFolder + "airhorn.wav");
-            if (h.crowdLoopClip == null) h.crowdLoopClip = Load(MatchFolder + "crowd_loop.wav");
-            if (h.drumClip == null) h.drumClip = Load(MatchFolder + "drum.wav");
-            if (h.kickClip == null) h.kickClip = Load(MatchFolder + "kick.wav");
-            if (h.bounceClip == null) h.bounceClip = Load(MatchFolder + "bounce.wav");
-            if (h.postClip == null) h.postClip = Load(MatchFolder + "post_clang.wav");
-            if (h.netClip == null) h.netClip = Load(MatchFolder + "net_swish.wav");
-            if (h.oohClip == null) h.oohClip = Load(MatchFolder + "crowd_ooh.wav");
-            if (h.roarClip == null) h.roarClip = Load(MatchFolder + "crowd_roar.wav");
-            if (h.awwClip == null) h.awwClip = Load(MatchFolder + "crowd_aww.wav");
-            if (h.deflateClip == null) h.deflateClip = Load(MatchFolder + "deflate.wav");
-            if (h.tromboneClip == null) h.tromboneClip = Load(MatchFolder + "sad_trombone.wav");
-            if (h.whistleEndClip == null) h.whistleEndClip = Load(MatchFolder + "whistle_end.wav");
-            if (h.varBeepClip == null) h.varBeepClip = Load(MatchFolder + "var_beep.wav");
-            if (h.rewindClip == null) h.rewindClip = Load(MatchFolder + "rewind.wav");
-            if (h.riserClip == null) h.riserClip = Load(MatchFolder + "riser.wav");
-            if (h.clapClip == null) h.clapClip = Load(AudioFolder + "sfx_thethao_clap.mp3");
+            if (h == null) return 0;
+            int missing = 0;
+            Set(ref h.kickoffClip, KickoffFile, overwrite, ref missing);
+            Set(ref h.airHornClip, AirHornFile, overwrite, ref missing);
+            Set(ref h.drumClip, "sfx_thethao_trong.mp3", overwrite, ref missing);
+            Set(ref h.kickClip, "sfx_thethao_kick.mp3", overwrite, ref missing);
+            Set(ref h.bounceClip, "sfx_thethao_bounce.mp3", overwrite, ref missing);
+            Set(ref h.postClip, "sfx_thethao_post.mp3", overwrite, ref missing);
+            Set(ref h.netClip, "sfx_thethao_net.mp3", overwrite, ref missing);
+            Set(ref h.oohClip, "sfx_thethao_ooh.mp3", overwrite, ref missing);
+            Set(ref h.roarClip, "sfx_thethao_roar.mp3", overwrite, ref missing);
+            Set(ref h.awwClip, "sfx_thethao_aww.mp3", overwrite, ref missing);
+            Set(ref h.riserClip, "sfx_thethao_riser.mp3", overwrite, ref missing);
+            Set(ref h.clapClip, "sfx_thethao_clap.mp3", overwrite, ref missing);
+            if (h.stingClips == null || h.stingClips.Length != LockFiles.Length) h.stingClips = new AudioClip[LockFiles.Length];
+            for (int i = 0; i < LockFiles.Length; i++) Set(ref h.stingClips[i], LockFiles[i], overwrite, ref missing);
+            return missing;
         }
 
-        private static AudioClip Load(string path)
+        private static void Set(ref AudioClip field, string file, bool overwrite, ref int missing)
         {
-            AudioClip c = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(path);
-            return c != null ? c : null;
+            if (field != null && !overwrite) return;
+            AudioClip c = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(AudioFolder + file);
+            if (c != null) field = c;
+            else if (field == null) missing++;
         }
 #endif
+
+        /// <summary>A1: hồ sơ lõi gần như câm. Gọi MỖI LẦN chạy Setup.</summary>
+        public static void ApplyToProfile(ChestFxProfile p) => ChestAudioRule.ApplyToProfile(p);
 
         public static void Apply(ChestFxProfile p)
         {
             p.chestId = ChestId;
-            // Âm căng thẳng chung của lõi TẮT: TheThaoHook tự dựng nhịp trống/đám đông/riser và tự rẽ theo bậc ở cú sút cuối.
+            // Âm căng thẳng chung của lõi TẮT: TheThaoHook tự phát nhịp trống/riser và tiếng chốt theo bậc (stingClips).
             p.tension.enabled = false;
 
             p.tickVolume = 0.6f;
@@ -73,7 +77,7 @@ namespace ChoDoLa.ChestFx
             p.tickPitchEnd = 1.3f;
             p.lockVolume = 0.95f;
             p.whooshVolume = 0.55f;
-            p.ambientVolume = 0.15f;  // đám đông chính do TheThaoHook phát
+            p.ambientVolume = 0f;     // nền do hook lo (lõi câm, A1)
             p.accentVolume = 0.4f;
             p.accentsBase = 0;          // Rác: nobody claps
             p.accentsPerTier = 1;

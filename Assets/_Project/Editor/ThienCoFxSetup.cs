@@ -8,9 +8,9 @@ namespace ChoDoLa.Editor
 {
     /// <summary>
     /// Tools/Cho Do La/Create Thien Co Chest FX Profile: makes ChestFx_ThienCo.asset (ThienCoFxPreset values),
-    /// a ThienCo_Fx prefab carrying ThienCoHook (set as customFxPrefab) and fills the clips from
-    /// Audio/Chests/thien_co/, falling back to the shared chest sounds when a file is missing.
-    /// Running it again keeps the values you tuned and fills only empty clip slots.
+    /// a ThienCo_Fx prefab carrying ThienCoHook (set as customFxPrefab) and fills the hook's ElevenLabs clips from
+    /// Audio/Chests/thien_co/. The core profile is made silent every run (ChestAudioRule.ApplyToProfile, tension off).
+    /// Running it again keeps the values you tuned and fills only empty hook clip slots.
     /// </summary>
     public static class ThienCoFxSetup
     {
@@ -37,23 +37,10 @@ namespace ChoDoLa.Editor
                 AssetDatabase.CreateAsset(p, ProfilePath);
             }
 
-            int fallbacks = 0;
-            p.tickClips = Fill(p.tickClips, ThienCoFxPreset.TickFiles, ChestFxPresets.TickFiles, ref fallbacks);
-            p.lockClipsByTier = Fill(p.lockClipsByTier, ThienCoFxPreset.LockFiles, ChestFxPresets.LockFiles, ref fallbacks);
-            if (p.whooshClip == null) p.whooshClip = Clip(ThienCoFxPreset.WhooshFile, ChestFxPresets.WhooshFile, ref fallbacks);
-            if (p.openAmbientClip == null) p.openAmbientClip = Clip(ThienCoFxPreset.AmbientFile, ChestFxPresets.AmbientFile, ref fallbacks);
-            p.accentClips = Fill(p.accentClips, ThienCoFxPreset.AccentFiles, null, ref fallbacks);
-            if (p.stageClips == null || p.stageClips.Length == 0)
-            {
-                p.stageClips = new[]
-                {
-                    new ChestFxProfile.StageClip { stage = 2, clip = Clip(ThienCoFxPreset.UnsealFile, ChestFxPresets.CreakFile, ref fallbacks), volume = 0.7f },
-                    new ChestFxProfile.StageClip { stage = 4, clip = Clip(ThienCoFxPreset.HatchOpenFile, ChestFxPresets.ThudFile, ref fallbacks), volume = 0.6f },
-                };
-            }
+            // A1: hồ sơ lõi gần như câm, ghi lại MỖI LẦN chạy menu (không chỉ khi trống). Âm do ThienCoHook phát.
+            ChestAudioRule.ApplyToProfile(p);
             if (p.customFxPrefab == null) p.customFxPrefab = CreateHookPrefab();
             FillHookClips(p.customFxPrefab);
-            if (fallbacks > 0) Debug.LogWarning($"[ThienCoFx] {fallbacks} sound(s) missing in {ThienCoFxPreset.AudioFolder}; used the shared chest sounds (or left empty).");
 
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();
@@ -73,45 +60,38 @@ namespace ChoDoLa.Editor
             return prefab;
         }
 
-        /// <summary>Điền âm "Bộ máy Thiên Cơ" vào ThienCoHook trên prefab (chỉ ô trống) từ thien_co/clockwork/.</summary>
+        /// <summary>
+        /// Điền âm ElevenLabs (.mp3 trong Audio/Chests/thien_co/, theo Tools/Audio/elevenlabs_chest_manifest.json) vào ThienCoHook
+        /// trên prefab (chỉ ô trống). File thiếu: để trống, ghi cảnh báo. Không nạp .wav numpy nữa (A9).
+        /// </summary>
         private static void FillHookClips(GameObject prefab)
         {
             ThienCoHook h = prefab != null ? prefab.GetComponent<ThienCoHook>() : null;
             if (h == null) return;
-            h.tick = L(h.tick, "tick"); h.tock = L(h.tock, "tock"); h.wind = L(h.wind, "wind");
-            h.gearClank = L(h.gearClank, "gear_clank"); h.meshOk = L(h.meshOk, "mesh_ok"); h.jam = L(h.jam, "jam");
-            h.bell = L(h.bell, "bell"); h.bellBig = L(h.bellBig, "bell_big"); h.sproing = L(h.sproing, "sproing");
-            h.winddown = L(h.winddown, "winddown"); h.cuckoo = L(h.cuckoo, "cuckoo"); h.cuckooSad = L(h.cuckooSad, "cuckoo_sad");
-            h.launch = L(h.launch, "launch"); h.sandLoop = L(h.sandLoop, "sand_loop"); h.musicBoxRise = L(h.musicBoxRise, "musicbox_rise");
+            int missing = 0;
+            if (h.stingClips == null || h.stingClips.Length != ThienCoFxPreset.LockFiles.Length) h.stingClips = new AudioClip[ThienCoFxPreset.LockFiles.Length];
+            for (int i = 0; i < h.stingClips.Length; i++) h.stingClips[i] = L(h.stingClips[i], ThienCoFxPreset.LockFiles[i], ref missing);
+            h.tick = L(h.tick, "sfx_thienco_tick.mp3", ref missing);
+            h.tock = L(h.tock, "sfx_thienco_tock.mp3", ref missing);
+            h.wind = L(h.wind, "sfx_thienco_wind.mp3", ref missing);
+            h.gearClank = L(h.gearClank, "sfx_thienco_gear_clank.mp3", ref missing);
+            h.meshOk = L(h.meshOk, "sfx_thienco_mesh_ok.mp3", ref missing);
+            h.jam = L(h.jam, "sfx_thienco_jam.mp3", ref missing);
+            h.bell = L(h.bell, "sfx_thienco_bell.mp3", ref missing);
+            h.sproing = L(h.sproing, "sfx_thienco_sproing.mp3", ref missing);
+            h.cuckoo = L(h.cuckoo, "sfx_thienco_cuckoo.mp3", ref missing);
+            h.cuckooSad = L(h.cuckooSad, "sfx_thienco_cuckoo_sad.mp3", ref missing);
+            h.launch = L(h.launch, "sfx_thienco_launch.mp3", ref missing);
+            if (missing > 0) Debug.LogWarning($"[ThienCoFx] {missing} sound(s) missing in {ThienCoFxPreset.AudioFolder}; left empty.");
             EditorUtility.SetDirty(prefab);
         }
 
-        private static AudioClip L(AudioClip cur, string n) =>
-            cur != null ? cur : AssetDatabase.LoadAssetAtPath<AudioClip>(ThienCoFxPreset.AudioFolder + "clockwork/sfx_tc_" + n + ".wav");
-
-        /// <summary>Own clip; if missing, the shared clip (ChestFxPresets folder, then its synth fallback).</summary>
-        private static AudioClip Clip(string own, string shared, ref int fallbacks)
+        private static AudioClip L(AudioClip cur, string file, ref int missing)
         {
-            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(ThienCoFxPreset.AudioFolder + own);
-            if (c != null) return c;
-            fallbacks++;
-            if (shared == null) return null;
-            c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + shared);
-            if (c != null) return c;
-            string synth = ChestFxPresets.SynthFallback(shared);
-            return synth != null ? AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + synth) : null;
-        }
-
-        private static AudioClip[] Fill(AudioClip[] current, string[] own, string[] shared, ref int fallbacks)
-        {
-            AudioClip[] result = new AudioClip[own.Length];
-            for (int i = 0; i < own.Length; i++)
-            {
-                AudioClip existing = current != null && i < current.Length ? current[i] : null;
-                string s = shared != null && i < shared.Length ? shared[i] : null;
-                result[i] = existing != null ? existing : Clip(own[i], s, ref fallbacks);
-            }
-            return result;
+            if (cur != null) return cur;
+            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(ThienCoFxPreset.AudioFolder + file);
+            if (c == null) missing++;
+            return c;
         }
 
         private static void EnsureFolder(string folder)

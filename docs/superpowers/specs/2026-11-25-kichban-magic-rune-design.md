@@ -1,6 +1,6 @@
 # Kịch bản mở rương Chest_Magic: TRẬN PHÁP RUNE
 
-Ngày 2026-11-25 · nhánh `claude/chest-seq-magic` · thay cho `MagicHook` cũ (vòng hạt quanh miệng rương).
+**Đã thu gọn theo kế hoạch 2026-11-25 (mục 5.4).** Ngày 2026-11-25 · nhánh `claude/chest-seq-magic` · thay cho `MagicHook` cũ (vòng hạt quanh miệng rương).
 
 ## Ý tưởng
 
@@ -53,7 +53,7 @@ rương, mọi thứ xoay nhanh và rung mạnh dần. Đến lúc khóa bậc, 
 - `Assets/_Project/Scripts/ChestFx/Chests/MagicRuneRitual.cs` — toàn bộ kịch bản (hook).
 - `Assets/_Project/Scripts/ChestFx/Chests/MagicRuneStone.cs` — thẻ đá rune (đăng ký tĩnh, không tìm cả cảnh).
 - `Assets/_Project/Editor/MagicRuneFxSetup.cs` — menu `Tools/Cho Do La/Magic Rune/…`.
-- `Assets/_Project/Audio/Chests/magic_rune/*.wav` — tạo bởi `Tools/Audio/make_magic_rune_sfx.py` (numpy, hạt giống cố định, không bản quyền).
+- `Assets/_Project/Audio/Chests/magic/*.mp3` — âm ElevenLabs theo `Tools/Audio/elevenlabs_chest_manifest.json` (mục `magic`). Các `.wav` numpy trong `magic_rune/` và `make_magic_rune_sfx.py` để nguyên nhưng không còn được gán.
 - `Tools/CompileCheck/check_magic_rune.sh` — biên dịch thử bằng stub.
 - Không sửa file dùng chung nào.
 
@@ -66,11 +66,30 @@ rương, mọi thứ xoay nhanh và rung mạnh dần. Đến lúc khóa bậc, 
    Rác xịt + rương rơi bịch; Huyền thoại dập + cột sáng; màu 5 bậc dừng đúng; bóng vật phẩm lớn đủ.
 5. Thử tương tác: `Tools/Cho Do La/Magic Rune/Create Player Rune Stone`, kéo đá tới gần một điểm trận (≈0,55 m quanh rương) rồi mở; hoặc ném đá vào vòng khi đang tụ phép.
 
+## Thu gọn 2026-11-25 (mục 5.4) — số mới
+
+| Hạng mục | Trước | Sau |
+|---|---|---|
+| Cột sáng HT | cao 6 m cố định, sống ~2 s+ | **2,5 S**, tâm 1,25 S trên rương, sống 1,5 s sau dập |
+| Hạt lúc dập (RH / HT) | 45 / 80 | **35 / 60** |
+| Đèn Light | 2 (rune + wisp) | **1** (wisp không còn đèn, giữ trail + vật liệu additive) |
+| Diễn viên | wisp + 3 đá trong 0,9 S | không đổi |
+| Rigidbody | 3 đá (+ ≤ 3 đá người chơi) | không đổi |
+| `tension.enabled` | — | false (Setup gọi `ChestAudioRule.ApplyToProfile` mỗi lần chạy) |
+| Wisp xoắn HT | bay lên không trần | trần 2 S |
+
+Sửa lỗi: (1) rương chỉ **cộng độ lệch** lên gốc (`WriteChest`, ghi ở `LateUpdate`; gốc = giá trị BoxOpenSequence vừa
+ghi nếu khác giá trị hook ghi khung trước), Reset trả về đúng vị trí/góc cũ; (2) nền `buildClip` luôn `loop = true`.
+
+Âm (A1–A12): nền `rune_bed_loop` 0,15 → 0,45, cao độ +45% tới chốt, không lớp Nhịp (nền đã có trống). Sự kiện
+`stone` 0,4 / `wisp` 0,35 qua cổng 0,2 s. Chốt: nền `Stop()` ngay; TC = `stingClips[bậc]` (Rác: lặng 0,2 s rồi xịt 0,7;
+Thường 0,7; Hiếm 0,85; RH/HT 1,0); HĐ = `slamClip` 0,6 lúc dập, chỉ RH/HT. Không đuôi. Không nhân `volume` hai lần.
+
 ## Trung thực: chưa chạy / chưa nghe
 
 - **Chưa chạy trong Unity** (môi trường không có Unity). Chỉ biên dịch thử bằng stub (`check_magic_rune.sh`, `check_all.sh` đều OK) — không bắt lệch API thật hay lỗi chạy.
 - **Chưa ai nghe** các file âm; chỉ biết độ dài đúng. Có thể cần chỉnh âm lượng/độ chói.
-- Rủi ro cần xem: (a) bóng vật phẩm/glow của lõi tính `MouthPosition` khi rương đang bay → có thể lệch vài cm trong lúc lơ lửng; (b) nếu gốc rương có Rigidbody/CharacterController riêng, việc đặt `transform` trực tiếp có thể đánh nhau với vật lý của nó; (c) nắp (BoxOpenSequence) mở trong lúc rương xoay — cần nhìn xem có đẹp không; (d) `build` dài 10 s: nếu khóa muộn hơn thì im đoạn cuối.
+- Rủi ro cần xem: (a) bóng vật phẩm/glow của lõi tính `MouthPosition` khi rương đang bay → có thể lệch vài cm trong lúc lơ lửng; (b) nếu gốc rương có Rigidbody/CharacterController riêng, việc đặt `transform` trực tiếp có thể đánh nhau với vật lý của nó; (c) nắp (BoxOpenSequence) mở trong lúc rương xoay — cần nhìn xem có đẹp không; (d) nền giờ lặp nên không còn im đoạn cuối, nhưng chỗ nối vòng lặp chưa ai nghe; (e) `WriteChest` dò "BoxOpenSequence đã ghi" bằng so sánh vị trí/góc, chưa thử với rung thật của BoxOpenSequence.
 - Particle chỉ dùng `ChestFxFactory.CreateParticles` + shape Circle, không đụng orbitalX/Y/Z.
 
 ## Nối với khung chung (`claude/chest-fx-core`)

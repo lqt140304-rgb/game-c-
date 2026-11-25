@@ -42,16 +42,14 @@ namespace ChoDoLa.ChestFx
         public AudioClip deflateClip;
         public AudioClip boomClip;
         public AudioClip throwClip;
-        [Range(0f, 1f)] public float fxVolume = 0.6f;
+        [Tooltip("TC theo bậc (Rác..Huyền thoại): sfx_racquy_lock_*.mp3. Hook tự phát (A4/A11). Bậc Rác phát deflateClip thay vì ô 0.")]
+        public AudioClip[] stingClips = new AudioClip[5];
+        [Range(0f, 1f)] public float fxVolume = 0.8f;
 
-        [Header("Nhịp căng")]
-        [Tooltip("Pitch vòng trống lúc bấm và mức trần.")]
-        [SerializeField] private float buildPitchStart = 0.85f;
-        [SerializeField] private float buildPitchMax = 1.7f;
-        [Tooltip("Pitch tăng mỗi giây kể từ lúc bấm.")]
-        [SerializeField] private float buildPitchPerSecond = 0.11f;
-        [SerializeField] private float buildVolumeStart = 0.22f;
-        [SerializeField] private float buildVolumeMax = 0.85f;
+        // Nền dâng (A2): âm lượng 0,15 → 0,45 (nhân fxVolume một lần), cao độ +50% tới lúc chốt.
+        private const float BedVolStart = 0.15f, BedVolMax = ChestAudioRule.BedMax;
+        private const float BedPitchStart = 1f, BedPitchMax = 1.5f, BedRamp = 7f;
+        private const int MaxPreLockTrash = 10;
 
         [Header("Tương tác")]
         [Tooltip("Cho phép ném xương cá dụ mèo (F hoặc chuột phải) trong lúc mở.")]
@@ -80,7 +78,8 @@ namespace ChoDoLa.ChestFx
         private float _boost = 1f;                // >1 khi mèo đã gặm xương
 
         private AudioSource _build;
-        private float _buildDive = -1f;           // >=0: đang "xì hơi"
+        private float _lastEvent = -999f;         // mốc ChestAudioRule.TryGate cho tiếng lẻ trước chốt
+        private int _preLockTrash;                // rác đã rớt trước chốt (trần MaxPreLockTrash)
 
         private Transform _cat, _catTail, _catHead;
         private Rigidbody _catBody;
@@ -126,12 +125,12 @@ namespace ChoDoLa.ChestFx
             _build.playOnAwake = false;
             _build.loop = true;
             _build.clip = buildLoopClip;
-            _build.pitch = buildPitchStart;
-            _build.volume = buildVolumeStart * fxVolume;
+            _build.pitch = BedPitchStart;
+            _build.volume = BedVolStart * fxVolume;
             _build.spatialBlend = 0f;
             if (buildLoopClip != null) _build.Play();
 
-            _reveal.PlayOneShot(fliesClip, fxVolume * 0.5f);
+            PlayEvent(fliesClip, 0.3f);
             _flies.transform.position = _reveal.MouthPosition + Vector3.up * _size * 0.15f;
             _flies.Play();
             _flies.Emit(5);
@@ -152,7 +151,7 @@ namespace ChoDoLa.ChestFx
             em.rateOverTime = 8f;
             ChestFxFactory.SetParticleColor(_stink, stinkColor, _stinkStyle, 0.7f);
             _stink.Play();
-            reveal.PlayOneShot(gurgleClip, fxVolume * 0.7f);
+            PlayEvent(gurgleClip, 0.5f);
             if (_catRoutine != null) StopCoroutine(_catRoutine);
             _catRoutine = StartCoroutine(CatLeapOntoBin());
         }
@@ -163,8 +162,9 @@ namespace ChoDoLa.ChestFx
             // Mèo cào: thùng giật nghiêng theo một hướng ngẫu nhiên, mạnh dần theo thời gian.
             float t = Time.time - _startTime;
             Kick(Mathf.Lerp(4f, 11f, Mathf.Clamp01(t / 7f)) * _boost);
-            if (_rng.NextDouble() < 0.45) SpawnTrash(1, 0.9f, false);
-            if (_rng.NextDouble() < 0.3) reveal.PlayOneShot(clankClip, fxVolume * 0.35f, 0.8f + (float)_rng.NextDouble() * 0.6f);
+            // Trần rác trước chốt (T3): tối đa MaxPreLockTrash món; vẫn tiêu một số ngẫu nhiên để dãy hạt giống không đổi.
+            if (_rng.NextDouble() < 0.45 && _preLockTrash < MaxPreLockTrash) { SpawnTrash(1, 0.9f, false); _preLockTrash++; }
+            if (_rng.NextDouble() < 0.3) PlayEvent(clankClip, 0.35f, 0.8f + (float)_rng.NextDouble() * 0.6f);
             if (_stink != null) ChestFxFactory.SetParticleColor(_stink, Color.Lerp(stinkColor, color, 0.25f), _stinkStyle, 0.7f);
         }
 
@@ -172,6 +172,7 @@ namespace ChoDoLa.ChestFx
         {
             if (!_started) BeginOnPress();
             _locked = true;
+            StopBuild();            // A4: nền dừng ngay, không fade
             Place(reveal.MouthPosition);
             ParticleSystem.EmissionModule em = _stink.emission;
             em.rateOverTime = 0f;
@@ -180,11 +181,9 @@ namespace ChoDoLa.ChestFx
             switch (tier)
             {
                 case ChestTier.Rac:
-                    // Xịt: cơn căng tụt giọng, thùng chỉ ợ một cái.
-                    _buildDive = 0f;
-                    reveal.PlayOneShot(deflateClip, fxVolume);
-                    reveal.PlayOneShot(fartClip, fxVolume * 0.8f, 0.9f);
+                    // A4 Rác: nền dừng ngay, lặng 0,2 s, một tiếng xịt, không gì khác trong 0,6 s.
                     Kick(-5f);
+                    PlayLater(deflateClip, 0.8f, ChestAudioRule.RacSilence);
                     SpawnTrash(1, 0.6f, false, shoe: true);
                     ChestFxFactory.SetParticleColor(_stink, stinkColor, _stinkStyle, 1f);
                     _stink.Emit(45);
@@ -192,16 +191,16 @@ namespace ChoDoLa.ChestFx
                     _catRoutine = StartCoroutine(CatBored());
                     break;
                 case ChestTier.Thuong:
-                    StopBuild();
-                    reveal.PlayOneShot(clatterClip, fxVolume * 0.8f);
+                    PlaySting(1, 0.7f);
+                    reveal.PlayOneShot(clatterClip, fxVolume * 0.5f);      // HĐ
                     Tip(40f);
                     SpawnTrash(8, 1.4f, true);
                     _catRoutine = StartCoroutine(CatHopOffWithBone());
                     break;
                 case ChestTier.Hiem:
-                    StopBuild();
-                    reveal.PlayOneShot(clatterClip, fxVolume);
-                    reveal.PlayOneShot(hissClip, fxVolume * 0.7f);
+                    PlaySting(2, 0.85f);
+                    reveal.PlayOneShot(clatterClip, fxVolume * 0.7f);      // HĐ
+                    PlayLater(hissClip, 0.4f, 0.5f);                       // đuôi
                     Tip(58f);
                     SpawnTrash(14, 1.9f, true);
                     _flies.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -210,10 +209,10 @@ namespace ChoDoLa.ChestFx
                     break;
                 default: // Rất hiếm, Huyền thoại: dâng tới đỉnh rồi bùng nổ.
                     bool legend = tier == ChestTier.HuyenThoai;
-                    StopBuild();
-                    reveal.PlayOneShot(boomClip, fxVolume * (legend ? 1f : 0.8f));
-                    reveal.PlayOneShot(clatterClip, fxVolume);
-                    reveal.PlayOneShot(yowlClip, fxVolume * 0.8f);
+                    PlaySting(legend ? 4 : 3, 1f);
+                    reveal.PlayOneShot(boomClip, fxVolume * 0.8f);         // HĐ
+                    PlayLater(clatterClip, 0.5f, 0.3f);
+                    PlayLater(yowlClip, 0.4f, 0.7f);
                     Tip(legend ? 85f : 70f);
                     SpawnTrash(legend ? 32 : 22, legend ? 3.4f : 2.6f, true);
                     _flies.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -228,31 +227,45 @@ namespace ChoDoLa.ChestFx
 
         private void OnDestroy() => Cleanup();
 
-        // ---------------------------------------------------------------- âm dâng dần
+        // ---------------------------------------------------------------- âm
 
         private void UpdateBuildAudio()
         {
-            if (_build == null) return;
-            if (_buildDive >= 0f)
-            {
-                // "Xì hơi": pitch rơi tụt trong 0,4 s rồi tắt hẳn.
-                _buildDive += Time.deltaTime;
-                float u = Mathf.Clamp01(_buildDive / 0.4f);
-                _build.pitch = Mathf.Lerp(_build.pitch, 0.25f, u);
-                _build.volume *= 1f - u * 0.5f;
-                if (u >= 1f) StopBuild();
-                return;
-            }
-            if (_locked || !_build.isPlaying) return;
-            float t = Time.time - _startTime;
-            _build.pitch = Mathf.Min(buildPitchMax, buildPitchStart + t * buildPitchPerSecond * (_rouletteOn ? 1.3f : 1f));
-            _build.volume = Mathf.Lerp(buildVolumeStart, buildVolumeMax, Mathf.Clamp01(t / 7f)) * fxVolume;
+            if (_build == null || _locked || !_build.isPlaying) return;
+            float u = Mathf.Clamp01((Time.time - _startTime) / BedRamp);
+            _build.pitch = Mathf.Lerp(BedPitchStart, BedPitchMax, u);
+            _build.volume = Mathf.Lerp(BedVolStart, BedVolMax, u) * fxVolume;
         }
 
         private void StopBuild()
         {
-            _buildDive = -1f;
             if (_build != null) _build.Stop();
+        }
+
+        /// <summary>Tiếng lẻ trước chốt (A3): qua ChestAudioRule.TryGate, âm lượng ≤ EventMax, nhân fxVolume một lần.</summary>
+        private void PlayEvent(AudioClip clip, float volume, float pitch = 1f)
+        {
+            if (clip == null || _reveal == null) return;
+            if (!ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap)) return;
+            _reveal.PlayOneShot(clip, fxVolume * Mathf.Min(volume, ChestAudioRule.EventMax), pitch);
+        }
+
+        /// <summary>TC theo bậc (A4/A11): stingClips[rank], âm lượng ≤ StingMax.</summary>
+        private void PlaySting(int rank, float volume)
+        {
+            if (stingClips == null || rank < 0 || rank >= stingClips.Length || stingClips[rank] == null) return;
+            _reveal.PlayOneShot(stingClips[rank], fxVolume * Mathf.Min(volume, ChestAudioRule.StingMax));
+        }
+
+        private void PlayLater(AudioClip clip, float volume, float delay)
+        {
+            if (clip != null) StartCoroutine(PlayLaterRoutine(clip, volume, delay));
+        }
+
+        private IEnumerator PlayLaterRoutine(AudioClip clip, float volume, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (_reveal != null) _reveal.PlayOneShot(clip, fxVolume * volume);
         }
 
         // ---------------------------------------------------------------- cả thùng: nghiêng, giật, đổ
@@ -359,7 +372,7 @@ namespace ChoDoLa.ChestFx
             // Sàn vô hình để rác có chỗ lăn (nếu cảnh đã có sàn thì sàn này trùng mặt, không hại gì).
             _floor = new GameObject("RacQuy_Floor");
             BoxCollider bc = _floor.AddComponent<BoxCollider>();
-            bc.size = new Vector3(6f, 0.1f, 6f);
+            bc.size = new Vector3(4f * _size, 0.1f, 4f * _size);
             _floor.transform.position = _base - Vector3.up * 0.05f;
         }
 
@@ -387,7 +400,7 @@ namespace ChoDoLa.ChestFx
                     _glint.localScale = Vector3.one * s;
                     yield return null;
                 }
-                _reveal.PlayOneShot(clankClip, fxVolume * 0.25f, 2.2f);
+                _reveal.PlayOneShot(clankClip, fxVolume * ChestAudioRule.TailMax * 0.6f, 2.2f);   // đuôi, nhỏ
                 yield return new WaitForSeconds(0.25f);
             }
         }
@@ -438,7 +451,7 @@ namespace ChoDoLa.ChestFx
             EnsureFloor();
             _trash.Add(g);
             _bone = g.transform;
-            _reveal.PlayOneShot(throwClip, fxVolume * 0.7f);
+            PlayEvent(throwClip, 0.5f);
             if (_catRoutine != null && !_rouletteOn) { StopCoroutine(_catRoutine); _catRoutine = StartCoroutine(CatChaseBone()); }
         }
 
@@ -511,8 +524,8 @@ namespace ChoDoLa.ChestFx
         private IEnumerator CatIntro()
         {
             Vector3 spot = _base + (_cat.position - _base).normalized * _size * 1.0f;
-            yield return new WaitForSeconds(0.15f);
-            _reveal.PlayOneShot(meowClip, fxVolume * 0.8f);
+            yield return new WaitForSeconds(0.25f);     // sau tiếng ruồi ≥ 0,2 s (A3)
+            PlayEvent(meowClip, 0.5f);
             yield return Walk(spot, 1.1f);
             Face(_base);
             yield return Crouch(99f);
@@ -537,7 +550,7 @@ namespace ChoDoLa.ChestFx
             yield return new WaitForSeconds(0.5f);
             if (_bone != null)
             {
-                _reveal.PlayOneShot(meowWantsClip, fxVolume * 0.8f);
+                PlayEvent(meowWantsClip, 0.5f);
                 Vector3 b = _bone.position;
                 b.y = _base.y;
                 yield return Walk(b, 0.6f);
@@ -562,7 +575,7 @@ namespace ChoDoLa.ChestFx
                 yield return null;
             }
             Kick(14f * _boost);
-            _reveal.PlayOneShot(clankClip, fxVolume * 0.6f, 0.7f);
+            PlayEvent(clankClip, 0.5f, 0.7f);
             // Đứng trên miệng thùng, cào xuống.
             while (_cat != null)
             {
@@ -598,7 +611,7 @@ namespace ChoDoLa.ChestFx
             Vector3 down = _base + (_cat.position - _base).normalized * _size * 1.3f;
             down.y = _base.y;
             yield return Walk(down, 0.4f);
-            _reveal.PlayOneShot(meowClip, fxVolume * 0.7f, 1.15f);
+            _reveal.PlayOneShot(meowClip, fxVolume * ChestAudioRule.TailMax, 1.15f);   // đuôi
             Vector3 away = down + (down - _base).normalized * _size * 4f;
             yield return Walk(away, 1.6f);
         }
@@ -738,6 +751,9 @@ namespace ChoDoLa.ChestFx
             if (_build != null) Destroy(_build);
             _build = null;
             if (_hasBaseRot && _reveal != null) _reveal.transform.rotation = _baseRot;
+            _hasBaseRot = false;            // lần mở sau chụp lại hướng hiện tại (không giật về hướng cũ)
+            _preLockTrash = 0;
+            _lastEvent = -999f;
             _tilt = _tiltVel = _tiltTarget = 0f;
             foreach (GameObject g in _trash) if (g != null) Destroy(g);
             _trash.Clear();

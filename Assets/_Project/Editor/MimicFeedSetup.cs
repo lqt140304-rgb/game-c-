@@ -14,7 +14,8 @@ namespace ChoDoLa.Editor
     /// </summary>
     public static class MimicFeedSetup
     {
-        public const string AudioFolder = "Assets/_Project/Audio/Chests/mimic_feed/";
+        public const string AudioFolder = "Assets/_Project/Audio/Chests/mimic/";
+        public const string SkinTexture = "Assets/_Project/Art/Source/MeshyChests/Mimic/Meshy_AI_Monster_Mimic_Chest_20261008_texture.png";
 
         [MenuItem("Tools/Cho Do La/Mimic: Them kich ban Ruong Doi vao ruong dang chon")]
         public static void AddToSelected()
@@ -36,39 +37,53 @@ namespace ChoDoLa.Editor
 
             MimicFeedHook h = go.GetComponent<MimicFeedHook>();
             if (h == null) h = Undo.AddComponent<MimicFeedHook>(go);
-            int missing = 0;
-            h.wakeClip = Clip("sfx_mf_wake.wav", ref missing);
-            h.stomachLoopClip = Clip("sfx_mf_stomach_loop.wav", ref missing);
-            h.heartbeatClip = Clip("sfx_mf_heartbeat.wav", ref missing);
-            h.chompClip = Clip("sfx_mf_chomp.wav", ref missing);
-            h.chewClip = Clip("sfx_mf_chew.wav", ref missing);
-            h.gulpClip = Clip("sfx_mf_gulp.wav", ref missing);
-            h.burpSmallClip = Clip("sfx_mf_burp_small.wav", ref missing);
-            h.burpBigClip = Clip("sfx_mf_burp_big.wav", ref missing);
-            h.riserClip = Clip("sfx_mf_riser.wav", ref missing);
-            h.deflateClip = Clip("sfx_mf_deflate.wav", ref missing);
-            h.boomClip = Clip("sfx_mf_boom.wav", ref missing);
-            h.spitClip = Clip("sfx_mf_spit.wav", ref missing);
-            h.buzzLoopClip = Clip("sfx_mf_buzz_loop.wav", ref missing);
-            h.tossClip = Clip("sfx_mf_toss.wav", ref missing);
-            h.hopClip = Clip("sfx_mf_hop.wav", ref missing);
-            h.giggleClip = Clip("sfx_mf_giggle.wav", ref missing);
-            // Nối khung: ChestTension (âm căng từ lúc bấm, rẽ theo bậc lúc chốt) dùng âm của Mimic.
-            ChestFxProfile prof = go.GetComponent<ChestRevealSequence>().Profile;
-            if (prof != null && prof.tension != null)
-            {
-                prof.tension.enabled = true;
-                prof.tension.loopClip = h.stomachLoopClip;
-                prof.tension.pulseClip = h.heartbeatClip;
-                prof.tension.deflateClip = h.deflateClip;
-                prof.tension.swellClip = h.boomClip;
-                prof.tension.pitchEnd = 1.5f;   // bụng réo, không phải còi: đừng vọt quá cao
-                EditorUtility.SetDirty(prof);
-            }
+            FillClips(h);
+            TuneProfile(go.GetComponent<ChestRevealSequence>().Profile, h);
             EditorUtility.SetDirty(h);
             EditorUtility.SetDirty(box);
-            if (missing > 0) Debug.LogWarning($"[MimicFeed] Thiếu {missing} file âm trong {AudioFolder} (chạy Tools/Audio/make_mimic_feed_sfx.py).");
             Debug.Log("[MimicFeed] Đã gắn Rương Đói. Play → mở rương → bấm chuột vào đồ rơi (hoặc phím F) để cho ăn.");
+        }
+
+        /// <summary>Phần chỉnh hồ sơ ChestFx_Mimic cho màn Rương Đói: âm lõi tắt (A1), hook tự phát nền/nhịp/chốt.</summary>
+        public static void TuneProfile(ChestFxProfile prof, MimicFeedHook h)
+        {
+            if (prof == null) return;
+            ChestAudioRule.ApplyToProfile(prof);   // MỖI lần chạy: tension.enabled = false, ô âm lõi trống
+            EditorUtility.SetDirty(prof);
+        }
+
+        /// <summary>Gán âm .mp3 trong Audio/Chests/mimic/ (theo Tools/Audio/elevenlabs_chest_manifest.json) và ảnh da rương.</summary>
+        public static void FillClips(MimicFeedHook h)
+        {
+            int missing = 0;
+            h.stingClips = new[]
+            {
+                Clip("sfx_mimic_lock_rac.mp3", ref missing), Clip("sfx_mimic_lock_thuong.mp3", ref missing),
+                Clip("sfx_mimic_lock_hiem.mp3", ref missing), Clip("sfx_mimic_lock_ratHiem.mp3", ref missing),
+                Clip("sfx_mimic_lock_huyenThoai.mp3", ref missing),
+            };
+            h.stomachLoopClip = Clip("sfx_mimic_stomach_loop.mp3", ref missing);
+            h.heartbeatClip = Clip("sfx_mimic_tick_heartbeat.mp3", ref missing);
+            h.chompClip = Clip("sfx_mimic_bite.mp3", ref missing);
+            h.chewClip = Clip("sfx_mimic_chew.mp3", ref missing);
+            h.gulpClip = Clip("sfx_mimic_gulp.mp3", ref missing);
+            h.burpSmallClip = Clip("sfx_mimic_burp_small.mp3", ref missing);
+            h.burpBigClip = Clip("sfx_mimic_burp_big.mp3", ref missing);
+            h.deflateClip = Clip("sfx_mimic_deflate.mp3", ref missing);
+            h.boomClip = Clip("sfx_mimic_boom.mp3", ref missing);
+            h.spitClip = Clip("sfx_mimic_whoosh_spit.mp3", ref missing);
+            h.tossClip = Clip("sfx_mimic_toss.mp3", ref missing);
+            h.hopClip = Clip("sfx_mimic_hop.mp3", ref missing);
+            h.giggleClip = Clip("sfx_mimic_teeth_chatter.mp3", ref missing);
+            h.wakeClip = null;   // không có trong danh mục âm ElevenLabs; để trống
+            if (missing > 0) Debug.LogWarning($"[MimicFeed] Thiếu {missing} file âm trong {AudioFolder}.");
+
+            // Rương trắng: gắn ảnh da Meshy làm dự phòng khi vật liệu GLB không có ảnh nền.
+            if (h.skinTexture == null)
+            {
+                h.skinTexture = AssetDatabase.LoadAssetAtPath<Texture>(SkinTexture);
+                if (h.skinTexture == null) Debug.LogWarning($"[MimicFeed] Không thấy ảnh da {SkinTexture}.");
+            }
         }
 
         private static AudioClip Clip(string file, ref int missing)

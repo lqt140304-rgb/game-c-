@@ -22,23 +22,23 @@ namespace ChoDoLa.ChestFx
     ///         Thường -> "tạm ổn": hắt hơi khói nhỏ rồi nhảy khẽ, tay đưa quà.
     ///         Hiếm+ -> BÙNG NỔ: rương bật nhảy bằng Rigidbody thật (cao dần theo bậc), Huyền thoại bay lơ lửng phun lửa ở chân;
     ///                 hai tay vươn đỡ món quà; mưa bu-lông ăn mừng; drone bay vòng quanh.
+    /// Đã thu gọn theo kế hoạch 2026-11-25 (mục 5.10): chữ chỉ còn 1 dòng lúc kết, drone không vòng lặp, ít vật văng hơn,
+    /// nhảy theo cỡ rương, âm chỉ 2 lớp trước chốt (hum + bíp), tiếng chốt = stingClips[bậc].
     /// Không bao giờ đọc/đổi bậc ngoài tham số <c>tier</c> mà lõi đưa vào OnTierLocked. Ngẫu nhiên chỉ để trang trí (hạt giống).
     /// Chuyển động cả rương: cộng một độ lệch vào localPosition/localRotation trong LateUpdate và gỡ ra ở Update khung sau,
     /// nên không đánh nhau với cú rung của BoxOpenSequence.
     /// </summary>
     public class RobotTransformHook : ChestFxHook
     {
-        [Header("Âm (RobotTransformSetup tự điền từ Audio/Chests/robot/transform/)")]
+        [Header("Âm (RobotTransformSetup tự điền từ Audio/Chests/robot/, file ElevenLabs .mp3)")]
         public AudioClip pressClip;
-        public AudioClip humLoopClip;
+        public AudioClip humLoopClip;   // Nền
+        public AudioClip beepClip;      // Nhịp
         public AudioClip slotClip;
-        public AudioClip beepClip;
         public AudioClip servoClip;
-        public AudioClip typeClip;
-        public AudioClip droneLoopClip;
-        public AudioClip fizzleClip;
-        [Tooltip("Bùng nổ cho Thường, Hiếm, Rất hiếm, Huyền thoại (4 file).")]
-        public AudioClip[] blastClips = new AudioClip[4];
+        public AudioClip sparkClip;     // đuôi của Rác (drone hết pin)
+        [Tooltip("Tiếng chốt theo bậc: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại (TC).")]
+        public AudioClip[] stingClips = new AudioClip[5];
         [Range(0f, 1f)] public float volume = 0.8f;
 
         [Header("Trang trí")]
@@ -88,10 +88,8 @@ namespace ChoDoLa.ChestFx
         private float _arm, _armTarget;   // 0 = gập trong thân, 1 = vươn đủ
         private bool _armLimp;
         private TextMesh _screen;
-        private readonly List<string> _lines = new List<string>();
-        private string _typing = "";
-        private float _typeClock;
-        private string _scanLine;
+        private float _screenHideAt = -1f;
+        private int _playerFed;
 
         // vật lý phụ
         private readonly List<Rigidbody> _parts = new List<Rigidbody>();
@@ -105,8 +103,10 @@ namespace ChoDoLa.ChestFx
         private Vector3 _droneWatchPos;
 
         // âm
-        private AudioSource _hum, _droneSrc, _sfx;
+        private AudioSource _hum;
         private float _beepClock;
+        private float _eventLast = -999f, _tailLast = -999f;
+        private int _tailCount;
 
         // hạt
         private ParticleSystem _sparks, _smoke, _flame;
@@ -137,7 +137,7 @@ namespace ChoDoLa.ChestFx
             float now = Time.time;
             UpdateAudio(now, dt);
             UpdateDrone(now, dt);
-            UpdateTyping(dt);
+            UpdateScreen();
             UpdateSprings(dt);
             UpdateJump();
             _arm = Mathf.MoveTowards(_arm, _armTarget, dt * (_armLimp ? 1.2f : 2.2f));
@@ -183,7 +183,6 @@ namespace ChoDoLa.ChestFx
         public override void OnRouletteStep(ChestRevealSequence reveal, ChestTier shown, Color color)
         {
             SetEyes(color, _eyeLight != null && _eyeLight.intensity > 1.5f ? 0.6f : 2.6f);
-            if (_scanLine != null) SetScan("QUÉT QUÀ: " + new string('▒', 1 + _rng.Next(5)));
             Kick(0.15f, (float)(_rng.NextDouble() - 0.5) * 2f);
         }
 
@@ -195,6 +194,9 @@ namespace ChoDoLa.ChestFx
             _lockT0 = Time.time;
             if (_socket != null) _socket.SetActive(false);
             StopAllCoroutines();
+            // A4: Nền dừng ngay (Rác, Hiếm trở lên) hoặc fade 0,3 s (Thường); nhịp tự dừng vì pha không còn là Booting.
+            if (tier == ChestTier.Thuong) StartCoroutine(FadeHum(0.3f));
+            else if (_hum != null) _hum.Stop();
             if (tier == ChestTier.Rac) StartCoroutine(Fizzle(color));
             else StartCoroutine(Triumph(tier, color));
         }
@@ -206,8 +208,8 @@ namespace ChoDoLa.ChestFx
 
         public override void OnRevealed(ChestRevealSequence reveal)
         {
-            if (_tier == ChestTier.Rac) Type("> ...zzz (thôi, cầm tạm)");
-            else Type("> GIAO QUÀ XONG :)");
+            // Chữ duy nhất của cả màn: một dòng ngắn, hiện 2 s.
+            ShowLine("> " + _tier.DisplayName().ToUpperInvariant() + "!", 2f);
         }
 
         public override void OnReset(ChestRevealSequence reveal) => Cleanup();
@@ -228,8 +230,7 @@ namespace ChoDoLa.ChestFx
             Measure();
             BuildRig();
             BuildAudio();
-            Play(pressClip, 1f, 1f);
-            Type("> YÊU CẦU MỞ... CẦN SẠC PIN");
+            PlayEvent(pressClip, 0.5f, 1f);
             Kick(0.5f, 0f);
             StartCoroutine(AutoFeed());
         }
@@ -257,36 +258,38 @@ namespace ChoDoLa.ChestFx
             {
                 // Sạc nhanh: phần còn thiếu nạp nốt bằng một tia điện (không ảnh hưởng bậc, chỉ cho đủ thanh pin).
                 Emit(_sparks, SocketPos(), 20);
-                Play(slotClip, 0.7f, 1.4f);
                 _charge = 1f;
             }
             UpdateMeter();
             _standTarget = 1f;
-            Play(servoClip, 0.9f, 1f);
+            PlayEvent(servoClip, 0.5f, 1f);
             Kick(1.2f, 0f);
-            Type("> PIN 100%. KHỞI ĐỘNG RB-10");
-            Type("> CHÂN TRÁI .... OK");
-            Type("> CHÂN PHẢI .... OK");
-            _scanLine = "QUÉT QUÀ: ▒";
             if (_droneMode == DroneMode.Arrive || _droneMode == DroneMode.Drop) ReleaseCargo();
+        }
+
+        private IEnumerator FadeHum(float seconds)
+        {
+            if (_hum == null) yield break;
+            float v0 = _hum.volume;
+            for (float t = 0f; t < seconds && _hum != null; t += Time.deltaTime)
+            {
+                _hum.volume = Mathf.Lerp(v0, 0f, t / seconds);
+                yield return null;
+            }
+            if (_hum != null) _hum.Stop();
         }
 
         private IEnumerator Fizzle(Color color)
         {
-            _scanLine = null;
-            Type("> QUÉT QUÀ: " + _tier.DisplayName().ToUpperInvariant());
-            Type("> LỖI 0x00: CHẬP MẠCH!!");
-            Play(fizzleClip, 1f, 1f);
-            // máy tụt pitch rồi tắt hẳn
-            float p0 = _hum != null ? _hum.pitch : 1f;
+            // Rác: im phắc 0,2 s rồi đúng 1 tiếng xịt (TC); 0,6 s sau đó không phát gì thêm.
+            StartCoroutine(RacSting());
+            // phần hình: máy tụt rồi tắt, mắt chập chờn
             for (float t = 0f; t < 0.9f; t += Time.deltaTime)
             {
-                if (_hum != null) { _hum.pitch = Mathf.Lerp(p0, 0.25f, t / 0.9f); _hum.volume = Mathf.Lerp(0.35f, 0f, t / 0.9f) * volume; }
                 if (_rng.NextDouble() < 0.35) { SetEyes(color, (float)_rng.NextDouble() * 3f); Emit(_sparks, EyePos(), 3); }
                 _shake = 0.006f;
                 yield return null;
             }
-            if (_hum != null) _hum.Stop();
             _shake = 0f;
             SetEyes(new Color(0.3f, 0.3f, 0.3f), 0.15f);
             Emit(_smoke, TopPos(), 18);
@@ -295,9 +298,8 @@ namespace ChoDoLa.ChestFx
             _tiltTarget = 11f * (_rng.NextDouble() < 0.5 ? -1f : 1f);
             yield return new WaitForSeconds(0.2f);
             Kick(-1.6f, 0f);
-            Play(slotClip, 0.6f, 0.5f);
             // bu-lông bung văng (Rigidbody thật)
-            for (int i = 0; i < 4; i++) Eject(RobotChargePart.Kind.BuLong, 1.1f, false);
+            for (int i = 0; i < 3; i++) Eject(RobotChargePart.Kind.BuLong, 1.1f, false);
             yield return new WaitForSeconds(0.35f);
             // một tay thò ra rồi rũ xuống
             _armLimp = true;
@@ -309,30 +311,28 @@ namespace ChoDoLa.ChestFx
             if (_drone != null && _droneFallBody == null) { _droneMode = DroneMode.Poke; _droneT = Time.time; }
         }
 
+        private IEnumerator RacSting()
+        {
+            yield return new WaitForSeconds(ChestAudioRule.RacSilence);
+            PlayTier(0, 1f);
+        }
+
         private IEnumerator Triumph(ChestTier tier, Color color)
         {
-            _scanLine = null;
             int lv = Mathf.Clamp(tier.Rank(), 1, 4);
-            if (tier == ChestTier.Thuong)
-            {
-                // "tạm ổn": hắt hơi một chút khói, rồi mới chạy
-                Emit(_smoke, TopPos(), 6);
-                Play(fizzleClip, 0.35f, 1.8f);
-                yield return new WaitForSeconds(0.3f);
-                Type("> HỆ THỐNG: TẠM ỔN");
-            }
-            else Type("> MỌI HỆ THỐNG: OK!");
-            Type("> QUÉT QUÀ: " + tier.DisplayName().ToUpperInvariant() + (lv >= 3 ? "!!!" : "!"));
-            if (_hum != null) _hum.Stop();
-            Play(blastClips != null && blastClips.Length >= lv ? blastClips[lv - 1] : null, 1f, 1f);
+            // Thường: hắt hơi khói (chỉ còn hình, không tiếng).
+            if (tier == ChestTier.Thuong) Emit(_smoke, TopPos(), 6);
+            // TC: đúng 1 tiếng chốt, không thêm tiếng hành động (đoạn kết đã chứa tiếng nổ).
+            float[] stingVol = { 1f, 0.7f, 0.85f, 1f, 1f };
+            PlayTier(lv, stingVol[lv]);
             SetEyes(color, 4f);
             Emit(_sparks, TopPos(), 15 * (lv + 1));
             _armTarget = 1f;
-            // nhảy bằng Rigidbody thật: cao dần theo bậc
-            float[] heights = { 0f, 0.08f, 0.25f, 0.45f, 0.7f };
-            StartJump(heights[lv]);
+            // nhảy bằng Rigidbody thật, cao dần theo bậc, tính theo cỡ rương (× H)
+            float[] heights = { 0f, 0.12f, 0.35f, 0.6f, 1.0f };
+            StartJump(heights[lv] * _h);
             if (_drone != null) { _droneMode = DroneMode.Celebrate; _droneT = Time.time; }
-            int confetti = lv >= 2 ? 3 + 3 * lv : 0;
+            int confetti = lv >= 2 ? 2 + 2 * lv : 0;
             for (int i = 0; i < confetti; i++)
             {
                 Eject(i % 3 == 0 ? RobotChargePart.Kind.BanhRang : RobotChargePart.Kind.BuLong, 1.4f + 0.3f * lv, true);
@@ -402,14 +402,14 @@ namespace ChoDoLa.ChestFx
             if (_phase != Phase.Charging && _phase != Phase.Booting) return;
             RobotChargePart part = rb.GetComponent<RobotChargePart>();
             bool ours = _owned.Contains(rb.gameObject);
+            if (!ours && ++_playerFed > 6) return;   // trần cứng: tối đa 6 vật của người chơi được tính
             float add = part != null ? part.charge : RobotChargePart.DefaultChargeFor(RobotChargePart.Kind.DoLa);
             if (part != null) part.consumed = true;
             _charge = Mathf.Clamp01(_charge + add);
             UpdateMeter();
-            Play(slotClip, 0.9f, 0.85f + 0.4f * _charge + 0.1f * (float)_rng.NextDouble());
+            PlayEvent(slotClip, 0.5f, 0.85f + 0.4f * _charge + 0.1f * (float)_rng.NextDouble());
             Emit(_sparks, SocketPos(), 10 + Mathf.RoundToInt(_charge * 10f));
             Kick(0.8f + add * 2f, (float)(_rng.NextDouble() - 0.5) * 6f);
-            Type(_charge >= 1f ? "> PIN ĐẦY! SẴN SÀNG" : "> NẠP +" + Mathf.RoundToInt(add * 100f) + "%  (" + Mathf.RoundToInt(_charge * 100f) + "%)");
             if (ours) StartCoroutine(Swallow(rb));
             else StartCoroutine(SpitOut(rb));   // đồ của người chơi: hút điện rồi nhả ra, không phá huỷ
         }
@@ -470,7 +470,7 @@ namespace ChoDoLa.ChestFx
             _droneCargo = cargo;
             _droneMode = DroneMode.Arrive;
             _droneT = Time.time;
-            if (_droneSrc != null && droneLoopClip != null) { _droneSrc.clip = droneLoopClip; _droneSrc.volume = 0.35f * volume; _droneSrc.Play(); }
+            PlayEvent(servoClip, 0.3f, 1.4f);   // drone tới: chỉ 1 tiếng lẻ, không vòng lặp
         }
 
         private void ReleaseCargo()
@@ -529,11 +529,10 @@ namespace ChoDoLa.ChestFx
                     if (t > 1.6f)
                     {
                         _droneMode = DroneMode.Dead;
-                        if (_droneSrc != null) _droneSrc.Stop();
                         _droneFallBody = _drone.gameObject.AddComponent<Rigidbody>();
                         _droneFallBody.mass = 0.3f;
                         _droneFallBody.angularVelocity = new Vector3(3f, 0f, 5f);
-                        Play(slotClip, 0.4f, 0.6f);
+                        PlayTail(sparkClip, 0.4f, 1f);
                         Emit(_smoke, _drone.position, 5);
                     }
                     break;
@@ -581,7 +580,7 @@ namespace ChoDoLa.ChestFx
                 _jumpBody = null;
                 _jumpOffset = 0f;
                 Kick(-2f, (float)(_rng.NextDouble() - 0.5) * 8f);   // tiếp đất: nhún mạnh
-                Play(slotClip, 0.8f, 0.45f);
+                PlayTail(slotClip, 0.4f, 0.45f);
                 Emit(_smoke, BottomPos(), 8);
                 return;
             }
@@ -863,61 +862,40 @@ namespace ChoDoLa.ChestFx
             }
         }
 
-        // ================================================================== màn chữ chạy
+        // ================================================================== màn chữ (1 dòng lúc kết)
 
-        private void Type(string line)
-        {
-            _lines.Add(line);
-        }
-
-        private void SetScan(string s) => _scanLine = s;
-
-        private void UpdateTyping(float dt)
+        private void ShowLine(string line, float seconds)
         {
             if (_screen == null) return;
-            _typeClock += dt;
-            // gõ từng ký tự của dòng đầu hàng đợi
-            while (_typeClock > 0.022f && _lines.Count > 0)
-            {
-                _typeClock -= 0.022f;
-                string target = _lines[0];
-                if (_typing.Length < target.Length)
-                {
-                    _typing = target.Substring(0, _typing.Length + 1);
-                    if (_typing.Length % 2 == 0) Play(typeClip, 0.25f, 0.9f + 0.2f * (float)_rng.NextDouble());
-                }
-                else
-                {
-                    _history.Add(target);
-                    if (_history.Count > 4) _history.RemoveAt(0);
-                    _lines.RemoveAt(0);
-                    _typing = "";
-                }
-            }
-            if (_lines.Count == 0) _typeClock = 0f;
-            string text = string.Join("\n", _history);
-            if (_typing.Length > 0) text += (text.Length > 0 ? "\n" : "") + _typing + "_";
-            if (_scanLine != null) text += (text.Length > 0 ? "\n" : "") + "> " + _scanLine;
-            _screen.text = text;
+            _screen.text = line;
+            _screenHideAt = Time.time + seconds;
         }
 
-        private readonly List<string> _history = new List<string>();
+        private void UpdateScreen()
+        {
+            if (_screen != null && _screenHideAt > 0f && Time.time >= _screenHideAt)
+            {
+                _screen.text = "";
+                _screenHideAt = -1f;
+            }
+        }
 
         // ================================================================== âm
 
         private void BuildAudio()
         {
-            _sfx = NewSource("RobotSfx", false);
             _hum = NewSource("RobotHum", true);
-            _droneSrc = NewSource("RobotDroneSrc", true);
             if (humLoopClip != null)
             {
                 _hum.clip = humLoopClip;
-                _hum.pitch = 0.55f;
-                _hum.volume = 0.25f * volume;
+                _hum.pitch = 0.8f;                 // A2: cao độ tăng ~30–60% tới lúc chốt
+                _hum.volume = 0.15f * volume;
                 _hum.Play();
             }
             _beepClock = 0f;
+            _eventLast = -999f;
+            _tailLast = -999f;
+            _tailCount = 0;
         }
 
         private AudioSource NewSource(string n, bool loop)
@@ -933,12 +911,34 @@ namespace ChoDoLa.ChestFx
             return a;
         }
 
+        /// <summary>Phát qua lõi (nguồn riêng cho từng tiếng, A7); nhân <c>volume</c> của hook đúng một lần.</summary>
         private void Play(AudioClip c, float vol, float pitch)
         {
-            if (c == null || _sfx == null) return;
-            if (_reveal != null && Mathf.Approximately(pitch, 1f)) { _reveal.PlayOneShot(c, vol * volume, 1f); return; }
-            _sfx.pitch = pitch;
-            _sfx.PlayOneShot(c, vol * volume);
+            if (c == null || _reveal == null) return;
+            _reveal.PlayOneShot(c, vol * volume, pitch);
+        }
+
+        /// <summary>Sự kiện trước chốt: tối đa 1 tiếng mỗi 0,2 s, âm ≤ 0,5.</summary>
+        private void PlayEvent(AudioClip c, float vol, float pitch)
+        {
+            if (c == null || !ChestAudioRule.TryGate(ref _eventLast, ChestAudioRule.EventGap)) return;
+            Play(c, Mathf.Min(vol, ChestAudioRule.EventMax), pitch);
+        }
+
+        /// <summary>Đuôi: chỉ từ +0,4 s sau chốt, cách nhau ≥ 0,15 s, tối đa 6 tiếng, âm ≤ 0,4.</summary>
+        private void PlayTail(AudioClip c, float vol, float pitch)
+        {
+            if (c == null || _phase != Phase.Finale) return;
+            if (Time.time - _lockT0 < 0.4f || Time.time - _lockT0 > 3f || _tailCount >= 6) return;
+            if (!ChestAudioRule.TryGate(ref _tailLast, ChestAudioRule.TailGap)) return;
+            _tailCount++;
+            Play(c, Mathf.Min(vol, ChestAudioRule.TailMax), pitch);
+        }
+
+        private void PlayTier(int index, float vol)
+        {
+            if (stingClips == null || index < 0 || index >= stingClips.Length) return;
+            Play(stingClips[index], Mathf.Min(vol, ChestAudioRule.StingMax), 1f);
         }
 
         private void UpdateAudio(float now, float dt)
@@ -946,20 +946,20 @@ namespace ChoDoLa.ChestFx
             if (_hum == null) return;
             if (_phase == Phase.Charging)
             {
-                _hum.pitch = Mathf.MoveTowards(_hum.pitch, 0.55f + 0.45f * _charge, dt * 0.8f);
-                _hum.volume = (0.25f + 0.1f * _charge) * volume;
+                _hum.pitch = Mathf.MoveTowards(_hum.pitch, 0.8f + 0.1f * _charge, dt * 0.8f);
+                _hum.volume = (0.15f + 0.1f * _charge) * volume;
             }
             else if (_phase == Phase.Booting)
             {
-                // độ căng dâng: máy rú lên, bíp dồn dập, giống nhau cho mọi bậc (giữ bí mật)
+                // độ căng dâng: nền vào to dần, nhịp bíp dồn dập; giống nhau cho mọi bậc (giữ bí mật)
                 float u = Mathf.Clamp01((now - _bootT0) / 2.8f);
-                _hum.pitch = Mathf.Lerp(1f, 1.7f, u * u);
-                _hum.volume = Mathf.Lerp(0.35f, 0.6f, u) * volume;
+                _hum.pitch = Mathf.Lerp(0.9f, 1.25f, u * u);
+                _hum.volume = Mathf.Lerp(0.25f, ChestAudioRule.BedMax, u) * volume;
                 _beepClock -= dt;
                 if (_beepClock <= 0f)
                 {
-                    _beepClock = Mathf.Lerp(0.45f, 0.07f, u);
-                    Play(beepClip, 0.45f, Mathf.Lerp(0.9f, 1.6f, u));
+                    _beepClock = Mathf.Lerp(0.7f, 0.15f, u);
+                    Play(beepClip, Mathf.Lerp(0.25f, ChestAudioRule.BeatMax, u), Mathf.Lerp(0.9f, 1.6f, u));
                 }
             }
         }
@@ -1038,17 +1038,15 @@ namespace ChoDoLa.ChestFx
             _parts.Clear();
             _meter.Clear();
             _meterMats.Clear();
-            _lines.Clear();
-            _history.Clear();
-            _typing = "";
-            _scanLine = null;
+            _screenHideAt = -1f;
+            _playerFed = 0;
             _sparks = _smoke = _flame = null;
             _drone = null; _droneFallBody = null; _droneCargo = null; _droneMode = DroneMode.None;
             _jumpBody = null; _jumpOffset = 0f;
             _socket = null; _screen = null; _eyeLight = null;
             _stand = _standTarget = 0f; _bounce = _bounceVel = 0f; _tiltZ = _tiltZVel = _tiltTarget = 0f; _shake = 0f;
             _arm = _armTarget = 0f; _armLimp = false;
-            _hum = _droneSrc = _sfx = null;
+            _hum = null;
             _phase = Phase.Idle;
         }
     }

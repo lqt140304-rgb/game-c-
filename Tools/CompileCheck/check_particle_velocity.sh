@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Kiểm quy tắc "velocityOverLifetime chỉ đặt qua ChestFxFactory.SetVelocity" (không cần Unity, chỉ grep).
 # Lý do: Unity báo lỗi "Particle (Orbital) Velocity curves must all be in the same mode" nếu x/y/z, orbitalX/Y/Z hoặc
-# offsetX/Y/Z ở chế độ khác nhau. SetVelocity đặt cả 9 đường cong cùng chế độ TwoConstants.
+# orbitalOffsetX/Y/Z ở chế độ khác nhau. SetVelocity đặt cả 9 đường cong cùng chế độ TwoConstants.
 # Nếu cần thật sự chạm velocityOverLifetime ở chỗ khác, thêm tham số vào SetVelocity thay vì tự đặt.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -11,13 +11,13 @@ bad=0
 while IFS= read -r line; do
   echo "VI PHẠM: $line"; bad=1
 done < <(grep -rnE "velocityOverLifetime|VelocityOverLifetimeModule" "$repo/Assets" --include=*.cs | grep -v "ChestFx/ChestFxFactory.cs" || true)
-# 2) orbitalX/Y/Z và offsetX/Y/Z chỉ được gán trong ChestFxFactory.cs.
+# 2) orbitalX/Y/Z và orbitalOffsetX/Y/Z chỉ được gán trong ChestFxFactory.cs.
 while IFS= read -r line; do
   echo "VI PHẠM: $line"; bad=1
 done < <(grep -rnE "\.(orbital|offset)[XYZ]\s*=" "$repo/Assets" --include=*.cs | grep -v "ChestFx/ChestFxFactory.cs" || true)
-# 3) Trong SetVelocity, 9 đường cong x/y/z, orbitalX/Y/Z, offsetX/Y/Z đều là TwoConstants (hai tham số).
+# 3) Trong SetVelocity, 9 đường cong x/y/z, orbitalX/Y/Z, orbitalOffsetX/Y/Z đều là TwoConstants (hai tham số).
 body="$(sed -n '/public static void SetVelocity/,/^        }/p' "$repo/Assets/_Project/Scripts/ChestFx/ChestFxFactory.cs")"
-for c in x y z orbitalX orbitalY orbitalZ offsetX offsetY offsetZ; do
+for c in x y z orbitalX orbitalY orbitalZ orbitalOffsetX orbitalOffsetY orbitalOffsetZ; do
   if ! grep -qE "v\.$c = new ParticleSystem\.MinMaxCurve\([^,()]+(\([^)]*\))?[^,()]*, [^()]+(\([^)]*\))?[^()]*\);" <<<"$body"; then
     echo "VI PHẠM: SetVelocity không đặt v.$c dạng TwoConstants"; bad=1
   fi

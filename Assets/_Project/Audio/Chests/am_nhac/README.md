@@ -20,3 +20,16 @@ Tạo bằng ElevenLabs Sound Generation (`mp3_44100_128`, `prompt_influence` 0,
 
 Tiếng nắp chạm (giai đoạn 4) dùng bộ chung `../Synth/sfx_chest_lid_thud.wav`.
 Ghi chú: lượt gửi song song đầu tiên bị 429 (giới hạn đồng thời) ở 7 mô tả; các mô tả đó được gửi lại tuần tự một lần và thành công. Không tạo lại mô tả nào đã thành công.
+| `sfx_amnhac_kick.mp3` | 0.5 | punchy deep 808 kick drum, single hit, dry |
+| `sfx_amnhac_hat.mp3` | 0.3 | crisp closed hi-hat, single hit |
+| `sfx_amnhac_clap.mp3` | 0.4 | tight electronic hand clap, single hit |
+| `sfx_amnhac_wub.mp3` | 0.5 | single dubstep bass wobble wub, short |
+| `sfx_amnhac_scratch.mp3` | 0.6 | DJ vinyl record scratch, quick |
+| `sfx_amnhac_record_stop.mp3` | 1.2 | vinyl record slowing down to a stop, turntable power off |
+| `sfx_amnhac_drop.mp3` | 2.0 | massive EDM bass drop impact with sub boom |
+| `sfx_amnhac_riser.mp3` | 1.2 | short EDM white noise riser building up |
+| `sfx_amnhac_plug_pop.mp3` | 0.6 | cable yanked out of a speaker, pop and electric fizz |
+| `sfx_amnhac_wheels.mp3` | 1.5 | plastic wheels of a portable speaker rolling on pavement |
+| `sfx_amnhac_feedback.mp3` | 0.8 | short speaker microphone feedback squeal, quiet |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_amnhac_hat.mp3` (0.3 s), `sfx_amnhac_clap.mp3` (0.4 s).

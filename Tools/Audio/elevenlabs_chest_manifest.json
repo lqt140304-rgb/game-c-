@@ -1,0 +1,2238 @@
+{
+ "_doc": "Danh mục âm ElevenLabs cho 17 rương. prompt='reuse' = dùng lại file ElevenLabs có sẵn. Tạo bằng Tools/Audio/make_elevenlabs_chest_sfx.py. Xem docs/superpowers/specs/2026-11-25-thu-gon-hieu-ung-ruong-ke-hoach.md mục 3b.",
+ "hai_tac": {
+  "prefix": "sfx_haitac_",
+  "hook": "HaiTacSeqHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_haitac_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_haitac_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_haitac_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_haitac_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_haitac_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "bed_loop",
+    "role": "bed",
+    "field": "buildClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "pirate war drums pounding steadily with ocean waves and creaking ship ropes, tense building sea shanty rhythm, no melody, seamless loop",
+    "file": "sfx_haitac_bed_loop.mp3"
+   },
+   {
+    "key": "cannon_close",
+    "role": "action",
+    "field": "cannonClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "close powerful ship cannon shot, sharp boom with wooden carriage recoil thunk, short",
+    "file": "sfx_haitac_cannon_close.mp3"
+   },
+   {
+    "key": "splash",
+    "role": "event",
+    "field": "splashClip",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "heavy iron cannonball plunging into sea water, big splash",
+    "file": "sfx_haitac_splash.mp3"
+   },
+   {
+    "key": "thud",
+    "role": "event",
+    "field": "thudClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "cannonball smacking into a wooden treasure chest, heavy hollow thud",
+    "file": "sfx_haitac_thud.mp3"
+   },
+   {
+    "key": "load",
+    "role": "event",
+    "field": "loadClip",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "cannon being loaded, ramrod scraping and iron ball clanking into barrel",
+    "file": "sfx_haitac_load.mp3"
+   },
+   {
+    "key": "fuse",
+    "role": "event",
+    "field": "fuseClip",
+    "seconds": 2.0,
+    "loop": false,
+    "prompt": "cannon fuse burning, sparkling hiss and crackle",
+    "file": "sfx_haitac_fuse.mp3"
+   },
+   {
+    "key": "parrot",
+    "role": "tail",
+    "field": "parrotClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "cartoon pirate parrot squawk, single cheeky call",
+    "file": "sfx_haitac_parrot.mp3"
+   },
+   {
+    "key": "drain",
+    "role": "tail",
+    "field": "drainClip",
+    "seconds": 2.0,
+    "loop": false,
+    "prompt": "sea water draining down a huge plughole, comedic glugging gurgle",
+    "file": "sfx_haitac_drain.mp3"
+   },
+   {
+    "key": "barrel",
+    "role": "event",
+    "field": "barrelClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "wooden barrel bumping in water, hollow knock and slosh",
+    "file": "sfx_haitac_barrel.mp3"
+   },
+   {
+    "key": "coins",
+    "role": "tail",
+    "field": "coinClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_haitac_coins.mp3"
+   }
+  ]
+ },
+ "rac_quy": {
+  "prefix": "sfx_racquy_",
+  "hook": "RacQuyHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_racquy_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_racquy_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_racquy_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_racquy_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_racquy_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "bed_loop",
+    "role": "bed",
+    "field": "buildLoopClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "junk rattling inside a dented metal trash bin, tin cans clinking and lid tapping in a playful nervous rhythm, seamless loop",
+    "file": "sfx_racquy_bed_loop.mp3"
+   },
+   {
+    "key": "meow",
+    "role": "event",
+    "field": "meowClip",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "orange street cat meowing curiously, single meow",
+    "file": "sfx_racquy_meow.mp3"
+   },
+   {
+    "key": "meow_wants",
+    "role": "event",
+    "field": "meowWantsClip",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "hungry cat begging meow, eager and cute",
+    "file": "sfx_racquy_meow_wants.mp3"
+   },
+   {
+    "key": "yowl",
+    "role": "tail",
+    "field": "yowlClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "cat screeching yowl as it is flung into the air, comedic",
+    "file": "sfx_racquy_yowl.mp3"
+   },
+   {
+    "key": "hiss",
+    "role": "tail",
+    "field": "hissClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "angry cat hissing",
+    "file": "sfx_racquy_hiss.mp3"
+   },
+   {
+    "key": "clatter",
+    "role": "action",
+    "field": "clatterClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "metal trash bin tipping over, cans bottles and junk clattering across the ground",
+    "file": "sfx_racquy_clatter.mp3"
+   },
+   {
+    "key": "clank",
+    "role": "event",
+    "field": "clankClip",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "single empty tin can clank, short",
+    "file": "sfx_racquy_clank.mp3"
+   },
+   {
+    "key": "deflate",
+    "role": "sting",
+    "field": "deflateClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "comedic balloon deflating with a sad descending squeal and a tiny pop at the end",
+    "file": "sfx_racquy_deflate.mp3"
+   },
+   {
+    "key": "boom",
+    "role": "action",
+    "field": "boomClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "muffled cartoon explosion inside a trash bin, boomy and funny",
+    "file": "sfx_racquy_boom.mp3"
+   },
+   {
+    "key": "throw",
+    "role": "event",
+    "field": "throwClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "quick whoosh of a small object thrown through the air",
+    "file": "sfx_racquy_throw.mp3"
+   },
+   {
+    "key": "flies",
+    "role": "event",
+    "field": "fliesClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_racquy_flies.mp3"
+   },
+   {
+    "key": "gurgle",
+    "role": "event",
+    "field": "gurgleClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_racquy_gurgle.mp3"
+   }
+  ]
+ },
+ "golden": {
+  "prefix": "sfx_golden_",
+  "hook": "GoldenSlotHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0] (= fizzleClip)",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "slot machine losing sound, sad descending electronic buzzer then air hissing out, comedic",
+    "file": "sfx_golden_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "slot machine small win, two cheerful electronic dings",
+    "file": "sfx_golden_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "slot machine win jingle with a few coins dropping into a metal tray",
+    "file": "sfx_golden_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": 2.2,
+    "loop": false,
+    "prompt": "slot machine big win, ringing bells and a stream of coins pouring into a metal tray",
+    "file": "sfx_golden_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4] (= jackpotClip)",
+    "seconds": 3.5,
+    "loop": false,
+    "prompt": "casino jackpot, loud alarm bells ringing, siren, torrent of gold coins pouring out, triumphant brass fanfare",
+    "file": "sfx_golden_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "spin_loop",
+    "role": "bed",
+    "field": "spinLoopClip",
+    "seconds": 6,
+    "loop": true,
+    "prompt": "slot machine reels spinning fast, mechanical whirring with steady ticking clicks, seamless loop",
+    "file": "sfx_golden_spin_loop.mp3"
+   },
+   {
+    "key": "lever",
+    "role": "event",
+    "field": "leverClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "heavy slot machine lever pulled down, mechanical clunk and spring",
+    "file": "sfx_golden_lever.mp3"
+   },
+   {
+    "key": "reel_stop",
+    "role": "event",
+    "field": "reelStopClip",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "single slot machine reel stopping, solid mechanical clunk",
+    "file": "sfx_golden_reel_stop.mp3"
+   },
+   {
+    "key": "coin",
+    "role": "tail",
+    "field": "coinClip",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "single gold coin clinking on a hard floor, short",
+    "file": "sfx_golden_coin.mp3"
+   },
+   {
+    "key": "token",
+    "role": "event",
+    "field": "tokenClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "coin dropped into a slot machine coin slot, metallic rattle",
+    "file": "sfx_golden_token.mp3"
+   }
+  ]
+ },
+ "magic": {
+  "prefix": "sfx_magic_",
+  "hook": "MagicRuneRitual",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_magic_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_magic_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_magic_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_magic_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_magic_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "rune_bed_loop",
+    "role": "bed",
+    "field": "buildClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "mystical ritual, low hand drum pulse with rune stones knocking, swirling wind and a rising ethereal choir hum, seamless loop",
+    "file": "sfx_magic_rune_bed_loop.mp3"
+   },
+   {
+    "key": "rune_stone",
+    "role": "event",
+    "field": "stoneClip",
+    "seconds": 0.7,
+    "loop": false,
+    "prompt": "heavy carved rune stone landing on a stone floor, deep thud with grit",
+    "file": "sfx_magic_rune_stone.mp3"
+   },
+   {
+    "key": "rune_wisp",
+    "role": "event",
+    "field": "wispClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "tiny magical wisp touching a stone, bright twinkling chime",
+    "file": "sfx_magic_rune_wisp.mp3"
+   },
+   {
+    "key": "rune_slam",
+    "role": "action",
+    "field": "(Shockwave) slamClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "deep magical impact boom with crystal shards shattering outward",
+    "file": "sfx_magic_rune_slam.mp3"
+   }
+  ]
+ },
+ "mimic": {
+  "prefix": "sfx_mimic_",
+  "hook": "MimicFeedHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "stomach_loop",
+    "role": "bed",
+    "field": "stomachLoopClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "hungry monster stomach rumbling and gurgling, low growl, seamless loop",
+    "file": "sfx_mimic_stomach_loop.mp3"
+   },
+   {
+    "key": "heartbeat",
+    "role": "beat",
+    "field": "heartbeatClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_tick_heartbeat.mp3"
+   },
+   {
+    "key": "chomp",
+    "role": "event",
+    "field": "chompClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_bite.mp3"
+   },
+   {
+    "key": "chew",
+    "role": "event",
+    "field": "chewClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "wooden monster jaw chewing noisily, crunchy, three chews",
+    "file": "sfx_mimic_chew.mp3"
+   },
+   {
+    "key": "gulp",
+    "role": "event",
+    "field": "gulpClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "big cartoon gulp swallow",
+    "file": "sfx_mimic_gulp.mp3"
+   },
+   {
+    "key": "burp_small",
+    "role": "sting",
+    "field": "burpSmallClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "small polite cartoon burp",
+    "file": "sfx_mimic_burp_small.mp3"
+   },
+   {
+    "key": "burp_big",
+    "role": "tail",
+    "field": "burpBigClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "huge satisfied monster burp, comedic",
+    "file": "sfx_mimic_burp_big.mp3"
+   },
+   {
+    "key": "boom",
+    "role": "action",
+    "field": "boomClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "wooden chest monster bursting open with a cartoon boom and wood creak",
+    "file": "sfx_mimic_boom.mp3"
+   },
+   {
+    "key": "hop",
+    "role": "event",
+    "field": "hopClip",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "heavy wooden box hopping and landing, bouncy thump",
+    "file": "sfx_mimic_hop.mp3"
+   },
+   {
+    "key": "giggle",
+    "role": "event",
+    "field": "giggleClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_teeth_chatter.mp3"
+   },
+   {
+    "key": "spit",
+    "role": "tail",
+    "field": "spitClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_mimic_whoosh_spit.mp3"
+   },
+   {
+    "key": "toss",
+    "role": "event",
+    "field": "tossClip",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "small object tossed through the air, quick whoosh",
+    "file": "sfx_mimic_toss.mp3"
+   },
+   {
+    "key": "deflate",
+    "role": "sting",
+    "field": "deflateClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "wooden monster deflating with a long sad raspberry fart, comedic",
+    "file": "sfx_mimic_deflate.mp3"
+   }
+  ]
+ },
+ "miner": {
+  "prefix": "sfx_miner_",
+  "hook": "MinerDigSequence",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_miner_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_miner_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_miner_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_miner_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_miner_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "rumble_loop",
+    "role": "bed",
+    "field": "rumbleClip (thay MinerSynth.Rumble)",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "deep underground mine rumble, low creaking timber supports, distant water drips, seamless loop",
+    "file": "sfx_miner_rumble_loop.mp3"
+   },
+   {
+    "key": "thump",
+    "role": "beat",
+    "field": "thumpClip",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "deep muffled underground thump like a heartbeat in rock",
+    "file": "sfx_miner_thump.mp3"
+   },
+   {
+    "key": "pick",
+    "role": "event",
+    "field": "pickClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "pickaxe striking hard rock, metallic clink and crack",
+    "file": "sfx_miner_pick.mp3"
+   },
+   {
+    "key": "crumble",
+    "role": "event",
+    "field": "crumbleClip",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "chunks of rock breaking off and tumbling",
+    "file": "sfx_miner_crumble.mp3"
+   },
+   {
+    "key": "fuse",
+    "role": "event",
+    "field": "fuseClip",
+    "seconds": 2.0,
+    "loop": false,
+    "prompt": "dynamite fuse sizzling and spitting sparks",
+    "file": "sfx_miner_fuse.mp3"
+   },
+   {
+    "key": "dynamite",
+    "role": "action",
+    "field": "boomClip",
+    "seconds": 2.0,
+    "loop": false,
+    "prompt": "dynamite explosion in a mine tunnel, rocks blasting apart, rumble",
+    "file": "sfx_miner_dynamite.mp3"
+   },
+   {
+    "key": "canary",
+    "role": "tail",
+    "field": "chirpClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "canary bird chirping happily",
+    "file": "sfx_miner_canary.mp3"
+   },
+   {
+    "key": "canary_faint",
+    "role": "tail",
+    "field": "faintClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "tiny bird letting out a weak squeak and falling, comedic",
+    "file": "sfx_miner_canary_faint.mp3"
+   },
+   {
+    "key": "nugget",
+    "role": "tail",
+    "field": "nuggetClip",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "gold nugget clinking on rock",
+    "file": "sfx_miner_nugget.mp3"
+   },
+   {
+    "key": "pebbles",
+    "role": "tail",
+    "field": "pebbleClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_miner_pebbles.mp3"
+   }
+  ]
+ },
+ "am_nhac": {
+  "prefix": "sfx_amnhac_",
+  "hook": "AmNhacBassHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_amnhac_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_amnhac_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_amnhac_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_amnhac_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_amnhac_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "kick",
+    "role": "beat",
+    "field": "clips.kick",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "punchy deep 808 kick drum, single hit, dry",
+    "file": "sfx_amnhac_kick.mp3"
+   },
+   {
+    "key": "hat",
+    "role": "beat",
+    "field": "clips.hat",
+    "seconds": 0.3,
+    "loop": false,
+    "prompt": "crisp closed hi-hat, single hit",
+    "file": "sfx_amnhac_hat.mp3"
+   },
+   {
+    "key": "clap",
+    "role": "event",
+    "field": "clips.clap",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "tight electronic hand clap, single hit",
+    "file": "sfx_amnhac_clap.mp3"
+   },
+   {
+    "key": "wub",
+    "role": "beat",
+    "field": "clips.wub",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "single dubstep bass wobble wub, short",
+    "file": "sfx_amnhac_wub.mp3"
+   },
+   {
+    "key": "scratch",
+    "role": "event",
+    "field": "clips.scratch",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "DJ vinyl record scratch, quick",
+    "file": "sfx_amnhac_scratch.mp3"
+   },
+   {
+    "key": "record_stop",
+    "role": "sting",
+    "field": "clips.recordStop (Rác)",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "vinyl record slowing down to a stop, turntable power off",
+    "file": "sfx_amnhac_record_stop.mp3"
+   },
+   {
+    "key": "drop",
+    "role": "action",
+    "field": "clips.drop",
+    "seconds": 2.0,
+    "loop": false,
+    "prompt": "massive EDM bass drop impact with sub boom",
+    "file": "sfx_amnhac_drop.mp3"
+   },
+   {
+    "key": "riser",
+    "role": "event",
+    "field": "clips.riser",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "short EDM white noise riser building up",
+    "file": "sfx_amnhac_riser.mp3"
+   },
+   {
+    "key": "plug_pop",
+    "role": "tail",
+    "field": "clips.plugPop",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "cable yanked out of a speaker, pop and electric fizz",
+    "file": "sfx_amnhac_plug_pop.mp3"
+   },
+   {
+    "key": "wheels",
+    "role": "event",
+    "field": "clips.wheels",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "plastic wheels of a portable speaker rolling on pavement",
+    "file": "sfx_amnhac_wheels.mp3"
+   },
+   {
+    "key": "feedback",
+    "role": "event",
+    "field": "clips.feedback",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "short speaker microphone feedback squeal, quiet",
+    "file": "sfx_amnhac_feedback.mp3"
+   },
+   {
+    "key": "needle_drop",
+    "role": "event",
+    "field": "clips.needle",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_amnhac_needle_drop.mp3"
+   },
+   {
+    "key": "crowd",
+    "role": "tail",
+    "field": "clips.crowd",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_amnhac_crowd.mp3"
+   }
+  ]
+ },
+ "viet_nam": {
+  "prefix": "sfx_vietnam_",
+  "hook": "VietNamHoiLangHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_vietnam_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_vietnam_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_vietnam_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_vietnam_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_vietnam_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "dan_bau_loop",
+    "role": "bed",
+    "field": "droneClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "Vietnamese dan bau monochord playing a slow wavering melody over soft night festival ambience with crickets, seamless loop",
+    "file": "sfx_vietnam_dan_bau_loop.mp3"
+   },
+   {
+    "key": "trong",
+    "role": "beat",
+    "field": "drumClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "Vietnamese temple drum, single deep hit",
+    "file": "sfx_vietnam_trong.mp3"
+   },
+   {
+    "key": "tick_mo",
+    "role": "beat",
+    "field": "moClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_vietnam_tick_mo.mp3"
+   },
+   {
+    "key": "lantern_in",
+    "role": "event",
+    "field": "plopClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "soft paper lantern floating down into a wooden box, gentle papery whoosh and soft tap",
+    "file": "sfx_vietnam_lantern_in.mp3"
+   },
+   {
+    "key": "dan_bau_xit",
+    "role": "sting",
+    "field": "deflateClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "dan bau string bending down comically, sad sliding pitch drop",
+    "file": "sfx_vietnam_dan_bau_xit.mp3"
+   },
+   {
+    "key": "frog",
+    "role": "tail",
+    "field": "frogClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "single frog croak, ribbit",
+    "file": "sfx_vietnam_frog.mp3"
+   },
+   {
+    "key": "trong_dong",
+    "role": "action",
+    "field": "boomClip",
+    "seconds": 2.0,
+    "loop": false,
+    "prompt": "ancient Dong Son bronze drum struck hard, deep resonant boom with gong shimmer",
+    "file": "sfx_vietnam_trong_dong.mp3"
+   }
+  ]
+ },
+ "tuoi_tho": {
+  "prefix": "sfx_tuoitho_",
+  "hook": "TuoiThoHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_tuoitho_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_tuoitho_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_tuoitho_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_tuoitho_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_tuoitho_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "roll_loop",
+    "role": "bed",
+    "field": "rollClip",
+    "seconds": 6,
+    "loop": true,
+    "prompt": "glass marble rolling continuously along a wooden ruler, soft rumble, seamless loop",
+    "file": "sfx_tuoitho_roll_loop.mp3"
+   },
+   {
+    "key": "xylo",
+    "role": "beat",
+    "field": "xyloClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "single wooden xylophone note, bright, middle C",
+    "file": "sfx_tuoitho_xylo.mp3"
+   },
+   {
+    "key": "flick",
+    "role": "event",
+    "field": "flickClip",
+    "seconds": 0.3,
+    "loop": false,
+    "prompt": "finger flicking a glass marble, sharp click",
+    "file": "sfx_tuoitho_flick.mp3"
+   },
+   {
+    "key": "domino",
+    "role": "event",
+    "field": "dominoClip",
+    "seconds": 0.3,
+    "loop": false,
+    "prompt": "single plastic domino tile falling and clacking",
+    "file": "sfx_tuoitho_domino.mp3"
+   },
+   {
+    "key": "band",
+    "role": "event",
+    "field": "bandClip",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "rubber band slingshot twang",
+    "file": "sfx_tuoitho_band.mp3"
+   },
+   {
+    "key": "bonk",
+    "role": "event",
+    "field": "bonkClip",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "glass marble bonking on a wooden lid, cartoon bonk",
+    "file": "sfx_tuoitho_bonk.mp3"
+   },
+   {
+    "key": "plane",
+    "role": "tail",
+    "field": "planeClip",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "paper airplane gliding past, light airy whoosh",
+    "file": "sfx_tuoitho_plane.mp3"
+   },
+   {
+    "key": "crumple",
+    "role": "tail",
+    "field": "crumpleClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "sheet of paper crumpled into a ball",
+    "file": "sfx_tuoitho_crumple.mp3"
+   },
+   {
+    "key": "marbles",
+    "role": "tail",
+    "field": "(thả bi)",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_tuoitho_marbles.mp3"
+   }
+  ]
+ },
+ "robot": {
+  "prefix": "sfx_robot_",
+  "hook": "RobotTransformHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_robot_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_robot_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_robot_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_robot_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_robot_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "hum_loop",
+    "role": "bed",
+    "field": "humLoopClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "small robot power core humming, electric whir, seamless loop",
+    "file": "sfx_robot_hum_loop.mp3"
+   },
+   {
+    "key": "beep",
+    "role": "beat",
+    "field": "beepClip",
+    "seconds": 0.25,
+    "loop": false,
+    "prompt": "short cute robot beep",
+    "file": "sfx_robot_beep.mp3"
+   },
+   {
+    "key": "press",
+    "role": "event",
+    "field": "pressClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "robot power button click followed by a cheerful startup chirp",
+    "file": "sfx_robot_press.mp3"
+   },
+   {
+    "key": "slot",
+    "role": "event",
+    "field": "slotClip",
+    "seconds": 0.7,
+    "loop": false,
+    "prompt": "metal part clicking into a socket with a small electric zap",
+    "file": "sfx_robot_slot.mp3"
+   },
+   {
+    "key": "servo",
+    "role": "event",
+    "field": "servoClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_robot_servo.mp3"
+   },
+   {
+    "key": "thruster",
+    "role": "action",
+    "field": "(Triumph) thrusterClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "small rocket thrusters igniting under a jumping robot, burst",
+    "file": "sfx_robot_thruster.mp3"
+   },
+   {
+    "key": "spark",
+    "role": "tail",
+    "field": "(Rác) sparkClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_robot_spark.mp3"
+   }
+  ]
+ },
+ "khong_gian": {
+  "prefix": "sfx_khonggian_",
+  "hook": "KhongGianMissionHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_khonggian_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_khonggian_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_khonggian_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_khonggian_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_khonggian_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "engine_loop",
+    "role": "bed",
+    "field": "engineClip (thay KhongGianSynth.Engine)",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "spaceship engine idling, low rumbling thrusters with piston pulse, seamless loop",
+    "file": "sfx_khonggian_engine_loop.mp3"
+   },
+   {
+    "key": "radio_blip",
+    "role": "event",
+    "field": "blipClip",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "short sci-fi radio blip beep",
+    "file": "sfx_khonggian_radio_blip.mp3"
+   },
+   {
+    "key": "fuel_dock",
+    "role": "event",
+    "field": "fuelClip",
+    "seconds": 0.7,
+    "loop": false,
+    "prompt": "metal fuel canister docking into a ship with an energy zap",
+    "file": "sfx_khonggian_fuel_dock.mp3"
+   },
+   {
+    "key": "rocket_launch",
+    "role": "event",
+    "field": "rocketClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "small guided missile launching, whoosh with fizz",
+    "file": "sfx_khonggian_rocket_launch.mp3"
+   },
+   {
+    "key": "rocket_hit",
+    "role": "action",
+    "field": "impactClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "small missile hitting a metal hatch, sharp explosion",
+    "file": "sfx_khonggian_rocket_hit.mp3"
+   },
+   {
+    "key": "engine_die",
+    "role": "tail",
+    "field": "(Rác) sputterClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "spaceship engine sputtering and dying with puffs, comedic",
+    "file": "sfx_khonggian_engine_die.mp3"
+   },
+   {
+    "key": "hatch_hiss",
+    "role": "event",
+    "field": "(mở nắp)",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_khonggian_hatch_hiss.mp3"
+   }
+  ]
+ },
+ "game": {
+  "prefix": "sfx_game_",
+  "hook": "GameVoxelHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_game_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_game_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_game_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_game_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_game_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "chip_loop",
+    "role": "bed",
+    "field": "loopBarClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "upbeat 8-bit chiptune game music, square wave arpeggio, seamless loop",
+    "file": "sfx_game_chip_loop.mp3"
+   },
+   {
+    "key": "bump",
+    "role": "event",
+    "field": "bumpClip",
+    "seconds": 0.3,
+    "loop": false,
+    "prompt": "8-bit block bump sound",
+    "file": "sfx_game_bump.mp3"
+   },
+   {
+    "key": "shatter",
+    "role": "event",
+    "field": "shatterClip",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "8-bit explosion of many pixel blocks breaking apart",
+    "file": "sfx_game_shatter.mp3"
+   },
+   {
+    "key": "reassemble",
+    "role": "event",
+    "field": "reassembleClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "8-bit rising arpeggio, pieces snapping back together",
+    "file": "sfx_game_reassemble.mp3"
+   },
+   {
+    "key": "voxel_tick",
+    "role": "event",
+    "field": "voxelTickClip",
+    "seconds": 0.15,
+    "loop": false,
+    "prompt": "tiny 8-bit blip",
+    "file": "sfx_game_voxel_tick.mp3"
+   },
+   {
+    "key": "one_up",
+    "role": "tail",
+    "field": "oneUpClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "8-bit extra life jingle",
+    "file": "sfx_game_one_up.mp3"
+   },
+   {
+    "key": "power_up",
+    "role": "event",
+    "field": "powerUpClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "8-bit power up rising sound",
+    "file": "sfx_game_power_up.mp3"
+   },
+   {
+    "key": "coin",
+    "role": "event",
+    "field": "coinClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_game_coin.mp3"
+   },
+   {
+    "key": "jump",
+    "role": "event",
+    "field": "jumpClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_game_jump.mp3"
+   },
+   {
+    "key": "press_start",
+    "role": "event",
+    "field": "insertCoinClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_game_press_start.mp3"
+   }
+  ]
+ },
+ "the_thao": {
+  "prefix": "sfx_thethao_",
+  "hook": "TheThaoHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thethao_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thethao_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thethao_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thethao_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thethao_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "trong",
+    "role": "beat",
+    "field": "drumClip",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "big stadium bass drum, single hit",
+    "file": "sfx_thethao_trong.mp3"
+   },
+   {
+    "key": "kick",
+    "role": "event",
+    "field": "kickClip",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "football kicked hard, leather thump",
+    "file": "sfx_thethao_kick.mp3"
+   },
+   {
+    "key": "post",
+    "role": "event",
+    "field": "postClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "football hitting a metal goalpost, loud clang",
+    "file": "sfx_thethao_post.mp3"
+   },
+   {
+    "key": "net",
+    "role": "action",
+    "field": "netClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "football smashing into the goal net, swish",
+    "file": "sfx_thethao_net.mp3"
+   },
+   {
+    "key": "ooh",
+    "role": "event",
+    "field": "oohClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "stadium crowd going oooh at a near miss",
+    "file": "sfx_thethao_ooh.mp3"
+   },
+   {
+    "key": "roar",
+    "role": "tail",
+    "field": "roarClip",
+    "seconds": 2.0,
+    "loop": false,
+    "prompt": "stadium crowd roaring after a goal",
+    "file": "sfx_thethao_roar.mp3"
+   },
+   {
+    "key": "aww",
+    "role": "sting",
+    "field": "(Rác) awwClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "stadium crowd groaning aww in disappointment",
+    "file": "sfx_thethao_aww.mp3"
+   },
+   {
+    "key": "riser",
+    "role": "event",
+    "field": "riserClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "stadium crowd murmur rising with tension",
+    "file": "sfx_thethao_riser.mp3"
+   },
+   {
+    "key": "kickoff",
+    "role": "event",
+    "field": "kickoffClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thethao_kickoff.mp3"
+   },
+   {
+    "key": "airhorn",
+    "role": "tail",
+    "field": "airHornClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thethao_airhorn.mp3"
+   },
+   {
+    "key": "bounce",
+    "role": "event",
+    "field": "bounceClip",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thethao_bounce.mp3"
+   }
+  ]
+ },
+ "trung_hoa": {
+  "prefix": "sfx_trunghoa_",
+  "hook": "TrungHoaHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_trunghoa_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_trunghoa_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_trunghoa_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_trunghoa_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_trunghoa_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "lion_drum_loop",
+    "role": "bed",
+    "field": "drumLoop",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "Chinese lion dance drums and cymbals, steady festive rhythm, seamless loop",
+    "file": "sfx_trunghoa_lion_drum_loop.mp3"
+   },
+   {
+    "key": "pop",
+    "role": "beat",
+    "field": "pops[0]",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "single small firecracker pop",
+    "file": "sfx_trunghoa_pop.mp3"
+   },
+   {
+    "key": "big_bang",
+    "role": "action",
+    "field": "bigBang",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "huge Chinese firecracker explosion, loud bang with crackle",
+    "file": "sfx_trunghoa_big_bang.mp3"
+   },
+   {
+    "key": "dud",
+    "role": "sting",
+    "field": "fizzle (Rác)",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "firecracker fuse fizzling out with a weak puff, dud",
+    "file": "sfx_trunghoa_dud.mp3"
+   },
+   {
+    "key": "match",
+    "role": "event",
+    "field": "matchStrike",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "incense stick lighting a fuse, sizzle start",
+    "file": "sfx_trunghoa_match.mp3"
+   },
+   {
+    "key": "rocket",
+    "role": "tail",
+    "field": "rocketWhistle",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "firework rocket whistling upward",
+    "file": "sfx_trunghoa_rocket.mp3"
+   },
+   {
+    "key": "rocket_burst",
+    "role": "tail",
+    "field": "rocketBoom",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "firework bursting in the sky, crackling sparkle",
+    "file": "sfx_trunghoa_rocket_burst.mp3"
+   },
+   {
+    "key": "sneeze",
+    "role": "tail",
+    "field": "sneeze",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "cartoon lion sneeze, comedic achoo",
+    "file": "sfx_trunghoa_sneeze.mp3"
+   },
+   {
+    "key": "firecracker",
+    "role": "beat",
+    "field": "pops[1]",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_trunghoa_firecracker.mp3"
+   }
+  ]
+ },
+ "nhat_ban": {
+  "prefix": "sfx_nhatban_",
+  "hook": "NhatBanHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_nhatban_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_nhatban_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_nhatban_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_nhatban_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_nhatban_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "shakuhachi_loop",
+    "role": "bed",
+    "field": "sounds.drone",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "Japanese shakuhachi flute, breathy slow tense melody, seamless loop",
+    "file": "sfx_nhatban_shakuhachi_loop.mp3"
+   },
+   {
+    "key": "taiko",
+    "role": "beat",
+    "field": "sounds.heartbeat",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "single deep taiko drum hit like a heartbeat",
+    "file": "sfx_nhatban_taiko.mp3"
+   },
+   {
+    "key": "katana_draw",
+    "role": "event",
+    "field": "(rút kiếm)",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "katana being drawn from its scabbard, sharp metallic shing",
+    "file": "sfx_nhatban_katana_draw.mp3"
+   },
+   {
+    "key": "slash",
+    "role": "event",
+    "field": "(nhát chém)",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "fast katana slash swoosh",
+    "file": "sfx_nhatban_slash.mp3"
+   },
+   {
+    "key": "sheath",
+    "role": "event",
+    "field": "(tra vỏ)",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "katana snapping back into its scabbard, crisp click",
+    "file": "sfx_nhatban_sheath.mp3"
+   },
+   {
+    "key": "rope_cut",
+    "role": "event",
+    "field": "(dây đứt)",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "rope cut and paper seal falling softly",
+    "file": "sfx_nhatban_rope_cut.mp3"
+   },
+   {
+    "key": "sandal",
+    "role": "tail",
+    "field": "(Rác dép)",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "wooden sandal slapping down then a cartoon boing",
+    "file": "sfx_nhatban_sandal.mp3"
+   },
+   {
+    "key": "koto_pluck",
+    "role": "tail",
+    "field": "(nón cúi chào)",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_nhatban_koto_pluck.mp3"
+   }
+  ]
+ },
+ "co_phong": {
+  "prefix": "sfx_cophong_",
+  "hook": "CoPhongNguKiemHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_cophong_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_cophong_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_cophong_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_cophong_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_cophong_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "sword_hum_loop",
+    "role": "bed",
+    "field": "humLoop",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "ethereal flying swords humming, airy blade resonance with soft guzheng drone, seamless loop",
+    "file": "sfx_cophong_sword_hum_loop.mp3"
+   },
+   {
+    "key": "sword_draw",
+    "role": "event",
+    "field": "drawSword",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "many swords drawn at once, bright metallic ring",
+    "file": "sfx_cophong_sword_draw.mp3"
+   },
+   {
+    "key": "strike",
+    "role": "beat",
+    "field": "strike",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "sword piercing a paper talisman, swift whoosh and paper rip",
+    "file": "sfx_cophong_strike.mp3"
+   },
+   {
+    "key": "spirit_stone",
+    "role": "event",
+    "field": "stone",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "glowing spirit stone clinking, crystal chime",
+    "file": "sfx_cophong_spirit_stone.mp3"
+   },
+   {
+    "key": "sword_land",
+    "role": "tail",
+    "field": "swordLand",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "sword stabbing into soft ground, thunk",
+    "file": "sfx_cophong_sword_land.mp3"
+   },
+   {
+    "key": "brush_stroke",
+    "role": "event",
+    "field": "(bùa cháy)",
+    "seconds": "reuse",
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_cophong_brush_stroke.mp3"
+   }
+  ]
+ },
+ "thien_co": {
+  "prefix": "sfx_thienco_",
+  "hook": "ThienCoHook",
+  "items": [
+   {
+    "key": "lock_rac",
+    "role": "sting",
+    "field": "stingClips[0]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thienco_lock_rac.mp3"
+   },
+   {
+    "key": "lock_thuong",
+    "role": "sting",
+    "field": "stingClips[1]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thienco_lock_thuong.mp3"
+   },
+   {
+    "key": "lock_hiem",
+    "role": "sting",
+    "field": "stingClips[2]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thienco_lock_hiem.mp3"
+   },
+   {
+    "key": "lock_ratHiem",
+    "role": "sting",
+    "field": "stingClips[3]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thienco_lock_ratHiem.mp3"
+   },
+   {
+    "key": "lock_huyenThoai",
+    "role": "sting",
+    "field": "stingClips[4]",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thienco_lock_huyenThoai.mp3"
+   },
+   {
+    "key": "tick",
+    "role": "beat",
+    "field": "tick",
+    "seconds": null,
+    "loop": false,
+    "prompt": "reuse",
+    "file": "sfx_thienco_tick.mp3"
+   },
+   {
+    "key": "tock",
+    "role": "beat",
+    "field": "tock",
+    "seconds": 0.2,
+    "loop": false,
+    "prompt": "old clock tock, lower pitch, dry",
+    "file": "sfx_thienco_tock.mp3"
+   },
+   {
+    "key": "wind",
+    "role": "event",
+    "field": "wind",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "winding a clockwork key, ratchet clicks",
+    "file": "sfx_thienco_wind.mp3"
+   },
+   {
+    "key": "gear_clank",
+    "role": "event",
+    "field": "gearClank",
+    "seconds": 0.5,
+    "loop": false,
+    "prompt": "small brass gear falling and clanking on wood",
+    "file": "sfx_thienco_gear_clank.mp3"
+   },
+   {
+    "key": "mesh_ok",
+    "role": "event",
+    "field": "meshOk",
+    "seconds": 0.4,
+    "loop": false,
+    "prompt": "brass gears meshing together, satisfying click",
+    "file": "sfx_thienco_mesh_ok.mp3"
+   },
+   {
+    "key": "jam",
+    "role": "event",
+    "field": "jam",
+    "seconds": 0.6,
+    "loop": false,
+    "prompt": "gears grinding and jamming",
+    "file": "sfx_thienco_jam.mp3"
+   },
+   {
+    "key": "bell",
+    "role": "event",
+    "field": "bell",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "small clock chime, single ding",
+    "file": "sfx_thienco_bell.mp3"
+   },
+   {
+    "key": "cuckoo",
+    "role": "tail",
+    "field": "cuckoo",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "cuckoo clock bird calling cuckoo twice",
+    "file": "sfx_thienco_cuckoo.mp3"
+   },
+   {
+    "key": "cuckoo_sad",
+    "role": "tail",
+    "field": "cuckooSad",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "broken cuckoo clock bird call, warped and sad",
+    "file": "sfx_thienco_cuckoo_sad.mp3"
+   },
+   {
+    "key": "sproing",
+    "role": "tail",
+    "field": "sproing",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "broken metal spring bursting loose, cartoon boing",
+    "file": "sfx_thienco_sproing.mp3"
+   },
+   {
+    "key": "launch",
+    "role": "action",
+    "field": "launch",
+    "seconds": 1.0,
+    "loop": false,
+    "prompt": "big clock spring releasing and launching something upward, whoosh",
+    "file": "sfx_thienco_launch.mp3"
+   }
+  ]
+ }
+}

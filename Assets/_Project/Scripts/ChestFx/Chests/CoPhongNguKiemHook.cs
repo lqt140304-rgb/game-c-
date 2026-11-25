@@ -10,22 +10,22 @@ namespace ChoDoLa.ChestFx
     /// Chest_CoPhong — kịch bản NGỰ KIẾM TIÊN KHÍ (thay cho CoPhongHook mực tàu cũ).
     ///
     /// Ngay khi bấm mở (ChestRevealSequence.Play): tiếng "xoẹt" rút kiếm + vòng ngân kiếm (loop) bắt đầu; rương rời
-    /// đất bay lơ lửng trên mây mù; 7 thanh phi kiếm từ dưới mây vút lên xoay vòng quanh rương, càng lúc càng nhanh,
-    /// ngân càng cao, rương rung càng mạnh. 6 lá bùa phong ấn dán quanh rương: lần lượt một thanh kiếm tách vòng lao
-    /// vào đâm, lá bùa bật ra (Rigidbody, lực thật) và cháy thành tro. Linh khí cuộn thành một dải rồng khí bay vòng.
+    /// đất bay lơ lửng trên mây mù; 5 thanh phi kiếm từ dưới mây vút lên xoay vòng quanh rương, càng lúc càng nhanh,
+    /// ngân càng cao, rương rung càng mạnh. 4 lá bùa phong ấn dán quanh rương: lần lượt một thanh kiếm tách vòng lao
+    /// vào đâm, lá bùa bật ra (Rigidbody, lực thật) và cháy thành tro.
     ///
     /// Tương tác phụ: người chơi bấm chuột trái hoặc phím G (hoặc gọi <see cref="DropSpiritStone"/>) để thả linh thạch
-    /// từ trên xuống — viên đá rơi bằng trọng lực thật, nảy trên mây; chạm miệng rương thì bị hút: linh khí +1, kiếm
-    /// xoay nhanh hơn, rồng dài hơn. Sự kiện phụ: một con hạc giấy bay ngang (thời điểm theo hạt giống) và nhả xuống
-    /// một viên linh thạch.
+    /// từ trên xuống (tối đa <see cref="maxStones"/> viên mỗi lần mở) — viên đá rơi bằng trọng lực thật, nảy trên mây;
+    /// chạm miệng rương thì bị hút: linh khí +1, kiếm xoay nhanh hơn.
+    /// (Đã thu gọn theo kế hoạch 2026-11-25: bỏ hạc giấy và dải rồng khí.)
     ///
     /// Bí mật: mọi thứ trước khi chốt bậc KHÔNG phụ thuộc bậc. Ở OnTierLocked mới rẽ nhánh:
-    ///  - Rác: ngân kiếm "xì hơi" tụt cao độ, kiếm mất linh khí rơi tự do (Rigidbody) cắm xiên xuống đất, rương rớt
-    ///    bịch xuống, bùa còn sót bay phấp phới chứ không cháy, rồng khí tan rã. Hài.
-    ///  - Thường: kiếm rơi nhẹ cắm thẳng, rương hạ xuống êm, rồng nhỏ chui vào miệng rương.
+    ///  - Rác: ngân kiếm tắt phụt, lặng 0,2 s, một tiếng xịt; kiếm mất linh khí rơi tự do (Rigidbody) cắm xiên xuống
+    ///    đất, rương rớt bịch xuống, bùa còn sót bay phấp phới chứ không cháy. Hài.
+    ///  - Thường: kiếm rơi nhẹ cắm thẳng, rương hạ xuống êm.
     ///  - Hiếm trở lên: bùa còn lại cháy hết một lượt, kiếm dựng thành vương miện chĩa xuống rồi lần lượt lao vào
-    ///    miệng rương, rồng khí lượn thêm vòng rồi lao vào miệng; rương bật nhảy (Rất hiếm: xoay một vòng trên không;
-    ///    Huyền thoại: nhảy cao, sóng xung kích đẩy văng mọi vật lý xung quanh).
+    ///    miệng rương; rương bật nhảy (Rất hiếm và Huyền thoại: xoay một vòng trên không; Huyền thoại: nhảy cao, sóng
+    ///    xung kích đẩy văng mọi vật lý xung quanh).
     /// Chỉ trang trí: không đọc/ghi bậc trúng ngoài tham số OnTierLocked; ngẫu nhiên theo <see cref="decorationSeed"/>.
     /// Vị trí rương chỉ được CỘNG THÊM một độ lệch rồi trả về đúng chỗ (an toàn với rung của BoxOpenSequence).
     /// </summary>
@@ -33,14 +33,14 @@ namespace ChoDoLa.ChestFx
     {
         [Header("Âm (gán bởi Tools/Cho Do La/Setup Co Phong Ngu Kiem)")]
         public AudioClip humLoop;
-        public AudioClip drawSword, strike, stone, crane, swordLand;
-        [Tooltip("Rác, Thường, Hiếm, Rất hiếm, Huyền thoại")] public AudioClip[] endByTier = new AudioClip[5];
+        public AudioClip drawSword, strike, stone, swordLand;
+        [Tooltip("TC: tiếng chốt theo bậc (Rác, Thường, Hiếm, Rất hiếm, Huyền thoại) — sfx_cophong_lock_*.mp3")] public AudioClip[] stingClips = new AudioClip[5];
         [Range(0f, 1f)] public float volume = 0.8f;
 
         [Header("Dàn cảnh")]
-        [Min(3)] public int swordCount = 7;
-        [Min(0)] public int talismanCount = 6;
-        [Min(0)] public int maxStones = 6;
+        [Min(3)] public int swordCount = 5;
+        [Min(0)] public int talismanCount = 4;
+        [Min(0)] public int maxStones = 4;
         [Tooltip("0 = ngẫu nhiên mỗi lần")] public int decorationSeed;
         public Color bladeColor = new Color(0.78f, 0.88f, 0.95f);
         public Color qiColor = new Color(0.62f, 1f, 0.86f);
@@ -66,8 +66,9 @@ namespace ChoDoLa.ChestFx
             public Transform t;
             public Rigidbody rb;
             public Material mat;
-            public bool hit, burning;
-            public float burn;
+            public bool hit, burning, popped, flutter;
+            public float burn, flutterT;
+            public Vector3 flutterVel;
         }
 
         private class Stone
@@ -84,7 +85,9 @@ namespace ChoDoLa.ChestFx
         private System.Random _rng;
         private bool _started, _locked;
         private ChestTier _tier;
-        private float _time, _lockTime, _size, _groundY, _qi, _nextStrike, _craneAt, _orbitAngle, _landSoundCooldown;
+        private float _time, _lockTime, _size, _groundY, _qi, _nextStrike, _orbitAngle;
+        private float _stingAt = -1f, _quietUntil, _eventGate = -999f, _tailGate = -999f;
+        private int _tailCount, _stonesUsed;
         private Vector3 _base, _mouth;
         private GameObject _root;
         private readonly List<Object> _owned = new List<Object>();
@@ -92,15 +95,11 @@ namespace ChoDoLa.ChestFx
         private readonly List<Talisman> _talismans = new List<Talisman>();
         private readonly List<Stone> _stones = new List<Stone>();
         private AudioSource _hum;
-        private LineRenderer _dragon;
-        private Vector3[] _dragonPts;
-        private float _dragonFade = 1f;
         private ParticleSystem _mist, _ash, _sparks;
         private ChestFxProfile _mistStyle, _ashStyle, _sparkStyle;
-        private Material _bladeMat, _hiltMat, _trailMat, _stoneMat, _craneMat, _shockMat;
-        private Transform _crane, _shock;
-        private float _craneT = -1f, _shockT = -1f;
-        private bool _craneDropped;
+        private Material _bladeMat, _hiltMat, _trailMat, _stoneMat, _shockMat;
+        private Transform _shock;
+        private float _shockT = -1f;
 
         // Chest motion: an offset ADDED to the chest each LateUpdate and removed again (see ApplyChestOffset).
         private float _lift, _liftVel, _spin, _spinVel;
@@ -125,7 +124,6 @@ namespace ChoDoLa.ChestFx
 
             float dt = Time.deltaTime;
             _time += dt;
-            _landSoundCooldown -= dt;
             float tension = Tension();
 
             if (!_locked && PressedDrop()) DropSpiritStone();
@@ -133,8 +131,7 @@ namespace ChoDoLa.ChestFx
             UpdateSwords(dt, tension);
             UpdateTalismans(dt);
             UpdateStones(dt);
-            UpdateCrane(dt);
-            UpdateDragon(dt, tension);
+            UpdateSting();
             UpdateChestMotion(dt, tension);
             UpdateShock(dt);
         }
@@ -150,28 +147,19 @@ namespace ChoDoLa.ChestFx
             if (!_started) Begin();
         }
 
-        public override void OnRouletteStep(ChestRevealSequence reveal, ChestTier shown, Color color)
-        {
-            // The qi ribbon flickers with the roulette colour (already on screen, so it leaks nothing).
-            if (_dragon != null && !_locked)
-            {
-                Color c = Color.Lerp(qiColor, color, 0.45f);
-                _dragon.startColor = c;
-                _dragon.endColor = new Color(c.r, c.g, c.b, 0f);
-            }
-        }
-
         public override void OnTierLocked(ChestRevealSequence reveal, ChestTier tier, Color color)
         {
             if (!_started) Begin();
             _locked = true;
             _tier = tier;
             _lockTime = _time;
-            int i = Mathf.Clamp(tier.Rank(), 0, 4);
-            if (endByTier != null && i < endByTier.Length) Play(endByTier[i], 1f);
-
             bool high = tier >= ChestTier.Hiem;
-            if (_dragon != null) { _dragon.startColor = color; _dragon.endColor = new Color(color.r, color.g, color.b, 0f); }
+
+            // Âm chốt (A4): Rác = nền dừng ngay, lặng 0,2 s, rồi MỘT tiếng xịt, im thêm 0,6 s; bậc khác = nền dừng/fade
+            // và TC phát ngay. Hook không phát HĐ nào (danh mục không có tiếng hành động cho rương này).
+            if (_hum != null && (tier == ChestTier.Rac || high)) _hum.Stop();
+            _stingAt = _time + (tier == ChestTier.Rac ? ChestAudioRule.RacSilence : 0f);
+            _quietUntil = tier == ChestTier.Rac ? _stingAt + 0.6f : _time + 0.4f;
 
             // Swords
             for (int s = 0; s < _swords.Count; s++)
@@ -201,17 +189,17 @@ namespace ChoDoLa.ChestFx
             // Talismans: high tiers burn every remaining seal at once; low tiers let them flutter off unburnt (the seal "held").
             foreach (Talisman ta in _talismans)
             {
-                if (ta.hit) continue;
+                if (ta.popped || ta.burning) continue;   // already torn off by a sword (or burning)
                 ta.hit = true;
                 if (high) { ta.burning = true; ta.burn = Rand(0f, 0.2f); }
-                else PopTalisman(ta, 0.4f);
+                else StartFlutter(ta);
             }
 
             // Chest: low tiers fall (Rác hard, with bounces), high tiers leap.
             if (high)
             {
                 _liftVel = _size * (tier == ChestTier.HuyenThoai ? 3.4f : tier == ChestTier.RatHiem ? 2.6f : 1.9f);
-                if (tier >= ChestTier.RatHiem) _spinVel = tier == ChestTier.HuyenThoai ? 720f : 360f;
+                if (tier >= ChestTier.RatHiem) _spinVel = tier == ChestTier.HuyenThoai ? 720f : 360f;   // °/s; cả hai xoay đúng 1 vòng (T8 ≤ 540°)
                 if (tier == ChestTier.HuyenThoai) StartShock();
                 BurstSparks(_reveal.MouthPosition, color, tier == ChestTier.HuyenThoai ? 80 : 40);
             }
@@ -242,6 +230,8 @@ namespace ChoDoLa.ChestFx
             _rng = new System.Random(decorationSeed != 0 ? decorationSeed : System.Environment.TickCount);
             _time = 0f;
             _qi = 0f;
+            _orbitAngle = 0f;
+            _stingAt = -1f; _quietUntil = 0f; _eventGate = -999f; _tailGate = -999f; _tailCount = 0; _stonesUsed = 0;
 
             Transform chest = _reveal.transform;
             Bounds b = new Bounds(chest.position, Vector3.zero);
@@ -264,13 +254,11 @@ namespace ChoDoLa.ChestFx
             _hiltMat = OwnMat(ChestFxFactory.CreateUnlit(new Color(0.35f, 0.12f, 0.08f), false, "NguKiemHilt"));
             _trailMat = OwnMat(ChestFxFactory.CreateAdditive(ChestFxFactory.GetTexture(ParticleLook.SoftDot), "NguKiemTrail"));
             _stoneMat = OwnMat(ChestFxFactory.CreateUnlit(stoneColor, false, "NguKiemStone"));
-            _craneMat = OwnMat(ChestFxFactory.CreateUnlit(new Color(0.97f, 0.95f, 0.9f), false, "NguKiemCrane"));
 
             BuildGround();
             BuildMist();
             BuildSwords();
             BuildTalismans();
-            BuildDragon();
 
             _hum = _root.AddComponent<AudioSource>();
             _hum.playOnAwake = false;
@@ -280,12 +268,9 @@ namespace ChoDoLa.ChestFx
             _hum.pitch = 0.8f;
             _hum.spatialBlend = 0f;
             if (humLoop != null) _hum.Play();
-            Play(drawSword, 0.9f);
+            if (ChestAudioRule.TryGate(ref _eventGate, ChestAudioRule.EventGap)) PlayCapped(drawSword, 0.5f, ChestAudioRule.EventMax);
 
             _nextStrike = 1.6f;
-            _craneAt = Rand(2.0f, 4.0f);
-            _craneT = -1f;
-            _craneDropped = false;
             _lift = 0f; _liftVel = 0f; _spin = 0f; _spinVel = 0f; _bounces = 0;
             _hasWritten = false;
             _appliedOffset = Vector3.zero;
@@ -320,7 +305,7 @@ namespace ChoDoLa.ChestFx
             ParticleSystem.EmissionModule em = _mist.emission;
             em.rateOverTime = _mistStyle.ambientRate;
             _mist.Play();
-            for (int i = 0; i < 30; i++) _mist.Emit(1);   // a bank of cloud already there at the press
+            _mist.Emit(15);   // a bank of cloud already there at the press
 
             _ashStyle = Style(ParticleLook.SoftDot, ParticleDirection.Up, 0.15f, 0.025f, 1.6f);
             _ash = ChestFxFactory.CreateParticles("NguKiemAsh", _root.transform, _ashStyle, _size * 0.3f, true);
@@ -416,26 +401,6 @@ namespace ChoDoLa.ChestFx
             }
         }
 
-        private void BuildDragon()
-        {
-            GameObject g = Own(new GameObject("RongKhi")) as GameObject;
-            g.hideFlags = HideFlags.DontSave;
-            g.transform.SetParent(_root.transform, false);
-            _dragon = g.AddComponent<LineRenderer>();
-            _dragon.sharedMaterial = _trailMat;
-            _dragon.useWorldSpace = true;
-            _dragon.positionCount = 28;
-            _dragonPts = new Vector3[28];
-            _dragon.widthCurve = new AnimationCurve(new Keyframe(0f, 1f), new Keyframe(0.12f, 0.75f), new Keyframe(1f, 0f));
-            _dragon.widthMultiplier = 0f;
-            _dragon.startColor = qiColor;
-            _dragon.endColor = new Color(qiColor.r, qiColor.g, qiColor.b, 0f);
-            _dragon.numCornerVertices = 2;
-            _dragonFade = 1f;
-            for (int i = 0; i < _dragonPts.Length; i++) _dragonPts[i] = _mouth;
-            _dragon.SetPositions(_dragonPts);
-        }
-
         // ------------------------------------------------------------------ Per-frame
 
         // 0..1 rising suspense: time (saturating) plus qi from stones. Same for every tier until the lock.
@@ -445,37 +410,36 @@ namespace ChoDoLa.ChestFx
             return Mathf.Clamp01(t * 0.85f + _qi * 0.05f);
         }
 
+        // Nền (A2): 1 vòng lặp, âm lượng 0,15 → 0,45, cao độ 0,8 → 1,2 (+50%) tới lúc chốt. `volume` nhân đúng 1 lần.
         private void UpdateHum(float dt, float tension)
         {
             if (_hum == null) return;
             if (!_locked)
             {
-                _hum.volume = Mathf.MoveTowards(_hum.volume, volume * Mathf.Lerp(0.25f, 0.8f, tension), dt * 0.8f);
-                _hum.pitch = Mathf.Lerp(0.8f, 1.5f, tension);
+                _hum.volume = Mathf.Min(ChestAudioRule.BedMax, Mathf.Lerp(0.19f, 0.56f, tension) * volume);
+                _hum.pitch = Mathf.Lerp(0.8f, 1.2f, tension);
                 return;
             }
-            float since = _time - _lockTime;
-            if (_tier == ChestTier.Rac)
-            {
-                // Deflate: pitch collapses, then silence (the "xịt").
-                _hum.pitch = Mathf.Max(0.2f, _hum.pitch - dt * 2.2f);
-                _hum.volume = Mathf.MoveTowards(_hum.volume, 0f, dt * 1.6f);
-            }
-            else if (_tier >= ChestTier.Hiem && since < 0.6f)
-            {
-                _hum.pitch += dt * 1.2f;   // a last surge into the boom
-            }
-            else
-            {
-                _hum.volume = Mathf.MoveTowards(_hum.volume, 0f, dt * 1.2f);
-            }
+            // Rác và Hiếm trở lên đã Stop() ở OnTierLocked; Thường: fade 0,3 s.
+            if (_tier == ChestTier.Thuong) _hum.volume = Mathf.MoveTowards(_hum.volume, 0f, dt * ChestAudioRule.BedMax / 0.3f);
             if (_hum.volume <= 0.001f && _hum.isPlaying) _hum.Stop();
+        }
+
+        // TC: đúng 1 tiếng chốt theo bậc, do hook phát (Rác trễ 0,2 s để lặng trước tiếng xịt).
+        private void UpdateSting()
+        {
+            if (_stingAt < 0f || _time < _stingAt) return;
+            _stingAt = -1f;
+            int i = Mathf.Clamp(_tier.Rank(), 0, 4);
+            if (stingClips == null || i >= stingClips.Length) return;
+            float[] v = { 0.8f, 0.7f, 0.85f, 1f, 1f };   // Rác (xịt), Thường ≤ 0,7, Hiếm 0,85, Rất hiếm / HT 1,0
+            PlayCapped(stingClips[i], v[i], ChestAudioRule.StingMax);
         }
 
         private Vector3 OrbitPos(Sword s, float extraHeight)
         {
             float a = (_orbitAngle + s.angleOffset) * Mathf.Deg2Rad;
-            float r = _size * 0.95f;
+            float r = _size * 0.95f;   // T2: quỹ đạo kiếm ≤ 1,2 S
             float bob = Mathf.Sin(_time * 2.3f + s.angleOffset) * _size * 0.06f;
             return _base + new Vector3(Mathf.Cos(a) * r, _size * 0.75f + _lift + bob + extraHeight, Mathf.Sin(a) * r);
         }
@@ -554,7 +518,7 @@ namespace ChoDoLa.ChestFx
                         if (s.timer < 0f) break;
                         float u = Mathf.Clamp01(s.timer / 0.5f);
                         float a = (s.angleOffset + _orbitAngle * 0.2f) * Mathf.Deg2Rad;
-                        Vector3 slot = mouth + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * _size * 0.45f + Vector3.up * _size * 0.9f;
+                        Vector3 slot = mouth + new Vector3(Mathf.Cos(a), 0f, Mathf.Sin(a)) * _size * 0.45f + Vector3.up * _size * 0.6f;
                         PoseKinematic(s, Vector3.Lerp(s.from, slot, Mathf.SmoothStep(0f, 1f, u)), Vector3.Slerp(s.t.forward, Vector3.down, u));
                         if (s.timer > 0.75f + i * 0.08f)
                         {
@@ -574,7 +538,7 @@ namespace ChoDoLa.ChestFx
                             s.state = SwordState.Gone;
                             s.t.gameObject.SetActive(false);
                             BurstSparks(mouth, qiColor, 8);
-                            if (_landSoundCooldown <= 0f) { Play(strike, 0.35f, 1.4f); _landSoundCooldown = 0.06f; }
+                            PlayTail(strike, 0.35f, 1.4f);
                         }
                         break;
                     }
@@ -595,7 +559,7 @@ namespace ChoDoLa.ChestFx
                             s.t.position = new Vector3(s.t.position.x, _groundY + _size * 0.12f, s.t.position.z);
                             s.state = SwordState.Stuck;
                             s.timer = 0f;
-                            if (_landSoundCooldown <= 0f) { Play(swordLand, 0.55f, Rand(0.85f, 1.15f)); _landSoundCooldown = 0.12f; }
+                            PlayTail(swordLand, 0.4f, Rand(0.85f, 1.15f));
                             _ash.transform.position = new Vector3(s.t.position.x, _groundY, s.t.position.z);
                             ChestFxFactory.SetParticleColor(_ash, new Color(0.85f, 0.85f, 0.9f), _ashStyle, 0.5f);
                             _ash.Emit(6);
@@ -628,7 +592,8 @@ namespace ChoDoLa.ChestFx
 
         private void HitTalisman(Talisman ta)
         {
-            Play(strike, 0.7f, Rand(0.9f, 1.1f));
+            // Nhịp (A2): âm lượng 0,25 → 0,55 theo độ căng; khoảng giữa hai cú đâm đã 1,4 → 0,55 s.
+            PlayCapped(strike, Mathf.Lerp(0.3f, 0.69f, Tension()), ChestAudioRule.BeatMax, Rand(0.9f, 1.1f));
             PopTalisman(ta, 1f);
             ta.burning = true;
             ta.burn = 0f;
@@ -639,6 +604,7 @@ namespace ChoDoLa.ChestFx
         // Real physics: the seal tears off the chest and is flung out and up, spinning.
         private void PopTalisman(Talisman ta, float strength)
         {
+            ta.popped = true;
             ta.t.SetParent(_root.transform, true);
             ta.rb.isKinematic = false;
             ta.rb.useGravity = true;
@@ -653,6 +619,7 @@ namespace ChoDoLa.ChestFx
         {
             foreach (Talisman ta in _talismans)
             {
+                if (ta.flutter && ta.t != null) UpdateFlutter(ta, dt);
                 if (!ta.burning || ta.t == null || !ta.t.gameObject.activeSelf) continue;
                 ta.burn += dt / 0.9f;
                 float u = Mathf.Clamp01(ta.burn);
@@ -663,7 +630,7 @@ namespace ChoDoLa.ChestFx
                 Vector3 sc = ta.t.localScale;
                 float k = Mathf.Lerp(1f, 0.05f, u * u);
                 ta.t.localScale = new Vector3(_size * 0.12f * k, _size * 0.3f * k, 1f);
-                if (Random.value < 0.5f)
+                if (Rand(0f, 1f) < 0.5f)
                 {
                     _ash.transform.position = ta.t.position;
                     ChestFxFactory.SetParticleColor(_ash, new Color(1f, 0.55f, 0.15f), _ashStyle, 0.8f);
@@ -673,13 +640,40 @@ namespace ChoDoLa.ChestFx
             }
         }
 
-        // ------------------------------------------------------------------ Spirit stones (player / crane)
+        // Rác/Thường: bùa chưa bị đâm "còn nguyên" — bay phấp phới bằng chuyển động theo mã (không thêm Rigidbody, T3).
+        private void StartFlutter(Talisman ta)
+        {
+            ta.popped = true;
+            ta.rb.isKinematic = true;
+            ta.t.SetParent(_root.transform, true);
+            Vector3 outDir = ta.t.position - _base;
+            outDir.y = 0f;
+            outDir = outDir.normalized;
+            ta.flutterVel = (outDir * 0.5f + Vector3.up * 0.9f) * _size * 0.5f;
+            ta.flutterT = 0f;
+            ta.flutter = true;
+        }
+
+        private void UpdateFlutter(Talisman ta, float dt)
+        {
+            ta.flutterT += dt;
+            ta.flutterVel += Vector3.down * 9.81f * _size * 0.25f * dt;
+            ta.flutterVel *= Mathf.Exp(-1.5f * dt);
+            Vector3 sway = new Vector3(Mathf.Sin(ta.flutterT * 7f), 0f, Mathf.Cos(ta.flutterT * 6f)) * _size * 0.25f;
+            Vector3 p = ta.t.position + (ta.flutterVel + sway) * dt;
+            if (p.y <= _groundY + 0.01f) { p.y = _groundY + 0.01f; ta.flutter = false; }   // lands on the clouds and stays
+            ta.t.position = p;
+            ta.t.rotation = ta.t.rotation * Quaternion.Euler(new Vector3(120f, 90f, 60f) * dt);
+        }
+
+        // ------------------------------------------------------------------ Spirit stones (player)
 
         /// <summary>Thả một viên linh thạch từ trên xuống rương (UI có thể gọi). Chỉ trang trí: tăng linh khí, không đổi bậc.</summary>
         public void DropSpiritStone()
         {
-            if (!_started || _locked || _stones.Count >= maxStones) return;
-            Vector3 from = _reveal.MouthPosition + Vector3.up * _size * 1.8f
+            if (!_started || _locked || _stonesUsed >= maxStones) return;   // trần cứng mỗi lần mở (T3/T7)
+            _stonesUsed++;
+            Vector3 from = _reveal.MouthPosition + Vector3.up * _size * 1.3f
                            + new Vector3(Rand(-0.35f, 0.35f), 0f, Rand(-0.35f, 0.35f)) * _size;
             SpawnStone(from, Vector3.zero);
         }
@@ -733,7 +727,7 @@ namespace ChoDoLa.ChestFx
                     if (!_locked)
                     {
                         _qi += 1f;
-                        Play(stone, 0.7f, 1f + _qi * 0.06f);
+                        if (ChestAudioRule.TryGate(ref _eventGate, ChestAudioRule.EventGap)) PlayCapped(stone, 0.5f, ChestAudioRule.EventMax, 1f + _qi * 0.06f);
                         _liftVel += _size * 0.5f;   // a little hop of joy
                     }
                     BurstSparks(mouth, stoneColor, 14);
@@ -741,114 +735,6 @@ namespace ChoDoLa.ChestFx
                     _stones.RemoveAt(i);
                 }
             }
-        }
-
-        private void UpdateCrane(float dt)
-        {
-            if (_locked && _craneT < 0f) return;
-            if (_craneT < 0f && _time >= _craneAt)
-            {
-                _craneT = 0f;
-                _crane = BuildCrane();
-                Play(crane, 0.6f);
-            }
-            if (_craneT < 0f || _crane == null) return;
-            _craneT += dt / 3.2f;
-            float u = _craneT;
-            Camera cam = Camera.main;
-            Vector3 right = cam != null ? Vector3.ProjectOnPlane(cam.transform.right, Vector3.up).normalized : Vector3.right;
-            if (right.sqrMagnitude < 0.01f) right = Vector3.right;
-            Vector3 p = _base + Vector3.up * _size * (1.9f + Mathf.Sin(u * Mathf.PI * 2f) * 0.15f) + right * Mathf.Lerp(-3f, 3f, u) * _size;
-            _crane.position = p;
-            _crane.rotation = Quaternion.LookRotation(right);
-            float flap = Mathf.Sin(_time * 14f) * 35f;
-            if (_crane.childCount >= 2)
-            {
-                _crane.GetChild(0).localRotation = Quaternion.Euler(0f, 0f, flap);
-                _crane.GetChild(1).localRotation = Quaternion.Euler(0f, 0f, -flap);
-            }
-            if (!_craneDropped && u >= 0.5f)
-            {
-                _craneDropped = true;
-                if (!_locked) SpawnStone(p + Vector3.down * _size * 0.1f, right * _size * 0.3f);
-            }
-            if (u >= 1f)
-            {
-                _crane.gameObject.SetActive(false);
-                _craneT = -1f;
-                _craneAt = float.MaxValue;   // once per opening
-            }
-        }
-
-        private Transform BuildCrane()
-        {
-            GameObject body = Own(new GameObject("HacGiay")) as GameObject;
-            body.hideFlags = HideFlags.DontSave;
-            body.transform.SetParent(_root.transform, false);
-            for (int side = 0; side < 2; side++)
-            {
-                GameObject pivot = new GameObject(side == 0 ? "CanhTrai" : "CanhPhai");
-                pivot.transform.SetParent(body.transform, false);
-                GameObject wing = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                Own(wing);
-                Collider c = wing.GetComponent<Collider>();
-                if (c != null) Destroy(c);
-                wing.transform.SetParent(pivot.transform, false);
-                wing.transform.localPosition = new Vector3(side == 0 ? -0.5f : 0.5f, 0f, 0f) * _size * 0.25f;
-                wing.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-                wing.transform.localScale = new Vector3(_size * 0.25f, _size * 0.12f, 1f);
-                wing.GetComponent<Renderer>().sharedMaterial = _craneMat;
-            }
-            GameObject neck = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Own(neck);
-            Collider nc = neck.GetComponent<Collider>();
-            if (nc != null) Destroy(nc);
-            neck.transform.SetParent(body.transform, false);
-            neck.transform.localScale = new Vector3(_size * 0.03f, _size * 0.03f, _size * 0.28f);
-            neck.GetComponent<Renderer>().sharedMaterial = _craneMat;
-            return body.transform;
-        }
-
-        // ------------------------------------------------------------------ Qi dragon
-
-        private void UpdateDragon(float dt, float tension)
-        {
-            if (_dragon == null) return;
-            Vector3 mouth = _reveal.MouthPosition;
-            int n = _dragonPts.Length;
-            float since = _locked ? _time - _lockTime : 0f;
-            float width = Mathf.Lerp(0.02f, 0.11f, Mathf.Clamp01(tension + _qi * 0.08f)) * _size;
-            Vector3 head;
-            if (!_locked || (_tier >= ChestTier.Thuong && since < (_tier >= ChestTier.Hiem ? 1.1f : 0.4f)))
-            {
-                // Head spirals round the chest (wider and higher with qi), the body follows it like a ribbon.
-                float a = _time * Mathf.Lerp(1.6f, 4.2f, tension);
-                float r = _size * (0.7f + 0.1f * Mathf.Sin(_time * 1.3f) + (_locked ? since * 0.4f : 0f));
-                head = _base + new Vector3(Mathf.Cos(a) * r, _size * (0.6f + 0.35f * Mathf.Sin(a * 0.5f)) + _lift, Mathf.Sin(a) * r);
-            }
-            else if (_tier >= ChestTier.Thuong)
-            {
-                // Dive into the mouth; the body pours in after it.
-                head = mouth;
-                _dragonFade = Mathf.MoveTowards(_dragonFade, 0f, dt * 0.9f);
-            }
-            else
-            {
-                // Rác: the ribbon loses its head and droops, then frays away.
-                head = _dragonPts[0] + Vector3.down * dt * _size * 0.8f;
-                _dragonFade = Mathf.MoveTowards(_dragonFade, 0f, dt * 0.8f);
-            }
-            _dragonPts[0] = head;
-            float seg = _size * (0.07f + 0.02f * _qi);
-            for (int i = 1; i < n; i++)
-            {
-                Vector3 d = _dragonPts[i] - _dragonPts[i - 1];
-                if (d.sqrMagnitude > seg * seg) _dragonPts[i] = _dragonPts[i - 1] + d.normalized * seg;
-                if (_locked && _tier == ChestTier.Rac) _dragonPts[i] += Vector3.down * dt * _size * 0.3f * i / n;
-            }
-            _dragon.SetPositions(_dragonPts);
-            float grow = Mathf.Clamp01(_time / 1.5f);
-            _dragon.widthMultiplier = width * grow * _dragonFade;
         }
 
         // ------------------------------------------------------------------ Whole-chest motion
@@ -882,7 +768,7 @@ namespace ChoDoLa.ChestFx
                 }
                 if (_spinVel > 0f)
                 {
-                    float step = Mathf.Min(_spinVel * dt, 360f * (_tier == ChestTier.HuyenThoai ? 2f : 1f) - _spin);
+                    float step = Mathf.Min(_spinVel * dt, 360f - _spin);
                     if (step > 0f) _spin += step; else _spinVel = 0f;
                 }
                 else _spin = Mathf.MoveTowards(_spin, Mathf.Round(_spin / 360f) * 360f, dt * 90f);
@@ -983,7 +869,7 @@ namespace ChoDoLa.ChestFx
         {
             if (_shock == null || _shockT < 0f) return;
             _shockT += dt / 0.8f;
-            float r = Mathf.Lerp(0.2f, 4f, 1f - (1f - _shockT) * (1f - _shockT)) * _size;
+            float r = Mathf.Lerp(0.2f, 2.8f, 1f - (1f - _shockT) * (1f - _shockT)) * _size;
             _shock.localScale = new Vector3(r, 1f, r);
             if (_shockT >= 1f) { _shock.gameObject.SetActive(false); _shockT = -1f; }
         }
@@ -998,9 +884,21 @@ namespace ChoDoLa.ChestFx
             _sparks.Emit(count);
         }
 
-        private void Play(AudioClip clip, float vol, float pitch = 1f)
+        // `volume` của hook nhân đúng MỘT lần ở đây; kết quả không vượt trần `cap` của ChestAudioRule (A6).
+        private void PlayCapped(AudioClip clip, float vol, float cap, float pitch = 1f)
         {
-            if (clip != null && _reveal != null) _reveal.PlayOneShot(clip, vol * volume, pitch);
+            if (clip != null && _reveal != null) _reveal.PlayOneShot(clip, Mathf.Min(cap, vol * volume), pitch);
+        }
+
+        // Đuôi (A5): từ +0,4 s sau chốt (Rác: sau lặng + xịt + 0,6 s), ≥ 0,15 s giữa hai tiếng, tối đa 6 tiếng, hết trước +3 s, ≤ 0,4.
+        private void PlayTail(AudioClip clip, float vol, float pitch = 1f)
+        {
+            if (!_locked || clip == null) return;
+            float since = _time - _lockTime;
+            if (_time < _quietUntil || since > 3f || _tailCount >= 6) return;
+            if (!ChestAudioRule.TryGate(ref _tailGate, ChestAudioRule.TailGap)) return;
+            _tailCount++;
+            PlayCapped(clip, vol, ChestAudioRule.TailMax, pitch);
         }
 
         private Bounds ChestBounds()
@@ -1074,11 +972,12 @@ namespace ChoDoLa.ChestFx
             _stones.Clear();
             _root = null;
             _hum = null;
-            _dragon = null;
             _mist = _ash = _sparks = null;
-            _crane = _shock = null;
+            _shock = null;
             _started = _locked = false;
             _qi = 0f;
+            _lift = _liftVel = _spin = _spinVel = 0f;
+            _stingAt = -1f;
         }
     }
 }
