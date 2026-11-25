@@ -27,7 +27,44 @@ namespace ChoDoLa.Editor
         {
             GameObject go = Selection.activeGameObject;
             if (go == null) { Debug.LogWarning("[TrungHoaFx] Select the chest (the object with ChestRevealSequence) first."); return; }
-            if (go.GetComponent<TrungHoaHook>() == null) { go.AddComponent<TrungHoaHook>(); EditorUtility.SetDirty(go); }
+            TrungHoaHook hook = go.GetComponent<TrungHoaHook>();
+            if (hook == null) hook = go.AddComponent<TrungHoaHook>();
+            WireHookClips(hook);
+            EditorUtility.SetDirty(go);
+        }
+
+        private const string FxFolder = TrungHoaFxPreset.AudioFolder + "fx/sfx_trunghoa_fx_";
+
+        /// <summary>Gán âm riêng của kịch bản Đêm Giao Thừa (tạo bằng Tools/Audio/make_trunghoa_fx.py) vào hook.</summary>
+        public static void WireHookClips(TrungHoaHook h)
+        {
+            h.drumLoop = C("drum_loop");
+            h.fuseHissLoop = C("fuse_hiss");
+            h.matchStrike = C("match");
+            h.pops = new[] { C("pop_1"), C("pop_2"), C("pop_3") };
+            h.bigBang = C("big_bang");
+            h.fizzle = C("fizzle");
+            h.slideDown = C("slide_down");
+            h.rocketWhistle = C("rocket_whistle");
+            h.rocketBoom = C("rocket_boom");
+            h.cymbal = C("cymbal");
+            h.dudThud = C("dud_thud");
+            h.sneeze = C("sneeze");
+            if (h.drumLoop == null) Debug.LogWarning("[TrungHoaFx] Không thấy âm trong " + FxFolder + "*: chạy python3 Tools/Audio/make_trunghoa_fx.py");
+        }
+
+        private static AudioClip C(string n) => AssetDatabase.LoadAssetAtPath<AudioClip>(FxFolder + n + ".wav");
+
+        [MenuItem("Tools/Cho Do La/Spawn Trung Hoa Incense (nen nhang)")]
+        public static void SpawnIncense() => Spawn(TrungHoaPlayerItem.Kind.Incense);
+
+        [MenuItem("Tools/Cho Do La/Spawn Trung Hoa Bonus Rocket (phao thang thien)")]
+        public static void SpawnRocket() => Spawn(TrungHoaPlayerItem.Kind.BonusRocket);
+
+        private static void Spawn(TrungHoaPlayerItem.Kind kind)
+        {
+            Vector3 at = Selection.activeGameObject != null ? Selection.activeGameObject.transform.position + new Vector3(0.4f, 0.5f, 0.4f) : new Vector3(0f, 1f, 0f);
+            Selection.activeGameObject = TrungHoaPlayerItem.Create(kind, at).gameObject;
         }
 
         public static ChestFxProfile CreateOrUpdateProfile()

@@ -110,7 +110,7 @@ namespace ChoDoLa.Editor
                 case "Miner": return SaveHook<MinerHook>(key, null);
                 case "Robot": return SaveHook<RobotHook>(key, null);
                 case "Game": return SaveHook<GamePixelHook>(key, null);
-                case "TrungHoa": return SaveHook<TrungHoaHook>(key, null);
+                case "TrungHoa": return SaveHook<TrungHoaHook>(key, TrungHoaFxSetup.WireHookClips);
                 case "TuoiTho": return SaveHook<TuoiThoHook>(key, null);
                 case "Mimic":
                     return SaveHook<MimicHook>(key, h =>
