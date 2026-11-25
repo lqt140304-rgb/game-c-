@@ -52,6 +52,7 @@ namespace ChoDoLa.Editor
                 };
             }
             if (p.customFxPrefab == null) p.customFxPrefab = CreateHookPrefab();
+            FillHookClips(p.customFxPrefab);
             if (fallbacks > 0) Debug.LogWarning($"[ThienCoFx] {fallbacks} sound(s) missing in {ThienCoFxPreset.AudioFolder}; used the shared chest sounds (or left empty).");
 
             EditorUtility.SetDirty(p);
@@ -71,6 +72,22 @@ namespace ChoDoLa.Editor
             Object.DestroyImmediate(go);
             return prefab;
         }
+
+        /// <summary>Điền âm "Bộ máy Thiên Cơ" vào ThienCoHook trên prefab (chỉ ô trống) từ thien_co/clockwork/.</summary>
+        private static void FillHookClips(GameObject prefab)
+        {
+            ThienCoHook h = prefab != null ? prefab.GetComponent<ThienCoHook>() : null;
+            if (h == null) return;
+            h.tick = L(h.tick, "tick"); h.tock = L(h.tock, "tock"); h.wind = L(h.wind, "wind");
+            h.gearClank = L(h.gearClank, "gear_clank"); h.meshOk = L(h.meshOk, "mesh_ok"); h.jam = L(h.jam, "jam");
+            h.bell = L(h.bell, "bell"); h.bellBig = L(h.bellBig, "bell_big"); h.sproing = L(h.sproing, "sproing");
+            h.winddown = L(h.winddown, "winddown"); h.cuckoo = L(h.cuckoo, "cuckoo"); h.cuckooSad = L(h.cuckooSad, "cuckoo_sad");
+            h.launch = L(h.launch, "launch"); h.sandLoop = L(h.sandLoop, "sand_loop"); h.musicBoxRise = L(h.musicBoxRise, "musicbox_rise");
+            EditorUtility.SetDirty(prefab);
+        }
+
+        private static AudioClip L(AudioClip cur, string n) =>
+            cur != null ? cur : AssetDatabase.LoadAssetAtPath<AudioClip>(ThienCoFxPreset.AudioFolder + "clockwork/sfx_tc_" + n + ".wav");
 
         /// <summary>Own clip; if missing, the shared clip (ChestFxPresets folder, then its synth fallback).</summary>
         private static AudioClip Clip(string own, string shared, ref int fallbacks)

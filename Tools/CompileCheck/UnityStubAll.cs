@@ -440,4 +440,13 @@ namespace UnityEngine
 namespace UnityEngine
 {
     public partial class Mesh { public bool isReadable; }
+
+// ---- Thêm cho ThienCoHook (vật lý thật: lực xoắn, lực nổ, khớp bản lề, va chạm)
+namespace UnityEngine
+{
+    public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
+    public partial class Rigidbody { public RigidbodyInterpolation interpolation; public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
+    public class Joint : Component { public Rigidbody connectedBody; public Vector3 anchor, axis, connectedAnchor; public bool autoConfigureConnectedAnchor; }
+    public class HingeJoint : Joint { public bool useSpring, useLimits; }
+    public class Collision { public Vector3 relativeVelocity; public GameObject gameObject; }
 }
