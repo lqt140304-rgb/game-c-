@@ -65,7 +65,7 @@ namespace UnityEngine
     public class Mesh : Object { public Bounds bounds; public int subMeshCount; public void SetVertices(List<Vector3> v) {} public void SetColors(List<Color> c) {} public void SetUVs(int ch, List<Vector2> u) {} public void SetTriangles(List<int> t, int s) {} public void RecalculateBounds() {} }
     public class Shader : Object { public static Shader Find(string n) => null; }
     public class Texture : Object {}
-    public enum TextureFormat { RGBA32 } public enum TextureWrapMode { Clamp } public enum FilterMode { Bilinear }
+    public enum TextureFormat { RGBA32 } public enum TextureWrapMode { Clamp, Repeat } public enum FilterMode { Bilinear, Point }
     public class Texture2D : Texture { public Texture2D(int w, int h, TextureFormat f, bool m) {} public TextureWrapMode wrapMode; public FilterMode filterMode; public static Texture2D whiteTexture;
         public void SetPixels32(Color32[] p) {} public void Apply(bool a, bool b) {} }
     public class Material : Object { public Material(Shader s) {} public bool HasProperty(string n) => true; public void SetFloat(string n, float v) {} public void SetColor(string n, Color c) {} public Color GetColor(string n) => default;

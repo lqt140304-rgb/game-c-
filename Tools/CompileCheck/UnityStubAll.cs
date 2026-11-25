@@ -21,7 +21,7 @@ namespace UnityEngine
     public enum Space { World, Self }
     public enum QueryTriggerInteraction { UseGlobal, Ignore, Collide }
     public enum CollisionFlags { None }
-    public partial class Collision { public Vector3 relativeVelocity; public Collider collider; public Rigidbody rigidbody; }
+    public partial class Collision { public Vector3 relativeVelocity, impulse; public Collider collider; public GameObject gameObject; public Rigidbody rigidbody; public Transform transform; } // MERGED_COLLISION
     public enum CameraClearFlags { Skybox, SolidColor }
     public enum ForceMode { Force, Impulse, Acceleration, VelocityChange }
     public enum RigidbodyConstraints { None, FreezeRotation }
@@ -165,7 +165,6 @@ namespace UnityEngine
     public partial class MeshFilter { public Mesh mesh; }
     public partial class Collider { public bool enabled, isTrigger; public Bounds bounds; public Rigidbody attachedRigidbody; }
     public class BoxCollider : Collider { public Vector3 center, size; }
-    public class Collision { public Collider collider; public Vector3 relativeVelocity; public GameObject gameObject; }
     public class SphereCollider : Collider { public Vector3 center; public float radius; }
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
@@ -179,9 +178,6 @@ namespace UnityEngine
     public partial class Collider { public PhysicsMaterial sharedMaterial; }
     public static partial class Physics { public static void IgnoreCollision(Collider a, Collider b, bool ignore) {} public static void IgnoreCollision(Collider a, Collider b) {} public static Collider[] OverlapSphere(Vector3 p, float r) => null; }
     public partial struct Quaternion { public static bool operator ==(Quaternion a, Quaternion b) => true; public static bool operator !=(Quaternion a, Quaternion b) => false; public override bool Equals(object o) => true; public override int GetHashCode() => 0; }
-    public partial class AudioClip { public static AudioClip Create(string n, int len, int ch, int freq, bool stream) => null; public bool SetData(float[] d, int off) => true; }
-    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 position, velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
-        public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
     public class CharacterController : Collider { public float height, radius, slopeLimit, stepOffset, skinWidth, minMoveDistance; public Vector3 center, velocity; public bool isGrounded;
         public CollisionFlags Move(Vector3 m) => CollisionFlags.None; public bool SimpleMove(Vector3 s) => false; }
     public partial class Mesh
@@ -271,7 +267,6 @@ namespace UnityEngine
     public class TextMesh : Component { public string text; public float characterSize; public int fontSize; public Color color; public TextAnchor anchor; public TextAlignment alignment; public Font font; }
     public enum TextAlignment { Left, Center, Right }
     public class Font : Object { public Material material; }
-    public class Collision { public Vector3 relativeVelocity; public Rigidbody rigidbody; public Collider collider; public GameObject gameObject; }
 
     public partial class GUIStyle { public GUIStyle() {} public FontStyle fontStyle; public RectOffset padding, margin; public bool richText; public float CalcHeight(GUIContent c, float w) => 0; public Vector2 CalcSize(GUIContent c) => default; public GUIStyleState hover, active; public float fixedHeight, fixedWidth; public bool stretchWidth; }
     public partial class GUIStyleState { public Texture2D background; }
@@ -422,8 +417,6 @@ namespace UnityEditor.SceneManagement
 // Thêm cho MinerDigSequence/MinerSynth (rương Thợ Mỏ)
 namespace UnityEngine
 {
-    public partial class AudioClip { public static AudioClip Create(string n, int len, int ch, int freq, bool stream) => null; public bool SetData(float[] d, int off) => true; }
-    public class Collision { public Collider collider; public Transform transform; public Vector3 relativeVelocity; }
     public struct Plane { public Plane(Vector3 n, Vector3 p) {} public bool Raycast(Ray r, out float d) { d = 0; return false; } }
     public partial struct Vector3 { public static Vector3 Reflect(Vector3 a, Vector3 n) => a; }
 }
@@ -431,22 +424,27 @@ namespace UnityEngine { public class DefaultExecutionOrder : System.Attribute { 
 // Chest_TheThao (bóng Rigidbody): phần lõi chưa có.
 namespace UnityEngine
 {
-    public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
-    public class Collision { public Vector3 relativeVelocity, impulse; public Collider collider; public GameObject gameObject; public Rigidbody rigidbody; }
     public partial class PhysicsMaterial { public PhysicsMaterialCombine frictionCombine; }
-    public partial class Rigidbody { public RigidbodyInterpolation interpolation; public bool detectCollisions; }
+    public partial class Rigidbody { public bool detectCollisions; }
+}
 
 // Chest_NhatBan (Nhát kiếm Iai): cắt lưới đôi + bỏ va chạm giữa mảnh dây và thân rương.
 namespace UnityEngine
 {
     public partial class Mesh { public bool isReadable; }
+}
 
 // ---- Thêm cho ThienCoHook (vật lý thật: lực xoắn, lực nổ, khớp bản lề, va chạm)
 namespace UnityEngine
 {
-    public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
-    public partial class Rigidbody { public RigidbodyInterpolation interpolation; public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
     public class Joint : Component { public Rigidbody connectedBody; public Vector3 anchor, axis, connectedAnchor; public bool autoConfigureConnectedAnchor; }
     public class HingeJoint : Joint { public bool useSpring, useLimits; }
-    public class Collision { public Vector3 relativeVelocity; public GameObject gameObject; }
+}
+
+// Gộp từ UnityStubAmNhacBass.cs / UnityStubGameVoxel.cs để check_all.sh biên dịch cả hai rương.
+namespace UnityEngine
+{
+    public partial class Transform { public void Rotate(float x, float y, float z, Space s) {} }
+    public partial class AudioSource { public void PlayDelayed(float d) {} }
+    public static partial class GUI { public static void DrawTextureWithTexCoords(Rect r, Texture t, Rect uv) {} }
 }
