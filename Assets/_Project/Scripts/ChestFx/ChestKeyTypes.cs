@@ -6,6 +6,13 @@ namespace ChoDoLa.ChestFx
     public enum KeyAction { Insert, Drop, Strike, Pounce, Peck }
 
     /// <summary>
+    /// Kiểu chuyển động CẢ RƯƠNG của từng chủ đề (rương KHÔNG bị giữ cố định tại chỗ: có thể bay lên, lơ lửng, xoay, lắc mọi hướng).
+    /// Shake = rung mọi hướng (x, y, z và nghiêng); Float = bay lên lơ lửng rồi hạ; Spin = xoay quanh trục đứng; Wobble = lắc nghiêng
+    /// nhiều hướng; Bounce = nảy và xoay nhẹ. Lõi (ChestKeyScript) dựng bước tương ứng; mọi chuyển động tự trả rương về chỗ cũ.
+    /// </summary>
+    public enum ChestMoveStyle { Shake, Float, Spin, Wobble, Bounce }
+
+    /// <summary>
     /// Thông số riêng của MỘT rương cho chuỗi mở chuẩn (kế hoạch 2026-11-26, mục 4.3). Mỗi lớp `*KeyHook` có
     /// `public static readonly KeyPreset Preset`. Là struct thuần dữ liệu để Editor và check đọc được.
     /// </summary>
@@ -24,6 +31,16 @@ namespace ChoDoLa.ChestFx
         public string bedFile;
         /// <summary>Tên tệp tiếng cắm chìa (ngắn) trong audioFolder; rỗng = không có tiếng cắm.</summary>
         public string keyFile;
+        /// <summary>Tên tệp tiếng BAY của vật mở khoá (0,0–1,0 s, theo chủ đề), trong audioFolder; rỗng = không có.</summary>
+        public string flyFile;
+        /// <summary>Tên tệp tiếng HÀNH ĐỘNG MỞ theo chủ đề (1,0–1,35 s, thay cho tiếng "cắm"), trong audioFolder; rỗng = dùng keyFile.</summary>
+        public string actionFile;
+        /// <summary>Màu ánh sáng của chủ đề lúc hành động mở chạm (nháy glow, không thêm đèn mới).</summary>
+        public Color lightColor;
+        /// <summary>Độ mạnh nháy sáng lúc hành động mở chạm (0 = không nháy; mặc định 0,6; trần 1).</summary>
+        public float lightMul;
+        /// <summary>Kiểu chuyển động cả rương (bay/rung/xoay/lắc mọi hướng).</summary>
+        public ChestMoveStyle moveStyle;
         /// <summary>Màu chính của vật mở khoá.</summary>
         public Color mainColor;
         public KeyAction openAction;
@@ -46,6 +63,7 @@ namespace ChoDoLa.ChestFx
                 chestId = chestId, displayName = displayName, audioFolder = audioFolder, filePrefix = filePrefix, bedFile = bedFile,
                 mainColor = mainColor, openAction = action,
                 squashMul = 1f, racSquashMul = 1f, jumpMul = 1f, cycleDelta = 0, shakeScale = 1f,
+                flyFile = "", actionFile = "", lightColor = mainColor, lightMul = 0.6f, moveStyle = ChestMoveStyle.Shake,
             };
         }
     }
