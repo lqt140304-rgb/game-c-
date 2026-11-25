@@ -48,12 +48,12 @@ def final_jobs(n=2000):
     for k in SK[:2]:
         J.append(("ván thường", None, "thường", k, n, CS.FINAL, None))
     for prof in PROFS:
-        J.append(("lần chơi đầu", None, prof, "liều", 1500, CS.FIRST_RUN, None))
-        J.append(("lần chơi đầu", None, prof, "thận trọng", 1500, CS.FIRST_RUN, None))
-    J.append(("lần chơi đầu", None, "giỏi", SK[1], 1500, CS.FIRST_RUN, None))
-    J.append(("lần chơi đầu", None, "giỏi", SK[0], 1500, CS.FIRST_RUN, None))
-    J.append(("lần chơi đầu, ngày 1 phạt như ngày thường", dict(day1_fine=.20), "ẩu", "liều", 1500, CS.FIRST_RUN, None))
-    J.append(("lần chơi đầu, ngày 1 phạt như ngày thường", dict(day1_fine=.20), "bỏ qua soi", "liều", 1500, CS.FIRST_RUN, None))
+        J.append(("lần chơi đầu", None, prof, "liều", 1500, CS.FIRST_RUN_LOOSE, None))
+        J.append(("lần chơi đầu", None, prof, "thận trọng", 1500, CS.FIRST_RUN_LOOSE, None))
+    J.append(("lần chơi đầu", None, "giỏi", SK[1], 1500, CS.FIRST_RUN_LOOSE, None))
+    J.append(("lần chơi đầu", None, "giỏi", SK[0], 1500, CS.FIRST_RUN_LOOSE, None))
+    J.append(("lần chơi đầu, ngày 1 phạt như ngày thường", dict(day1_fine=.20), "ẩu", "liều", 1500, CS.FIRST_RUN_LOOSE, None))
+    J.append(("lần chơi đầu, ngày 1 phạt như ngày thường", dict(day1_fine=.20), "bỏ qua soi", "liều", 1500, CS.FIRST_RUN_LOOSE, None))
     return J
 
 
