@@ -1,5 +1,8 @@
 # Kế hoạch: thu gọn hiệu ứng mở rương về mức Hải tặc / Rác Quý + chuẩn hoá âm thanh
 
+> **ĐÃ THAY THẾ (2026-11-26):** chủ dự án quyết định bỏ hết hiệu ứng thừa, chỉ giữ rung lắc, bóp méo, âm thanh và chìa khoá. Xem [2026-11-26-don-sach-ruong-chia-khoa-ke-hoach.md](2026-11-26-don-sach-ruong-chia-khoa-ke-hoach.md). Mục 5 (từng rương) của file này không còn dùng; mục 2–3 chỉ để tham chiếu.
+
+
 Ngày 2026-11-25 · Nhánh kế hoạch `claude/chest-trim-plan` · Người lập: phiên lập kế hoạch (không sửa mã hiệu ứng).
 Người thực hiện: các phiên Sonnet, mỗi phiên một mục, dùng prompt mẫu ở
 [2026-11-25-thu-gon-prompt-mau.md](2026-11-25-thu-gon-prompt-mau.md).

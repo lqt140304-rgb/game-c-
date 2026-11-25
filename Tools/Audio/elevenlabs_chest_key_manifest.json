@@ -1,0 +1,285 @@
+{
+ "_doc": "Âm bổ sung cho kế hoạch chìa khoá (2026-11-26): 17 tiếng cắm chìa + 3 nền còn thiếu. Cùng định dạng elevenlabs_chest_manifest.json; chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/elevenlabs_chest_key_manifest.json",
+ "hai_tac": {
+  "prefix": "sfx_haitac_",
+  "hook": "hai_tac",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "old rusty skeleton key sliding into a pirate chest lock and turning with a heavy clunk and a faint bone rattle",
+    "file": "sfx_haitac_key_insert.mp3"
+   }
+  ]
+ },
+ "rac_quy": {
+  "prefix": "sfx_racquy_",
+  "hook": "rac_quy",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a metal soda can pull-tab clinking into a trash bin lid, tinny scrape then a dull click",
+    "file": "sfx_racquy_key_insert.mp3"
+   }
+  ]
+ },
+ "golden": {
+  "prefix": "sfx_golden_",
+  "hook": "golden",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a heavy gold coin dropping into a slot machine coin slot, bright metallic ding and mechanical click",
+    "file": "sfx_golden_key_insert.mp3"
+   }
+  ]
+ },
+ "magic": {
+  "prefix": "sfx_magic_",
+  "hook": "magic",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a glowing rune crystal key sliding into an ancient stone lock, soft magical chime then a deep stone click",
+    "file": "sfx_magic_key_insert.mp3"
+   }
+  ]
+ },
+ "mimic": {
+  "prefix": "sfx_mimic_",
+  "hook": "mimic",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a gnarled bone key stuck into a wooden monster mouth lock, wet squelch, wood creak and a clack of teeth",
+    "file": "sfx_mimic_key_insert.mp3"
+   }
+  ]
+ },
+ "miner": {
+  "prefix": "sfx_miner_",
+  "hook": "miner",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a heavy iron mine key turning in a rusty padlock inside a cave, metal grind and a hollow clunk",
+    "file": "sfx_miner_key_insert.mp3"
+   }
+  ]
+ },
+ "am_nhac": {
+  "prefix": "sfx_amnhac_",
+  "hook": "am_nhac",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a vinyl record dropping onto a turntable with a needle landing, warm crackle and a bass thump",
+    "file": "sfx_amnhac_key_insert.mp3"
+   },
+   {
+    "key": "bed_loop",
+    "role": "bed",
+    "field": "bedClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "steady four-on-the-floor sub bass club beat with a soft hi-hat, building mood, no melody, seamless loop",
+    "file": "sfx_amnhac_bed_loop.mp3"
+   }
+  ]
+ },
+ "viet_nam": {
+  "prefix": "sfx_vietnam_",
+  "hook": "viet_nam",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a small bronze Dong Son drum key tapping a wooden lock, a single warm bronze gong note and a wood click",
+    "file": "sfx_vietnam_key_insert.mp3"
+   }
+  ]
+ },
+ "tuoi_tho": {
+  "prefix": "sfx_tuoitho_",
+  "hook": "tuoi_tho",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "winding a toy tin clockwork key several turns with ratchet clicks then a soft metal click",
+    "file": "sfx_tuoitho_key_insert.mp3"
+   }
+  ]
+ },
+ "robot": {
+  "prefix": "sfx_robot_",
+  "hook": "robot",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a robot keycard swiped into a scanner, quick electronic beep then a servo latch click",
+    "file": "sfx_robot_key_insert.mp3"
+   }
+  ]
+ },
+ "khong_gian": {
+  "prefix": "sfx_khonggian_",
+  "hook": "khong_gian",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a spaceship access card docking into a hatch panel, soft sci-fi zap and a pressurized latch hiss",
+    "file": "sfx_khonggian_key_insert.mp3"
+   }
+  ]
+ },
+ "game": {
+  "prefix": "sfx_game_",
+  "hook": "game",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "8-bit key pickup chime followed by a short 8-bit lock-open blip",
+    "file": "sfx_game_key_insert.mp3"
+   }
+  ]
+ },
+ "the_thao": {
+  "prefix": "sfx_thethao_",
+  "hook": "the_thao",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a referee whistle key blowing one short sharp blast followed by a metal latch click",
+    "file": "sfx_thethao_key_insert.mp3"
+   },
+   {
+    "key": "bed_loop",
+    "role": "bed",
+    "field": "bedClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "stadium crowd murmur with a slow steady drum beat getting tense, seamless loop",
+    "file": "sfx_thethao_bed_loop.mp3"
+   }
+  ]
+ },
+ "trung_hoa": {
+  "prefix": "sfx_trunghoa_",
+  "hook": "trung_hoa",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "an ancient Chinese copper coin key slotting into a lacquered wooden lock, small bronze ring and a wood click",
+    "file": "sfx_trunghoa_key_insert.mp3"
+   }
+  ]
+ },
+ "nhat_ban": {
+  "prefix": "sfx_nhatban_",
+  "hook": "nhat_ban",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a small tanto blade key sliding into a wooden scabbard lock, crisp metallic shing and a soft click",
+    "file": "sfx_nhatban_key_insert.mp3"
+   }
+  ]
+ },
+ "co_phong": {
+  "prefix": "sfx_cophong_",
+  "hook": "co_phong",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a jade token key pressed into a stone seal, clear jade clink then a deep stone click",
+    "file": "sfx_cophong_key_insert.mp3"
+   }
+  ]
+ },
+ "thien_co": {
+  "prefix": "sfx_thienco_",
+  "hook": "thien_co",
+  "items": [
+   {
+    "key": "key_insert",
+    "role": "key",
+    "field": "keyClip",
+    "seconds": 1.5,
+    "loop": false,
+    "prompt": "a brass clockwork gear key dropping into a clock mechanism, tiny gear clank and a satisfying mesh click",
+    "file": "sfx_thienco_key_insert.mp3"
+   },
+   {
+    "key": "bed_loop",
+    "role": "bed",
+    "field": "bedClip",
+    "seconds": 8,
+    "loop": true,
+    "prompt": "steady old clock ticking and tocking with soft gear whirr, mechanical tension, seamless loop",
+    "file": "sfx_thienco_bed_loop.mp3"
+   }
+  ]
+ }
+}
