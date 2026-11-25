@@ -165,12 +165,13 @@ namespace UnityEngine
     public partial class MeshFilter { public Mesh mesh; }
     public partial class Collider { public bool enabled, isTrigger; public Bounds bounds; public Rigidbody attachedRigidbody; }
     public class BoxCollider : Collider { public Vector3 center, size; }
+    public class Collision { public Collider collider; public Vector3 relativeVelocity; public GameObject gameObject; }
     public class SphereCollider : Collider { public Vector3 center; public float radius; }
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
     public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
         public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {}
-        public Vector3 position; public CollisionDetectionMode collisionDetectionMode; public RigidbodyInterpolation interpolation; public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
+        public Vector3 position; public CollisionDetectionMode collisionDetectionMode; public RigidbodyInterpolation interpolation; public void AddTorque(Vector3 t) {} public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
     public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
     public enum CollisionDetectionMode { Discrete, Continuous, ContinuousDynamic, ContinuousSpeculative }
     public enum PhysicsMaterialCombine { Average, Minimum, Multiply, Maximum }
