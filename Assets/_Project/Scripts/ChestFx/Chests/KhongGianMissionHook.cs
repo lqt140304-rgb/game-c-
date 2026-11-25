@@ -10,10 +10,10 @@ namespace ChoDoLa.ChestFx
     /// Ngay khi bấm mở: máy nổ rì rầm và dâng dần, vùng quanh rương mất trọng lực (bu-lông, mảnh vụn trôi lên, rương
     /// lơ lửng nghiêng ngả). Tàu mẹ bay vào, thả pin nhiên liệu (người chơi bấm B để thả thêm pin — máy gầm nhanh hơn),
     /// rồi bắn một tên lửa bay vòng quanh rương, trúng nắp đúng lúc nắp bật. Đến khi bậc chốt mới biết kết cục:
-    /// Rác: máy xì hơi, trọng lực trở lại, rương rớt cái bịch, tàu ho khói lủi mất, thùng quà rơi vì dù không bung.
-    /// Thường..Huyền thoại: máy bùng lên, rương nhảy bằng động cơ, tàu lượn chào, thùng quà thả dù màu bậc đáp cạnh rương
-    /// (Huyền thoại thêm pháo hoa tên lửa).
-    /// Vật lý thật: pin, mảnh vụn, tên lửa, thùng quà là Rigidbody (lực, va chạm với một sàn tạm). Rương không gắn
+    /// Rác: máy tắt phụt, im 0,2 s, tiếng xịt, trọng lực trở lại, rương rớt cái bịch, tàu ho khói lủi mất.
+    /// Thường..Huyền thoại: rương nhảy bằng động cơ (lửa dưới đáy), tàu lượn chào một vòng nhỏ quanh rương rồi bay lên.
+    /// Đã thu gọn theo kế hoạch 2026-11-25 (mục 5.11): bỏ thùng quà dù, đồng hồ nhiên liệu, pháo hoa; âm là file ElevenLabs.
+    /// Vật lý thật: pin, mảnh vụn, tên lửa là Rigidbody (lực, va chạm với một sàn tạm). Rương không gắn
     /// Rigidbody (để không đánh nhau với BoxOpenSequence) mà dùng lò xo–giảm chấn cộng dồn lên vị trí/góc.
     /// Chỉ trang trí: không bao giờ đổi bậc; ngẫu nhiên theo hạt giống <see cref="seed"/>.
     /// </summary>
@@ -25,12 +25,19 @@ namespace ChoDoLa.ChestFx
 
         [Header("Tương tác")]
         [Tooltip("Phím thả thêm pin trong lúc tàu đang tiếp nhiên liệu.")] public bool allowPlayerFuel = true;
-        [SerializeField] private int maxPlayerCells = 6;
-        [SerializeField] private int autoCells = 3;
+        [SerializeField] private int maxPlayerCells = 3;   // trần cứng 3 (T7), kể cả prefab cũ lưu số lớn hơn
+        [SerializeField] private int autoCells = 2;        // trần cứng 2
 
-        [Header("Âm lượng")]
-        [Range(0f, 1f)] public float engineVolume = 0.55f;
-        [Range(0f, 1f)] public float sfxVolume = 0.8f;
+        [Header("Âm (file ElevenLabs trong Audio/Chests/khong_gian, gán bởi Editor/KhongGianFxSetup)")]
+        [Tooltip("Nền: vòng lặp máy nổ (đã có nhịp pít-tông nên không cần lớp Nhịp).")] public AudioClip engineClip;
+        [Tooltip("Bíp radio (sự kiện).")] public AudioClip blipClip;
+        [Tooltip("Pin vào miệng rương (sự kiện).")] public AudioClip fuelClip;
+        [Tooltip("Phóng tên lửa (sự kiện).")] public AudioClip rocketClip;
+        [Tooltip("Tên lửa trúng nắp (HĐ).")] public AudioClip impactClip;
+        [Tooltip("Khí xì mở nắp (sự kiện, ngay sau cú trúng).")] public AudioClip hatchClip;
+        [Tooltip("Rác: máy ho tắt (đuôi).")] public AudioClip sputterClip;
+        [Tooltip("TC: tiếng chốt theo bậc, 5 ô Rác..Huyền thoại.")] public AudioClip[] stingClips = new AudioClip[5];
+        [Range(0f, 1f)] public float sfxVolume = 0.8f;   // nhân MỘT lần duy nhất, trong Sfx()
 
         [Header("Nhịp (giây, khi không có BoxOpenSequence)")]
         [SerializeField] private float fallbackImpactTime = 4.5f;
@@ -46,12 +53,12 @@ namespace ChoDoLa.ChestFx
         // ---- trạng thái
         private ChestRevealSequence _reveal;
         private System.Random _rng;
-        private float _t0, _impactAt, _size = 0.5f, _groundY;
+        private float _t0, _impactAt, _size = 0.5f, _groundY, _lastEvent = -999f, _lastTail = -999f;
         private Vector3 _base, _camRight = Vector3.right, _camFwd = Vector3.forward;
         private bool _started, _impacted, _locked, _ending, _gravityBack;
         private ChestTier _tier;
         private int _fuel, _playerCells;
-        private float _tension, _engineTarget = -1f, _engineVolMul = 1f;
+        private float _tension, _engineTarget = -1f, _engineVolMul = 1f, _engineFade;
 
         // lò xo của cả rương
         private float _offY, _velY, _hover, _tiltX, _tiltZ, _vtX, _vtZ, _stiff = 40f;
@@ -63,10 +70,8 @@ namespace ChoDoLa.ChestFx
         private readonly List<Rigidbody> _floaters = new List<Rigidbody>();
         private readonly List<Rigidbody> _cells = new List<Rigidbody>();
         private readonly List<float> _cellBorn = new List<float>();
-        private Transform _ship, _fuelFill;
-        private Rigidbody _rocket, _crate;
-        private Transform _canopy;
-        private LineRenderer _strings;
+        private Transform _ship;
+        private Rigidbody _rocket;
         private AudioSource _engine;
         private ParticleSystem _smoke, _flame, _spark;
         private ChestFxProfile _smokeStyle, _flameStyle, _sparkStyle;
@@ -91,15 +96,20 @@ namespace ChoDoLa.ChestFx
             BuildCommon();
 
             // Âm bắt đầu ngay: máy nổ khởi động + bíp radio của tàu mẹ.
-            _engine = gameObject.AddComponent<AudioSource>();
-            _engine.clip = KhongGianSynth.Engine;
-            _engine.loop = true;
-            _engine.playOnAwake = false;
-            _engine.spatialBlend = 0f;
-            _engine.volume = 0f;
-            _engine.pitch = 0.5f;
-            _engine.Play();
-            Sfx(KhongGianSynth.Blip, 0.6f, 1f);
+            autoCells = Mathf.Clamp(autoCells, 0, 2);
+            maxPlayerCells = Mathf.Clamp(maxPlayerCells, 0, 3);
+            if (engineClip != null)
+            {
+                _engine = gameObject.AddComponent<AudioSource>();
+                _engine.clip = engineClip;
+                _engine.loop = true;
+                _engine.playOnAwake = false;
+                _engine.spatialBlend = 0f;
+                _engine.volume = ChestAudioRule.BedMax * 0.33f;   // 0,15 lúc đầu (A2)
+                _engine.pitch = 0.8f;
+                _engine.Play();
+            }
+            Event(blipClip, 0.4f, 1f);
 
             StartCoroutine(Mission());
         }
@@ -152,16 +162,16 @@ namespace ChoDoLa.ChestFx
             // 0.0 s: mất trọng lực — rương nổi lên, mảnh vụn bốc lên trôi.
             _hover = 0.04f * _size;
             _stiff = 18f;
-            SpawnFloaters(6 + _rng.Next(4));
+            SpawnFloaters(4);
 
             // 0.3 s: tàu mẹ bay vào (đường cong Bezier, nghiêng theo hướng bay).
             yield return new WaitForSeconds(Mathf.Min(0.3f, lead * 0.08f));
             BuildShip();
-            Vector3 hoverAt = _base + Vector3.up * (_size * 2.1f) - _camFwd * (_size * 0.5f);
-            Vector3 from = hoverAt - _camRight * (_size * 6f) + Vector3.up * (_size * 2f) - _camFwd * (_size * 2f);
-            float fly = Mathf.Clamp(lead * 0.25f, 0.8f, 1.6f);
+            Vector3 hoverAt = _base + Vector3.up * (_size * 1.8f);
+            Vector3 from = hoverAt - _camRight * (_size * 3f);   // vào từ 3 S (T2)
+            float fly = Mathf.Clamp(lead * 0.25f, 0.8f, 1.3f);
             yield return FlyShip(from, hoverAt + Vector3.up * _size * 0.6f - _camRight * _size, hoverAt, fly, true);
-            Sfx(KhongGianSynth.Blip, 0.5f, 1.25f);
+            Event(blipClip, 0.35f, 1.25f);
 
             // Tiếp nhiên liệu: pin tự rơi theo nhịp; người chơi bấm B thả thêm (đến lúc tên lửa phóng).
             float launchAt = _impactAt - Mathf.Clamp(lead * 0.4f, 1.2f, 2.2f);
@@ -174,7 +184,7 @@ namespace ChoDoLa.ChestFx
             }
 
             // Phóng tên lửa: bay vòng quanh rương rồi lao xuống nắp, trúng đúng _impactAt.
-            Sfx(KhongGianSynth.Launch, 0.9f, 1f);
+            Event(rocketClip, 0.5f, 1f);
             LaunchRocket();
             while (!_impacted) yield return null;
 
@@ -189,28 +199,30 @@ namespace ChoDoLa.ChestFx
             int rank = _tier.Rank();
             Color c = _reveal.ColorOf(_tier);
 
+            // A4: Nền dừng ngay (Rác, Hiếm+) hoặc fade 0,3 s (Thường). Tiếng chốt TC luôn do hook phát (stingClips).
+            if (_tier == ChestTier.Rac || rank >= 2) StopEngine(); else _engineFade = 1f / 0.3f;
+
             if (_tier == ChestTier.Rac)
             {
-                // Rớt đột ngột: máy xì hơi, trọng lực trở lại, rương rơi bịch, tàu ho khói lủi đi.
+                // Rớt đột ngột: lặng 0,2 s rồi MỘT tiếng xịt; không phát gì khác trong 0,6 s sau đó.
                 _engineTarget = 0f;
-                Sfx(KhongGianSynth.Deflate, 1f, 1f);
-                Sfx(KhongGianSynth.Sputter, 0.7f, 0.9f);
                 _gravityBack = true;
                 _hover = 0f;
                 _stiff = 90f;
                 _velY = -1.2f * _size;
                 _vtZ += 120f;
                 Emit(_smoke, _base + Vector3.up * _size * 0.5f, 25, smokeColor);
-                yield return new WaitForSeconds(0.25f);
                 StartCoroutine(ShipLimpsAway());
-                yield return new WaitForSeconds(0.5f);
-                DropCrate(c, false);
+                yield return new WaitForSeconds(ChestAudioRule.RacSilence);
+                Sting(0, 0.7f);
+                yield return new WaitForSeconds(0.7f);
+                Tail(sputterClip, 0.4f, 0.9f);   // đuôi: máy ho tắt (đã thay 5 "pụp" bằng 1 tiếng ho)
                 yield break;
             }
 
-            // Bùng nổ dâng cao: máy gầm vọt rồi tắt, rương nhảy bằng động cơ.
+            // Bùng nổ dâng cao: rương nhảy bằng động cơ. Tiếng nổ đã phát ở cú trúng nắp nên không có HĐ nữa.
             _engineTarget = 1.15f + 0.12f * rank;
-            Sfx(KhongGianSynth.Fanfare(_tier), 0.9f, 1f);
+            Sting(rank, StingVolume[rank]);
             _velY += (1.2f + 0.45f * rank) * _size;
             _hover = 0.02f * _size;
             _stiff = 30f;
@@ -218,10 +230,8 @@ namespace ChoDoLa.ChestFx
             Emit(_spark, _reveal.MouthPosition, 15 + 15 * rank, c);
             yield return new WaitForSeconds(0.35f);
             _engineTarget = 0f;
+            yield return new WaitForSeconds(0.1f);   // đuôi chỉ bắt đầu từ +0,4 s (A5)
             StartCoroutine(ShipVictory(rank));
-            yield return new WaitForSeconds(0.3f);
-            DropCrate(c, true);
-            if (_tier == ChestTier.HuyenThoai) StartCoroutine(Fireworks(c));
         }
 
         // ------------------------------------------------------------------ Hook của khung chung
@@ -267,11 +277,12 @@ namespace ChoDoLa.ChestFx
             _tension = Mathf.MoveTowards(_tension, target, dt * (_ending ? (_tier == ChestTier.Rac ? 0.9f : 1.6f) : 0.8f));
             if (_engine != null)
             {
-                _engine.pitch = Mathf.Lerp(0.45f, 1.55f, _tension);
-                _engineVolMul = _ending && _engineTarget == 0f ? Mathf.MoveTowards(_engineVolMul, 0f, dt * 0.8f) : 1f;
-                _engine.volume = engineVolume * Mathf.Lerp(0.12f, 0.8f, Mathf.Clamp01(_tension)) * _engineVolMul;
+                float k = Mathf.Clamp01(_tension);
+                _engine.pitch = Mathf.Lerp(0.8f, 1.25f, k);                                       // +~55% tới lúc chốt (A2)
+                if (_engineFade > 0f) _engineVolMul = Mathf.MoveTowards(_engineVolMul, 0f, dt * _engineFade);
+                _engine.volume = Mathf.Lerp(0.15f, ChestAudioRule.BedMax, k) * _engineVolMul;     // 0,15 → 0,45 (không nhân sfxVolume: bậc A6 là trần)
+                if (_engineFade > 0f && _engineVolMul <= 0f) StopEngine();
             }
-            if (_fuelFill != null) _fuelFill.localScale = new Vector3(1f, Mathf.Clamp01(_fuel / (float)(autoCells + 3)), 1f);
 
             // Lò xo–giảm chấn của rương + rung theo độ căng (máy nổ).
             float rumble = _ending ? 0f : _tension * 0.006f * _size;
@@ -307,20 +318,6 @@ namespace ChoDoLa.ChestFx
             Vector3 g = Physics.gravity * (_gravityBack ? 1f : lowGravity);
             foreach (Rigidbody rb in _floaters) if (rb != null) rb.AddForce(g, ForceMode.Acceleration);
             foreach (Rigidbody rb in _cells) if (rb != null) rb.AddForce(Physics.gravity * lowGravity, ForceMode.Acceleration);
-            if (_crate != null)
-            {
-                bool chute = _canopy != null && _canopy.gameObject.activeSelf;
-                _crate.AddForce(Physics.gravity * (chute ? 0.35f : 1f), ForceMode.Acceleration);
-                if (chute)
-                {
-                    // Dù: cản theo bình phương vận tốc + gió nhẹ kéo về chỗ đáp cạnh rương.
-                    Vector3 v = _crate.linearVelocity;
-                    _crate.AddForce(-v * v.magnitude * 6f / Mathf.Max(0.2f, _size), ForceMode.Acceleration);
-                    Vector3 land = _base + _camRight * (_size * 0.9f);
-                    Vector3 side = Vector3.ProjectOnPlane(land - _crate.position, Vector3.up);
-                    _crate.AddForce(side * 2.5f, ForceMode.Acceleration);
-                }
-            }
             if (_rocket != null) SteerRocket();
         }
 
@@ -373,11 +370,12 @@ namespace ChoDoLa.ChestFx
         private IEnumerator ShipLimpsAway()
         {
             if (_ship == null) yield break;
-            Sfx(KhongGianSynth.Blip, 0.4f, 0.6f);   // bíp trầm buồn
+            bool sad = false;
             Vector3 a = _ship.position;
-            for (float t = 0f; t < 1f && _ship != null; t += Time.deltaTime / 2.2f)
+            for (float t = 0f; t < 1f && _ship != null; t += Time.deltaTime / 1.6f)
             {
-                _ship.position = a + _camRight * (t * t * _size * 7f) + Vector3.down * Mathf.Sin(t * 14f) * 0.08f * _size - Vector3.up * t * _size * 0.6f;
+                if (!sad && t >= 0.75f) { sad = true; Tail(blipClip, 0.3f, 0.6f); }   // bíp trầm buồn, ~1,2 s sau chốt (sau lặng + xịt)
+                _ship.position = a + _camRight * (t * t * _size * 3f) + Vector3.down * Mathf.Sin(t * 14f) * 0.08f * _size - Vector3.up * t * _size * 0.6f;   // biến mất ở 3 S (T2)
                 _ship.rotation = Quaternion.Euler(Mathf.Sin(t * 20f) * 12f, Time.time * 25f, 18f);
                 Emit(_smoke, _ship.position, 2, smokeColor);
                 yield return null;
@@ -388,14 +386,19 @@ namespace ChoDoLa.ChestFx
         private IEnumerator ShipVictory(int rank)
         {
             if (_ship == null) yield break;
-            Sfx(KhongGianSynth.Blip, 0.5f, 1.5f);
+            Tail(blipClip, 0.4f, 1.5f);
+            // Chào MỘT vòng quanh rương, bán kính 1,2 S, rồi lên (cao tối đa 3 S so với đáy rương) — T2.
             Vector3 a = _ship.position;
-            float loops = 1f + 0.5f * rank;
+            Vector3 center = new Vector3(_base.x, a.y, _base.z);
+            float startAng = Mathf.Atan2(Vector3.Dot(a - center, _camFwd), Vector3.Dot(a - center, _camRight));
+            float startR = Mathf.Min(1.2f * _size, Vector3.ProjectOnPlane(a - center, Vector3.up).magnitude);
+            float rise = Mathf.Max(0f, 3f * _size - (a.y - _groundY));
             for (float t = 0f; t < 1f && _ship != null; t += Time.deltaTime / 2f)
             {
-                float ang = t * loops * Mathf.PI * 2f;
-                Vector3 orbit = (Mathf.Cos(ang) * _camRight + Mathf.Sin(ang) * _camFwd) * _size * (0.8f + t);
-                _ship.position = a + orbit - _camRight * _size * 0.8f + Vector3.up * t * t * _size * 6f;
+                float ang = startAng + t * Mathf.PI * 2f;
+                float r = Mathf.Lerp(startR, 1.2f * _size, Mathf.Clamp01(t * 3f));
+                Vector3 orbit = (Mathf.Cos(ang) * _camRight + Mathf.Sin(ang) * _camFwd) * r;
+                _ship.position = center + orbit + Vector3.up * t * t * rise;
                 _ship.rotation = Quaternion.Euler(0f, Time.time * 120f, 25f * Mathf.Sin(ang));
                 Emit(_flame, _ship.position, 1, flameColor);
                 yield return null;
@@ -444,7 +447,6 @@ namespace ChoDoLa.ChestFx
             rb.angularVelocity = Rand3() * 6f;
             _cells.Add(rb);
             _cellBorn.Add(Time.time);
-            Sfx(KhongGianSynth.Blip, 0.25f, 2f);
         }
 
         private void UpdateCells()
@@ -457,7 +459,7 @@ namespace ChoDoLa.ChestFx
                 if (!gone && ((rb.position - mouth).magnitude < 0.22f * _size || Time.time - _cellBorn[i] > 1.6f))
                 {
                     _fuel++;
-                    Sfx(KhongGianSynth.Clunk, 0.8f, 0.9f + 0.05f * _fuel);
+                    Event(fuelClip, 0.4f, 0.95f + 0.05f * _fuel);
                     Emit(_spark, mouth, 10, fuelColor);
                     _velY -= 0.25f * _size;        // rương lún xuống nhận pin...
                     _vtX += (float)(_rng.NextDouble() - 0.5) * 60f;
@@ -493,7 +495,7 @@ namespace ChoDoLa.ChestFx
             if (rem <= 0.02f || to.magnitude < 0.06f * _size) { Impact(); return; }
             // Dẫn đường: phần "về đích đúng giờ" + phần quay vòng quanh rương, nhỏ dần khi sắp tới giờ.
             Vector3 desired = to / Mathf.Max(rem, 0.05f);
-            Vector3 orbit = Vector3.Cross(Vector3.up, to).normalized * _size * 3.2f * Mathf.Clamp01((rem - 0.35f) / 0.8f);
+            Vector3 orbit = Vector3.Cross(Vector3.up, to).normalized * _size * 1.4f * Mathf.Clamp01((rem - 0.35f) / 0.8f);
             desired += orbit + Vector3.up * _size * 0.6f * Mathf.Clamp01(rem - 0.5f);
             _rocket.AddForce((desired - _rocket.linearVelocity) * 9f, ForceMode.Acceleration);
             Vector3 v = _rocket.linearVelocity;
@@ -510,7 +512,8 @@ namespace ChoDoLa.ChestFx
             if (_rocket != null) Destroy(_rocket.gameObject);
             _rocket = null;
             // Cú trúng giống nhau ở mọi bậc (giữ bí mật): nổ, nắp bật (BoxOpenSequence), rương bị hất, mảnh vụn văng.
-            Sfx(KhongGianSynth.Boom, 0.85f, 1f);
+            Sfx(impactClip, 1f, 1f, ChestAudioRule.ActionMax);   // HĐ duy nhất của cả màn
+            StartCoroutine(HatchHissLater());
             Emit(_flame, at, 35, flameColor);
             Emit(_smoke, at, 25, smokeColor);
             _velY += 0.9f * _size;
@@ -526,101 +529,10 @@ namespace ChoDoLa.ChestFx
             }
         }
 
-        private IEnumerator Fireworks(Color c)
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                yield return new WaitForSeconds(0.35f);
-                Vector3 at = _base + Vector3.up * _size * (2.2f + 0.4f * i) + _camRight * _size * (i - 1) * 0.9f;
-                Sfx(KhongGianSynth.Boom, 0.45f, 1.6f + 0.2f * i);
-                Emit(_spark, at, 60, c);
-            }
-        }
-
-        // ------------------------------------------------------------------ Thùng quà thả dù
-
-        private void DropCrate(Color tierColor, bool chuteOpens)
-        {
-            Vector3 start = _ship != null && _ship.gameObject.activeSelf ? _ship.position : _base + Vector3.up * _size * 2.5f + _camRight * _size * 0.6f;
-            GameObject crate = Prim(PrimitiveType.Cube, null, start, Vector3.one * 0.2f * _size, Color.Lerp(new Color(0.55f, 0.38f, 0.2f), tierColor, 0.45f), false);
-            crate.name = "KhongGian_ThungQua";
-            _crate = crate.AddComponent<Rigidbody>();
-            _crate.useGravity = false;
-            _crate.mass = 1f;
-            _crate.angularDamping = 2f;
-            _crate.linearVelocity = _camRight * 0.3f * _size;
-
-            GameObject canopy = Prim(PrimitiveType.Sphere, crate.transform, Vector3.up * 2.4f, new Vector3(4f, 1.6f, 4f), tierColor, true);
-            Collider cc = canopy.GetComponent<Collider>();
-            if (cc != null) Destroy(cc);
-            _canopy = canopy.transform;
-            _strings = Own(new GameObject("KhongGian_DayDu")).AddComponent<LineRenderer>();
-            _strings.positionCount = 5;
-            _strings.widthMultiplier = 0.006f * _size;
-            _strings.useWorldSpace = true;
-            _strings.sharedMaterial = OwnMat(ChestFxFactory.CreateUnlit(Color.white, false, "KhongGian_DayDu_Mat"));
-            if (chuteOpens)
-            {
-                Sfx(KhongGianSynth.Chute, 0.8f, 1f);
-                StartCoroutine(ChuteBloom());
-            }
-            else
-            {
-                // Dù xịt: phụt ra một mẩu rồi cụp, thùng rơi tự do.
-                Sfx(KhongGianSynth.Chute, 0.5f, 1.7f);
-                _canopy.localScale = new Vector3(0.6f, 2f, 0.6f);
-                StartCoroutine(ChuteFail());
-            }
-            StartCoroutine(CrateLanding(chuteOpens));
-        }
-
-        private IEnumerator ChuteBloom()
-        {
-            for (float t = 0f; t < 1f && _canopy != null; t += Time.deltaTime / 0.35f)
-            {
-                float k = 1f + Mathf.Sin(t * Mathf.PI) * 0.15f;
-                _canopy.localScale = new Vector3(4f * t * k, 1.6f, 4f * t * k);
-                yield return null;
-            }
-        }
-
-        private IEnumerator ChuteFail()
+        private IEnumerator HatchHissLater()
         {
             yield return new WaitForSeconds(0.25f);
-            if (_canopy != null) _canopy.gameObject.SetActive(false);
-            if (_strings != null) _strings.enabled = false;
-        }
-
-        private IEnumerator CrateLanding(bool soft)
-        {
-            bool landed = false;
-            while (_crate != null && !landed)
-            {
-                if (_strings != null && _strings.enabled && _canopy != null)
-                {
-                    Vector3 c = _crate.position, top = _canopy.position;
-                    float w = _canopy.lossyScale.x * 0.45f;
-                    _strings.SetPosition(0, top + _camRight * w);
-                    _strings.SetPosition(1, c);
-                    _strings.SetPosition(2, top - _camRight * w);
-                    _strings.SetPosition(3, c);
-                    _strings.SetPosition(4, top + _camFwd * w);
-                }
-                landed = _crate.position.y < _groundY + 0.15f * _size && _crate.linearVelocity.y > -0.05f;
-                yield return null;
-            }
-            if (_crate == null) yield break;
-            Sfx(KhongGianSynth.Clunk, soft ? 0.6f : 1f, soft ? 0.8f : 0.55f);
-            Emit(_smoke, _crate.position, soft ? 8 : 20, smokeColor);
-            if (!soft) { _velY += 0.3f * _size; _vtZ -= 40f; }   // Rác: thùng đập xuống làm rương giật mình
-            // Dù xẹp xuống, lệch sang một bên.
-            for (float t = 0f; t < 1f && _canopy != null && _canopy.gameObject.activeSelf; t += Time.deltaTime / 0.8f)
-            {
-                _canopy.localScale = Vector3.Lerp(new Vector3(4f, 1.6f, 4f), new Vector3(3f, 0.2f, 3f), t);
-                _canopy.localPosition = Vector3.Lerp(Vector3.up * 2.4f, new Vector3(2f, 0f, 0f), t);
-                yield return null;
-            }
-            if (_strings != null) _strings.enabled = false;
+            Event(hatchClip, 0.35f, 1f);
         }
 
         // ------------------------------------------------------------------ Mảnh vụn trôi
@@ -678,18 +590,6 @@ namespace ChoDoLa.ChestFx
             _flame = ChestFxFactory.CreateParticles("KhongGian_Lua", transform, _flameStyle, _size, true);
             _sparkStyle = Style(ParticleLook.Sparkle, 1.2f, 0.025f, 0.9f, 0.1f, Color.white);
             _spark = ChestFxFactory.CreateParticles("KhongGian_TiaSang", transform, _sparkStyle, _size, true);
-
-            // Đồng hồ nhiên liệu cạnh rương (khung tối + cột xanh dâng theo số pin).
-            GameObject gauge = Own(new GameObject("KhongGian_DongHoNhienLieu"));
-            gauge.transform.position = _base - _camRight * (_size * 0.75f);
-            Prim(PrimitiveType.Cube, gauge.transform, Vector3.up * 0.2f * _size, new Vector3(0.07f, 0.42f, 0.07f) * _size, new Color(0.12f, 0.14f, 0.18f), false);
-            GameObject pivot = new GameObject("Fill");
-            pivot.transform.SetParent(gauge.transform, false);
-            pivot.transform.localPosition = Vector3.up * 0.01f * _size;
-            Prim(PrimitiveType.Cube, pivot.transform, Vector3.up * 0.19f * _size, new Vector3(0.075f, 0.38f, 0.075f) * _size, fuelColor, true);
-            _fuelFill = pivot.transform;
-            _fuelFill.localScale = new Vector3(1f, 0.001f, 1f);
-            foreach (Collider c in gauge.GetComponentsInChildren<Collider>()) Destroy(c);
         }
 
         private ChestFxProfile Style(ParticleLook look, float speed, float size, float life, float gravity, Color secondary)
@@ -738,9 +638,39 @@ namespace ChoDoLa.ChestFx
         private Vector3 Rand3() => new Vector3((float)_rng.NextDouble() - 0.5f, (float)_rng.NextDouble() - 0.5f, (float)_rng.NextDouble() - 0.5f) * 2f;
         private Quaternion Random3Rot() => Quaternion.Euler((float)_rng.NextDouble() * 360f, (float)_rng.NextDouble() * 360f, (float)_rng.NextDouble() * 360f);
 
-        private void Sfx(AudioClip clip, float volume, float pitch)
+        /// <summary>Tiếng chốt theo bậc, TC (A4/A11): đúng 1 clip, đúng bậc game đã quyết.</summary>
+        private static readonly float[] StingVolume = { 0.7f, 0.7f, 0.85f, 1f, 1f };
+
+        private void Sting(int rank, float volume)
         {
-            if (_reveal != null && clip != null) _reveal.PlayOneShot(clip, volume * sfxVolume, pitch);
+            AudioClip c = stingClips != null && rank >= 0 && rank < stingClips.Length ? stingClips[rank] : null;
+            Sfx(c, volume, 1f, ChestAudioRule.StingMax);
+        }
+
+        /// <summary>Sự kiện lẻ trước chốt: tối đa 1 tiếng mỗi 0,2 s, ≤ 0,5 (A3).</summary>
+        private void Event(AudioClip clip, float volume, float pitch)
+        {
+            if (clip == null || !ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap)) return;
+            Sfx(clip, volume, pitch, ChestAudioRule.EventMax);
+        }
+
+        /// <summary>Đuôi sau chốt: ≥ 0,15 s giữa hai tiếng, ≤ 0,4 (A5).</summary>
+        private void Tail(AudioClip clip, float volume, float pitch)
+        {
+            if (clip == null || !ChestAudioRule.TryGate(ref _lastTail, ChestAudioRule.TailGap)) return;
+            Sfx(clip, volume, pitch, ChestAudioRule.TailMax);
+        }
+
+        /// <summary>Phát một lần qua lõi. <c>sfxVolume</c> được nhân đúng một lần ở đây; <paramref name="cap"/> là trần của loại tiếng (A6).</summary>
+        private void Sfx(AudioClip clip, float volume, float pitch, float cap)
+        {
+            if (_reveal != null && clip != null) _reveal.PlayOneShot(clip, Mathf.Min(volume, cap) * sfxVolume, pitch);
+        }
+
+        private void StopEngine()
+        {
+            _engineFade = 0f;
+            if (_engine != null) { _engine.Stop(); _engine.volume = 0f; }
         }
 
         private void Cleanup()
@@ -760,10 +690,10 @@ namespace ChoDoLa.ChestFx
             foreach (Rigidbody rb in _cells) if (rb != null) Destroy(rb.gameObject);
             _cells.Clear(); _cellBorn.Clear(); _floaters.Clear();
             DestroyPs(ref _smoke); DestroyPs(ref _flame); DestroyPs(ref _spark);
-            _ship = null; _rocket = null; _crate = null; _canopy = null; _strings = null; _fuelFill = null;
+            _ship = null; _rocket = null;
             _started = _impacted = _locked = _ending = _gravityBack = false;
             _offY = _velY = _hover = _tiltX = _tiltZ = _vtX = _vtZ = 0f;
-            _fuel = _playerCells = 0; _tension = 0f; _engineTarget = -1f; _engineVolMul = 1f;
+            _fuel = _playerCells = 0; _tension = 0f; _engineTarget = -1f; _engineVolMul = 1f; _engineFade = 0f; _lastEvent = _lastTail = -999f;
         }
 
         private static void DestroyPs(ref ParticleSystem ps)

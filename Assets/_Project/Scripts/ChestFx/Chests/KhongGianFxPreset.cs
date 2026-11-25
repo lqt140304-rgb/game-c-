@@ -27,6 +27,14 @@ namespace ChoDoLa.ChestFx
         public const string LandingFile = "sfx_khonggian_landing_thud.mp3";
         public const string MeteorFile = "sfx_khonggian_meteor.mp3";
 
+        // Âm của KhongGianMissionHook (ElevenLabs, theo Tools/Audio/elevenlabs_chest_manifest.json, mục khong_gian).
+        public const string EngineFile = "sfx_khonggian_engine_loop.mp3";
+        public const string BlipFile = "sfx_khonggian_radio_blip.mp3";
+        public const string FuelFile = "sfx_khonggian_fuel_dock.mp3";
+        public const string RocketFile = "sfx_khonggian_rocket_launch.mp3";
+        public const string ImpactFile = "sfx_khonggian_rocket_hit.mp3";
+        public const string SputterFile = "sfx_khonggian_engine_die.mp3";
+
         public static void Apply(ChestFxProfile p)
         {
             p.chestId = ChestId;
