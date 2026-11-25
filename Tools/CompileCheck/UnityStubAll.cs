@@ -415,3 +415,9 @@ namespace UnityEditor.SceneManagement
         public static UnityEngine.SceneManagement.Scene OpenScene(string p) => default;
     }
 }
+// Thêm cho MinerDigSequence/MinerSynth (rương Thợ Mỏ)
+namespace UnityEngine
+{
+    public partial class AudioClip { public static AudioClip Create(string n, int len, int ch, int freq, bool stream) => null; public bool SetData(float[] d, int off) => true; }
+    public class Collision { public Collider collider; public Transform transform; }
+}
