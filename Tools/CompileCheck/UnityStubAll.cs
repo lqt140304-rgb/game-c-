@@ -167,7 +167,7 @@ namespace UnityEngine
     public class SphereCollider : Collider { public Vector3 center; public float radius; }
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
-    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
+    public partial class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
         public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
     public class CharacterController : Collider { public float height, radius, slopeLimit, stepOffset, skinWidth, minMoveDistance; public Vector3 center, velocity; public bool isGrounded;
         public CollisionFlags Move(Vector3 m) => CollisionFlags.None; public bool SimpleMove(Vector3 s) => false; }
@@ -404,4 +404,21 @@ namespace UnityEditor.SceneManagement
         public static bool MarkSceneDirty(UnityEngine.SceneManagement.Scene s) => true; public static bool SaveCurrentModifiedScenesIfUserWantsTo() => true;
         public static UnityEngine.SceneManagement.Scene OpenScene(string p) => default;
     }
+}
+
+// Thêm cho Chest_TuoiTho (cỗ máy bi ve): vật lý + va chạm.
+namespace UnityEngine
+{
+    public enum CollisionDetectionMode { Discrete, Continuous, ContinuousDynamic, ContinuousSpeculative }
+    public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
+    public partial class Rigidbody
+    {
+        public Vector3 position; public float maxAngularVelocity; public CollisionDetectionMode collisionDetectionMode; public RigidbodyInterpolation interpolation;
+        public void AddTorque(Vector3 t, ForceMode m) {} public void AddForceAtPosition(Vector3 f, Vector3 p, ForceMode m) {}
+    }
+    public class Collision { public Vector3 relativeVelocity; public Collider collider; }
+    public struct Plane { public Plane(Vector3 n, Vector3 p) {} public bool Raycast(Ray r, out float d) { d = 0; return false; } }
+    public partial struct Vector3 { public static Vector3 Reflect(Vector3 a, Vector3 n) => a; }
+    public partial struct Quaternion { public static bool operator ==(Quaternion a, Quaternion b) => true; public static bool operator !=(Quaternion a, Quaternion b) => false;
+        public override bool Equals(object o) => false; public override int GetHashCode() => 0; }
 }
