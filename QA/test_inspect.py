@@ -37,6 +37,43 @@ class InspectRules(unittest.TestCase):
         self.assertGreater(I.haggle_win(pf, 3, 3), I.haggle_win(pf, 1, 3))
         self.assertEqual(I.haggle_win(pf, 0, 0), pf["c"])
 
+    def test_repair_shop(self):
+        """Nhà vá lỗi: chỉ sửa lỗi đã tìm ra khi có lời; phí trừ vào tiền; hệ số tình trạng tăng đúng phần lỗi đã sửa."""
+        rl = dict(self.rl, repair_light=.05, repair_big=.10)
+
+        class G:
+            cash = 1000
+
+        class Run:
+            g = G()
+
+            def known_price(self, it):
+                return int(100 * it["q"])
+
+        def go(p_fake, fl, fb, cash=1000):
+            run, it = Run(), dict(q=.3)
+            run.g = G()
+            run.g.cash = cash
+            st = dict(repairs=0, repair_spend=0)
+            V = I.repair_shop(run, it, 0, "X", p_fake, 100, 3, 1, fl, fb, rl, st, 30)
+            return V, it, st, run.g.cash
+        V, it, st, cash = go(0.0, 3, 1)          # Hỏng, tìm đủ 3 lỗi nhẹ và vết lớn, chắc là thật
+        self.assertEqual(st["repairs"], 4)
+        self.assertAlmostEqual(it["q"], 1.0)
+        self.assertEqual(V, 100)
+        self.assertEqual(cash, 1000 - st["repair_spend"])
+        V, it, st, cash = go(0.0, 0, 0)          # không tìm ra lỗi nào thì không sửa được
+        self.assertEqual((st["repairs"], V, it["q"]), (0, 30, .3))
+        V, it, st, cash = go(1.0, 3, 1)          # chắc chắn là hàng giả thì không đáng vá
+        self.assertEqual(st["repairs"], 0)
+        V, it, st, cash = go(0.0, 3, 1, cash=0)  # hết tiền
+        self.assertEqual(st["repairs"], 0)
+        self.assertGreater(self.rl["repair_big"], self.rl["repair_light"])
+
+    def test_repair_not_free(self):
+        """Phí vá lỗi nhẹ lớn hơn phần giá lỗi lấy lại khi món có nhiều lỗi nhẹ (Rất hiếm: 30% / 3 = 10% mỗi lỗi)."""
+        self.assertGreater(self.rl["repair_light"], self.rl["light_cut"] / self.rl["n_light"]["X"])
+
     def test_thuong_sells_fast(self):
         pf = I.PROFILES["giỏi"]
         self.assertEqual(I.real_value("T", pf, self.rl, 1, 1, 0), self.rl["open"])
@@ -87,20 +124,20 @@ class InspectBalance(unittest.TestCase):
         self.assertIs(self.core["after"], self.core["before"])
 
     def test_plain_bot_in_target(self):
-        """Bot thường (soi thường) khoảng 15% đến 20% (n = 2.000: 18,5% và 19,2%)."""
+        """Bot thường (soi thường) khoảng 12% đến 16% (khó hơn, chủ dự án chốt 2026-11-25) (n = 2.000: 12,7% và 14,2%)."""
         for b in I.BOT:
-            self.assertTrue(12 <= self.w[(b, "thường")] <= 21, (b, self.w[(b, "thường")]))
+            self.assertTrue(9 <= self.w[(b, "thường")] <= 19, (b, self.w[(b, "thường")]))
 
     def test_perfect_player_not_too_easy(self):
-        """Mục tiêu không quá 47% (n = 2.000: 46,9%). Ở n = 600 sai số khoảng 2 điểm nên ngưỡng test là 49."""
+        """Mục tiêu không quá 42% (n = 2.000: 40,8%). Ở n = 600 sai số khoảng 2 điểm nên ngưỡng test là 44."""
         for k, v in self.skilled.items():
-            self.assertLessEqual(v, 49, (k, v))
+            self.assertLessEqual(v, 44, (k, v))
 
     def avg(self, prof):
         return sum(self.w[(b, prof)] for b in I.BOT) / len(I.BOT)
 
     def test_inspection_skill_pays(self):
-        """Cùng cách mua rương: soi giỏi > soi thường > soi ẩu; bỏ qua soi kém soi thường (n = 2.000, trung bình hai bot: 23,4 / 18,9 / 14,5 / 11,1)."""
+        """Cùng cách mua rương: soi giỏi > soi thường > soi ẩu; bỏ qua soi kém soi thường (n = 2.000, trung bình hai bot: 18,6 / 13,5 / 10,3 / 9,3)."""
         g, t, a, s = (self.avg(p) for p in ("giỏi", "thường", "ẩu", "bỏ qua soi"))
         self.assertGreaterEqual(g - t, 3, (g, t))
         self.assertGreater(t, a, (t, a))
@@ -109,13 +146,13 @@ class InspectBalance(unittest.TestCase):
     def test_careless_still_playable(self):
         """Soi ẩu bị phạt rõ nhưng vẫn còn đường thắng."""
         for b in I.BOT:
-            self.assertGreater(self.w[(b, "ẩu")], 6, (b, self.w[(b, "ẩu")]))
+            self.assertGreater(self.w[(b, "ẩu")], 5, (b, self.w[(b, "ẩu")]))
 
     def test_first_run_day1_never_lost(self):
         for prof, d in self.day1.items():
             self.assertEqual(d["lost_day1"], 0, (prof, d))
             self.assertEqual(d["lost_before_day3"], 0, (prof, d))
-            self.assertGreater(d["win"], 3, (prof, d))
+            self.assertGreater(d["win"], 1.5, (prof, d))
 
 
 if __name__ == "__main__":
