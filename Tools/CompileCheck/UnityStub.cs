@@ -119,7 +119,7 @@ namespace UnityEngine.Rendering { public enum CullMode { Off, Front, Back } publ
 namespace UnityEngine.Events { public delegate void UnityAction(); public delegate void UnityAction<T>(T a);
     public class UnityEvent { public void Invoke() {} public void AddListener(UnityAction a) {} public void RemoveListener(UnityAction a) {} }
     public class UnityEvent<T> { public void Invoke(T t) {} public void AddListener(UnityAction<T> a) {} public void RemoveListener(UnityAction<T> a) {} } }
-namespace UnityEngine.InputSystem { public enum Key { T, Y, Space, R, C, F, Q, Escape } public class KeyControl { public bool wasPressedThisFrame, isPressed; }
+namespace UnityEngine.InputSystem { public enum Key { T, Y, Space, R, C, F, Q, Escape, G, K, L } public class KeyControl { public bool wasPressedThisFrame, isPressed; }
     public class Keyboard { public static Keyboard current; public KeyControl this[Key k] => null; } }
 namespace UnityEditor
 {

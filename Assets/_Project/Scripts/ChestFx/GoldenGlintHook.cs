@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace ChoDoLa.ChestFx
@@ -17,7 +18,32 @@ namespace ChoDoLa.ChestFx
         private ParticleSystem _ps;
         private ChestFxProfile _style;
 
+        /// <summary>Tên cue mà kịch bản Golden gọi (bước "lap-lanh").</summary>
+        public const string CueName = "golden_glint";
+
+        /// <summary>
+        /// MẪU cho hook theo chủ đề: kịch bản gọi cue bằng tên, hook trả về coroutine (kịch bản đợi nó xong) hoặc null nếu không phải cue của mình.
+        /// </summary>
+        public override IEnumerator OnCue(string cue, ChestScriptContext context)
+        {
+            if (cue != CueName) return null;
+            return GlintRoutine(context);
+        }
+
+        private IEnumerator GlintRoutine(ChestScriptContext ctx)
+        {
+            Glint(ctx.Reveal, ctx.Tier);
+            yield return new WaitForSeconds(0.9f);   // đợi hạt tắt: bước sau (nếu có) chờ AfterPrevious
+        }
+
         public override void OnTierLocked(ChestRevealSequence reveal, ChestTier tier, Color color)
+        {
+            // Có kịch bản thì lấp lánh do cue gọi; không có kịch bản thì giữ cách cũ (rương chạy như trước).
+            if (reveal.Script != null) return;
+            Glint(reveal, tier);
+        }
+
+        private void Glint(ChestRevealSequence reveal, ChestTier tier)
         {
             if (tier < minimumTier) return;
             if (_ps == null)

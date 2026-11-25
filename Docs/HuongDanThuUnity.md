@@ -124,6 +124,7 @@ Bảng nhắc phím, rương đang cầm và trạng thái hiện ở **góc tr�
 - **Bấm O:** rương rung, niêm/dây (nếu có) bung, nắp hé, bật rồi **mở toang ra phía sau, xa bạn**. Nếu nắp xuyên xuống thân hoặc mở về phía bạn → bấm **L**, rồi O lại.
   - Theo dữ liệu trong file, cả 17 rương đều có bản lề ở phía −Z, nên menu nhận mặt trước là +Z và đặt `lidOpenSign = −1`. Điều này **chưa được nhìn thấy trong Unity**; nếu sai, phím L đảo lại (tương đương `lidOpenSign = +1`).
 - **Bấm P:** nắp mở như O, đồng thời trong lòng rương lóe sáng đổi màu liên tục (vòng quay bậc), các chấm nhỏ bay quanh rương (số chấm = hạng bậc), rồi **dừng đúng bậc** đã chọn (ngẫu nhiên hoặc bậc ép bằng T): chớp sáng, tia, hạt bung ra, âm khóa; một **bóng đen viền màu bậc** của món đồ nhô lên khỏi miệng rương và lớn dần. Đồng thời là hiệu ứng riêng của rương (bảng dưới). Toàn bộ mất vài giây (vòng quay tối thiểu khoảng 3 s, tuỳ hồ sơ từng rương). Bấm R để đóng, P để chạy lại.
+- **Âm căng thẳng (mới):** **ngay khi bấm P** (trước khi nắp động đậy) phải nghe một tiếng ù căng lên dần, kèm nhịp "tim đập" nhanh dần. Tới lúc chốt bậc: **Rác** thì âm **tắt phụt**, im một nhịp rồi "xịt" (hài); **Thường** xẹp nhẹ; **Hiếm** trở lên thì dâng lên và bùng, **Huyền thoại** to nhất kèm tiếng ầm. Đây là âm tổng hợp bằng mã, **chưa ai nghe thử**: ghi lại nếu nghe chói, nhỏ, hoặc không có tiếng gì.
 - **Màu bậc (đề xuất):** xem `docs/superpowers/specs/2026-11-24-hieu-ung-mo-rong-design.md`.
 
 ### 5.3. Rương nào có gì riêng
@@ -132,7 +133,7 @@ Mọi rương đều có lõi chung (vòng quay màu, bóng món, hạt, tia, â
 
 | Rương | Hiệu ứng nổi bật khi bấm P | Tùy chọn riêng |
 |---|---|---|
-| Golden | Lấp lánh vàng quanh miệng rương từ Hiếm | Có màn chìa khóa (`keyIntro`, bật sẵn) |
+| Golden | **Kịch bản mẫu** (xem 5.5): xu bắn ra bằng vật lý theo bậc, rương nhảy/lơ lửng/xoay, lấp lánh vàng từ Hiếm | Có màn chìa khóa (`keyIntro`, bật sẵn); cổng đồng xu tắt sẵn |
 | Magic | Vòng pha lê kêu theo mỗi nhịp quay; vòng phù văn khi chốt, Rác thì phép xì hơi | Có màn chìa khóa |
 | Mimic | Rương "đập tim" theo nhịp quay, nhỏ dãi; khi chốt nôn ra chất nhờn | **`biteIntro`**: trước khi mở, nắp đớp một cái kèm tiếng nhai. Phím P **tự bật** cho Mimic. Muốn bật cho phím O hay rương đặt trong cảnh: chọn object có `BoxOpenSequence` → Inspector → tick `Bite Intro` (hoặc menu `Tools → Cho Do La → Add Mimic FX To Selected Chest`) |
 | Miner | Đèn thợ mỏ chập chờn, tia lửa cuốc, đá văng, đá quý lấp lánh từ Hiếm | |
@@ -155,6 +156,17 @@ Mọi rương đều có lõi chung (vòng quay màu, bóng món, hạt, tia, â
 ### 5.4. Thử hiệu ứng trên bục (không cầm tay, tuỳ chọn)
 
 `Tools → Cho Do La → Add Chest Reveal Test` đặt Chest_Golden lên bục trước camera, cỡ thật. Phím của bàn thử này: **T** bậc ép, **Y** món khác, **Space** mở, **R** đóng, **C** đổi rương. Bàn thử này cũng dùng phím C và T, nên **đừng dùng chung một cảnh với menu cầm rương** (hai thứ cùng phản ứng một phím). Muốn thử, tạo cảnh mới bằng `Create Sprint 0 Test Scene` (lưu cảnh cũ trước).
+
+Phím thêm của bàn thử (kịch bản mở rương): **G** bật/tắt cổng đồng xu của Golden, **K** thả xu vàng từ trên miệng rương (đúng mã, mở khoá), **L** thả một cục pin (sai mã, bị đẩy ra). Cách thử: bấm **G** (bảng ghi BẬT), **Space** (rương đứng chờ, chỉ có tiếng ù nhỏ), rồi **K**: xu rơi vào, rương mới bắt đầu mở và âm căng lên. Thử **L** trước **K** để thấy vật sai bị đẩy ra. Phím L ở đây khác với L của menu cầm rương, nên cũng không dùng chung cảnh.
+
+### 5.5. Kịch bản mở rương (cho người làm rương chủ đề)
+
+Chi tiết: `docs/superpowers/specs/2026-11-25-ruong-kich-ban-mo-design.md`. Tóm tắt thử trong Unity:
+
+1. Chạy menu `Create All Chest FX Profiles` (hoặc `Create Golden Chest FX Profile`): có thêm `ScriptableObjects/ChestFx/ChestScript_Golden.asset`, đã gắn vào hồ sơ Golden. Mở asset xem các bước (tên bước, bậc áp dụng, khi nào chạy).
+2. Bấm P với Golden ở từng bậc (T đổi bậc): Rác, rương xẹp và rớt vài đồng xu; Huyền thoại, rương bay lên, xoay, xu bắn tung và nảy trên sàn rồi biến mất sau vài giây.
+3. Tắt kịch bản thử: kéo ô `Script` trong hồ sơ về trống: rương chạy như bản cũ (còn âm căng thẳng, tắt bằng bỏ tick `Tension > Enabled`).
+4. Nếu xu xuyên sàn/không nảy: kiểm cảnh có Collider ở sàn; ghi lại vào mẫu báo lỗi.
 
 ---
 
@@ -202,6 +214,9 @@ Rủi ro nhiều khả năng gặp:
 
 ---
 
+- **Lõi kịch bản mới (chưa chạy trong Unity):** `PhysicsMaterial` (tên Unity 6), `AudioClip.Create`, và việc `ChestMotion` ghi đè vị trí ở `LateUpdate` khi rương đang cầm tay chưa được thử. Nếu rương giật hoặc trôi sau khi mở bằng P, ghi lại bậc, rương và bước nào đang chạy (xem log `[ChestFx]`).
+- **Cổng đồng xu** chưa nối với tay người chơi: mới thử được bằng phím K/L của bàn thử trên bục (5.4).
+
 ## 9. Danh sách kiểm (đánh dấu khi xong)
 
 - [ ] 1. `git lfs pull` xong; `Chest_Golden.glb` nặng khoảng 4,6 MB.
@@ -214,6 +229,9 @@ Rủi ro nhiều khả năng gặp:
 - [ ] 8. Bấm O: nắp mở ra phía sau ở cả 17 rương (ghi lại rương nào phải bấm L).
 - [ ] 9. Bấm P: thấy vòng quay màu dừng đúng bậc chọn bằng T, bóng món nhô lên, hiệu ứng riêng của rương.
 - [ ] 10. Nghe được âm (tick, khóa, âm riêng) và ghi nhận xét về âm, màu bậc, nhịp giây để duyệt.
+- [ ] 11. Âm căng thẳng bắt đầu NGAY khi bấm P; Rác thì cắt phụt rồi xịt, Huyền thoại thì bùng lên (ghi nhận xét).
+- [ ] 12. Golden: xu bắn và nảy theo bậc, rương nhảy/bay/xoay, không còn vật sót sau khi bấm R.
+- [ ] 13. Bàn thử trên bục: G, Space, K mở khoá được; L (sai mã) bị đẩy ra.
 
 ---
 
