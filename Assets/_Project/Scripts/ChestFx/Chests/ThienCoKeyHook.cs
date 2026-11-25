@@ -13,7 +13,7 @@ namespace ChoDoLa.ChestFx
         public static readonly KeyPreset Preset = new KeyPreset
         {
             chestId = "Chest_ThienCo", displayName = "ThienCo",
-            audioFolder = "Assets/_Project/Audio/Chests/thien_co/", filePrefix = "sfx_thienco_", bedFile = "sfx_thienco_bed_loop.mp3",
+            audioFolder = "Assets/_Project/Audio/Chests/thien_co/", filePrefix = "sfx_thienco_", bedFile = "sfx_thienco_ambient_clockwork.mp3", keyFile = "sfx_thienco_gear_clank.mp3",
             mainColor = new Color(0.8f, 0.5f, 0.25f), openAction = KeyAction.Drop,
             squashMul = 1f, racSquashMul = 1f, jumpMul = 1.2f, cycleDelta = 1, shakeScale = 1f,   // lò xo: Jump +20%, chu kỳ +1
         };

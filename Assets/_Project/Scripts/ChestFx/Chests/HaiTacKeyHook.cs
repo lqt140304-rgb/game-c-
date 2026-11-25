@@ -12,7 +12,7 @@ namespace ChoDoLa.ChestFx
         public static readonly KeyPreset Preset = new KeyPreset
         {
             chestId = "Chest_HaiTac", displayName = "HaiTac",
-            audioFolder = "Assets/_Project/Audio/Chests/hai_tac/", filePrefix = "sfx_haitac_", bedFile = "sfx_haitac_bed_loop.mp3",
+            audioFolder = "Assets/_Project/Audio/Chests/hai_tac/", filePrefix = "sfx_haitac_", bedFile = "sfx_haitac_bed_loop.mp3", keyFile = "sfx_haitac_thud.mp3",
             mainColor = new Color(0.85f, 0.12f, 0.1f), openAction = KeyAction.Peck,
             // Đàn hồi như sóng: Squash +10% (cả Rác lẫn các bậc khác).
             squashMul = 1.1f, racSquashMul = 1.1f, jumpMul = 1f, cycleDelta = 0, shakeScale = 1f,

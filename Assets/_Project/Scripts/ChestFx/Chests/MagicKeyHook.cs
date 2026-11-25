@@ -15,6 +15,7 @@ namespace ChoDoLa.ChestFx
             KeyPreset p = KeyPreset.Neutral(
                 "Chest_Magic", "Magic", "Assets/_Project/Audio/Chests/magic/", "sfx_magic_", "sfx_magic_rune_bed_loop.mp3",
                 new Color(0.6f, 0.3f, 0.9f), KeyAction.Insert);
+            p.keyFile = "sfx_magic_rune_stone.mp3";
             p.squashMul = 0.9f;
             p.racSquashMul = 0.9f;
             return p;

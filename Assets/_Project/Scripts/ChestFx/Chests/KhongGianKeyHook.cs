@@ -12,7 +12,7 @@ namespace ChoDoLa.ChestFx
         {
             chestId = "Chest_KhongGian", displayName = "KhongGian",
             audioFolder = "Assets/_Project/Audio/Chests/khong_gian/", filePrefix = "sfx_khonggian_",
-            bedFile = "sfx_khonggian_engine_loop.mp3",
+            bedFile = "sfx_khonggian_engine_loop.mp3", keyFile = "sfx_khonggian_fuel_dock.mp3",
             mainColor = new Color(0.78f, 0.82f, 0.88f), openAction = KeyAction.Strike,
             squashMul = 1f, racSquashMul = 1f, jumpMul = 1.2f, cycleDelta = 0, shakeScale = 1f,
         };

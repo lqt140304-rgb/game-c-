@@ -12,7 +12,7 @@ namespace ChoDoLa.ChestFx
         public static readonly KeyPreset Preset = new KeyPreset
         {
             chestId = "Chest_RacQuy", displayName = "RacQuy",
-            audioFolder = "Assets/_Project/Audio/Chests/rac_quy/", filePrefix = "sfx_racquy_", bedFile = "sfx_racquy_bed_loop.mp3",
+            audioFolder = "Assets/_Project/Audio/Chests/rac_quy/", filePrefix = "sfx_racquy_", bedFile = "sfx_racquy_bed_loop.mp3", keyFile = "sfx_racquy_clank.mp3",
             mainColor = new Color(1f, 0.6f, 0.2f), openAction = KeyAction.Pounce,
             squashMul = 1f, racSquashMul = 1.2f, jumpMul = 0.8f, cycleDelta = 0, shakeScale = 1f,
         };

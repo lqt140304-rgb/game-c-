@@ -19,6 +19,7 @@ namespace ChoDoLa.ChestFx
             KeyPreset p = KeyPreset.Neutral(
                 "Chest_VietNam", "VietNam", "Assets/_Project/Audio/Chests/viet_nam/", "sfx_vietnam_", "sfx_vietnam_dan_bau_loop.mp3",
                 Sen, KeyAction.Drop);
+            p.keyFile = "sfx_vietnam_thud.mp3";
             p.squashMul = 0.9f;      // mềm: Squash −10%
             p.racSquashMul = 0.9f;
             return p;

@@ -9,7 +9,7 @@ namespace ChoDoLa.ChestFx
         public static readonly KeyPreset Preset = new KeyPreset
         {
             chestId = "Chest_AmNhac", displayName = "AmNhac", audioFolder = "Assets/_Project/Audio/Chests/am_nhac/",
-            filePrefix = "sfx_amnhac_", bedFile = "sfx_amnhac_bed_loop.mp3",
+            filePrefix = "sfx_amnhac_", bedFile = "sfx_amnhac_drumroll.mp3", keyFile = "sfx_amnhac_coin_slot.mp3",
             mainColor = new Color(0.95f, 0.4f, 0.65f), openAction = KeyAction.Insert,
             squashMul = 1f, racSquashMul = 1f, jumpMul = 1f, cycleDelta = 1, shakeScale = 1f,
         };

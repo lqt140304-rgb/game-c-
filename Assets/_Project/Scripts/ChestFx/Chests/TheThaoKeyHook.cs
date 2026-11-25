@@ -14,7 +14,7 @@ namespace ChoDoLa.ChestFx
             displayName = "TheThao",
             audioFolder = "Assets/_Project/Audio/Chests/the_thao/",
             filePrefix = "sfx_thethao_",
-            bedFile = "sfx_thethao_bed_loop.mp3",
+            bedFile = "sfx_thethao_ambient.mp3", keyFile = "sfx_thethao_kick.mp3",
             mainColor = new Color(0.96f, 0.96f, 0.96f),
             openAction = KeyAction.Strike,
             squashMul = 1f,

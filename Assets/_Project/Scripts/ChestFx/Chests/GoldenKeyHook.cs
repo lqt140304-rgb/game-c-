@@ -10,7 +10,7 @@ namespace ChoDoLa.ChestFx
         public static readonly KeyPreset Preset = new KeyPreset
         {
             chestId = "Chest_Golden", displayName = "Golden",
-            audioFolder = "Assets/_Project/Audio/Chests/golden/", filePrefix = "sfx_golden_", bedFile = "sfx_golden_spin_loop.mp3",
+            audioFolder = "Assets/_Project/Audio/Chests/golden/", filePrefix = "sfx_golden_", bedFile = "sfx_golden_spin_loop.mp3", keyFile = "sfx_golden_token.mp3",
             mainColor = new Color(1f, 0.82f, 0.15f), openAction = KeyAction.Drop,
             squashMul = 1f, racSquashMul = 1f, jumpMul = 1.2f, cycleDelta = 0, shakeScale = 1f,   // nảy mạnh: Jump +20%
         };

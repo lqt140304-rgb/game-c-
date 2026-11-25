@@ -18,10 +18,12 @@ namespace ChoDoLa.ChestFx
         public string displayName;
         /// <summary>Thư mục âm, kết thúc bằng "/", ví dụ "Assets/_Project/Audio/Chests/golden/".</summary>
         public string audioFolder;
-        /// <summary>Tiền tố tệp âm, ví dụ "sfx_golden_". Tiếng cắm = prefix + "key_insert.mp3"; tiếng chốt = prefix + "lock_{rac,thuong,hiem,ratHiem,huyenThoai}.mp3".</summary>
+        /// <summary>Tiền tố tệp âm, ví dụ "sfx_golden_". Tiếng chốt = prefix + "lock_{rac,thuong,hiem,ratHiem,huyenThoai}.mp3".</summary>
         public string filePrefix;
         /// <summary>Tên tệp nền vòng lặp trong audioFolder, ví dụ "sfx_golden_spin_loop.mp3".</summary>
         public string bedFile;
+        /// <summary>Tên tệp tiếng cắm chìa (ngắn) trong audioFolder; rỗng = không có tiếng cắm.</summary>
+        public string keyFile;
         /// <summary>Màu chính của vật mở khoá.</summary>
         public Color mainColor;
         public KeyAction openAction;
