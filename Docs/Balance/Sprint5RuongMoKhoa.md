@@ -166,3 +166,6 @@ Mã: `QA/chest_unlock.py` (`UNLOCK`, `THEME`, `THEME_LEG` là bảng đề xuấ
 6. **Tạo tác của Cổ Phong / Thiên Cơ có tính trùng như Kim Khí** (đổi 50% giá Kho, đã chốt cho Kim Khí) hay không: bản đo giả định có.
 7. **Chủ đề có nhiều Huyền thoại** (Việt Nam 4 món, Truyền thuyết Châu Âu 4 món): bản đo dùng 1 món 90 triệu đ. Đề xuất giữ tỉ lệ bậc 3% chung và giá trung bình 90 triệu đ; chủ dự án quyết món nào đắt nhất.
 8. **Ngưỡng nhiễu đo:** trần 47% là tuyệt đối, nhưng chênh 2 đến 3 điểm giữa hai kịch bản là nhiễu. Nếu chủ dự án muốn chắc hơn, chạy lại kịch bản tổ hợp với n = 5.000 (khoảng 1 giờ).
+
+
+> **Ghi chú 2026-11-25 (Claude 2, phần 4):** luật shop đã chốt là tối đa 4 rương mở khóa hoặc chủ đề mỗi ngày, nên phương án "tối đa 2" ở trên không cần. Đo lại dưới luật soi mới nhất ([Sprint5SoiLoi.md](Sprint5SoiLoi.md)), n = 3.000: người chơi giỏi (liều + giám định) 4 mở khóa **44,3%** (cả khi bày hết lẫn tối đa 4), 4 mở khóa + 2 chủ đề **42,8% / 42,7%**; bot 12% đến 14%. Trường hợp "sát trần 47,1%" của đo cũ nằm trong nhiễu và không lặp lại. Chi tiết và kịch bản rương chỉ mở trong ván: [Sprint5CayPhatTrien.md](Sprint5CayPhatTrien.md).
