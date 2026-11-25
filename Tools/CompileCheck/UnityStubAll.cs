@@ -180,6 +180,8 @@ namespace UnityEngine
     public static partial class Physics { public static void IgnoreCollision(Collider a, Collider b, bool ignore) {} public static void IgnoreCollision(Collider a, Collider b) {} public static Collider[] OverlapSphere(Vector3 p, float r) => null; }
     public partial struct Quaternion { public static bool operator ==(Quaternion a, Quaternion b) => true; public static bool operator !=(Quaternion a, Quaternion b) => false; public override bool Equals(object o) => true; public override int GetHashCode() => 0; }
     public partial class AudioClip { public static AudioClip Create(string n, int len, int ch, int freq, bool stream) => null; public bool SetData(float[] d, int off) => true; }
+    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 position, velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
+        public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
     public class CharacterController : Collider { public float height, radius, slopeLimit, stepOffset, skinWidth, minMoveDistance; public Vector3 center, velocity; public bool isGrounded;
         public CollisionFlags Move(Vector3 m) => CollisionFlags.None; public bool SimpleMove(Vector3 s) => false; }
     public partial class Mesh
@@ -221,7 +223,7 @@ namespace UnityEngine
         public static bool SphereCast(Vector3 o, float rad, Vector3 d, out RaycastHit h, float m, int mask, QueryTriggerInteraction q) { h = default; return false; }
         public static Vector3 gravity;
     }
-    public partial class AudioClip { public string name; public int samples, frequency, channels; }
+    public partial class AudioClip { public static AudioClip Create(string n, int len, int ch, int f, bool s) => null; public bool SetData(float[] d, int o) => true; public string name; public int samples, frequency, channels; }
     public partial class AudioSource
     {
         public AudioClip clip; public float volume, minDistance, maxDistance, time; public bool loop, isPlaying, mute; public float dopplerLevel; public int priority;
@@ -425,3 +427,4 @@ namespace UnityEngine
     public struct Plane { public Plane(Vector3 n, Vector3 p) {} public bool Raycast(Ray r, out float d) { d = 0; return false; } }
     public partial struct Vector3 { public static Vector3 Reflect(Vector3 a, Vector3 n) => a; }
 }
+namespace UnityEngine { public class DefaultExecutionOrder : System.Attribute { public DefaultExecutionOrder(int o) {} } }
