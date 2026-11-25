@@ -21,6 +21,7 @@ namespace UnityEngine
     public enum Space { World, Self }
     public enum QueryTriggerInteraction { UseGlobal, Ignore, Collide }
     public enum CollisionFlags { None }
+    public partial class Collision { public Vector3 relativeVelocity; public Collider collider; public Rigidbody rigidbody; }
     public enum CameraClearFlags { Skybox, SolidColor }
     public enum ForceMode { Force, Impulse, Acceleration, VelocityChange }
     public enum RigidbodyConstraints { None, FreezeRotation }
