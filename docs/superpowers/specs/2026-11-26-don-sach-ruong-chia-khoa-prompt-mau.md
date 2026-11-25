@@ -62,15 +62,16 @@ Báo cáo ≤ 10 dòng: số file tạo/lỗi/bỏ qua, rương nào thiếu; nh
 Game Unity "Chợ Đồ Lạ" (repo game-c-). Trả lời và viết tài liệu bằng tiếng Việt, lời đơn giản khi nói với chủ dự án.
 
 Việc: làm đúng MỤC 6.<N> "<TÊN RƯƠNG>" trong docs/superpowers/specs/2026-11-26-don-sach-ruong-chia-khoa-ke-hoach.md. Thiết kế đã chốt:
-KHÔNG tự nghĩ lại, không thêm hiệu ứng. Đọc trước mục 0–3 (chỉ còn rung lắc, bóp méo, âm, chìa khoá) và mục 4.1 (KeyContext, quy ước hình chìa).
+KHÔNG tự nghĩ lại, không thêm hiệu ứng. Đọc trước mục 0–3 (chỉ còn rung lắc, bóp méo, âm, vật mở khoá) và mục 4.1 (KeyContext, quy ước hình chìa).
 
 Bạn đang ở nhánh tách từ claude/chest-trim-plan (đã gộp Phiên A + B). Làm và push lên claude/key-<ruong>.
 Nếu máy chưa có mcs: sudo apt-get install -y mono-mcs.
 
 Phải làm, theo thứ tự:
-1. Viết `BuildKey` trong Scripts/ChestFx/Chests/<LỚP>.cs đúng hình chìa ở bảng mục 6 (≥ 4 khối cơ bản, màu theo chủ đề, trục dài +Z,
-   nhìn từ xa nhận ra chủ đề, khác hẳn chìa các rương khác).
-2. Điền `Preset`: màu, thư mục + tiền tố âm, tên file nền (đã có sẵn trong Audio/Chests/<thư mục>/), hệ số bóp méo ±20% theo cột "Tính cách".
+1. Viết `BuildKey` trong Scripts/ChestFx/Chests/<LỚP>.cs đúng VẬT MỞ KHOÁ ở bảng mục 6 (có thể là con vật/đồ vật chứ không chỉ chìa; ≥ 4 khối cơ bản,
+   màu theo chủ đề, "đầu" hướng +Z, nhìn từ xa nhận ra chủ đề, khác hẳn vật của các rương khác). Nếu cần, ghi đè `AnimateAction` để cử động
+   chính vật đó (đuôi mèo, cánh vẹt…); KHÔNG sinh thêm vật nào.
+2. Điền `Preset`: màu, `openAction` đúng cột "Hành động", thư mục + tiền tố âm, tên file nền (đã có sẵn trong Audio/Chests/<thư mục>/), hệ số bóp méo ±20% theo cột "Tính cách".
    KHÔNG đổi chuỗi chuẩn (thời gian, nấc rung, thứ tự).
 3. Xoá mọi file cũ của rương này theo bảng "File cũ mỗi phiên rương xoá" (cả .meta, Editor setup, thư mục âm numpy, script make_*/check_*).
    Sau khi xoá, dự án vẫn phải biên dịch (không tham chiếu đến file đã xoá; nếu file chung đang tham chiếu thì ghi vào báo cáo, KHÔNG sửa file chung).
@@ -85,7 +86,7 @@ Giữ chặt: không thêm vật/hạt/đèn/phím nào; ngẫu nhiên chỉ ctx
 Kiểm: bash Tools/CompileCheck/check_all.sh và check_chia_khoa.sh qua. Tự đối chiếu "Bản chốt" mục 6 bằng cách đọc lại mã
 (1 diễn viên, 0 Rigidbody/hạt/Light, 0 phím, 1 hook).
 Commit (lời commit tiếng Việt), push claude/key-<ruong>, KHÔNG mở PR.
-Báo cáo ≤ 10 dòng: hình chìa (mô tả khối + màu), hệ số bóp méo đã chọn, file đã xoá, điều không làm được.
+Báo cáo ≤ 10 dòng: vật mở khoá (mô tả khối + màu + hành động), hệ số bóp méo đã chọn, file đã xoá, điều không làm được.
 ```
 
 ### Bảng thay thế

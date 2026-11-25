@@ -1,5 +1,5 @@
 {
- "_doc": "Âm bổ sung cho kế hoạch chìa khoá (2026-11-26): 17 tiếng cắm chìa + 3 nền còn thiếu. Cùng định dạng elevenlabs_chest_manifest.json; chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/elevenlabs_chest_key_manifest.json",
+ "_doc": "Âm bổ sung cho kế hoạch chìa khoá (2026-11-26): 17 tiếng mở khoá theo vật chủ đề + 3 nền còn thiếu. Cùng định dạng elevenlabs_chest_manifest.json; chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/elevenlabs_chest_key_manifest.json",
  "hai_tac": {
   "prefix": "sfx_haitac_",
   "hook": "hai_tac",
@@ -10,7 +10,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "old rusty skeleton key sliding into a pirate chest lock and turning with a heavy clunk and a faint bone rattle",
+    "prompt": "a cartoon pirate parrot squawking once then pecking twice on a wooden chest, sharp tap tap and a cheeky wing flutter",
     "file": "sfx_haitac_key_insert.mp3"
    }
   ]
@@ -25,7 +25,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a metal soda can pull-tab clinking into a trash bin lid, tinny scrape then a dull click",
+    "prompt": "an orange alley cat meowing then pouncing and scratching on a metal trash bin lid, soft thud and quick claw scratches",
     "file": "sfx_racquy_key_insert.mp3"
    }
   ]
@@ -55,7 +55,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a glowing rune crystal key sliding into an ancient stone lock, soft magical chime then a deep stone click",
+    "prompt": "a glowing rune crystal pressed into an ancient stone lock, soft magical chime then a deep stone click",
     "file": "sfx_magic_key_insert.mp3"
    }
   ]
@@ -70,7 +70,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a gnarled bone key stuck into a wooden monster mouth lock, wet squelch, wood creak and a clack of teeth",
+    "prompt": "a flip-flop sandal slapping into a wooden monster mouth followed by a wet chomp and a gulp",
     "file": "sfx_mimic_key_insert.mp3"
    }
   ]
@@ -85,7 +85,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a heavy iron mine key turning in a rusty padlock inside a cave, metal grind and a hollow clunk",
+    "prompt": "a steel pickaxe striking a rock face once, loud metallic clang with rock crack and falling pebbles",
     "file": "sfx_miner_key_insert.mp3"
    }
   ]
@@ -124,7 +124,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a small bronze Dong Son drum key tapping a wooden lock, a single warm bronze gong note and a wood click",
+    "prompt": "a paper lantern floating softly down onto a wooden box, gentle papery rustle, a faint flame whoosh and a soft tap",
     "file": "sfx_vietnam_key_insert.mp3"
    }
   ]
@@ -139,7 +139,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "winding a toy tin clockwork key several turns with ratchet clicks then a soft metal click",
+    "prompt": "a glass marble dropping onto wood and bouncing once then clinking, cheerful and bright",
     "file": "sfx_tuoitho_key_insert.mp3"
    }
   ]
@@ -169,7 +169,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a spaceship access card docking into a hatch panel, soft sci-fi zap and a pressurized latch hiss",
+    "prompt": "a tiny spaceship zooming in and docking against a metal hatch, quick whoosh then a pressurized clunk and hiss",
     "file": "sfx_khonggian_key_insert.mp3"
    }
   ]
@@ -199,7 +199,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a referee whistle key blowing one short sharp blast followed by a metal latch click",
+    "prompt": "a soccer ball kicked hard hitting a wooden box, leather thump and a short crowd gasp",
     "file": "sfx_thethao_key_insert.mp3"
    },
    {
@@ -223,7 +223,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "an ancient Chinese copper coin key slotting into a lacquered wooden lock, small bronze ring and a wood click",
+    "prompt": "a Chinese lion dance head snapping its jaw with a clack, a small cymbal crash and a drum tap",
     "file": "sfx_trunghoa_key_insert.mp3"
    }
   ]
@@ -238,7 +238,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a small tanto blade key sliding into a wooden scabbard lock, crisp metallic shing and a soft click",
+    "prompt": "a katana drawn and slashing in one swift swoosh then a crisp metallic click as it settles, short",
     "file": "sfx_nhatban_key_insert.mp3"
    }
   ]
@@ -253,7 +253,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a jade token key pressed into a stone seal, clear jade clink then a deep stone click",
+    "prompt": "a paper talisman slapped onto a stone seal, crisp paper slap followed by a soft shimmering chime",
     "file": "sfx_cophong_key_insert.mp3"
    }
   ]
@@ -268,7 +268,7 @@
     "field": "keyClip",
     "seconds": 1.5,
     "loop": false,
-    "prompt": "a brass clockwork gear key dropping into a clock mechanism, tiny gear clank and a satisfying mesh click",
+    "prompt": "a brass clock gear dropping into a clock mechanism, tiny gear clank and a satisfying mesh click",
     "file": "sfx_thienco_key_insert.mp3"
    },
    {
