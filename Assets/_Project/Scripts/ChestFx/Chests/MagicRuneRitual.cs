@@ -20,17 +20,22 @@ namespace ChoDoLa.ChestFx
     ///     Rất hiếm : rương vọt cao thêm rồi DẬP xuống sàn: sóng xung kích hất văng đá (lực nổ thật), đèn chớp.
     ///     Huyền thoại: như Rất hiếm nhưng mạnh hơn + cột sáng màu bậc + wisp xoắn ốc bay lên theo cột.
     ///   Rương luôn về đúng chỗ cũ trong ~0.6 s sau khóa để bóng vật phẩm và nắp chạy bình thường.
+    /// Đã thu gọn theo kế hoạch 2026-11-25 (mục 5.4): cột sáng thấp hơn, ít hạt hơn, wisp không có đèn riêng,
+    /// rương chỉ cộng độ lệch lên vị trí BoxOpenSequence ghi, âm là .mp3 ElevenLabs phát theo quy tắc A1–A8.
     /// Không bao giờ đổi bậc; ngẫu nhiên (góc đá, độ nảy) theo hạt giống <see cref="decorationSeed"/>.
     /// </summary>
     public class MagicRuneRitual : ChestFxHook
     {
-        [Header("Âm (để trống = im lặng; Tools/Cho Do La/Setup Magic Rune Ritual tự gán)")]
+        [Header("Âm (để trống = im lặng; Tools/Cho Do La/Magic Rune/Setup On Selected Chest tự gán)")]
+        [Tooltip("Nền lặp (trống + gõ đá bên trong), phát ngay lúc bấm.")]
         public AudioClip buildClip;
         public AudioClip stoneClip;
         public AudioClip wispClip;
-        [Tooltip("Âm kết theo bậc: 0 Rác .. 4 Huyền thoại.")]
-        public AudioClip[] endClips = new AudioClip[5];
-        [Range(0f, 1f)] public float volume = 0.9f;
+        [Tooltip("HĐ: tiếng nổ/vỡ lúc dập xuống, chỉ Rất hiếm / Huyền thoại.")]
+        public AudioClip slamClip;
+        [Tooltip("TC: tiếng chốt theo bậc: 0 Rác .. 4 Huyền thoại (luôn do hook phát).")]
+        public AudioClip[] stingClips = new AudioClip[5];
+        [Range(0f, 1f)] public float volume = 0.8f;
 
         [Header("Trận")]
         [SerializeField] private float anchorRadius = 0.55f;
@@ -87,6 +92,15 @@ namespace ChoDoLa.ChestFx
         private Transform _pillar;
         private Material _pillarMat;
         private float _ringRadius;
+        private float _size = 0.5f;      // S: cạnh lớn nhất khung bao rương
+        private float _slamK = -1f;
+        private float _lastEvt = -999f;  // mốc cổng sự kiện âm (A3)
+        private float _stingAt = -1f;    // Rác: giờ phát tiếng xịt sau 0,2 s lặng
+        private AudioClip _stingClip;
+        // Gốc rương = giá trị BoxOpenSequence vừa ghi nếu khác giá trị hook ghi khung trước (chỉ cộng độ lệch).
+        private Vector3 _basePos, _lastPos;
+        private Quaternion _baseRot, _lastRot, _wantRot;
+        private bool _hasWritten;
 
         // ------------------------------------------------------------------ Hook
 
@@ -105,8 +119,14 @@ namespace ChoDoLa.ChestFx
             float now = Time.time - _t0;
             UpdateStones(now);
             UpdateWisp(now, dt);
-            UpdateChest(now, dt);
             UpdateRing(now, dt);
+            UpdateAudio(now);
+        }
+
+        private void LateUpdate()
+        {
+            if (_phase == Phase.Idle || _reveal == null) return;
+            UpdateChest(Time.time - _t0, Time.deltaTime);
         }
 
         private void FixedUpdate()
@@ -144,9 +164,8 @@ namespace ChoDoLa.ChestFx
             _tierColor = color;
             _lockAt = Time.time - _t0;
             _phase = Phase.Ending;
-            if (_buildSrc != null) _buildSrc.Stop();
-            int i = Mathf.Clamp(tier.Rank(), 0, endClips.Length - 1);
-            if (endClips != null && endClips.Length > 0) Sfx(endClips[i], 1f);
+            if (_buildSrc != null) _buildSrc.Stop(); // A4: nền dừng ngay, không fade
+            PlaySting(tier);
             StartEnding(tier);
         }
 
@@ -183,7 +202,19 @@ namespace ChoDoLa.ChestFx
 
             _buildSrc = MakeSource("RuneBuildAudio");
             _sfxSrc = MakeSource("RuneSfxAudio");
-            if (buildClip != null) { _buildSrc.clip = buildClip; _buildSrc.volume = volume; _buildSrc.Play(); }
+            if (buildClip != null)
+            {
+                _buildSrc.clip = buildClip;
+                _buildSrc.loop = true; // khóa muộn hơn độ dài clip vẫn không im giữa chừng
+                _buildSrc.volume = ChestAudioRule.BedMax * 0.33f * volume; // 0,15 → 0,45 theo độ căng (UpdateAudio)
+                _buildSrc.pitch = 1f;
+                _buildSrc.Play();
+            }
+            _lastEvt = -999f;
+            _stingAt = -1f;
+            _stingClip = null;
+            _slamK = -1f;
+            _hasWritten = false;
 
             float r = Mathf.Max(anchorRadius, _chestRadius * 1.8f);
             _ringRadius = r * 1.15f;
@@ -258,11 +289,6 @@ namespace ChoDoLa.ChestFx
             go.GetComponent<Renderer>().sharedMaterial = m;
             _owned.Add(m);
             _owned.Add(go);
-            Light l = go.AddComponent<Light>();
-            l.type = LightType.Point;
-            l.color = runeColor;
-            l.range = 0.6f;
-            l.intensity = 1.5f;
             TrailRenderer tr = go.AddComponent<TrailRenderer>();
             tr.time = 0.35f;
             tr.startWidth = 0.03f;
@@ -299,7 +325,7 @@ namespace ChoDoLa.ChestFx
                         s.seated = true;
                         s.seatedAt = now;
                         if (s.rb != null) { s.rb.isKinematic = true; }
-                        Sfx(stoneClip, 0.8f, 0.9f + 0.1f * _stones.IndexOf(s));
+                        Event(stoneClip, 0.4f, 0.9f + 0.1f * _stones.IndexOf(s));
                     }
                 }
                 if (s.seated && _phase != Phase.Ending && _phase != Phase.Done)
@@ -340,7 +366,7 @@ namespace ChoDoLa.ChestFx
                     if (rb == null || rb.isKinematic) continue;
                     m.claimedBy = this;
                     _extras.Add(rb);
-                    Sfx(wispClip, 0.6f, 1.3f);
+                    Event(wispClip, 0.35f, 1.3f);
                 }
             }
         }
@@ -363,7 +389,7 @@ namespace ChoDoLa.ChestFx
                         {
                             s.lit = true;
                             if (s.mat != null) ChestFxFactory.SetColor(s.mat, runeColor);
-                            Sfx(wispClip, 0.5f, 1f + 0.12f * _wispTarget);
+                            Event(wispClip, 0.35f, 1f + 0.12f * _wispTarget);
                             _wispTarget++;
                             _wispTouchAt = -1f;
                         }
@@ -376,7 +402,7 @@ namespace ChoDoLa.ChestFx
             {
                 float k = now - _lockAt;
                 float a = k * 9f;
-                target = _restPos + new Vector3(Mathf.Cos(a) * 0.25f, 0.4f + k * 1.6f, Mathf.Sin(a) * 0.25f);
+                target = _restPos + new Vector3(Mathf.Cos(a) * 0.25f, Mathf.Min(0.4f + k * 1.6f, 2f * _size), Mathf.Sin(a) * 0.25f);
                 _wisp.position = Vector3.Lerp(_wisp.position, target, dt * 8f);
                 return;
             }
@@ -388,13 +414,12 @@ namespace ChoDoLa.ChestFx
 
         private void UpdateChest(float now, float dt)
         {
-            Transform chest = _reveal.transform;
             float tension = Tension(now);
             if (_phase == Phase.Gather)
             {
                 // Rung nhẹ ngay khi bấm: phép đang thức dậy.
                 float k = 0.004f + 0.004f * Mathf.Clamp01(now);
-                chest.SetPositionAndRotation(_restPos + new Vector3(Noise(now * 3f, 1f) * k, 0f, Noise(now * 3f, 2f) * k),
+                WriteChest(_restPos + new Vector3(Noise(now * 3f, 1f) * k, 0f, Noise(now * 3f, 2f) * k),
                     _restRot * Quaternion.Euler(Noise(now * 2f, 3f) * 1.5f, 0f, Noise(now * 2f, 4f) * 1.5f));
                 return;
             }
@@ -405,7 +430,7 @@ namespace ChoDoLa.ChestFx
                 _spin += _spinSpeed * dt;
                 float wob = 2f + 6f * tension;
                 Vector3 shake = new Vector3(Noise(now * 9f, 5f), Noise(now * 9f, 6f), Noise(now * 9f, 7f)) * (0.01f * tension);
-                chest.SetPositionAndRotation(_restPos + Vector3.up * (_lift + Mathf.Sin(now * 3f) * 0.02f) + shake,
+                WriteChest(_restPos + Vector3.up * (_lift + Mathf.Sin(now * 3f) * 0.02f) + shake,
                     Quaternion.Euler(0f, _spin, 0f) * _restRot * Quaternion.Euler(Mathf.Sin(now * 5f) * wob, 0f, Mathf.Cos(now * 4f) * wob));
                 return;
             }
@@ -486,8 +511,6 @@ namespace ChoDoLa.ChestFx
                     _wispRb = _wisp.gameObject.AddComponent<Rigidbody>();
                     _wispRb.mass = 0.05f;
                     _wispRb.linearVelocity = RandVec() * 0.5f + Vector3.up * 0.8f;
-                    Light l = _wisp.GetComponent<Light>();
-                    if (l != null) l.intensity = 0.2f;
                 }
                 foreach (Rigidbody rb in _extras) Release(rb, RandVec() * 0.5f, RandVec() * 4f);
                 _extras.Clear();
@@ -510,8 +533,9 @@ namespace ChoDoLa.ChestFx
                 _pillarMat = ChestFxFactory.CreateAdditive(ChestFxFactory.GetTexture(ParticleLook.SoftDot), "RunePillarMat");
                 ChestFxFactory.SetColor(_pillarMat, _tierColor);
                 p.GetComponent<Renderer>().sharedMaterial = _pillarMat;
-                p.transform.position = _restPos + Vector3.up * 3f;
-                p.transform.localScale = new Vector3(0.02f, 3f, 0.02f);
+                // Cột sáng cao 2,5 S (cylinder cao 2 đơn vị → scale y = 1,25 S), tâm ở 1,25 S trên rương.
+                p.transform.position = _restPos + Vector3.up * (1.25f * _size);
+                p.transform.localScale = new Vector3(0.04f * _size, 1.25f * _size, 0.04f * _size);
                 _pillar = p.transform;
                 _owned.Add(p);
                 _owned.Add(_pillarMat);
@@ -525,7 +549,6 @@ namespace ChoDoLa.ChestFx
 
         private void EndingChest(float k, float dt)
         {
-            Transform chest = _reveal.transform;
             float yaw = _spin;
             if (_tier == ChestTier.Rac)
             {
@@ -543,7 +566,7 @@ namespace ChoDoLa.ChestFx
                 float settle = Mathf.Exp(-k * 3f);
                 Quaternion tip = Quaternion.Euler(Mathf.Sin(k * 18f) * 9f * settle, 0f, Mathf.Cos(k * 15f) * 6f * settle);
                 float snap = Mathf.Clamp01((k - 0.8f) * 3f); // về đúng hướng ban đầu
-                chest.SetPositionAndRotation(_restPos + Vector3.up * _lift,
+                WriteChest(_restPos + Vector3.up * _lift,
                     Quaternion.Slerp(Quaternion.Euler(0f, yaw, 0f) * _restRot * tip, _restRot, snap));
                 return;
             }
@@ -557,18 +580,19 @@ namespace ChoDoLa.ChestFx
                 {
                     _lift = 0f;
                     _liftVel = 0f;
-                    if (!_slammed) { _slammed = true; Shockwave(); }
+                    if (!_slammed) { _slammed = true; _slamK = k; Shockwave(); }
                 }
                 _spin += Mathf.Lerp(_spinSpeed, 0f, Mathf.Clamp01(k * 2f)) * dt;
-                Quaternion q = _slammed ? Quaternion.Slerp(chest.rotation, _restRot, dt * 14f) : Quaternion.Euler(0f, _spin, 0f) * _restRot;
+                Quaternion q = _slammed ? Quaternion.Slerp(_wantRot, _restRot, dt * 14f) : Quaternion.Euler(0f, _spin, 0f) * _restRot;
                 Vector3 jolt = Vector3.zero;
                 if (_slammed) jolt = new Vector3(0f, Mathf.Abs(Mathf.Sin(k * 40f)) * 0.01f * Mathf.Exp(-k * 6f), 0f);
-                chest.SetPositionAndRotation(_restPos + Vector3.up * _lift + jolt, q);
+                WriteChest(_restPos + Vector3.up * _lift + jolt, q);
                 if (_pillar != null)
                 {
-                    float w = Mathf.Lerp(_pillar.localScale.x, _slammed ? 0.35f : 0.06f, dt * 10f);
-                    _pillar.localScale = new Vector3(w, 3f, w);
-                    if (_slammed && k > 1.2f) _pillar.localScale = new Vector3(w * Mathf.Exp(-(k - 1.2f) * 2f), 3f, w);
+                    float w = Mathf.Lerp(_pillar.localScale.x, _slammed ? 0.2f * _size : 0.06f * _size, dt * 10f);
+                    float fade = _slammed && _slamK >= 0f ? Mathf.Clamp01(1f - (k - _slamK - 0.9f) / 0.6f) : 1f;
+                    _pillar.localScale = new Vector3(w * fade, 1.25f * _size, w * fade);
+                    if (_slammed && _slamK >= 0f && k > _slamK + 1.5f) { Destroy(_pillar.gameObject); _pillar = null; } // sống 1,5 s
                 }
                 if (_light != null) _light.intensity = Mathf.Lerp(_light.intensity, 1f, dt * 3f);
                 return;
@@ -578,7 +602,7 @@ namespace ChoDoLa.ChestFx
             _lift = Mathf.Lerp(_lift, 0f, dt * 8f);
             _spin += Mathf.Lerp(_spinSpeed, 0f, Mathf.Clamp01(k * 3f)) * dt;
             float back = Mathf.Clamp01(k * 2.5f);
-            chest.SetPositionAndRotation(_restPos + Vector3.up * _lift, Quaternion.Slerp(Quaternion.Euler(0f, _spin, 0f) * _restRot, _restRot, back));
+            WriteChest(_restPos + Vector3.up * _lift, Quaternion.Slerp(Quaternion.Euler(0f, _spin, 0f) * _restRot, _restRot, back));
             if (_light != null)
             {
                 _light.transform.position = _restPos + Vector3.up * 0.3f;
@@ -598,8 +622,8 @@ namespace ChoDoLa.ChestFx
                 Release(s.rb, d * power + Vector3.up * power * 0.6f, RandVec() * 15f);
             }
             if (_light != null) _light.intensity = _tier == ChestTier.HuyenThoai ? 14f : 9f;
-            Puff(Color.Lerp(_tierColor, Color.white, 0.4f), _tier == ChestTier.HuyenThoai ? 80 : 45, true);
-            Sfx(stoneClip, 1f, 0.6f); // tiếng đá dội của cú dập
+            Puff(Color.Lerp(_tierColor, Color.white, 0.4f), _tier == ChestTier.HuyenThoai ? 60 : 35, true);
+            if (_tier >= ChestTier.RatHiem) Sfx(slamClip, 0.6f); // HĐ: chỉ RH/HT
         }
 
         // ------------------------------------------------------------------ Tiện ích
@@ -623,6 +647,7 @@ namespace ChoDoLa.ChestFx
             }
             _floorY = any ? b.min.y : chest.position.y;
             _chestRadius = any ? Mathf.Max(b.extents.x, b.extents.z) : 0.25f;
+            _size = any ? Mathf.Max(0.1f, Mathf.Max(b.size.x, Mathf.Max(b.size.y, b.size.z))) : 0.5f;
             // Sàn thật bên dưới (nếu rương không đặt sát sàn).
             if (Physics.Raycast(new Vector3(_restPos.x + _chestRadius * 2.5f, _floorY + 0.5f, _restPos.z), Vector3.down, out RaycastHit hit, 2f))
                 _floorY = hit.point.y;
@@ -638,11 +663,71 @@ namespace ChoDoLa.ChestFx
             return s;
         }
 
+        /// <summary>Tiếng lẻ. Cao độ khác 1 thì nhờ lõi tạo nguồn riêng (A7), không đổi pitch của nguồn đang ngân.</summary>
         private void Sfx(AudioClip clip, float vol, float pitch = 1f)
         {
-            if (clip == null || _sfxSrc == null) return;
-            _sfxSrc.pitch = pitch;
-            _sfxSrc.PlayOneShot(clip, vol * volume);
+            if (clip == null) return;
+            if (!Mathf.Approximately(pitch, 1f) && _reveal != null) { _reveal.PlayOneShot(clip, vol * volume, pitch); return; }
+            if (_sfxSrc != null) _sfxSrc.PlayOneShot(clip, vol * volume);
+        }
+
+        /// <summary>Sự kiện trước chốt: tối đa 1 tiếng mỗi 0,2 s (A3), âm lượng 0,3–0,5.</summary>
+        private void Event(AudioClip clip, float vol, float pitch = 1f)
+        {
+            if (clip == null || _phase == Phase.Ending || _phase == Phase.Done) return;
+            if (!ChestAudioRule.TryGate(ref _lastEvt, ChestAudioRule.EventGap)) return;
+            Sfx(clip, Mathf.Min(vol, ChestAudioRule.EventMax), pitch);
+        }
+
+        /// <summary>TC (A4): đúng 1 clip stingClips[bậc]. Rác: lặng 0,2 s rồi xịt; bậc khác phát ngay.</summary>
+        private void PlaySting(ChestTier tier)
+        {
+            if (stingClips == null || stingClips.Length == 0) return;
+            int i = Mathf.Clamp(tier.Rank(), 0, stingClips.Length - 1);
+            AudioClip clip = stingClips[i];
+            if (clip == null) return;
+            if (tier == ChestTier.Rac) { _stingClip = clip; _stingAt = Time.time + ChestAudioRule.RacSilence; return; }
+            float v = tier == ChestTier.Thuong ? 0.7f : tier == ChestTier.Hiem ? 0.85f : 1f;
+            Sfx(clip, Mathf.Min(v, ChestAudioRule.StingMax));
+        }
+
+        /// <summary>Nền dâng 0,15 → 0,45 và cao độ +45% theo độ căng; tiếng xịt của Rác sau 0,2 s lặng.</summary>
+        private void UpdateAudio(float now)
+        {
+            if (_stingAt >= 0f && Time.time >= _stingAt)
+            {
+                Sfx(_stingClip, 0.7f);
+                _stingAt = -1f;
+                _stingClip = null;
+            }
+            if (_buildSrc != null && _phase != Phase.Ending && _phase != Phase.Done)
+            {
+                float t = Tension(now);
+                _buildSrc.volume = Mathf.Lerp(0.15f, ChestAudioRule.BedMax, t) * volume;
+                _buildSrc.pitch = Mathf.Lerp(1f, 1.45f, t);
+            }
+        }
+
+        /// <summary>
+        /// Ghi vị trí/góc rương dưới dạng độ lệch so với gốc. Gốc = giá trị BoxOpenSequence vừa ghi nếu khác giá trị
+        /// hook ghi khung trước (kiểu HaiTacSeqHook.LateUpdate); không thì giữ gốc cũ.
+        /// </summary>
+        private void WriteChest(Vector3 wantPos, Quaternion wantRot)
+        {
+            Transform chest = _reveal.transform;
+            if (!_hasWritten || (chest.position - _lastPos).sqrMagnitude > 1e-8f || Quaternion.Angle(chest.rotation, _lastRot) > 0.01f)
+            {
+                _basePos = chest.position;
+                _baseRot = chest.rotation;
+                if (!_hasWritten) { _basePos = _restPos; _baseRot = _restRot; }
+            }
+            Vector3 pos = _basePos + (wantPos - _restPos);
+            Quaternion rot = (wantRot * Quaternion.Inverse(_restRot)) * _baseRot;
+            chest.SetPositionAndRotation(pos, rot);
+            _wantRot = wantRot;
+            _lastPos = chest.position;
+            _lastRot = chest.rotation;
+            _hasWritten = true;
         }
 
         private LineRenderer MakeLine(string n, int count, bool loop, float width)
@@ -743,6 +828,10 @@ namespace ChoDoLa.ChestFx
             _root = null;
             _lift = _liftVel = _spin = _spinSpeed = 0f;
             _slammed = false;
+            _slamK = -1f;
+            _stingAt = -1f;
+            _stingClip = null;
+            _hasWritten = false;
             _phase = Phase.Idle;
         }
     }
