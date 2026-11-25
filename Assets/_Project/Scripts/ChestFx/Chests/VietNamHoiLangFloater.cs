@@ -3,32 +3,42 @@ using UnityEngine;
 namespace ChoDoLa.ChestFx
 {
     /// <summary>
-    /// Vật nổi của "Đêm hội làng" (đèn hoa đăng, bánh chưng): Rigidbody thật, lực nổi kiểu lò xo dưới mặt nước,
-    /// cản nước, và lực "tụ hội" kéo về một vòng quanh rương (kèm xoáy nhẹ). Va vào rương thì báo hook để rương chao.
-    /// Chế độ <see cref="Rising"/>: tắt trọng lực, bay lên như đèn trời rồi tự huỷ. Do VietNamHoiLangHook tạo lúc chạy.
+    /// Hoa đăng của "Đêm hội làng" (đã thu gọn theo kế hoạch 2026-11-25): Rigidbody kinematic, KHÔNG còn nổi trên nước.
+    /// Hai việc: (1) <see cref="FlyIn"/> — bay từ vòng 1,4 S vào miệng rương theo đường cong Bezier 3 điểm, tới nơi thì thu nhỏ
+    /// về 0 rồi tắt (GameObject ẩn, giữ lại dùng lúc kết); (2) <see cref="Emerge"/> — trồi khỏi miệng rương, bay lên với tốc độ
+    /// cố định như đèn trời, mờ dần rồi tự huỷ. Do VietNamHoiLangHook tạo lúc chạy.
     /// </summary>
     public class VietNamHoiLangFloater : MonoBehaviour
     {
+        private enum Mode { Idle, Fly, Shrink, Grow, Rise, Fade }
+
         private VietNamHoiLangHook _owner;
         private Rigidbody _body;
         private Renderer _flame;
         private Light _light;
-        private float _lit = 1f, _litTarget = 1f;
-        private float _riseAge;
         private Vector3 _flameBase;
+        private float _lit = 1f, _litTarget = 1f;
+
+        private Mode _mode = Mode.Idle;
+        private float _age, _dur, _peak;
+        private Vector3 _from;
+        private float _riseSpeed, _riseHeight, _riseDone;
 
         public Rigidbody Body => _body;
-        public float WaterY { get; set; }
-        public Vector3 Center { get; set; }
-        public float GatherRadius { get; set; } = 0.6f;
-        /// <summary>0 = trôi tự do, 1 = tụ về rương, âm = dạt ra xa.</summary>
-        public float Gather { get; set; } = 1f;
-        public bool Rising { get; private set; }
+        public bool Hidden => _mode == Mode.Idle && !gameObject.activeSelf;
+        public bool InFlight => _mode == Mode.Fly || _mode == Mode.Shrink;
+        /// <summary>Điểm xuất phát của lượt bay vào (để hook biết đèn tới từ hướng nào).</summary>
+        public Vector3 FlyFrom => _from;
 
         public void Init(VietNamHoiLangHook owner, Rigidbody body)
         {
             _owner = owner;
             _body = body;
+            if (_body != null)
+            {
+                _body.isKinematic = true;
+                _body.useGravity = false;
+            }
         }
 
         public void SetFlame(Renderer flame, Light light)
@@ -38,66 +48,104 @@ namespace ChoDoLa.ChestFx
             if (flame != null) _flameBase = flame.transform.localScale;
         }
 
-        /// <summary>Thổi tắt (bậc thấp) hoặc thắp lại.</summary>
-        public void SetLit(float target) => _litTarget = Mathf.Clamp01(target);
-
-        /// <summary>Thành đèn trời: bay lên, lượn, mờ dần.</summary>
-        public void Rise()
+        /// <summary>Bay từ <paramref name="from"/> vào miệng rương trong <paramref name="duration"/> giây; đỉnh cong cao hơn miệng <paramref name="peak"/>.</summary>
+        public void FlyIn(Vector3 from, float peak, float duration)
         {
-            if (Rising || _body == null) return;
-            Rising = true;
-            _body.useGravity = false;
-            _body.linearDamping = 0.6f;
+            _from = from;
+            _peak = peak;
+            _dur = Mathf.Max(0.1f, duration);
+            _age = 0f;
+            _mode = Mode.Fly;
+            transform.localScale = Vector3.one;
+            transform.position = from;
         }
 
-        private void FixedUpdate()
+        /// <summary>Trồi khỏi miệng rương, bay thẳng lên <paramref name="height"/> với tốc độ cố định, rồi mờ dần và tự huỷ.</summary>
+        public void Emerge(float height, float speed)
         {
-            if (_body == null) return;
-            float dt = Time.fixedDeltaTime;
-            Vector3 p = _body.position;
+            gameObject.SetActive(true);
+            _riseHeight = Mathf.Max(0.1f, height);
+            _riseSpeed = Mathf.Max(0.1f, speed);
+            _riseDone = 0f;
+            _from = _owner != null ? _owner.MouthPoint : transform.position;
+            transform.position = _from;
+            transform.localScale = Vector3.zero;
+            _lit = 1f;
+            _litTarget = 1f;
+            _age = 0f;
+            _mode = Mode.Grow;
+        }
 
-            if (Rising)
-            {
-                _riseAge += dt;
-                float sway = Mathf.Sin((_riseAge + p.x * 3f) * 1.7f) * 0.4f;
-                _body.AddForce(new Vector3(sway, 1.1f, sway * 0.5f), ForceMode.Acceleration);
-                if (_riseAge > 7f) Destroy(gameObject);
-                return;
-            }
-
-            float depth = WaterY - p.y;
-            if (depth > 0f)
-            {
-                // Lò xo nổi (cân bằng ngập ~4 cm) + cản nước + dựng thẳng.
-                _body.AddForce(Vector3.up * Mathf.Min(depth, 0.12f) * 220f, ForceMode.Acceleration);
-                _body.AddForce(-_body.linearVelocity * 2.2f, ForceMode.Acceleration);
-                Vector3 tiltAxis = Vector3.Cross(transform.up, Vector3.up);
-                _body.AddTorque(tiltAxis * 6f - _body.angularVelocity * 0.8f, ForceMode.Acceleration);
-
-                Vector3 d = Center - p;
-                d.y = 0f;
-                float dist = d.magnitude;
-                if (dist > 0.001f && Gather != 0f)
-                {
-                    Vector3 dir = d / dist;
-                    Vector3 radial = Gather > 0f ? dir * (dist - GatherRadius) * 0.9f * Gather : dir * 0.6f * Gather;
-                    Vector3 swirl = Vector3.Cross(Vector3.up, dir) * 0.22f * Mathf.Abs(Gather);
-                    _body.AddForce(radial + swirl, ForceMode.Acceleration);
-                }
-            }
+        /// <summary>Tắt hẳn ngay (dùng khi dọn).</summary>
+        public void Hide()
+        {
+            _mode = Mode.Idle;
+            gameObject.SetActive(false);
         }
 
         private void Update()
         {
-            _lit = Mathf.MoveTowards(_lit, _litTarget, Time.deltaTime * 4f);
+            float dt = Time.deltaTime;
+            _age += dt;
+            switch (_mode)
+            {
+                case Mode.Fly:
+                {
+                    float u = Mathf.Clamp01(_age / _dur);
+                    Vector3 p0 = _from;
+                    Vector3 p2 = _owner != null ? _owner.MouthPoint : _from;
+                    Vector3 p1 = (p0 + p2) * 0.5f;
+                    p1.y = (p0.y + p2.y) * 0.5f + 2f * _peak; // đỉnh đường cong = trung điểm + _peak
+                    float v = 1f - u;
+                    transform.position = v * v * p0 + 2f * v * u * p1 + u * u * p2;
+                    if (u >= 1f)
+                    {
+                        _mode = Mode.Shrink;
+                        _age = 0f;
+                        if (_owner != null) _owner.OnLanternArrived(this);
+                    }
+                    break;
+                }
+                case Mode.Shrink:
+                {
+                    float u = Mathf.Clamp01(_age / 0.2f);
+                    if (_owner != null) transform.position = _owner.MouthPoint;
+                    transform.localScale = Vector3.one * (1f - u);
+                    if (u >= 1f) Hide();
+                    break;
+                }
+                case Mode.Grow:
+                {
+                    float u = Mathf.Clamp01(_age / 0.2f);
+                    transform.position = _from;
+                    transform.localScale = Vector3.one * u;
+                    if (u >= 1f) _mode = Mode.Rise;
+                    break;
+                }
+                case Mode.Rise:
+                {
+                    _riseDone += _riseSpeed * dt;
+                    float sway = Mathf.Sin(_age * 2.2f + _from.x * 3f) * 0.05f * _riseHeight;
+                    transform.position = _from + new Vector3(sway, _riseDone, sway * 0.5f);
+                    if (_riseDone >= _riseHeight * 0.75f) { _mode = Mode.Fade; _age = 0f; _litTarget = 0f; }
+                    break;
+                }
+                case Mode.Fade:
+                {
+                    _riseDone += _riseSpeed * dt;
+                    float sway = Mathf.Sin(_age * 2.2f + _from.x * 3f) * 0.05f * _riseHeight;
+                    transform.position = _from + new Vector3(sway, _riseDone, sway * 0.5f);
+                    float u = Mathf.Clamp01(_age / 0.45f);
+                    transform.localScale = Vector3.one * (1f - u);
+                    if (u >= 1f) Destroy(gameObject);
+                    break;
+                }
+            }
+
+            _lit = Mathf.MoveTowards(_lit, _litTarget, dt * 4f);
             float flicker = 0.85f + 0.15f * Mathf.PerlinNoise(Time.time * 9f, transform.position.x * 13f);
             if (_flame != null) _flame.transform.localScale = _flameBase * Mathf.Max(0.02f, _lit * flicker);
             if (_light != null) _light.intensity = 1.2f * _lit * flicker;
-        }
-
-        private void OnCollisionEnter(Collision c)
-        {
-            if (_owner != null && !Rising) _owner.OnFloaterHit(this, c.collider, c.relativeVelocity.magnitude);
         }
     }
 }
