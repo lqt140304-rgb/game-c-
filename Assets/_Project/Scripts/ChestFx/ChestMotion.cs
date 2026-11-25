@@ -157,7 +157,8 @@ namespace ChoDoLa.ChestFx
                 {
                     h.Done = true;
                     _active.RemoveAt(i);
-                    if (h.holdEnd && h.kind != StepMotionKind.SquashHold) _held.Add(h);
+                    // ShakeAll/Float luôn tự trả về chỗ cũ (không bao giờ để rương kẹt trên không).
+                    if (h.holdEnd && h.kind != StepMotionKind.SquashHold && h.kind != StepMotionKind.ShakeAll && h.kind != StepMotionKind.Float) _held.Add(h);
                 }
             }
             foreach (Handle h in _held) Accumulate(ref total, h, 1f, h.duration);
@@ -279,6 +280,45 @@ namespace ChoDoLa.ChestFx
                     else { float x = Mathf.Clamp01((d - t) / fall); fv = x * x * (3f - 2f * x); }
                     float k = h.amplitude * fv;
                     total.scale = Vector3.Scale(total.scale, new Vector3(1f + k * 0.5f, 1f - k, 1f + k * 0.5f));
+                    break;
+                }
+                case StepMotionKind.ShakeAll:
+                {
+                    // Rung mọi hướng: tịnh tiến 3 trục + nghiêng nhẹ quanh 3 trục. Tăng dần 15% đầu, giảm dần 25% cuối.
+                    float env = Mathf.Clamp01(u / 0.15f) * Mathf.Clamp01((1f - u) / 0.25f);
+                    env = env * env * (3f - 2f * env);
+                    float s = h.seed * 17.31f;
+                    float f = Mathf.Max(1f, h.frequency);
+                    float a = h.amplitude * env;
+                    total.pos += new Vector3(
+                        (Mathf.PerlinNoise(s + t * f, 0.3f) - 0.5f) * 2f,
+                        (Mathf.PerlinNoise(0.7f, s + t * f) - 0.5f) * 2f,
+                        (Mathf.PerlinNoise(s + 5.1f, t * f) - 0.5f) * 2f) * a;
+                    // Nghiêng: ~60 độ mỗi mét biên độ, trần 6 độ.
+                    float tilt = Mathf.Min(h.amplitude * 60f, 6f) * env;
+                    Vector3 e = new Vector3(
+                        (Mathf.PerlinNoise(s + 11.3f, t * f * 0.8f) - 0.5f) * 2f,
+                        (Mathf.PerlinNoise(t * f * 0.8f, s + 13.7f) - 0.5f) * 2f,
+                        (Mathf.PerlinNoise(s + 19.1f, 2.9f + t * f * 0.8f) - 0.5f) * 2f) * tilt;
+                    total.rot = total.rot * Quaternion.Euler(e);
+                    break;
+                }
+                case StepMotionKind.Float:
+                {
+                    // Bay lên theo trục đứng thế giới (30% đầu, ease), lơ lửng nhấp nhô, hạ về trong 30% cuối. Luôn hạ về.
+                    // frequency = tổng số độ xoay chậm quanh trục đứng trong cả bước (0 = không xoay).
+                    float rise = Mathf.Clamp01(u / 0.3f);
+                    rise = 1f - (1f - rise) * (1f - rise);
+                    float fall = Mathf.Clamp01((u - 0.7f) / 0.3f);
+                    fall = fall * fall * (3f - 2f * fall);
+                    float lift = rise * (1f - fall);
+                    float y = h.amplitude * lift + 0.08f * h.amplitude * Mathf.Sin(t * 4.2f) * lift;
+                    total.pos += Vector3.up * y;
+                    if (Mathf.Abs(h.frequency) > 0.01f)
+                    {
+                        float yaw = h.frequency * Mathf.Sin(u * Mathf.PI); // quay đi rồi quay về, không lệch hướng khi hết
+                        total.rot = total.rot * Quaternion.AngleAxis(yaw, Vector3.up);
+                    }
                     break;
                 }
                 default: // Fly

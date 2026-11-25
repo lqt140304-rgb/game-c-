@@ -25,8 +25,8 @@ namespace ChoDoLa.ChestFx
         public static void Build(ChestScript s, KeyPreset preset)
         {
             s.steps.Clear();
-            s.description = "Chuỗi vật mở khoá chuẩn: vật mở khoá đến và mở (cue chia_khoa, 1,35 s) → mở nắp → rung 3 nấc → bóp méo theo bậc lúc chốt. "
-                + "Lưu ý: lõi chốt ở stage 3 (lockStage=3) nên nấc rung 2 và 3 gắn vào stage 1 và 2 (kế hoạch ghi 2 và 3).";
+            s.description = "Chuỗi vật mở khoá chuẩn: vật mở khoá đến và mở (cue chia_khoa, 1,35 s) → mở nắp → chuyển động cả rương 3 nấc theo kiểu (rung mọi hướng/bay/xoay/lắc/nảy) → bóp méo theo bậc lúc chốt (bậc cao bay lên ngắn). "
+                + "Lưu ý: lõi chốt ở stage 3 (lockStage=3) nên nấc 2 và 3 gắn vào stage 1 và 2 (kế hoạch ghi 2 và 3).";
 
             // a) vật mở khoá
             ChestStep cue = ChestStepBuilder.Add(s, "chia-khoa", StepKind.Cue, StepStart.OnPress);
@@ -36,14 +36,9 @@ namespace ChoDoLa.ChestFx
             // b) mở nắp
             ChestStepBuilder.Add(s, "mo-ruong", StepKind.OpenBox, StepStart.AfterPrevious);
 
-            // c) rung 3 nấc (biên độ nhân S/0,5)
-            float sh = preset.shakeScale <= 0f ? 1f : preset.shakeScale;
-            ChestStep s1 = ChestStepBuilder.Motion(s, "rung-1", StepMotionKind.Shake, 0.004f * sh, 30f, 1.2f, StepStart.OnEvent);
-            s1.startEvent = DoneEvent; s1.ampUnit = AmpUnit.PerHalfMeterSize;
-            ChestStep s2 = ChestStepBuilder.Motion(s, "rung-2", StepMotionKind.Shake, 0.007f * sh, 30f, 1.6f, StepStart.OnStage);
-            s2.startStage = 1; s2.ampUnit = AmpUnit.PerHalfMeterSize;
-            ChestStep s3 = ChestStepBuilder.Motion(s, "rung-3", StepMotionKind.Shake, 0.011f * sh, 30f, 2.2f, StepStart.OnStage);
-            s3.startStage = 2; s3.ampUnit = AmpUnit.PerHalfMeterSize;
+            // c) chuyển động cả rương 3 nấc theo preset.moveStyle (nấc 1: sau "chia_khoa_xong"; nấc 2: stage 1; nấc 3: stage 2)
+            float sh = preset.shakeScale <= 0f ? 1f : Mathf.Min(preset.shakeScale, 1.5f); // trần: lệch ngang <= ~0,1 S
+            BuildMoves(s, preset.moveStyle, sh);
 
             // d) bóp méo 5 bậc
             for (int i = 0; i < Rows.Length; i++)
@@ -74,6 +69,75 @@ namespace ChoDoLa.ChestFx
                     ChestStep jp = ChestStepBuilder.Motion(s, "jump-" + r.tag, StepMotionKind.Jump, j, cycles, 0.9f, StepStart.WithPrevious);
                     jp.ampUnit = AmpUnit.ChestHeights;
                     jp.minTier = r.tier; jp.maxTier = r.tier;
+                }
+
+                // bậc cao: bay lên ngắn "ăn mừng", tự hạ về sau 2,4 s
+                if (r.tier == ChestTier.RatHiem || r.tier == ChestTier.HuyenThoai)
+                {
+                    float fh = r.tier == ChestTier.HuyenThoai ? 0.15f : 0.10f;
+                    ChestStep fl = ChestStepBuilder.Motion(s, "bay-mung-" + r.tag, StepMotionKind.Float, fh, 0f, 2.4f, StepStart.WithPrevious);
+                    fl.ampUnit = AmpUnit.ChestHeights;
+                    fl.minTier = r.tier; fl.maxTier = r.tier;
+                }
+            }
+        }
+
+        private static ChestStep Move(ChestScript s, string id, StepMotionKind kind, float amp, float freq, float dur, int nac, AmpUnit unit, Vector3 axis)
+        {
+            StepStart start = nac == 1 ? StepStart.OnEvent : StepStart.OnStage;
+            ChestStep st = ChestStepBuilder.Motion(s, id, kind, amp, freq, dur, start);
+            if (nac == 1) st.startEvent = DoneEvent; else st.startStage = nac - 1;
+            st.ampUnit = unit;
+            st.axis = axis;
+            return st;
+        }
+
+        private static readonly float[] NacDur = { 1.2f, 1.6f, 2.2f };
+
+        /// <summary>Dựng 3 nấc chuyển động theo kiểu. Biên độ mét nhân S/0,5 hoặc H; góc (độ) tuyệt đối. Mọi bước tự trả rương về chỗ cũ.</summary>
+        private static void BuildMoves(ChestScript s, ChestMoveStyle style, float sh)
+        {
+            AmpUnit S = AmpUnit.PerHalfMeterSize, H = AmpUnit.ChestHeights, A = AmpUnit.Absolute;
+            for (int n = 1; n <= 3; n++)
+            {
+                int i = n - 1;
+                float dur = NacDur[i];
+                string tag = "-" + n;
+                switch (style)
+                {
+                    case ChestMoveStyle.Float:
+                    {
+                        Move(s, "rung" + tag, StepMotionKind.ShakeAll, new[] { 0.006f, 0.005f, 0.006f }[i] * sh, 26f, dur, n, S, Vector3.up);
+                        if (n >= 2)
+                            Move(s, "bay" + tag, StepMotionKind.Float, n == 2 ? 0.15f : 0.30f, n == 2 ? 20f : 40f, dur, n, H, Vector3.up);
+                        break;
+                    }
+                    case ChestMoveStyle.Spin:
+                    {
+                        // trọn vòng để khi hết không bị giật về góc cũ
+                        Move(s, "xoay" + tag, StepMotionKind.Spin, new[] { 360f, 720f, 1080f }[i], 1f, dur, n, A, Vector3.up);
+                        Move(s, "rung" + tag, StepMotionKind.ShakeAll, 0.005f * sh, 26f, dur, n, S, Vector3.up);
+                        break;
+                    }
+                    case ChestMoveStyle.Wobble:
+                    {
+                        float deg = new[] { 6f, 10f, 15f }[i] * sh;
+                        Move(s, "lac-x" + tag, StepMotionKind.Wobble, deg, 2f + n, dur, n, A, Vector3.right);
+                        Move(s, "lac-z" + tag, StepMotionKind.Wobble, deg * 0.8f, 1.5f + n, dur, n, A, Vector3.forward);
+                        Move(s, "rung" + tag, StepMotionKind.ShakeAll, 0.004f * sh, 26f, dur, n, S, Vector3.up);
+                        break;
+                    }
+                    case ChestMoveStyle.Bounce:
+                    {
+                        Move(s, "nay" + tag, StepMotionKind.Jump, new[] { 0.06f, 0.12f, 0.20f }[i], 1 + n, dur, n, H, Vector3.up);
+                        Move(s, "lac" + tag, StepMotionKind.Wobble, new[] { 4f, 6f, 9f }[i], 1 + n, dur, n, A, new Vector3(1f, 0f, 1f));
+                        break;
+                    }
+                    default: // Shake
+                    {
+                        Move(s, "rung" + tag, StepMotionKind.ShakeAll, new[] { 0.008f, 0.016f, 0.028f }[i] * sh, 30f, dur, n, S, Vector3.up);
+                        break;
+                    }
                 }
             }
         }

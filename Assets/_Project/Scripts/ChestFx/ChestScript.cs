@@ -37,7 +37,7 @@ namespace ChoDoLa.ChestFx
     /// <summary>Gốc toạ độ cho vị trí của bước.</summary>
     public enum StepAnchor { Mouth, ChestCenter, ChestBase, Silhouette }
 
-    public enum StepMotionKind { Shake, Jump, Spin, Hover, Wobble, Squash, Fly, SquashHold }
+    public enum StepMotionKind { Shake, Jump, Spin, Hover, Wobble, Squash, Fly, SquashHold, ShakeAll, Float }
 
     /// <summary>Đơn vị của biên độ ChestMotion: tuyệt đối, theo cỡ rương (mỗi 0,5 m cạnh lớn), hoặc theo chiều cao rương.</summary>
     public enum AmpUnit { Absolute, PerHalfMeterSize, ChestHeights }
