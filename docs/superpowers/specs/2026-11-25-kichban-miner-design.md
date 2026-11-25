@@ -46,7 +46,7 @@ Mọi âm của kịch bản được **tổng hợp lúc chạy** trong `MinerS
 - `Tools/CompileCheck/check_miner_dig.sh` (check_miner.sh chuyển sang đây); thêm `AudioClip.Create/SetData`, `Collision` vào `UnityStubAll.cs`.
 
 ## Cần nối sau (chưa làm — phụ thuộc phiên lõi)
-Nhánh `claude/chest-fx-core` **chưa có trên remote** khi viết (2026-11-25). Hiện nơi bấm mở (`ChestRevealDemo`,
+Nhánh `claude/chest-fx-core` không có trên remote; nhánh lõi thực tế `claude/chest-open-fx-core` (0a594b3) đã nằm sẵn trong lịch sử nhánh này và **chưa có API intro trước Play** (kiểm 2026-11-25). Hiện nơi bấm mở (`ChestRevealDemo`,
 menu cầm rương) gọi thẳng `reveal.Play(...)` nên **kịch bản đào chưa tự chạy**. Cần một trong hai:
 1. Khung lõi có điểm "intro trước Play" (vd. hook `OnOpenPressed` có thể trì hoãn Play) → `MinerDigSequence` đăng ký vào đó; hoặc
 2. Sửa tối thiểu nơi gọi: `if (!MinerDigSequence.TryBegin(reveal, tier, item)) reveal.Play(tier, item);`.
