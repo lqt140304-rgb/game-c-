@@ -82,6 +82,10 @@ namespace ChoDoLa.ChestFx
         [Tooltip("Small orbs orbiting the chest: their number = tier rank (1 Rác .. 5 Huyền thoại). Colour-blind cue.")]
         [SerializeField] private bool showRankPips = true;
 
+        [Header("Kịch bản (ChestScript)")]
+        [Tooltip("Ghi đè kịch bản của hồ sơ (profile.script). Để trống = dùng kịch bản của hồ sơ; cả hai trống = rương chạy như cũ.")]
+        [SerializeField] private ChestScript scriptOverride;
+
         [Header("Audio")]
         [Tooltip("Empty = the AudioSource on this object, or one is added.")]
         [SerializeField] private AudioSource audioSource;
@@ -96,6 +100,8 @@ namespace ChoDoLa.ChestFx
         public UnityEvent<ChestTier> onTierLocked;       // stopped on the rolled tier
         public UnityEvent onSilhouetteComplete;          // silhouette at full size: swap in the real item here
         public UnityEvent onRevealed;                    // box open and silhouette complete
+        public UnityEvent onPress;                       // Play() vừa được gọi (bấm mở): âm căng thẳng bắt đầu cùng lúc
+        public UnityEvent<string> onScriptEvent;         // mọi sự kiện kịch bản (xem ChestEvents), kể cả sự kiện tự đặt
 
         // ------------------------------------------------------------------ State
 
@@ -143,6 +149,15 @@ namespace ChoDoLa.ChestFx
         private float _silSpin;
         private float _silCompleteTime;
 
+        private ChestTension _tension;
+        private TensionResolution _resolution;
+        private ChestScriptContext _ctx;
+        private ChestScriptRunner _runner;
+        private ChestFxScope _scope;
+        private ChestMotion _motion;
+        private bool _boxBegun;
+        private readonly Dictionary<string, bool> _stepOverrides = new Dictionary<string, bool>();
+
         private AudioSource _tickSource;
         private GameObject _customFx;
         private readonly List<ChestFxHook> _hooks = new List<ChestFxHook>();
@@ -157,6 +172,55 @@ namespace ChoDoLa.ChestFx
         public TierPalette Palette => palette != null ? palette : TierPalette.Default;
         public ChestFxProfile Profile => profile != null ? profile : ChestFxProfile.Default;
         public BoxOpenSequence Box => box;
+
+        /// <summary>Kịch bản đang dùng: scriptOverride, nếu trống thì kịch bản của hồ sơ, nếu trống nữa thì null.</summary>
+        public ChestScript Script => scriptOverride != null ? scriptOverride : Profile.script;
+        /// <summary>Âm căng thẳng của lần mở này (null nếu tắt hoặc chưa Play).</summary>
+        public ChestTension Tension => _tension;
+        /// <summary>Cách âm căng thẳng kết thúc (chỉ có nghĩa sau khi chốt).</summary>
+        public TensionResolution Resolution => _resolution;
+        /// <summary>Bối cảnh kịch bản của lần mở này (null trước khi Play).</summary>
+        public ChestScriptContext Context => _ctx;
+        public IReadOnlyList<ChestFxHook> Hooks => _hooks;
+        public float ChestHeight => _chestHeight;
+        public float ChestSize => _chestSize;
+
+        /// <summary>
+        /// Chuyển động cả rương. Tạo khi cần; nên gọi từ OnPress hoặc sớm hơn (nó ghi nhớ các Renderer của rương lúc được tạo để ẩn/hiện).
+        /// </summary>
+        public ChestMotion Motion
+        {
+            get
+            {
+                if (_motion == null)
+                {
+                    _motion = ChestMotion.GetOrAdd(gameObject);
+                    _motion.CaptureVisuals();
+                }
+                return _motion;
+            }
+        }
+
+        /// <summary>Bật/tắt một bước kịch bản theo id cho các lần Play sau (ví dụ bật bước thả đồng xu). Không sửa asset.</summary>
+        public void SetStepEnabled(string stepId, bool enabled)
+        {
+            if (!string.IsNullOrEmpty(stepId)) _stepOverrides[stepId] = enabled;
+        }
+
+        /// <summary>Quên mọi SetStepEnabled.</summary>
+        public void ClearStepOverrides() => _stepOverrides.Clear();
+
+        /// <summary>Phát sự kiện kịch bản có tên (hook/game dùng để báo cho các bước đang chờ). Được nhớ cho tới ResetReveal.</summary>
+        public void RaiseEvent(string eventName)
+        {
+            if (_ctx != null) _ctx.Raise(eventName);
+        }
+
+        internal void NotifyScriptEvent(string eventName)
+        {
+            onScriptEvent?.Invoke(eventName);
+            foreach (ChestFxHook h in _hooks) if (h != null) h.OnScriptEvent(this, eventName);
+        }
 
         /// <summary>World position of the chest mouth (where the glow sits).</summary>
         public Vector3 MouthPosition => transform.TransformPoint(_mouthLocal);
@@ -203,21 +267,71 @@ namespace ChoDoLa.ChestFx
             }
 
             _camera = Camera.main;
+            ChestScript script = Script;
+            _boxBegun = false;
+            // Ghi nhớ Renderer của rương TRƯỚC khi dựng hiệu ứng (để ẩn/hiện rương không đụng vào hiệu ứng).
+            if (script != null && script.steps.Count > 0) _ = Motion;
             MeasureChest();
             BuildFx();
             BuildSilhouette(itemSource);
             SpawnCustomFx();
 
+            // ÂM BẮT ĐẦU NGAY KHI BẤM MỞ: trước cả khi nắp động đậy và trước khi kịch bản chạy.
+            StartTension();
+            onPress?.Invoke();
+            foreach (ChestFxHook h in _hooks) if (h != null) h.OnPress(this);
+
+            _scope = new ChestFxScope();
+            _ctx = new ChestScriptContext
+            {
+                Reveal = this,
+                Tier = rolledTier,
+                Scope = _scope,
+                Seed = decorationSeed != 0 ? decorationSeed : Environment.TickCount,
+            };
+            bool deferBox = false;
+            if (script != null && script.steps.Count > 0)
+            {
+                _runner = new ChestScriptRunner();
+                _runner.Prepare(script, _ctx, _stepOverrides);
+                deferBox = _runner.WillOpenBox;   // kịch bản có bước OpenBox: nó quyết lúc mở (ví dụ chờ người chơi thả chìa)
+            }
+            _ctx.Raise(ChestEvents.Press);
+            if (_runner != null) _runner.Begin(this);
+            if (!deferBox) BeginBox();
+        }
+
+        /// <summary>
+        /// Bắt đầu mở rương thật sự (BoxOpenSequence + quay màu + độ căng tăng dần). Play tự gọi, trừ khi kịch bản có bước OpenBox
+        /// (khi đó bước đó gọi). Gọi nhiều lần cũng chỉ chạy một lần.
+        /// </summary>
+        public void BeginBox()
+        {
+            if (!_active || _boxBegun) return;
+            _boxBegun = true;
+            float rampSeconds;
             if (box != null)
             {
                 StretchHolds();
+                rampSeconds = box.IntroSeconds + PlannedSeconds(-1, lockStage);
                 if (rouletteStartStage < 0) StartRoulette(PlannedSeconds(-1, lockStage));
                 if (startBoxOnPlay && !box.IsPlaying) box.Play();
             }
             else
             {
+                rampSeconds = standaloneRouletteSeconds;
                 StartRoulette(standaloneRouletteSeconds);
             }
+            if (_tension != null) _tension.StartRamp(rampSeconds);
+        }
+
+        private void StartTension()
+        {
+            ChestTensionSettings ts = Profile.tension;
+            if (ts == null || !ts.enabled) return;
+            _tension = new ChestTension(ts, transform, audioSource != null ? audioSource.spatialBlend : 0.5f,
+                audioSource != null ? audioSource.outputAudioMixerGroup : null,
+                level => { foreach (ChestFxHook h in _hooks) if (h != null) h.OnTensionPulse(this, level); });
         }
 
         /// <summary>Remove every effect and, if asked, close the box again.</summary>
@@ -227,6 +341,13 @@ namespace ChoDoLa.ChestFx
             StopAllCoroutines();
             foreach (ChestFxHook h in _hooks) if (h != null) h.OnReset(this);
             _hooks.Clear();
+
+            if (_tension != null) { _tension.Dispose(); _tension = null; }
+            _runner = null;
+            if (_ctx != null) { _ctx.ClearEvents(); _ctx = null; }
+            if (_scope != null) { _scope.Clear(); _scope = null; }
+            if (_motion != null) _motion.ResetAll();
+            _boxBegun = false;
 
             if (_customFx != null) Destroy(_customFx);
             if (_fxRoot != null) Destroy(_fxRoot.gameObject);
@@ -300,6 +421,7 @@ namespace ChoDoLa.ChestFx
                 _fxRoot.SetPositionAndRotation(MouthPosition, transform.rotation);
             }
 
+            if (_tension != null) _tension.Tick(dt);
             UpdateLight(dt);
             UpdatePips(dt);
             UpdateSilhouette(dt);
@@ -311,6 +433,7 @@ namespace ChoDoLa.ChestFx
         {
             if (!_active) return;
             PlayStageClips(stage);
+            _ctx?.Raise(ChestEvents.Stage(stage));
             if (stage == rouletteStartStage) StartRoulette(PlannedSeconds(rouletteStartStage, lockStage));
             if (stage == lockStage) Lock();
         }
@@ -486,6 +609,7 @@ namespace ChoDoLa.ChestFx
             List<Step> steps = BuildSchedule(duration);
 
             onRoulette?.Invoke();
+            _ctx?.Raise(ChestEvents.Roulette);
             foreach (ChestFxHook h in _hooks) if (h != null) h.OnRouletteStart(this, MouthPosition);
             PlayOneShot(p.openAmbientClip, p.ambientVolume);
 
@@ -625,6 +749,14 @@ namespace ChoDoLa.ChestFx
             ChestFxProfile p = Profile;
             TierPalette.TierStyle style = Palette.Get(_rolled);
 
+            // Khoảnh khắc chốt: BÂY GIỜ âm căng thẳng mới rẽ theo bậc (xem ChestTension: trước đó nó không biết bậc).
+            if (_tension != null)
+            {
+                _resolution = _tension.Resolve(_rolled);
+                if (_resolution == TensionResolution.Deflate && audioSource != null) audioSource.Stop();   // cắt cả tiếng nền đang vang: im thật sự
+                foreach (ChestFxHook h in _hooks) if (h != null) h.OnResolve(this, _rolled, _resolution);
+            }
+
             ShowTier(_rolled, 1f, false);
             if (_motes != null)
             {
@@ -659,6 +791,7 @@ namespace ChoDoLa.ChestFx
             SetSilhouetteColors(style.color, 1f);
 
             onTierLocked?.Invoke(_rolled);
+            _ctx?.Raise(ChestEvents.Lock);
             foreach (ChestFxHook h in _hooks) if (h != null) h.OnTierLocked(this, _rolled, style.color);
         }
 
@@ -831,6 +964,7 @@ namespace ChoDoLa.ChestFx
             if (_silComplete) return;
             _silComplete = true;
             onSilhouetteComplete?.Invoke();
+            _ctx?.Raise(ChestEvents.SilhouetteComplete);
             foreach (ChestFxHook h in _hooks) if (h != null) h.OnSilhouetteComplete(this, _silhouette.transform);
             if (box == null) _boxOpened = true;
             TryRevealed();
@@ -841,6 +975,7 @@ namespace ChoDoLa.ChestFx
             if (_revealed || !_silComplete || !_boxOpened) return;
             _revealed = true;
             onRevealed?.Invoke();
+            _ctx?.Raise(ChestEvents.Revealed);
             foreach (ChestFxHook h in _hooks) if (h != null) h.OnRevealed(this);
         }
 

@@ -44,6 +44,8 @@ Hai hệ input (cũ/mới) đều hỗ trợ.
 2. Play, phím T/Y chọn bậc, Space mở; trong lúc mở bấm **B**, **K**. Thử đủ 5 bậc, R để reset (rương phải về đúng vị trí/góc/tỉ lệ).
 3. Cần kiểm: bóng có ở trong khung hình không (khoảng `spotDistanceFactor`), cỡ bóng (`ballRadiusFactor`), âm lượng tương đối, tiếng trống có dày quá không, va chạm với sàn thật của cảnh, Unity 6 có báo lỗi gì về Rigidbody kinematic + ContinuousSpeculative không.
 
-## Chưa làm / cần nối
-- Nhánh lõi `claude/chest-fx-core` **chưa tồn tại trên origin** lúc xong (2026-11-25) → chưa nối. Hiện hook tự phát hiện lúc bấm mở bằng cách theo dõi `reveal.IsPlaying` trong `Update` (vì `ChestFxHook` chưa có `OnPlay`). Khi khung có sự kiện "bắt đầu mở"/API giờ chốt: thay `Update`-dò và `EstimateLockSeconds` bằng API đó.
-- Giả định `rouletteStartStage=2`, `lockStage=3` (mặc định) khi ước giờ chốt.
+## Nối với khung lõi (`claude/chest-fx-core`, đã merge 2026-11-25)
+- Hook bắt đầu ở `OnPress` (ngay khi bấm mở); `Update` dò `IsPlaying` vẫn giữ làm dự phòng.
+- `TheThaoFxPreset.Apply` đặt `profile.tension.enabled = false`: rương này **tự** dựng độ căng (trống dồn, đám đông, riser) và tự rẽ theo bậc ở cú sút cuối, để không chồng hai lớp âm. Hồ sơ `ChestFx_TheThao.asset` đã tạo từ trước cần tắt tay ô này (menu chỉ áp preset khi tạo mới).
+- Chưa dùng `ChestScript`/`OnCue`/`ChestMotion`/`ChestPhysicsFx` của lõi: chuyển động rương là lò xo riêng trong hook. Có thể chuyển sang `ChestMotion` sau nếu lõi muốn thống nhất (lưu ý: đừng bật cả hai cùng lúc, sẽ cộng chồng).
+- Giờ chốt vẫn ước từ `box.Stages` (giả định `rouletteStartStage=2`, `lockStage=3`), chỉnh lại ở `OnRouletteStart`; nếu lõi có API "giây tới chốt" thì thay vào.

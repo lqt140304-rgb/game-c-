@@ -260,6 +260,31 @@ namespace ChoDoLa.ChestFx
             return both;
         }
 
+        /// <summary>
+        /// CÁCH DUY NHẤT trong dự án để đặt <c>velocityOverLifetime</c> (có kiểm: Tools/CompileCheck/check_particle_velocity.sh).
+        /// Unity báo lỗi "Particle Velocity curves must all be in the same mode" / "Orbital Velocity curves must all be in
+        /// the same mode" khi x/y/z (hoặc orbitalX/Y/Z, hoặc offsetX/Y/Z) ở chế độ khác nhau, kể cả khi chỉ một trục có
+        /// giá trị. Hàm này đặt CẢ 9 đường cong cùng chế độ TwoConstants (min = max nghĩa là không ngẫu nhiên), nên không
+        /// bao giờ lệch chế độ. <paramref name="radial"/> là đường riêng (không thuộc nhóm trên) nên để hằng số.
+        /// </summary>
+        public static void SetVelocity(ParticleSystem ps, Vector3 linearMin, Vector3 linearMax, Vector3 orbitalMin, Vector3 orbitalMax, float radial, ParticleSystemSimulationSpace space)
+        {
+            if (ps == null) return;
+            ParticleSystem.VelocityOverLifetimeModule v = ps.velocityOverLifetime;
+            v.enabled = true;
+            v.space = space;
+            v.x = new ParticleSystem.MinMaxCurve(linearMin.x, linearMax.x);
+            v.y = new ParticleSystem.MinMaxCurve(linearMin.y, linearMax.y);
+            v.z = new ParticleSystem.MinMaxCurve(linearMin.z, linearMax.z);
+            v.orbitalX = new ParticleSystem.MinMaxCurve(orbitalMin.x, orbitalMax.x);
+            v.orbitalY = new ParticleSystem.MinMaxCurve(orbitalMin.y, orbitalMax.y);
+            v.orbitalZ = new ParticleSystem.MinMaxCurve(orbitalMin.z, orbitalMax.z);
+            v.offsetX = new ParticleSystem.MinMaxCurve(0f, 0f);
+            v.offsetY = new ParticleSystem.MinMaxCurve(0f, 0f);
+            v.offsetZ = new ParticleSystem.MinMaxCurve(0f, 0f);
+            v.radial = new ParticleSystem.MinMaxCurve(radial);
+        }
+
         // ------------------------------------------------------------------ Particle systems
 
         /// <summary>
@@ -315,14 +340,8 @@ namespace ChoDoLa.ChestFx
 
             if (profile.particleDirection == ParticleDirection.Swirl)
             {
-                ParticleSystem.VelocityOverLifetimeModule vel = ps.velocityOverLifetime;
-                vel.enabled = true;
-                vel.space = ParticleSystemSimulationSpace.Local;
-                vel.x = new ParticleSystem.MinMaxCurve(0f);
-                vel.y = new ParticleSystem.MinMaxCurve(0f);
-                vel.z = new ParticleSystem.MinMaxCurve(0f);
-                vel.orbitalY = new ParticleSystem.MinMaxCurve(2.5f);
-                vel.radial = new ParticleSystem.MinMaxCurve(0.05f);
+                // Mọi chỗ đặt velocityOverLifetime phải đi qua SetVelocity (xem giải thích ở hàm đó).
+                SetVelocity(ps, Vector3.zero, Vector3.zero, new Vector3(0f, 2.5f, 0f), new Vector3(0f, 2.5f, 0f), 0.05f, ParticleSystemSimulationSpace.Local);
             }
 
             ParticleSystem.ColorOverLifetimeModule col = ps.colorOverLifetime;

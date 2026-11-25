@@ -20,6 +20,7 @@ namespace ChoDoLa.Editor
         private const string ItemsFolder = "Assets/_Project/Art/Items/LowPoly";
         private const string ProfileFolder = "Assets/_Project/ScriptableObjects/ChestFx";
         private const string GoldenProfilePath = ProfileFolder + "/ChestFx_Golden.asset";
+        private const string GoldenScriptPath = ProfileFolder + "/ChestScript_Golden.asset";
         private const string TestRootName = "ChestRevealTest";
 
         [MenuItem("Tools/Cho Do La/Add Chest Reveal Test")]
@@ -151,6 +152,18 @@ namespace ChoDoLa.Editor
                 Debug.LogWarning($"[ChestRevealTest] {missing} sound(s) not found in {ChestFxPresets.AudioFolder}. " +
                                  "The mp3 set is on branch claude/chest-sfx; `python3 Tools/Audio/make_chest_sfx.py` remakes the Synth/ fallback. The effect still runs without sound.");
             }
+
+            // Kịch bản mở rương (mẫu cho các rương chủ đề): tạo lần đầu, không ghi đè bản người dùng đã chỉnh.
+            ChestScript script = AssetDatabase.LoadAssetAtPath<ChestScript>(GoldenScriptPath);
+            if (script == null)
+            {
+                EnsureFolder(ProfileFolder);
+                script = ScriptableObject.CreateInstance<ChestScript>();
+                ChestFxPresets.ApplyGoldenScript(script);
+                AssetDatabase.CreateAsset(script, GoldenScriptPath);
+                EditorUtility.SetDirty(script);
+            }
+            if (p.script == null) p.script = script;
 
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();

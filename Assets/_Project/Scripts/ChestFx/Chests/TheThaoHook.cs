@@ -139,6 +139,12 @@ namespace ChoDoLa.ChestFx
             _scaleTouched = true;
         }
 
+        /// <summary>Khung lõi: gọi ngay khi bấm mở (trước nắp). Update vẫn dò IsPlaying làm dự phòng.</summary>
+        public override void OnPress(ChestRevealSequence reveal)
+        {
+            if (!_running) Begin(reveal);
+        }
+
         public override void OnRouletteStart(ChestRevealSequence reveal, Vector3 mouth)
         {
             if (!_running) Begin(reveal);

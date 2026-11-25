@@ -133,6 +133,28 @@ namespace ChoDoLa.Interaction
         /// </summary>
         public IList<Stage> Stages => stages;
 
+        /// <summary>
+        /// Giây chạy TRƯỚC giai đoạn 0: màn chìa khoá (nếu rương có "Key" và keyIntro bật) và màn cắn (nếu biteIntro bật).
+        /// ChestFx dùng để dự tính tổng thời gian tới khoảnh khắc chốt (độ căng của âm). Chỉ đọc, không đổi hành vi.
+        /// </summary>
+        public float IntroSeconds
+        {
+            get
+            {
+                EnsureReady();
+                float sum = 0f;
+                if (keyIntro && _key.transform != null)
+                {
+                    sum += keyApproachTime + keyInsertTime + keyTurnTime + keyClickHold + keyRetractTime;
+                }
+                if (biteIntro && _lid.transform != null)
+                {
+                    sum += Mathf.Max(1, biteCount) * (biteOpenTime + biteHoldOpen + biteSlamTime + biteRestTime);
+                }
+                return sum;
+            }
+        }
+
         /// <summary>Same as the lidOpenSign field. Lets a tool set up a model at runtime (for example ChestHandMenu).</summary>
         public float LidOpenSign { get => lidOpenSign; set => lidOpenSign = value; }
 

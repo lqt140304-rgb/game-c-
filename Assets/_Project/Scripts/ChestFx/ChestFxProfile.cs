@@ -97,6 +97,13 @@ namespace ChoDoLa.ChestFx
         [Tooltip("Degrees per second the ray star spins.")] public float raySpin = 25f;
         [Tooltip("Point light peak intensity at the lock (scaled by tier).")] public float lightFlashIntensity = 6f;
 
+        [Header("Căng thẳng: âm bắt đầu NGAY khi bấm mở rương")]
+        public ChestTensionSettings tension = new ChestTensionSettings();
+
+        [Header("Kịch bản mở rương (các bước ghép: vật lý, chuyển động cả rương, vật ngoài mở khoá, cue code)")]
+        [Tooltip("Để trống = không có kịch bản, rương chạy như cũ.")]
+        public ChestScript script;
+
         [Header("Custom effect")]
         [Tooltip("Spawned under the chest at Play. Any ChestFxHook on it receives the reveal callbacks.")]
         public GameObject customFxPrefab;

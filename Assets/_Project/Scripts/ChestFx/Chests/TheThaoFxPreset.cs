@@ -65,6 +65,8 @@ namespace ChoDoLa.ChestFx
         public static void Apply(ChestFxProfile p)
         {
             p.chestId = ChestId;
+            // Âm căng thẳng chung của lõi TẮT: TheThaoHook tự dựng nhịp trống/đám đông/riser và tự rẽ theo bậc ở cú sút cuối.
+            p.tension.enabled = false;
 
             p.tickVolume = 0.6f;
             p.tickPitchStart = 0.85f;   // heavy kicks first, lighter taps as it slows
