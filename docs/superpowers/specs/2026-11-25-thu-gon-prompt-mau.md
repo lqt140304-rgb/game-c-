@@ -65,8 +65,8 @@ docs/superpowers/specs/2026-11-25-thu-gon-hieu-ung-ruong-ke-hoach.md. Thiết k�
 không thêm hiệu ứng ngoài mục BÙ. Đọc trước mục 2 (THƯỚC ĐO T1–T11) và mục 3 (QUY TẮC ÂM THANH A1–A8), rồi làm lần
 lượt: CẮT → BÙ → SỬA LỖI → ÂM, cuối cùng đối chiếu ô "Bản chốt" (mọi con số phải khớp).
 
-Nhánh: git fetch origin claude/trim-am-elevenlabs && git checkout -b claude/trim-<ruong> FETCH_HEAD
-(nếu nhánh này chưa có: dừng, báo lại, không tự làm Phiên 0 hay Phiên âm).
+Nhánh: làm từ claude/chest-trim-plan (đã gộp Phiên 0 + 132 file âm ElevenLabs), push lên claude/trim-<ruong>.
+Nếu máy chưa có mcs: sudo apt-get install -y mono-mcs.
 
 Âm (mục 3b A9–A12): gán cho hook đúng các file trong Tools/Audio/elevenlabs_chest_manifest.json, mục của rương này
 (ô `field`; `file` là tên mp3 trong Assets/_Project/Audio/Chests/<thư mục>/). Thêm mảng `stingClips[5]` trên hook nếu
