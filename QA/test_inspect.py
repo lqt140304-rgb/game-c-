@@ -116,7 +116,7 @@ class InspectBalance(unittest.TestCase):
                 cls.w[(b, prof)] = I._play(c, P.STRATS[b], N)[0]
         c = I.apply(CS.FINAL, None, "giỏi")
         cls.skilled = {k: I._play(c, C.TURN_NAMES[k], N, skilled=True)[0] for k in I.SKILLED[:2]}
-        cls.day1 = {prof: I.day1(None, prof, CS.FIRST_RUN, N_DAY1, "liều") for prof in ("thường", "ẩu", "bỏ qua soi")}
+        cls.day1 = {prof: I.day1(None, prof, CS.FIRST_RUN_LOOSE, N_DAY1, "liều") for prof in ("thường", "ẩu", "bỏ qua soi")}
         I.restore()
         cls.core["after"] = P.handle5
 
