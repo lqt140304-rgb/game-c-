@@ -10,3 +10,7 @@ namespace UnityEngine
     }
     public partial class ParticleSystemRenderer : Renderer {}
 }
+namespace UnityEditor
+{
+    public static partial class Undo { public static void RegisterFullObjectHierarchyUndo(UnityEngine.Object o, string n) {} }
+}
