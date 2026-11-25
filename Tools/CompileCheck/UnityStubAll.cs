@@ -22,7 +22,7 @@ namespace UnityEngine
     public enum QueryTriggerInteraction { UseGlobal, Ignore, Collide }
     public enum CollisionFlags { None }
     public enum CameraClearFlags { Skybox, SolidColor }
-    public enum ForceMode { Force, Impulse }
+    public enum ForceMode { Force, Impulse, Acceleration, VelocityChange }
     public enum RigidbodyConstraints { None, FreezeRotation }
     public enum LightmapBakeType { Realtime }
     public enum RuntimePlatform { WindowsEditor }
@@ -164,11 +164,12 @@ namespace UnityEngine
     public partial class MeshFilter { public Mesh mesh; }
     public partial class Collider { public bool enabled, isTrigger; public Bounds bounds; public Rigidbody attachedRigidbody; }
     public class BoxCollider : Collider { public Vector3 center, size; }
+    public class Collision { public Collider collider; public Vector3 relativeVelocity; public GameObject gameObject; }
     public class SphereCollider : Collider { public Vector3 center; public float radius; }
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
     public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
-        public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
+        public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void AddTorque(Vector3 t) {} public void AddTorque(Vector3 t, ForceMode m) {} public Vector3 position; public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
     public class CharacterController : Collider { public float height, radius, slopeLimit, stepOffset, skinWidth, minMoveDistance; public Vector3 center, velocity; public bool isGrounded;
         public CollisionFlags Move(Vector3 m) => CollisionFlags.None; public bool SimpleMove(Vector3 s) => false; }
     public partial class Mesh
