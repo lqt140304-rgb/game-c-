@@ -9,6 +9,9 @@ Người thực hiện: các phiên Sonnet, mỗi phiên một mục, dùng prom
 - **Thước đo** lấy từ hai rương mẫu Hải tặc và Rác Quý: tối đa **2 nhân vật/đồ vật lớn** quanh rương, mọi thứ đứng
   trong vòng **1,5 lần cỡ rương**, vật rơi/văng tối đa **40 món** ở Huyền thoại (Rác ≤ 5), lúc chốt bậc chỉ **2 tiếng**
   cùng lúc, cả màn ≤ **11 giây**, 1–2 phím tương tác không bắt buộc.
+- **Âm theo chủ đề bằng ElevenLabs**: bỏ hết âm tổng hợp bằng máy trong các kịch bản mới; mỗi rương dùng bộ âm
+  ElevenLabs riêng (giữ ~110 file có sẵn, tạo thêm 133 file theo danh mục `Tools/Audio/elevenlabs_chest_manifest.json`).
+  Tiếng chốt của mọi rương là bộ `lock_*` ElevenLabs theo chủ đề đã có.
 - **Âm thanh**: tắt hẳn lớp "âm căng" chung và các tiếng lõi (tick, nền, tiếng xu rải, tiếng vút) ở **cả 17 rương**.
   Mỗi rương chỉ còn **một bản nhạc nền** do chính nó phát: 1 vòng nền + 1 nhịp, dâng dần từ lúc bấm. Lúc chốt:
   Rác **tắt phụt → lặng 0,2 giây → 1 tiếng xịt**; bậc cao **1 tiếng chốt + 1 tiếng nổ**.
@@ -108,6 +111,39 @@ leng keng, chuông nhỏ). Hết đuôi trước +3 s.
 
 **A8 – Trình tự chuẩn của một rương (để kiểm bằng tai):** bấm → (0–0,2 s) nền vào nhỏ → nhịp chen vào → dâng đều,
 không có khoảng ồn đột ngột → (chốt) Rác: im phắc rồi "xịt" / bậc cao: "chốt + nổ" → đuôi nhỏ thưa → im trước +3 s.
+
+
+## 3b. ÂM THEO CHỦ ĐỀ, TẠO BẰNG ELEVENLABS (bổ sung theo yêu cầu chủ dự án)
+
+Hiện trạng: mỗi rương ĐÃ có bộ âm ElevenLabs theo chủ đề (`Audio/Chests/<rương>/sfx_<rương>_*.mp3`, gồm 5 tiếng chốt
+`lock_rac … lock_huyenThoai`), nhưng các hook kịch bản mới lại dùng âm **tổng hợp bằng numpy** (`*.wav` trong các thư
+mục con `seq/`, `meo/`, `hoi_lang/`, `voxel/`, `ngu_kiem/`, `may_bi/`, `transform/`, `match/`, `fx/`, `clockwork/`,
+`magic_rune/`, `mimic_feed/`, `golden/`) hoặc âm tạo bằng mã lúc chạy (`MinerSynth`, `KhongGianSynth`). Đó là phần
+"chưa hay": chưa ai nghe, giống tiếng máy, không mang chủ đề.
+
+**A9 – Chỉ dùng âm ElevenLabs.** Mọi tiếng một hook phát phải là file `.mp3` ElevenLabs trong thư mục chủ đề của rương.
+Âm numpy và âm tạo bằng mã (`MinerSynth.*`, `KhongGianSynth.*`, `ChestTensionSynth`) không còn được gán/gọi (file và
+script cũ để nguyên, không xoá).
+
+**A10 – Danh mục duy nhất:** `Tools/Audio/elevenlabs_chest_manifest.json`. Mỗi rương: thư mục, hook, và từng tiếng
+với `role` (`bed` nền lặp, `beat` nhịp, `event` sự kiện, `action` HĐ, `sting` TC, `tail` đuôi), `field` (ô trên hook
+cần gán), `seconds`, `loop`, `prompt` (mô tả tiếng Anh gửi ElevenLabs) hoặc `"reuse"` (dùng file có sẵn, tên ở `file`).
+Tổng: **133 tiếng mới (~220 giây âm)** + dùng lại ~110 file có sẵn.
+
+**A11 – Tiếng chốt (TC) thống nhất:** TC của MỌI rương = `sfx_<rương>_lock_<bậc>.mp3` (đã có, theo chủ đề), gán vào
+mảng `stingClips[5]` trên hook, hook tự phát theo A4. Golden chưa có bộ này → tạo mới trong danh mục. Các đoạn kết
+numpy (`end_*`, `fin_*`, `blast_*`, `jackpot`, `fizzle`…) thôi dùng. Ở những mục 5.x ghi "TC = `end_*`/`fin_*`/
+`blastClips`/`jackpotClip`/`fizzleClip`…" thì đọc là **TC = `stingClips[bậc]`**; tiếng nổ/hành động còn lại là HĐ
+theo danh mục (`role: action`).
+
+**A12 – Tạo âm:** `python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py [--chest <thư mục>] [--dry-run]`. Gọi tuần tự,
+mỗi file tạo một lần (đã có thì bỏ qua), ghi mô tả vào `README.md` của thư mục. Nền gửi `loop: true`. Khoá
+`ELEVENLABS_API_KEY` (trong phiên cloud: xin khoá cho host `api.elevenlabs.io`, đặt biến giá trị giả, proxy chèn khoá
+thật). Chủ dự án cần kiểm điều khoản giấy phép ElevenLabs trước khi phát hành. Tiếng ngắn dưới 0,5 s (tick, blip) được
+tạo 0,5 s rồi hook chỉ phát phần đầu (đã có tiền lệ cắt `-t 0.1` ở Hải tặc; có thể cắt bằng `ffmpeg -t <giây> -af afade`).
+
+**Thứ tự mới:** Phiên 0 → **Phiên âm (tạo 133 file bằng ElevenLabs, một phiên)** → các phiên rương (gán file mới vào hook
+theo `field` của danh mục, đổi Setup sang nạp `.mp3` thay `.wav`).
 
 ## 4. PHIÊN 0 – việc chung (làm TRƯỚC, một phiên riêng; các phiên rương đợi phiên này xong)
 

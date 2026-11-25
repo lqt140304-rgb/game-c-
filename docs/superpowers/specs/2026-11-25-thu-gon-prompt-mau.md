@@ -1,7 +1,8 @@
 # Prompt mẫu cho phiên thực hiện "thu gọn hiệu ứng rương"
 
 Dùng kèm [2026-11-25-thu-gon-hieu-ung-ruong-ke-hoach.md](2026-11-25-thu-gon-hieu-ung-ruong-ke-hoach.md).
-Thứ tự: chạy **Phiên 0** trước (một phiên). Khi Phiên 0 đã đẩy lên, chạy các phiên rương (song song được), mỗi phiên
+Thứ tự: chạy **Phiên 0** trước, rồi **Phiên âm ElevenLabs** (một phiên). Khi cả hai đã đẩy lên, chạy các phiên rương
+(song song được), mỗi phiên
 dùng prompt "Phiên rương" với `<MỤC>`, `<TÊN RƯƠNG>`, `<ruong>` thay đúng theo bảng cuối file.
 
 ---
@@ -30,6 +31,30 @@ Báo cáo cuối ≤ 10 dòng: đã làm gì, bước nào không làm được 
 
 ---
 
+## Prompt Phiên âm ElevenLabs (sau Phiên 0, trước các phiên rương)
+
+```
+Game Unity "Chợ Đồ Lạ" (repo game-c-). Trả lời bằng tiếng Việt, lời đơn giản.
+
+Việc: tạo âm theo chủ đề cho 17 rương bằng ElevenLabs, theo mục 3b của
+docs/superpowers/specs/2026-11-25-thu-gon-hieu-ung-ruong-ke-hoach.md và danh mục Tools/Audio/elevenlabs_chest_manifest.json.
+Chủ dự án đã cho phép dùng ElevenLabs (tốn credit): mỗi file tạo MỘT lần, không tạo lại file đã có.
+
+Nhánh: git fetch origin claude/trim-phien-0 && git checkout -b claude/trim-am-elevenlabs FETCH_HEAD
+
+1. Xin khoá ElevenLabs cho host api.elevenlabs.io (request_credential, header xi-api-key), đặt ELEVENLABS_API_KEY=dummy.
+   Không bao giờ in hay commit khoá.
+2. python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --dry-run  (xem danh sách), rồi chạy thật từng rương:
+   --chest <thư mục>. Lỗi thì ghi lại, chạy tiếp rương khác.
+3. Tiếng có seconds < 0,5 trong danh mục: cắt bằng ffmpeg (nếu có) xuống đúng độ dài + fade 10 ms, ghi chú vào README.
+4. Kiểm mỗi file: tồn tại, > 1 KB, độ dài gần đúng (ffprobe nếu có). Vòng nền (loop) kiểm không có khoảng lặng ở hai đầu.
+5. Không sửa mã C#. Commit các .mp3 + README.md của từng thư mục âm, push claude/trim-am-elevenlabs, KHÔNG mở PR.
+Báo cáo ≤ 10 dòng: số file đã tạo / lỗi / bỏ qua, rương nào thiếu, và nhắc chủ dự án: CHƯA AI NGHE, cần nghe thử và
+kiểm điều khoản giấy phép ElevenLabs.
+```
+
+---
+
 ## Prompt Phiên rương (mẫu, thay `<...>`)
 
 ```
@@ -40,8 +65,13 @@ docs/superpowers/specs/2026-11-25-thu-gon-hieu-ung-ruong-ke-hoach.md. Thiết k�
 không thêm hiệu ứng ngoài mục BÙ. Đọc trước mục 2 (THƯỚC ĐO T1–T11) và mục 3 (QUY TẮC ÂM THANH A1–A8), rồi làm lần
 lượt: CẮT → BÙ → SỬA LỖI → ÂM, cuối cùng đối chiếu ô "Bản chốt" (mọi con số phải khớp).
 
-Nhánh: git fetch origin claude/trim-phien-0 && git checkout -b claude/trim-<ruong> FETCH_HEAD
-(nếu claude/trim-phien-0 chưa có: dừng, báo lại, không tự làm Phiên 0).
+Nhánh: git fetch origin claude/trim-am-elevenlabs && git checkout -b claude/trim-<ruong> FETCH_HEAD
+(nếu nhánh này chưa có: dừng, báo lại, không tự làm Phiên 0 hay Phiên âm).
+
+Âm (mục 3b A9–A12): gán cho hook đúng các file trong Tools/Audio/elevenlabs_chest_manifest.json, mục của rương này
+(ô `field`; `file` là tên mp3 trong Assets/_Project/Audio/Chests/<thư mục>/). Thêm mảng `stingClips[5]` trên hook nếu
+chưa có và phát nó làm tiếng chốt (TC). Setup của rương nạp các .mp3 này (không nạp .wav numpy nữa). Âm tạo bằng mã
+(MinerSynth/KhongGianSynth) thay bằng ô AudioClip mới. File nào thiếu (Phiên âm lỗi): để ô trống, ghi vào báo cáo.
 
 Chỉ được sửa: các file liệt kê ở tiêu đề mục <MỤC>, file Editor/*Setup*.cs và *FxPreset.cs của chính rương này,
 spec docs/superpowers/specs/2026-11-25-kichban-<spec>-design.md, và script âm Tools/Audio/make_<…>.py của rương này
