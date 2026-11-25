@@ -486,8 +486,10 @@ Menu thử nghiệm để **cầm từng rương trên tay** (góc nhìn thứ n
 | **Q** | Cất rương |
 | **[** / **]** | Rương trước / sau (đang cầm món khác thì tự cất trước) |
 | **L** | Đảo mặt trước, dùng khi nắp mở ngược hoặc chìa bay tới từ phía sau |
+| **P** | Mở đầy đủ có hiệu ứng (vòng quay màu bậc, bóng món, hiệu ứng riêng của rương). Cần chạy `Tools → Cho Do La → Create All Chest FX Profiles` sau bước 5 |
+| **T** | Bậc cho phím P: ngẫu nhiên, rồi ép Rác → Huyền thoại |
 
-Bảng hướng dẫn phím và tên rương đang cầm hiện ở góc trên bên phải.
+Bảng hướng dẫn phím và tên rương đang cầm hiện ở góc trên bên phải. Hướng dẫn thử đầy đủ cho mọi rương (cả hiệu ứng và âm): [HuongDanThuUnity](../HuongDanThuUnity.md).
 
 ### Cách hoạt động (để chỉnh khi cần)
 
