@@ -197,7 +197,9 @@ namespace ChoDoLa.ChestFx
 
                 case StepKind.ChestMotion:
                 {
-                    ChestMotion.Handle h = _ctx.Motion.Run(s.motion, s.amplitude, s.frequency, s.duration, s.axis, s.holdEnd, 0f, _ctx.Seed + index);
+                    float ampMul = s.ampUnit == AmpUnit.PerHalfMeterSize ? _ctx.ChestSize / 0.5f
+                        : s.ampUnit == AmpUnit.ChestHeights ? _ctx.ChestHeight : 1f;
+                    ChestMotion.Handle h = _ctx.Motion.Run(s.motion, s.amplitude * ampMul, s.frequency, s.duration, s.axis, s.holdEnd, 0f, _ctx.Seed + index);
                     if (s.waitForEnd) while (!h.Done) yield return null;
                     break;
                 }

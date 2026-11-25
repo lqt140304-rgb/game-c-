@@ -157,7 +157,7 @@ namespace ChoDoLa.ChestFx
                 {
                     h.Done = true;
                     _active.RemoveAt(i);
-                    if (h.holdEnd) _held.Add(h);
+                    if (h.holdEnd && h.kind != StepMotionKind.SquashHold) _held.Add(h);
                 }
             }
             foreach (Handle h in _held) Accumulate(ref total, h, 1f, h.duration);
@@ -264,6 +264,20 @@ namespace ChoDoLa.ChestFx
                     // Ép dẹt rồi bật lại: y co, x/z phồng, tắt dần.
                     float env = h.holdEnd ? 1f : 1f - u;
                     float k = h.amplitude * Mathf.Sin(u * h.frequency * Mathf.PI * 2f) * env;
+                    total.scale = Vector3.Scale(total.scale, new Vector3(1f + k * 0.5f, 1f - k, 1f + k * 0.5f));
+                    break;
+                }
+                case StepMotionKind.SquashHold:
+                {
+                    // Ép nhanh, giữ dẹt, rồi phồng lại; dùng thời gian thật t. Duration < 0,4 thì co các đoạn theo tỉ lệ.
+                    float d = h.duration;
+                    float rise = 0.15f, fall = 0.2f;
+                    if (d < rise + fall) { float r = d / (rise + fall); rise *= r; fall *= r; }
+                    float fv;
+                    if (t < rise) { float x = Mathf.Clamp01(t / rise); fv = x * x * (3f - 2f * x); }
+                    else if (t <= d - fall) fv = 1f;
+                    else { float x = Mathf.Clamp01((d - t) / fall); fv = x * x * (3f - 2f * x); }
+                    float k = h.amplitude * fv;
                     total.scale = Vector3.Scale(total.scale, new Vector3(1f + k * 0.5f, 1f - k, 1f + k * 0.5f));
                     break;
                 }

@@ -37,7 +37,10 @@ namespace ChoDoLa.ChestFx
     /// <summary>Gốc toạ độ cho vị trí của bước.</summary>
     public enum StepAnchor { Mouth, ChestCenter, ChestBase, Silhouette }
 
-    public enum StepMotionKind { Shake, Jump, Spin, Hover, Wobble, Squash, Fly }
+    public enum StepMotionKind { Shake, Jump, Spin, Hover, Wobble, Squash, Fly, SquashHold }
+
+    /// <summary>Đơn vị của biên độ ChestMotion: tuyệt đối, theo cỡ rương (mỗi 0,5 m cạnh lớn), hoặc theo chiều cao rương.</summary>
+    public enum AmpUnit { Absolute, PerHalfMeterSize, ChestHeights }
 
     public enum StepVisualAction { Hide, Show, ReplaceWithPrefab }
 
@@ -109,6 +112,7 @@ namespace ChoDoLa.ChestFx
         [Header("ChestMotion")]
         public StepMotionKind motion = StepMotionKind.Shake;
         [Tooltip("Biên độ: Shake/Jump/Hover/Fly = mét; Spin/Wobble = độ; Squash = tỉ lệ (0.2 = 20%).")] public float amplitude = 0.02f;
+        [Tooltip("Đơn vị nhân vào biên độ (chỉ ChestMotion): Absolute = nguyên giá trị; PerHalfMeterSize = nhân (cỡ rương / 0,5 m); ChestHeights = nhân chiều cao rương.")] public AmpUnit ampUnit = AmpUnit.Absolute;
         [Tooltip("Shake = tần số Hz; Jump = số lần nảy; Wobble/Squash = số chu kỳ.")] public float frequency = 24f;
         [Tooltip("Trục: Spin/Wobble quay quanh; Fly bay theo hướng này (hướng thế giới; để 0 = lên).")] public Vector3 axis = Vector3.up;
         [Tooltip("Giữ nguyên trạng thái cuối cho tới khi reset (Fly bay đi rồi ở đó, Spin dừng ở góc cuối...).")] public bool holdEnd = false;

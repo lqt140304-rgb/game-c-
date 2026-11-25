@@ -432,7 +432,7 @@ namespace ChoDoLa.ChestFx
         private void OnBoxStage(int stage)
         {
             if (!_active) return;
-            PlayStageClips(stage);
+            if (!Profile.minimalFx) PlayStageClips(stage);
             _ctx?.Raise(ChestEvents.Stage(stage));
             if (stage == rouletteStartStage) StartRoulette(PlannedSeconds(rouletteStartStage, lockStage));
             if (stage == lockStage) Lock();
@@ -527,10 +527,13 @@ namespace ChoDoLa.ChestFx
             _fxRoot = root.transform;
             _fxRoot.SetPositionAndRotation(MouthPosition, transform.rotation);
 
-            _motes = ChestFxFactory.CreateParticles("Motes", _fxRoot, p, _chestSize, false);
-            _burst = ChestFxFactory.CreateParticles("Burst", _fxRoot, p, _chestSize, true);
-            _owned.Add(_motes.GetComponent<ParticleSystemRenderer>().sharedMaterial);
-            _owned.Add(_burst.GetComponent<ParticleSystemRenderer>().sharedMaterial);
+            if (!p.minimalFx)
+            {
+                _motes = ChestFxFactory.CreateParticles("Motes", _fxRoot, p, _chestSize, false);
+                _burst = ChestFxFactory.CreateParticles("Burst", _fxRoot, p, _chestSize, true);
+                _owned.Add(_motes.GetComponent<ParticleSystemRenderer>().sharedMaterial);
+                _owned.Add(_burst.GetComponent<ParticleSystemRenderer>().sharedMaterial);
+            }
 
             if (revealLight == null)
             {
@@ -546,7 +549,7 @@ namespace ChoDoLa.ChestFx
             revealLight.intensity = 0f;
             revealLight.enabled = false;
 
-            if (showRankPips)
+            if (showRankPips && !p.minimalFx)
             {
                 _pipMaterial = ChestFxFactory.CreateUnlit(Color.white, false, "RankPip");
                 _owned.Add(_pipMaterial);
@@ -611,7 +614,7 @@ namespace ChoDoLa.ChestFx
             onRoulette?.Invoke();
             _ctx?.Raise(ChestEvents.Roulette);
             foreach (ChestFxHook h in _hooks) if (h != null) h.OnRouletteStart(this, MouthPosition);
-            PlayOneShot(p.openAmbientClip, p.ambientVolume);
+            if (!p.minimalFx) PlayOneShot(p.openAmbientClip, p.ambientVolume);
 
             if (_motes != null)
             {
@@ -734,7 +737,7 @@ namespace ChoDoLa.ChestFx
             if (tick)
             {
                 _lightKick = Mathf.Max(_lightKick, 0.9f);
-                PlayTick(progress);
+                if (!Profile.minimalFx) PlayTick(progress);
                 onRouletteStep?.Invoke(tier);
                 foreach (ChestFxHook h in _hooks) if (h != null) h.OnRouletteStep(this, tier, c);
             }
@@ -776,13 +779,16 @@ namespace ChoDoLa.ChestFx
                 _burst.Emit(Mathf.RoundToInt(p.burstCount * (1f + 2f * _rolled.Rank01())));
             }
 
-            SpawnFlash(style);
-            SpawnRays(style);
-            for (int i = 0; i < style.ringCount; i++) StartCoroutine(RingRoutine(style, i * 0.12f, 1.1f + 0.45f * i));
+            if (!p.minimalFx)
+            {
+                SpawnFlash(style);
+                SpawnRays(style);
+                for (int i = 0; i < style.ringCount; i++) StartCoroutine(RingRoutine(style, i * 0.12f, 1.1f + 0.45f * i));
 
-            PlayOneShot(p.LockClipFor(_rolled), p.lockVolume);
-            PlayOneShot(p.whooshClip, p.whooshVolume);
-            StartCoroutine(AccentRoutine());
+                PlayOneShot(p.LockClipFor(_rolled), p.lockVolume);
+                PlayOneShot(p.whooshClip, p.whooshVolume);
+                StartCoroutine(AccentRoutine());
+            }
 
             // Pop the silhouette out of the chest.
             float grow = box != null ? Mathf.Max(minGrowSeconds, PlannedSeconds(lockStage, silhouetteCompleteStage)) : standaloneGrowSeconds;

@@ -104,6 +104,10 @@ namespace ChoDoLa.ChestFx
         [Tooltip("Để trống = không có kịch bản, rương chạy như cũ.")]
         public ChestScript script;
 
+        [Header("Tối giản")]
+        [Tooltip("Bật = lõi bỏ hạt, chớp sáng, tia, vòng, tick, âm khoá/whoosh/ambient/stage/accent và chấm bậc. Vẫn giữ vòng đổi màu, ánh sáng glow, bóng vật phẩm và mọi callback của hook.")]
+        public bool minimalFx = false;
+
         [Header("Custom effect")]
         [Tooltip("Spawned under the chest at Play. Any ChestFxHook on it receives the reveal callbacks.")]
         public GameObject customFxPrefab;

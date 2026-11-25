@@ -84,26 +84,5 @@ namespace ChoDoLa.ChestFx
             p.raySpin = 18f;
             p.lightFlashIntensity = 7f;
         }
-
-        /// <summary>
-        /// KỊCH BẢN MẪU của Chest_Golden: các rương chủ đề khác chép cách làm này (xem docs/superpowers/specs/2026-11-25-ruong-kich-ban-mo-design.md).
-        /// Thứ tự bước = thứ tự đọc. Mọi bước chỉ trang trí; bậc do game quay, không bước nào đổi được.
-        /// Cổng đồng xu (bước "cong-xu") TẮT mặc định: rương mở ngay như cũ. Bật bằng reveal.SetStepEnabled("cong-xu", true)
-        /// rồi Play: rương chờ người chơi thả đồng xu (ChestSlotItem mã "gold_coin") vào ChestItemSlot mã "coin", sau đó mới mở.
-        /// </summary>
-        public static void ApplyGoldenScript(ChestScript s)
-        {
-            s.description = "Golden: chỉ cổng đồng xu (tắt mặc định) rồi mở rương; xu và chuyển động do GoldenSlotHook lo.";
-            s.steps.Clear();
-
-            // 1) Cổng đồng xu (tắt mặc định) rồi mở rương. Bước tắt tính là xong ngay nên OpenBox chạy luôn.
-            ChestStep gate = ChestStepBuilder.Add(s, "cong-xu", StepKind.Gate, StepStart.OnPress);
-            gate.enabled = false;
-            gate.gateId = "coin";
-            gate.timeoutSeconds = 25f;
-            ChestStepBuilder.Add(s, "mo-ruong", StepKind.OpenBox, StepStart.AfterPrevious);
-
-            // Xu + chuyển động cả rương do GoldenSlotHook làm (chạy thêm bước vật lý ở đây sẽ bắn xu hai lần).
-        }
     }
 }
