@@ -51,6 +51,14 @@
       }
     ]
   },
+  "achievements": [
+    {"id": "first_open", "name": "Khui hàng đầu tay", "icon": "◇", "description": "Mở hộp đầu tiên.", "condition": "open", "target": 1},
+    {"id": "four_boxes", "name": "Thử đủ bốn loại", "icon": "▦", "description": "Mở cả bốn loại rương cơ bản.", "condition": "open_types", "target": 4, "box_types": ["H1", "H2", "H3", "RD"]},
+    {"id": "inspect_five", "name": "Mắt quen đồ cổ", "icon": "◉", "description": "Soi năm hiện vật khác nhau.", "condition": "inspect_types", "target": 5},
+    {"id": "first_fake_sale", "name": "Cú lừa đầu đời", "icon": "!", "description": "Bán một món và phát hiện đó là hàng giả.", "condition": "sell_fake", "target": 1},
+    {"id": "first_combo", "name": "Lên bộ", "icon": "✦", "description": "Kích hoạt combo Tạo Tác đầu tiên.", "condition": "combo", "target": 1},
+    {"id": "first_win", "name": "Hết nợ", "icon": "✓", "description": "Thắng ván đầu tiên.", "condition": "win", "target": 1}
+  ],
   "day_clock": {
     "day_seconds": 600,
     "morning_seconds": 60,

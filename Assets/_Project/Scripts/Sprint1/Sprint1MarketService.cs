@@ -137,20 +137,36 @@ namespace ChoDoLa.Sprint1
         public event Action<bool, int> OnDebtSettled;
         public event Action<string, string> OnActionRejected;
         public event Action<string> OnNotice;
+        public event Action<MarketRun.AchievementView> OnAchievementUnlocked;
+        public IReadOnlyList<MarketRun.AchievementView> Achievements => Run.Achievements;
+
+        public void RecordAchievementInspection(string itemId) =>
+            Try(() => Run.RecordAchievementInspection(NewTransaction(), itemId), out _);
+
+        private void ForwardAchievement(MarketRun.AchievementView achievement) =>
+            OnAchievementUnlocked?.Invoke(achievement);
 
         private void Awake() => Bind(GetComponent<MarketRunHost>() ?? gameObject.AddComponent<MarketRunHost>());
         private void Start() => RefreshState();
 
         internal void Bind(MarketRunHost runHost)
         {
-            if (host != null) host.ClockPhaseChanged -= HandleClockPhaseChanged;
+            DetachHost();
             host = runHost;
             host.ClockPhaseChanged += HandleClockPhaseChanged;
+            Run.AchievementUnlocked += ForwardAchievement;
         }
 
         private void OnDestroy()
         {
-            if (host != null) host.ClockPhaseChanged -= HandleClockPhaseChanged;
+            DetachHost();
+        }
+
+        private void DetachHost()
+        {
+            if (host == null) return;
+            host.ClockPhaseChanged -= HandleClockPhaseChanged;
+            Run.AchievementUnlocked -= ForwardAchievement;
         }
 
         public void EnableTimedDays() => host.EnableTimedDays();

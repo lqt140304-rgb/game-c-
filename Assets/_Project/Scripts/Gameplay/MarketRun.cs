@@ -77,6 +77,7 @@ namespace ChoDoLa.Gameplay
             public int Seed { get; set; }
             public int Day { get; set; } = 1;
             public int ElapsedDaySeconds { get; set; }
+            public AchievementProgress Progress { get; set; } = new AchievementProgress();
             public int Cash { get; set; }
             public int Bought { get; set; }
             public int Arrears { get; set; }
@@ -158,7 +159,7 @@ namespace ChoDoLa.Gameplay
                 }
             }
 
-            state = new State { Seed = seed, Cash = (int)rules["start_cash"], HeirloomId = InitialHeirloom(seed) };
+            state = CreateFreshState(seed);
             persist?.Invoke(JsonConvert.SerializeObject(state));
         }
 
@@ -175,7 +176,7 @@ namespace ChoDoLa.Gameplay
                 saved["AppliedTransactions"]?.Type != JTokenType.Array || saved["ExtraClues"]?.Type != JTokenType.Object ||
                 loaded.ElapsedDaySeconds < 0 || loaded.ElapsedDaySeconds > MaxDaySeconds ||
                 loaded.Day < 1 || loaded.Day > (int)rules["days"] || loaded.Cash < 0 || loaded.Arrears < 0 ||
-                !ValidTactSave(loaded) || !ValidHeirloomSave(loaded) || loaded.Bought < 0 || loaded.Bought > DailyLimit ||
+                !ValidTactSave(loaded) || !ValidHeirloomSave(loaded) || !ValidAchievementSave(loaded.Progress) || loaded.Bought < 0 || loaded.Bought > DailyLimit ||
                 (loaded.Status != "active" && loaded.Status != "won" && loaded.Status != "lost") ||
                 loaded.Table.Concat(loaded.Inventory).Any(box => box == null || string.IsNullOrWhiteSpace(box.Id) ||
                     box.ItemId == null || !items.ContainsKey(box.ItemId) ||
@@ -228,6 +229,7 @@ namespace ChoDoLa.Gameplay
             next.Table.Remove(box);
             box.Id = "item:" + box.Id;
             next.Inventory.Add(box);
+            next.Progress.OpenedTypes.Add(box.TypeId);
             return new Result(entityId: box.Id);
         }, tradeOnly: true);
 
@@ -244,6 +246,7 @@ namespace ChoDoLa.Gameplay
             var fakeFactor = item.Fake ? (decimal)rules["fake_price_factor"] : 1m;
             var price = (int)Math.Floor(PriceBeforeAuthenticity(item) * fakeFactor);
             next.Inventory.Remove(item);
+            next.Progress.SoldFake |= item.Fake;
             next.Cash += price;
             return new Result(entityId: itemId, amount: price, wasFake: item.Fake);
         }, tradeOnly: true);
@@ -280,6 +283,7 @@ namespace ChoDoLa.Gameplay
             else if (next.Day == (int)rules["days"])
             {
                 next.Status = arrears == 0 ? "won" : "lost";
+                next.Progress.WonRun |= next.Status == "won";
                 next.EndReason = arrears == 0 ? "all_debt_paid" : "arrears_on_last_day";
             }
             else
@@ -297,6 +301,7 @@ namespace ChoDoLa.Gameplay
         private Result Apply(string transactionId, Func<State, Result> change, bool tradeOnly = false)
         {
             Result result;
+            AchievementView[] newAchievements;
             lock (writeLock)
             {
                 if (string.IsNullOrWhiteSpace(transactionId)) return new Result("INVALID_TRANSACTION");
@@ -308,10 +313,12 @@ namespace ChoDoLa.Gameplay
                 result = change(next);
                 if (!result.Success) return result;
                 next.AppliedTransactions.Add(transactionId);
+                newAchievements = CaptureNewAchievements(next);
                 persist?.Invoke(JsonConvert.SerializeObject(next));
                 state = next;
             }
             Changed?.Invoke();
+            foreach (var achievement in newAchievements) AchievementUnlocked?.Invoke(achievement);
             return result;
         }
 

@@ -179,6 +179,7 @@ namespace ChoDoLa.Sprint1
                 marketService.OnInventoryChanged += HandleInventoryChanged;
                 marketService.OnActionRejected += HandleActionRejected;
                 marketService.OnNotice += HandleNotice;
+                marketService.OnAchievementUnlocked += QueueAchievement;
             }
 
             if (playerInteractor != null)
@@ -201,6 +202,7 @@ namespace ChoDoLa.Sprint1
                 marketService.OnInventoryChanged -= HandleInventoryChanged;
                 marketService.OnActionRejected -= HandleActionRejected;
                 marketService.OnNotice -= HandleNotice;
+                marketService.OnAchievementUnlocked -= QueueAchievement;
             }
 
             if (playerInteractor != null)
@@ -259,8 +261,15 @@ namespace ChoDoLa.Sprint1
             }
 
             UpdateCompass();
+            UpdatePhone();
+            UpdateAchievementToast();
 
-            if (EquipmentKeyPressed() && (marketService == null || !marketService.CurrentRunState.IsRunEnded))
+            if (PhoneKeyPressed())
+            {
+                if (_phoneModal != null && _phoneModal.activeSelf) CloseAllModals();
+                else if (!IsAnyModalOpen()) OpenPhone();
+            }
+            else if (EquipmentKeyPressed() && (marketService == null || !marketService.CurrentRunState.IsRunEnded))
             {
                 if (_equipmentModal != null && _equipmentModal.activeSelf) CloseAllModals();
                 else if (!IsAnyModalOpen()) OpenEquipment(atShop: false);
@@ -271,7 +280,7 @@ namespace ChoDoLa.Sprint1
                 {
                     CloseAllModals();
                 }
-                else if (inspector3D == null || !inspector3D.IsInspecting)
+                else if (!IsAnyModalOpen() && (inspector3D == null || !inspector3D.IsInspecting))
                 {
                     OpenLedgerModal(startOnDebtTab: false);
                 }
@@ -305,7 +314,8 @@ namespace ChoDoLa.Sprint1
                 || (_inspectModal != null && _inspectModal.activeSelf)
                 || (_ledgerModal != null && _ledgerModal.activeSelf)
                 || (_runEndModal != null && _runEndModal.activeSelf)
-                || (_equipmentModal != null && _equipmentModal.activeSelf);
+                || (_equipmentModal != null && _equipmentModal.activeSelf)
+                || (_phoneModal != null && _phoneModal.activeSelf);
         }
 
         public void OpenCounterModal(string highlightOfferId)
@@ -323,6 +333,7 @@ namespace ChoDoLa.Sprint1
             _counterModal.SetActive(false);
             _ledgerModal.SetActive(false);
             _inspectingArtifact = artifact;
+            marketService?.RecordAchievementInspection(artifact.InstanceId);
 
             _insName.text = artifact.DisplayName;
             _insCategory.text = $"PHIẾU THẨM ĐỊNH · {artifact.Category.ToUpper()}";
@@ -410,6 +421,7 @@ namespace ChoDoLa.Sprint1
         public void CloseAllModals()
         {
             if (_equipmentModal != null) _equipmentModal.SetActive(false);
+            if (_phoneModal != null) _phoneModal.SetActive(false);
             if (_counterModal != null) _counterModal.SetActive(false);
             if (_inspectModal != null) _inspectModal.SetActive(false);
             if (_inspectHintsBar != null) _inspectHintsBar.SetActive(false);
@@ -1116,6 +1128,8 @@ namespace ChoDoLa.Sprint1
             BuildLedgerModal(canvasGo.transform);
             BuildRunEndModal(canvasGo.transform);
             BuildEquipmentModal(canvasGo.transform);
+            BuildPhone(canvasGo.transform);
+            BuildAchievementToast(canvasGo.transform);
         }
 
         private void BuildStatusCluster(Transform parent)

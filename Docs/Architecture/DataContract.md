@@ -135,3 +135,9 @@ Cấu hình `day_clock` trong `content.json` đặt khung một ngày khoảng 6
 Gắn `SleepBedInteractable` và collider lên giường trong scene có `Sprint1HudController`. Khi giường được khởi tạo, đồng hồ bắt đầu chạy và Sổ nợ bỏ nút kết thúc ngày trực tiếp. Ở sổ nợ, GT1 cho đánh dấu hoãn. Tương tác với giường ban đêm gọi `Sleep`, chốt nợ và tự lưu trong cùng giao dịch. Sau ngày 7 hiển thị kết quả. Scene thử chưa có giường vẫn dùng luồng kết thúc ngày từ sổ.
 
 `CurrentRunState.ClockMinute` và `ClockPhase` cung cấp giờ và buổi để giao diện điện thoại hoặc ánh sáng cảnh đọc. Đóng chợ và các mốc 15 giây ghi lại đồng hồ, cùng với thao tác lưu khi ứng dụng rời tiêu điểm hoặc thoát. Tải lại không chạy bù thời gian ngoài game. Scene hiện chưa gắn giường, điện thoại hay ánh sáng theo buổi.
+
+### Điện thoại và Thành tựu
+
+Nhấn **P** để mở hoặc đóng điện thoại. Trang chính hiển thị tiền, ngày và giờ (khi scene đã bật đồng hồ). Trang **Thành tựu** đọc sáu mốc từ `content.json` và hiển thị icon, tên, điều kiện và tiến độ. Thẻ góc trên bên phải hiển thị khoảng 3 giây, lần lượt nếu mở nhiều mốc cùng lúc, và không nhận cú bấm.
+
+`MarketRun` ghi thành tựu cùng giao dịch mở hộp, ghi lần soi đầu của mỗi mã hiện vật, bán hàng giả, gắn đủ combo và thắng ván. `AchievementUnlocked` phát sau khi bản lưu ghi thành công. Hồ sơ giữ tiến độ qua ván sau và không phát lại thông báo khi tải. Bản lưu đời trước bắt đầu theo dõi kể từ lúc bật tính năng vì không có đủ lịch sử cũ.

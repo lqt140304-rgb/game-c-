@@ -91,6 +91,7 @@ namespace ChoDoLa.Gameplay
             foreach (int previous in next.TactSlots.Where(pair => pair.Value == tactId).Select(pair => pair.Key).ToArray())
                 next.TactSlots.Remove(previous);
             next.TactSlots[slot] = tactId;
+            next.Progress.CompletedCombo |= ActiveComboDefinitions(next).Any();
 
             var condition = content["bikhe"].First(entry => (string)entry["id"] == "BK1")["condition"];
             if (!next.Bikhe1Unlocked && next.Day < (int)condition["before_day"] &&

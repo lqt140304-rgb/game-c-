@@ -9,6 +9,7 @@
     <Reference Include="Newtonsoft.Json" HintPath="$(NewtonsoftAssembly)" Condition="'$(NewtonsoftAssembly)' != ''" />
     <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketRun.cs" />
     <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketRun.Clock.cs" />
+    <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketRun.Achievements.cs" />
     <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketRun.Tacts.cs" />
     <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketRun.Heirlooms.cs" />
     <Compile Include="../../Assets/_Project/Scripts/Gameplay/MarketSaveFile.cs" />

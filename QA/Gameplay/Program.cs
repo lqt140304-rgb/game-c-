@@ -326,3 +326,45 @@ clockHost.Run = new MarketRun(json, 999, clockSave);
 Check(clockScene.CanSleep, "reload keeps the night phase");
 Check(clockScene.RequestEndDay(1) && !clockScene.RequestEndDay(1), "bed closes exactly one evening");
 Check(clockScene.CurrentRunState.ClockMinute == 480 && !clockScene.CanSleep, "next morning resets clock and sleep");
+
+var achievementData = JObject.Parse(json);
+achievementData["rules"]["start_cash"] = 100000;
+achievementData["boxes"][0]["fake_rate"] = 1;
+string achievementSave = null;
+var achievements = new MarketRun(achievementData.ToString(), 42, null, value => achievementSave = value);
+var emitted = new System.Collections.Generic.List<string>();
+achievements.AchievementUnlocked += achievement => emitted.Add(achievement.Id);
+var firstAchievementBox = achievements.BuyBox("ach-buy", achievements.Shelf[0].Id);
+var firstAchievementItem = achievements.OpenBox("ach-open", firstAchievementBox.EntityId);
+Check(emitted.SequenceEqual(new[] { "first_open" }), "first opening emits one unlock");
+Check(achievements.RecordAchievementInspection("ach-inspect", firstAchievementItem.EntityId).Success, "record one inspection");
+Check(achievements.RecordAchievementInspection("ach-inspect-again", firstAchievementItem.EntityId).Success &&
+    achievements.Achievements.Single(entry => entry.Id == "inspect_five").Progress == 1, "repeat inspection does not count");
+Check(achievements.Sell("ach-sale", firstAchievementItem.EntityId).Success && emitted.Contains("first_fake_sale"), "fake sale unlock");
+for (var day = 1; day <= 7; day++) Check(achievements.EndDay($"ach-day-{day}", day).Success, "finish achievement run");
+Check(emitted.Contains("first_win"), "win unlock");
+achievements = new MarketRun(achievementData.ToString(), 727, achievementSave, value => achievementSave = value);
+int replayed = 0;
+achievements.AchievementUnlocked += _ => replayed++;
+Check(achievements.Achievements.Count(entry => entry.Unlocked) == 3 && achievements.StartFreshRun(77) &&
+    achievements.Achievements.Count(entry => entry.Unlocked) == 3 && replayed == 0, "reload and new run preserve without replay");
+Console.WriteLine("Achievement checks passed.");
+
+var everyBoxRun = new MarketRun(achievementData.ToString(), 552);
+for (var day = 1; day <= 4; day++)
+{
+    var typeId = new[] { "H1", "H2", "H3", "RD" }[day - 1];
+    var offer = everyBoxRun.Shelf.Single(entry => entry.TypeId == typeId);
+    var bought = everyBoxRun.BuyBox($"all-buy-{day}", offer.Id);
+    Check(everyBoxRun.OpenBox($"all-open-{day}", bought.EntityId).Success, "open distinct chest");
+    Check(everyBoxRun.Achievements.Single(entry => entry.Id == "four_boxes").Progress == day,
+        "each distinct box contributes one");
+    Check(everyBoxRun.EndDay($"all-day-{day}", day).Success, "next day for box types");
+}
+Check(everyBoxRun.Achievements.Single(entry => entry.Id == "four_boxes").Unlocked, "four base boxes unlock");
+Check(kimKhuy.Achievements.Single(entry => entry.Id == "first_combo").Unlocked, "scene uses achievement combo trigger");
+
+var legacyData = JObject.Parse(achievementSave);
+legacyData.Remove("Progress");
+var legacyRun = new MarketRun(achievementData.ToString(), 32, legacyData.ToString());
+Check(legacyRun.Achievements.All(entry => entry.Progress == 0 && !entry.Unlocked), "legacy save opens without historical achievements");

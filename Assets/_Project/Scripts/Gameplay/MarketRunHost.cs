@@ -82,8 +82,7 @@ namespace ChoDoLa.Gameplay
 
         public bool StartNextRun()
         {
-            if (Run.Status == "active") return false;
-            Run = new MarketRun(content, NewSeed(), null, save.Write);
+            if (!Run.StartFreshRun(NewSeed())) return false;
             elapsedFraction = 0f;
             RunReplaced?.Invoke();
             return true;
