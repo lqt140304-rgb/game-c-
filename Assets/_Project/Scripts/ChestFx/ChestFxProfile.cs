@@ -105,8 +105,12 @@ namespace ChoDoLa.ChestFx
         public ChestScript script;
 
         [Header("Tối giản")]
-        [Tooltip("Bật = lõi bỏ hạt, chớp sáng, tia, vòng, tick, âm khoá/whoosh/ambient/stage/accent và chấm bậc. Vẫn giữ vòng đổi màu, ánh sáng glow, bóng vật phẩm và mọi callback của hook.")]
+        [Tooltip("Bật = lõi bỏ hạt, tick, âm khoá/whoosh/ambient/stage/accent và chấm bậc. Vẫn giữ vòng đổi màu, ánh sáng glow (làm dịu), hào quang chớp/tia/vòng, bóng vật phẩm và mọi callback của hook.")]
         public bool minimalFx = false;
+        [Tooltip("Chỉ khi minimalFx: hệ số nhân màu glow trong miệng rương (kẹp mỗi kênh ≤ 1, không HDR). Tăng nếu quá tối, giảm nếu chói.")]
+        [Range(0f, 1f)] public float minimalGlowScale = 0.35f;
+        [Tooltip("Chỉ khi minimalFx: hệ số nhân cường độ đèn revealLight (có trần ≤ 1,5, không nháy chói lúc chốt).")]
+        [Range(0f, 1f)] public float minimalLightScale = 0.25f;
 
         [Header("Custom effect")]
         [Tooltip("Spawned under the chest at Play. Any ChestFxHook on it receives the reveal callbacks.")]

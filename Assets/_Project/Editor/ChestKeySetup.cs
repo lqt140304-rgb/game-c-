@@ -80,6 +80,8 @@ namespace ChoDoLa.Editor
 
             p.chestId = preset.chestId;
             p.minimalFx = true;
+            p.minimalGlowScale = 0.35f;
+            p.minimalLightScale = 0.25f;
             p.secondaryColor = preset.mainColor;
             p.tension.enabled = false;
             ChestAudioRule.ApplyToProfile(p);
