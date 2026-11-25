@@ -59,6 +59,7 @@ namespace ChoDoLa.Editor
                 Object.DestroyImmediate(go);
             }
 
+            ChestAudioRule.ApplyToProfile(p);   // A1: lõi gần như câm, hook tự phát nền/nhịp/tiếng chốt
             if (missing > 0) Debug.LogWarning($"[CoPhongFx] {missing} sound(s) not found in {CoPhongFxPreset.AudioFolder} or the shared set; those slots stay empty.");
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();
