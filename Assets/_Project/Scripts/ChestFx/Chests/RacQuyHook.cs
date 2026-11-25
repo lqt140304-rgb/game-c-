@@ -135,7 +135,11 @@ namespace ChoDoLa.ChestFx
             fv.x = new ParticleSystem.MinMaxCurve(-0.05f, 0.05f);
             fv.y = new ParticleSystem.MinMaxCurve(-0.04f, 0.06f);
             fv.z = new ParticleSystem.MinMaxCurve(-0.05f, 0.05f);
+            // Unity: orbitalX/Y/Z phải cùng chế độ (ở đây TwoConstants), nếu không báo
+            // "Particle Orbital Velocity curves must all be in the same mode".
+            fv.orbitalX = new ParticleSystem.MinMaxCurve(0f, 0f);
             fv.orbitalY = new ParticleSystem.MinMaxCurve(3.5f, 6f);
+            fv.orbitalZ = new ParticleSystem.MinMaxCurve(0f, 0f);
             fv.radial = new ParticleSystem.MinMaxCurve(0f);
             ParticleSystemRenderer fr = _flies.GetComponent<ParticleSystemRenderer>();
             Object.Destroy(fr.sharedMaterial);
