@@ -145,8 +145,10 @@ def _make_init(base):
   return _init
 
 
-def run_static(name, n, seed0=0, chests="run", cash=False, source="ngày 3", scale=1.0, shop_extra=None, themes=True):
+def run_static(name, n, seed0=0, chests="run", cash=False, source="ngày 3", scale=1.0, shop_extra=None, themes=True, theme_run=None):
     """Đo n ván của một cách chơi. chests: 'run' (rương chỉ mở qua cây trong ván) hoặc 'perm' (mọi rương có từ ngày 1)."""
+    global THEME_RUN
+    THEME_RUN = theme_run or (6, 10)
     STATE.update(source=source, scale=scale, cash=cash, chests=chests, themes=themes,
                  order="play" if name in C.TURN_NAMES else "cheap")
     profile = "giỏi" if name in C.TURN_NAMES else "thường"
@@ -178,13 +180,13 @@ def run_static(name, n, seed0=0, chests="run", cash=False, source="ngày 3", sca
 # --- chạy số đo cho báo cáo (python3 tree_run.py run|perm [n]) -----------------------------------------------
 BOTS = ("thận trọng", "liều")
 CONFIGS = {   # nhãn -> tham số run_static (kịch bản "trong ván")
-    "ngày 3": dict(source="ngày 3"),
-    "ngày 3, giá nút một nửa": dict(source="ngày 3", scale=.5),
-    "sổ 1/2": dict(source="sổ 1/2"),
-    "nợ 3": dict(source="nợ 3"),
-    "ngày 3 + M2 cộng vốn": dict(source="ngày 3", cash=True),
-    "ngày 3, giá nửa, M2 cộng vốn": dict(source="ngày 3", scale=.5, cash=True),
-    "ngày 3, shop 2 rương mới": dict(source="ngày 3", shop_extra=2),
+    "A. chỉ cây, không chủ đề (giá nút một nửa)": dict(source="ngày 3", scale=.5, themes=False),
+    "A2. như A, M2 cộng vốn 1.000.000 đ": dict(source="ngày 3", scale=.5, themes=False, cash=True),
+    "A3. như A, giá nút đủ": dict(source="ngày 3", scale=1.0, themes=False),
+    "A4. như A, nguồn điểm sổ 1/2": dict(source="sổ 1/2", scale=.5, themes=False),
+    "A5. như A, nguồn điểm nợ 3": dict(source="nợ 3", scale=.5, themes=False),
+    "B. cây + chủ đề mở khi Sổ ván >= 10 và 16": dict(source="ngày 3", scale=.5, theme_run=(10, 16)),
+    "B2. cây + chủ đề mở khi Sổ ván >= 6 và 10": dict(source="ngày 3", scale=.5, theme_run=(6, 10)),
 }
 
 

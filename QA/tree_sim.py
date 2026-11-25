@@ -1,4 +1,7 @@
-"""Sprint 5 phần 4 (Claude 2): điểm phát triển của cây và chuỗi ván của một người chơi.
+"""[BẢN CHUỖI VÁN, ĐÃ BỎ NGÀY 2026-11-25: cây kỹ năng nay chỉ dùng trong ván, không có tiến trình vĩnh viễn. Giữ lại để tái hiện số đo cũ
+và vì tree_run.py dùng chung apply(), UNLOCK_OVER, _Skill, static(). Bảng TREE, POINTS, Meta, chain() KHÔNG còn là đề xuất.]
+
+Sprint 5 phần 4 (Claude 2): điểm phát triển của cây và chuỗi ván của một người chơi.
 
 Cách làm: GIỮ NGUYÊN lõi đã duyệt và các phần trước:
   - 4 rương cơ bản đã chốt (chest_sim.FINAL), rương mở khóa và khung rương chủ đề (chest_unlock, phần 2, đề xuất);
