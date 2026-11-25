@@ -27,6 +27,8 @@ namespace ChoDoLa.ChestFx
         [SerializeField] private int itemIndex;
         [SerializeField] private int chestIndex;
 
+        private bool _requireCoin;
+        private int _dropped;
         private string _status = "Sẵn sàng";
         private GUIStyle _style;
 
@@ -50,13 +52,45 @@ namespace ChoDoLa.ChestFx
         {
             if (Pressed(KeyCodeT())) { forcedTier = (ChestTier)(((int)forcedTier + 1) % ChestTierUtil.Count); }
             if (Pressed(KeyCodeY()) && items.Count > 0) { itemIndex = Random.Range(0, items.Count); }
+            if (Pressed(KeyCodeG())) { _requireCoin = !_requireCoin; _status = _requireCoin ? "Cổng đồng xu BẬT: Space rồi K thả xu" : "Cổng đồng xu tắt"; }
             if (Pressed(KeyCodeSpace()) && reveal != null)
             {
                 reveal.ResetReveal();
+                PrepareGate();
                 reveal.Play(forcedTier, CurrentItem());
             }
+            if (Pressed(KeyCodeK()) && reveal != null) DropOutsideItem("gold_coin", new Color(1f, 0.82f, 0.25f));
+            if (Pressed(KeyCodeL()) && reveal != null) DropOutsideItem("battery", new Color(0.3f, 0.9f, 0.4f));
             if (Pressed(KeyCodeR()) && reveal != null) { reveal.ResetReveal(); _status = "Đã đóng"; }
             if (Pressed(KeyCodeC()) && chests.Count > 1) SwapChest();
+        }
+
+        /// <summary>Bật/tắt bước cổng của kịch bản Golden và bảo đảm rương có khe nhận (mã "coin", cần một "gold_coin").</summary>
+        private void PrepareGate()
+        {
+            reveal.SetStepEnabled("cong-xu", _requireCoin);
+            if (!_requireCoin) return;
+            bool has = false;
+            foreach (ChestItemSlot slot in reveal.GetComponentsInChildren<ChestItemSlot>(true)) if (slot.gateId == "coin") has = true;
+            if (has) return;
+            ChestItemSlot added = reveal.gameObject.AddComponent<ChestItemSlot>();
+            added.gateId = "coin";
+            added.requiredItems = new List<string> { "gold_coin" };
+        }
+
+        /// <summary>Thả một vật NGOÀI có Rigidbody từ trên miệng rương: đúng mã thì mở khoá, sai mã bị đẩy ra.</summary>
+        private void DropOutsideItem(string id, Color color)
+        {
+            GameObject go = GameObject.CreatePrimitive(id == "gold_coin" ? PrimitiveType.Cylinder : PrimitiveType.Cube);
+            go.name = "Demo_" + id;
+            go.transform.localScale = id == "gold_coin" ? new Vector3(0.08f, 0.006f, 0.08f) : new Vector3(0.06f, 0.1f, 0.06f);
+            go.transform.position = reveal.MouthPosition + Vector3.up * (0.35f + 0.05f * (_dropped++ % 3));
+            Renderer r = go.GetComponent<Renderer>();
+            r.material.color = color;
+            go.AddComponent<Rigidbody>();
+            go.AddComponent<ChestSlotItem>().itemId = id;
+            Destroy(go, 10f);
+            _status = "Thả " + id;
         }
 
         private GameObject CurrentItem() => items.Count > 0 ? items[Mathf.Clamp(itemIndex, 0, items.Count - 1)] : null;
@@ -122,10 +156,11 @@ namespace ChoDoLa.ChestFx
                 "THỬ HIỆU ỨNG MỞ RƯƠNG\n" +
                 $"[T] Bậc ép: {forcedTier.DisplayName()}  (số chấm quay = {forcedTier.Rank() + 1})\n" +
                 $"[Y] Món minh hoạ: {(item != null ? item.name : "(chưa có, dùng hình cầu)")}\n" +
+                $"[G] Cổng đồng xu: {(_requireCoin ? "BẬT" : "tắt")}   [K] thả xu vàng   [L] thả pin (sai)\n" +
                 "[Space] Mở rương   [R] Đóng lại" + (chests.Count > 1 ? "   [C] Đổi rương" : "") + "\n" +
                 $"Rương: {chestName}\n" +
                 $"Trạng thái: {_status}";
-            GUI.Box(new Rect(12, 12, 430, 150), text, _style);
+            GUI.Box(new Rect(12, 12, 480, 175), text, _style);
         }
 
         // ------------------------------------------------------------------ Input (both input systems)
@@ -136,6 +171,9 @@ namespace ChoDoLa.ChestFx
         private static Key KeyCodeSpace() => Key.Space;
         private static Key KeyCodeR() => Key.R;
         private static Key KeyCodeC() => Key.C;
+        private static Key KeyCodeG() => Key.G;
+        private static Key KeyCodeK() => Key.K;
+        private static Key KeyCodeL() => Key.L;
         private static bool Pressed(Key key) => Keyboard.current != null && Keyboard.current[key].wasPressedThisFrame;
 #else
         private static KeyCode KeyCodeT() => KeyCode.T;
@@ -143,6 +181,9 @@ namespace ChoDoLa.ChestFx
         private static KeyCode KeyCodeSpace() => KeyCode.Space;
         private static KeyCode KeyCodeR() => KeyCode.R;
         private static KeyCode KeyCodeC() => KeyCode.C;
+        private static KeyCode KeyCodeG() => KeyCode.G;
+        private static KeyCode KeyCodeK() => KeyCode.K;
+        private static KeyCode KeyCodeL() => KeyCode.L;
         private static bool Pressed(KeyCode key) => Input.GetKeyDown(key);
 #endif
     }
