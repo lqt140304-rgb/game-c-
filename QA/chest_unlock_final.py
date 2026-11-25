@@ -45,7 +45,14 @@ _RQ0 = dict(copy.deepcopy(U.UNLOCK), **{"Rác Quý": dict(U.UNLOCK["Rác Quý"],
 SETS["xacnhan"] = [("mo_khoa", U.scenario("mo_khoa")), ("tat_ca", U.scenario("tat_ca")),
                    ("mo_khoa, Rác Quý không Huyền thoại", U.scenario("mo_khoa", unlock=_RQ0)),
                    ("tất cả, shop bày 2 rương mới mỗi ngày", U.scenario("tat_ca", shop_extra=2))]
-N = {"final": 1500, "sens": 1000, "he": 1000, "xacnhan": 1500}
+_TH26 = dict(copy.deepcopy(U.UNLOCK), **{"Tổng Hợp": dict(U.UNLOCK["Tổng Hợp"], tiers=dict(R=.18, T=.39, H=.26, X=.14, L=.03))})
+SETS["shop4"] = [  # chủ dự án: shop bày tối đa 4 rương mở khóa hoặc chủ đề mỗi ngày (ngoài 4 rương cơ bản)
+    ("4 mở khóa + 2 chủ đề, bày 4", U.scenario("tat_ca", shop_extra=4)),
+    ("4 mở khóa + 4 chủ đề, bày 4", U.scenario("tat_ca", n_theme=4, shop_extra=4)),
+    ("4 mở khóa, Tổng Hợp Hiếm 26%", U.scenario("mo_khoa", unlock=_TH26)),
+    ("4 mở khóa + 2 chủ đề, bày 4, Tổng Hợp Hiếm 26%", U.scenario("tat_ca", unlock=_TH26, shop_extra=4)),
+]
+N = {"final": 1500, "sens": 1000, "he": 1000, "xacnhan": 1500, "shop4": 1500}
 
 
 def job(a):
