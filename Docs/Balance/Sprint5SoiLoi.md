@@ -25,7 +25,7 @@ Viết ngày 2026-11-24. **Bản này thay thế bản đo theo luật cũ** (l�
 
 - **Nguyên không lỗi.** Giá cuối vẫn là giá nền × (1, 0,7 hoặc 0,3) × hiệu ứng tạo tác, nên kinh tế cũ không đổi.
 - **Dấu lạ:** món thật có 10% xác suất mang một dấu giống dấu hàng giả.
-- **Kỹ năng:** xác suất tìm ra mỗi lỗi hoặc dấu. Giỏi 95%, thường 75%, ẩu 45%, bỏ qua 0%. Soi không giới hạn thời gian.
+- **Kỹ năng:** xác suất tìm ra mỗi lỗi hoặc dấu. Giỏi 95%, thường 75%, ẩu 45%, bỏ qua 0%. Soi giới hạn 2 phút (chốt 2026-11-25), mô hình biểu diễn qua s.
 - **Lỗi sót:** khi cửa hàng kiểm tra lại, lỗi sót vẫn bị trừ giá, cộng phạt 5% giá thẩm định mỗi lỗi.
 - **Chọn thật hay giả:** người chơi suy ra xác suất giả theo Bayes từ số dấu thấy được và tỉ lệ hàng giả của rương. Khai giả chỉ nhận giá hàng giả 20% (lỗ 80% nếu món thật); giả mà khai thật bị tịch thu (phạt 20%, 0 đ); ngày 1 miễn phạt.
 - **Trả giá (Hiếm trở lên):** mở màn ở giá bảng đã trừ lỗi (100%). 3 vòng; mỗi vòng thắng với xác suất (kỹ năng trả giá) × (tỉ lệ lỗi đã tìm). Thắng +8%, thua −5%, giá chốt trong 70% đến **110%**. Dừng lúc nào cũng được.
@@ -89,12 +89,12 @@ Các dòng độ nhạy trong bảng này chạy ở trần 1,12 (bộ đo ban �
 
 - **Soi lỗi giờ chủ yếu bảo vệ khỏi phạt, ít kiếm thêm tiền.** Món đã bị trừ giá theo lỗi đúng bằng giá nền × hệ số tình trạng, nên soi giỏi chỉ tránh phạt sót, nhận ra hàng giả, và thắng trả giá nhờ biết đủ lỗi. Doanh thu so với giá đúng: giỏi 1,06 đến 1,08, thường 1,01, ẩu 0,97, bỏ qua soi 0,93.
 - **Bỏ qua soi vẫn khả thi nhưng tệ nhất**, chủ yếu do bán nhầm hàng giả (11% số món). Nếu muốn nhấn mạnh soi lỗi hơn nữa, tăng phạt sót hoặc tăng tỉ lệ hàng giả; nếu muốn dễ hơn, giảm một trong hai.
-- **Không giới hạn thời gian soi** khiến người kiên nhẫn tìm được hết lỗi (mô hình chỉ có xác suất tìm mỗi lỗi, không có đồng hồ). Kỹ năng soi chỉ khác nhau ở độ kỹ, cần chốt giới hạn thời gian ở bước thiết kế.
+- **Giới hạn 2 phút soi (chủ dự án chốt 2026-11-25)** chặn việc người kiên nhẫn tìm hết lỗi. Mô hình không có đồng hồ nên chỉ biểu diễn qua xác suất tìm mỗi lỗi; số đo vẫn dùng được nếu s khớp với người thật trong 2 phút.
 - **Gợi ý của Giáo Sư Lẫm ít được dùng** (0,03 đến 0,04 lần mỗi ván với chiến thuật thường, 1,9 lần với combo lớn nhờ miễn phí). Soi giỏi đã đủ chắc nên gợi ý hiếm khi đáng 5% giá nền.
 
 ## 6. Câu hỏi mở cho chủ dự án (từ bàn giao, chưa chốt)
 
-1. Có giới hạn lượt hoặc thời gian soi không? Không giới hạn thì kỹ năng soi chỉ còn là sự kiên nhẫn.
+1. ~~Có giới hạn lượt hoặc thời gian soi không?~~ **Đã chốt (2026-11-25): giới hạn 2 phút soi.** Mô hình không có đồng hồ; xác suất tìm lỗi s (giỏi 95%, thường 75%, ẩu 45%) được hiểu là tỉ lệ tìm ra mỗi lỗi trong 2 phút. Cần chơi thử thật để kiểm các mức s này; chưa rõ 2 phút tính mỗi món hay mỗi lượt mở rương.
 2. Bằng chứng ở bước soi nối với trả giá thế nào? Mô hình này nối qua tỉ lệ lỗi đã tìm.
 3. Dấu lạ trên món thật có cố ý giống dấu hàng giả không? Tỉ lệ dấu lạ quyết định soi thật giả có rủi ro hay không.
 4. Người chơi có được bỏ bấm một lỗi đã thấy để giữ giá cao không? Mô hình này coi đó là lỗi sót (cùng khoản phạt), nên không có lợi.

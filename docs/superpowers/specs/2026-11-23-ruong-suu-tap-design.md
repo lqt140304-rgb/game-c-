@@ -65,7 +65,7 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 **Cuốn Sổ Sưu Tập** ghi mọi thứ người chơi từng sở hữu: hiện vật, tạo tác và cả rác.
 
 - **Lớp 1, trong ván:** gom đủ một bộ trong cùng ván (ví dụ 3 món cùng nhóm nguồn gốc) thì nhận hiệu ứng nhỏ đến hết ván, gần cơ chế Bí Khế.
-- **Lớp 2, giữa các ván (meta, vĩnh viễn): cây phát triển (skill tree).** Giữ 4 mở khóa M1–M4 hiện có làm các nút đầu cây.
+- **Lớp 2, trong ván (không vĩnh viễn): cây phát triển (skill tree).** **Chủ dự án chốt 2026-11-25: cây kỹ năng chỉ dùng trong ván, không có tiến trình vĩnh viễn giữa các ván.** Mỗi ván bắt đầu với cây trống, điểm và nút mở được tính lại từ đầu, hết ván thì mất. Bản cũ ghi "giữa các ván (meta, vĩnh viễn)" đã bị thay. Giữ 4 mở khóa M1–M4 làm các nút đầu cây nếu còn phù hợp (Claude 2 xét lại).
 
 **Cây có 4 nhánh**
 
@@ -79,7 +79,7 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 **Luật mở nút**
 - Nút cần **nút cha đã mở**, nên người chơi đi sâu một nhánh hoặc trải đều.
 - Mở một nút cần **cả hai**: (1) đủ điều kiện sưu tập của nút đó, và (2) tốn **điểm phát triển**.
-- Điểm phát triển kiếm được cuối mỗi ván (thắng hay thua đều có, thắng được nhiều hơn), và từ việc ghi thêm vào Sổ Sưu Tập lần đầu.
+- Điểm phát triển **kiếm và tiêu ngay trong ván** (không mang sang ván sau). **Nguồn điểm trong ván (cuối mỗi ngày? khi ghi Sổ Sưu Tập? khi trả nợ đúng hạn?) chưa chốt**, xem câu hỏi mở dưới. Bản cũ (điểm cuối ván, tích lũy giữa các ván) không còn hiệu lực.
 - Phần thưởng meta **không có buff chơi**: chỉ là rương mới, bộ cốt truyện, cảnh mới và phản ứng thần lực mới. (Riêng M2 vốn đầu ván và M4 hiện có là ngoại lệ đã có sẵn, Claude 2 xét có giữ không.)
 - Đóng góp mới cho dữ liệu: nút cây gồm `id`, `branch`, `parent`, `cost`, `condition`, `reward`.
 
@@ -99,3 +99,10 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 4. Khoảnh khắc thần lực "ngoài đời thật" cần cảnh chợ có NPC và mèo, đang chờ Antigravity dựng cảnh.
 5. Giá điểm phát triển của từng nút và cách chia điểm cuối ván: **chờ Claude 2**; giao diện cây (màn hình) do Antigravity dựng.
 6. Dữ liệu và hợp đồng: Codex cần thêm loại vật phẩm `junk`, trường `use`, loại rương mới và nút cây phát triển vào `Docs/Content/YeuCauDuLieu.md`.
+
+## Câu hỏi mở sau khi chốt cây chỉ trong ván (2026-11-25)
+
+1. Điểm phát triển kiếm từ đâu trong một ván 7 ngày (mỗi ngày, mỗi mục Sổ Sưu Tập mới, trả nợ đúng hạn)?
+2. Rương mở khóa và rương chủ đề (mở bằng thành tựu, `ruong-chu-de`) vẫn vĩnh viễn hay cũng chỉ trong ván? Sổ Sưu Tập có giữ giữa các ván không?
+3. Nút Câu chuyện (cutscene, cảnh, NPC mới) mở trong ván nghĩa là gì khi ván chỉ 7 ngày?
+4. M2 (vốn đầu ván) và M4 hiện có: bỏ, hay thành nút trong ván?
