@@ -18,6 +18,12 @@ Tài liệu của **Claude 2** cho Sprint 0. Mọi con số là **giả định 
 
 Quy ước trạng thái giống [GDD](../GameDesign/README.md): **[ĐÃ CHỐT]**, **[ĐỀ XUẤT]**, **[MỞ]**.
 
+## Mục lục tài liệu Sprint 5
+
+- [BangSoLieuSprint5.md](BangSoLieuSprint5.md) — một bảng số liệu cân bằng cho Codex nạp (kèm `Docs/Content/data/balance_sprint5.json`), có cột trạng thái ĐÃ CHỐT, ĐỀ XUẤT, GIẢ ĐỊNH.
+- [CaKiemThuSprint5.md](CaKiemThuSprint5.md) — **ca kiểm thử biên Sprint 5 (BT-17 trở đi)** cho luật mới; test mẫu trên mô hình tham chiếu: `QA/test_sprint5_cases.py`.
+- Báo cáo nguồn: [Sprint5Ruong](Sprint5Ruong.md), [Sprint5RuongMoKhoa](Sprint5RuongMoKhoa.md), [Sprint5SoiLoi](Sprint5SoiLoi.md), [Sprint5CayPhatTrien](Sprint5CayPhatTrien.md), bàn giao [BanGiaoSprint5](BanGiaoSprint5.md).
+
 ## 1. Giả định tiền và nợ
 
 | Ngày | Nợ đến hạn | Tổng nợ lũy kế | Tiền đã phải kiếm thêm (so với vốn 10.000.000 đ) |
@@ -92,6 +98,8 @@ Nhận xét:
 | BT-14 | Kho đầy | Kho đạt sức chứa, mua hoặc mở thêm hộp | **[MỞ]** Chờ sức chứa kho và cách xử lý món thừa |
 | BT-15 | Thoát giữa thao tác | Thoát ngay sau khi mở hộp, trước khi bán | Tải lại không lặp giao dịch. Kiểm thử đầy đủ ở Sprint 2 |
 | BT-16 | Thắng ngày 7 | Trả xong khoản 22.000.000 đ ngày 7 | **[MỞ]** Chờ Claude 1 chốt điều kiện thắng và tổng tài sản |
+
+Ca kiểm thử cho luật Sprint 5 (BT-17 trở đi) nằm ở [CaKiemThuSprint5.md](CaKiemThuSprint5.md). BT-08, BT-14, BT-16 ở trên vẫn **[MỞ]**.
 
 ## 5. Luật còn thiếu cần Claude 1 chốt
 
