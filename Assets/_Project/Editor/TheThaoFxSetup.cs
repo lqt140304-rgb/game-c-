@@ -24,9 +24,7 @@ namespace ChoDoLa.EditorTools
             {
                 TheThaoHook hook = selected.GetComponent<TheThaoHook>();
                 if (hook == null) hook = selected.AddComponent<TheThaoHook>();
-                int m = 0;
-                if (hook.kickoffClip == null) hook.kickoffClip = Clip(TheThaoFxPreset.KickoffFile, null, ref m);
-                if (hook.airHornClip == null) hook.airHornClip = Clip(TheThaoFxPreset.AirHornFile, null, ref m);
+                TheThaoFxPreset.FillHookClips(hook);   // còi, đám đông, trống, cột dọc, VAR... (Audio/Chests/the_thao/match/)
                 EditorUtility.SetDirty(hook);
                 Debug.Log("[TheThaoFx] TheThaoHook added to " + selected.name);
             }

@@ -27,16 +27,53 @@ namespace ChoDoLa.ChestFx
         public const string KickoffFile = "sfx_thethao_kickoff.mp3";
         public const string AirHornFile = "sfx_thethao_airhorn.mp3";
 
+        /// <summary>Âm riêng của kịch bản luân lưu (tổng hợp bằng Tools/Audio/make_thethao_match_sfx.py).</summary>
+        public const string MatchFolder = AudioFolder + "match/";
+
+#if UNITY_EDITOR
+        /// <summary>Điền các clip còn trống của <see cref="TheThaoHook"/> từ the_thao/ và the_thao/match/.</summary>
+        public static void FillHookClips(TheThaoHook h)
+        {
+            if (h == null) return;
+            if (h.kickoffClip == null) h.kickoffClip = Load(MatchFolder + "whistle_start.wav") ?? Load(AudioFolder + KickoffFile);
+            if (h.airHornClip == null) h.airHornClip = Load(AudioFolder + AirHornFile) ?? Load(MatchFolder + "airhorn.wav");
+            if (h.crowdLoopClip == null) h.crowdLoopClip = Load(MatchFolder + "crowd_loop.wav");
+            if (h.drumClip == null) h.drumClip = Load(MatchFolder + "drum.wav");
+            if (h.kickClip == null) h.kickClip = Load(MatchFolder + "kick.wav");
+            if (h.bounceClip == null) h.bounceClip = Load(MatchFolder + "bounce.wav");
+            if (h.postClip == null) h.postClip = Load(MatchFolder + "post_clang.wav");
+            if (h.netClip == null) h.netClip = Load(MatchFolder + "net_swish.wav");
+            if (h.oohClip == null) h.oohClip = Load(MatchFolder + "crowd_ooh.wav");
+            if (h.roarClip == null) h.roarClip = Load(MatchFolder + "crowd_roar.wav");
+            if (h.awwClip == null) h.awwClip = Load(MatchFolder + "crowd_aww.wav");
+            if (h.deflateClip == null) h.deflateClip = Load(MatchFolder + "deflate.wav");
+            if (h.tromboneClip == null) h.tromboneClip = Load(MatchFolder + "sad_trombone.wav");
+            if (h.whistleEndClip == null) h.whistleEndClip = Load(MatchFolder + "whistle_end.wav");
+            if (h.varBeepClip == null) h.varBeepClip = Load(MatchFolder + "var_beep.wav");
+            if (h.rewindClip == null) h.rewindClip = Load(MatchFolder + "rewind.wav");
+            if (h.riserClip == null) h.riserClip = Load(MatchFolder + "riser.wav");
+            if (h.clapClip == null) h.clapClip = Load(AudioFolder + "sfx_thethao_clap.mp3");
+        }
+
+        private static AudioClip Load(string path)
+        {
+            AudioClip c = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+            return c != null ? c : null;
+        }
+#endif
+
         public static void Apply(ChestFxProfile p)
         {
             p.chestId = ChestId;
+            // Âm căng thẳng chung của lõi TẮT: TheThaoHook tự dựng nhịp trống/đám đông/riser và tự rẽ theo bậc ở cú sút cuối.
+            p.tension.enabled = false;
 
             p.tickVolume = 0.6f;
             p.tickPitchStart = 0.85f;   // heavy kicks first, lighter taps as it slows
             p.tickPitchEnd = 1.3f;
             p.lockVolume = 0.95f;
             p.whooshVolume = 0.55f;
-            p.ambientVolume = 0.3f;
+            p.ambientVolume = 0.15f;  // đám đông chính do TheThaoHook phát
             p.accentVolume = 0.4f;
             p.accentsBase = 0;          // Rác: nobody claps
             p.accentsPerTier = 1;

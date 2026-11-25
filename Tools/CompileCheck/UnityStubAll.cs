@@ -169,13 +169,13 @@ namespace UnityEngine
     public class SphereCollider : Collider { public Vector3 center; public float radius; }
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
-    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
+    public partial class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
         public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {}
         public Vector3 position; public float maxAngularVelocity; public void AddForceAtPosition(Vector3 f, Vector3 p, ForceMode m) {} public CollisionDetectionMode collisionDetectionMode; public RigidbodyInterpolation interpolation; public void AddTorque(Vector3 t) {} public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
     public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
     public enum CollisionDetectionMode { Discrete, Continuous, ContinuousDynamic, ContinuousSpeculative }
     public enum PhysicsMaterialCombine { Average, Minimum, Multiply, Maximum }
-    public class PhysicsMaterial : Object { public PhysicsMaterial(string n) {} public float bounciness, dynamicFriction, staticFriction; public PhysicsMaterialCombine bounceCombine; }
+    public partial class PhysicsMaterial : Object { public PhysicsMaterial(string n) {} public float bounciness, dynamicFriction, staticFriction; public PhysicsMaterialCombine bounceCombine; }
     public partial class Collider { public PhysicsMaterial sharedMaterial; }
     public static partial class Physics { public static void IgnoreCollision(Collider a, Collider b, bool ignore) {} public static void IgnoreCollision(Collider a, Collider b) {} public static Collider[] OverlapSphere(Vector3 p, float r) => null; }
     public partial struct Quaternion { public static bool operator ==(Quaternion a, Quaternion b) => true; public static bool operator !=(Quaternion a, Quaternion b) => false; public override bool Equals(object o) => true; public override int GetHashCode() => 0; }
@@ -428,3 +428,11 @@ namespace UnityEngine
     public partial struct Vector3 { public static Vector3 Reflect(Vector3 a, Vector3 n) => a; }
 }
 namespace UnityEngine { public class DefaultExecutionOrder : System.Attribute { public DefaultExecutionOrder(int o) {} } }
+// Chest_TheThao (bóng Rigidbody): phần lõi chưa có.
+namespace UnityEngine
+{
+    public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
+    public class Collision { public Vector3 relativeVelocity, impulse; public Collider collider; public GameObject gameObject; public Rigidbody rigidbody; }
+    public partial class PhysicsMaterial { public PhysicsMaterialCombine frictionCombine; }
+    public partial class Rigidbody { public RigidbodyInterpolation interpolation; public bool detectCollisions; }
+}
