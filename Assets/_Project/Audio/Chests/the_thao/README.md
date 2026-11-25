@@ -18,3 +18,11 @@ Tạo bằng ElevenLabs sound-generation (chủ dự án cho phép 2026-11-24), 
 | sfx_thethao_lid.mp3 | giai đoạn Bật nắp | 1,2 | "rubbery leather ball seam unzipping and popping open with a puff of air" |
 | sfx_thethao_kickoff.mp3 | TheThaoHook, đầu vòng quay | 1,2 | "referee whistle short chirp to start the match, sneakers squeaking on a court" |
 | sfx_thethao_airhorn.mp3 | TheThaoHook, Huyền thoại | 1,0 | "short stadium air horn blast" |
+| `sfx_thethao_trong.mp3` | 0.5 | big stadium bass drum, single hit |
+| `sfx_thethao_kick.mp3` | 0.4 | football kicked hard, leather thump |
+| `sfx_thethao_post.mp3` | 0.8 | football hitting a metal goalpost, loud clang |
+| `sfx_thethao_net.mp3` | 0.8 | football smashing into the goal net, swish |
+| `sfx_thethao_ooh.mp3` | 1.2 | stadium crowd going oooh at a near miss |
+| `sfx_thethao_roar.mp3` | 2.0 | stadium crowd roaring after a goal |
+| `sfx_thethao_aww.mp3` | 1.2 | stadium crowd groaning aww in disappointment |
+| `sfx_thethao_riser.mp3` | 1.5 | stadium crowd murmur rising with tension |

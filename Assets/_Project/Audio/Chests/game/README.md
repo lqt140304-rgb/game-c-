@@ -20,3 +20,10 @@ Tạo bằng ElevenLabs sound-generation ngày 2026-11-24 (`prompt_influence` 0,
 | `sfx_game_press_start.mp3` | 0,8 | giai đoạn 4 Mở toang | "8-bit retro game start confirm sound, short bright chime, press start button" |
 
 Tiếng nắp chạm (giai đoạn 4) dùng bộ chung `Synth/sfx_chest_lid_thud.wav`. Nhiều yêu cầu đầu bị 429 (giới hạn 6 yêu cầu đồng thời chia chung giữa các phiên) và được gửi lại; không file nào tạo hai lần thành công.
+| `sfx_game_chip_loop.mp3` | 8 | upbeat 8-bit chiptune game music, square wave arpeggio, seamless loop |
+| `sfx_game_bump.mp3` | 0.3 | 8-bit block bump sound |
+| `sfx_game_shatter.mp3` | 1.0 | 8-bit explosion of many pixel blocks breaking apart |
+| `sfx_game_reassemble.mp3` | 1.2 | 8-bit rising arpeggio, pieces snapping back together |
+| `sfx_game_voxel_tick.mp3` | 0.15 | tiny 8-bit blip |
+| `sfx_game_one_up.mp3` | 0.8 | 8-bit extra life jingle |
+| `sfx_game_power_up.mp3` | 0.8 | 8-bit power up rising sound |

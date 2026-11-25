@@ -27,3 +27,13 @@ Tạo bằng ElevenLabs Sound Generation (`/v1/sound-generation`, mp3 44,1 kHz 1
 
 WAV tổng hợp bằng `Tools/Audio/make_racquy_meo_sfx.py` (numpy, không mẫu, không bản quyền). **Chưa ai nghe.** Thay bằng âm thật cùng tên nếu cần.
 build_loop (lặp 2 s, code tăng pitch/âm lượng), meow, meow_wants, yowl, hiss, clatter, clank, deflate (bậc Rác "xịt"), boom (bậc cao), throw.
+| `sfx_racquy_bed_loop.mp3` | 8 | junk rattling inside a dented metal trash bin, tin cans clinking and lid tapping in a playful nervous rhythm, seamless loop |
+| `sfx_racquy_meow.mp3` | 1.0 | orange street cat meowing curiously, single meow |
+| `sfx_racquy_meow_wants.mp3` | 1.0 | hungry cat begging meow, eager and cute |
+| `sfx_racquy_yowl.mp3` | 1.2 | cat screeching yowl as it is flung into the air, comedic |
+| `sfx_racquy_hiss.mp3` | 0.8 | angry cat hissing |
+| `sfx_racquy_clatter.mp3` | 1.5 | metal trash bin tipping over, cans bottles and junk clattering across the ground |
+| `sfx_racquy_clank.mp3` | 0.4 | single empty tin can clank, short |
+| `sfx_racquy_deflate.mp3` | 1.2 | comedic balloon deflating with a sad descending squeal and a tiny pop at the end |
+| `sfx_racquy_boom.mp3` | 1.5 | muffled cartoon explosion inside a trash bin, boomy and funny |
+| `sfx_racquy_throw.mp3` | 0.6 | quick whoosh of a small object thrown through the air |

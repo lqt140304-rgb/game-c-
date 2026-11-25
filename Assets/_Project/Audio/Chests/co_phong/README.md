@@ -21,3 +21,8 @@ Tạo bằng ElevenLabs sound-generation (chủ dự án cho phép 2026-11-24), 
 | `sfx_cophong_bamboo_knock.mp3` | 0,6 | đệm sau chốt | A hollow bamboo tube knocked once by a wooden stick, dry woody tok |
 
 File lớn nhất khoảng 80 KB. Gắn vào hồ sơ bằng menu `Tools/Cho Do La/Create Co Phong Chest FX Profile`.
+| `sfx_cophong_sword_hum_loop.mp3` | 8 | ethereal flying swords humming, airy blade resonance with soft guzheng drone, seamless loop |
+| `sfx_cophong_sword_draw.mp3` | 0.8 | many swords drawn at once, bright metallic ring |
+| `sfx_cophong_strike.mp3` | 0.6 | sword piercing a paper talisman, swift whoosh and paper rip |
+| `sfx_cophong_spirit_stone.mp3` | 0.5 | glowing spirit stone clinking, crystal chime |
+| `sfx_cophong_sword_land.mp3` | 0.6 | sword stabbing into soft ground, thunk |

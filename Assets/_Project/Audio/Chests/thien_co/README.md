@@ -20,3 +20,13 @@ Tạo bằng ElevenLabs Sound Effects ngày 2026-11-24 (chủ dự án cho phép
 | sfx_thienco_hatch_open.mp3 | giai đoạn 4 (Mở toang) | 1,0 | "heavy metal hatch swinging open on hydraulic hinge, ending in a solid clank" |
 
 Ghi chú: lượt đầu gửi song song bị 429 (quá nhiều yêu cầu cùng lúc) với 4 mô tả; các mô tả đó gửi lại tuần tự, chỉ lấy bản thành công duy nhất.
+| `sfx_thienco_tock.mp3` | 0.2 | old clock tock, lower pitch, dry |
+| `sfx_thienco_wind.mp3` | 1.2 | winding a clockwork key, ratchet clicks |
+| `sfx_thienco_gear_clank.mp3` | 0.5 | small brass gear falling and clanking on wood |
+| `sfx_thienco_mesh_ok.mp3` | 0.4 | brass gears meshing together, satisfying click |
+| `sfx_thienco_jam.mp3` | 0.6 | gears grinding and jamming |
+| `sfx_thienco_bell.mp3` | 1.0 | small clock chime, single ding |
+| `sfx_thienco_cuckoo.mp3` | 1.0 | cuckoo clock bird calling cuckoo twice |
+| `sfx_thienco_cuckoo_sad.mp3` | 1.0 | broken cuckoo clock bird call, warped and sad |
+| `sfx_thienco_sproing.mp3` | 0.8 | broken metal spring bursting loose, cartoon boing |
+| `sfx_thienco_launch.mp3` | 1.0 | big clock spring releasing and launching something upward, whoosh |

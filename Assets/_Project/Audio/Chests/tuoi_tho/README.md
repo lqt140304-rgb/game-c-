@@ -19,3 +19,11 @@ Tạo bằng ElevenLabs Sound Effects ngày 2026-11-24 (mỗi mô tả tạo m�
 | `sfx_tuoitho_candytin.mp3` | 1,04 | giai đoạn 4 Mở toang | "Old tin candy box lid popping open, metallic pop and light rattle of hard candies inside" |
 
 Mọi file < 70 KB. Lần gọi song song đầu bị 429 (giới hạn tần suất) cho 7 file chưa tạo được; 7 file đó được gửi lại tuần tự đúng một lần, cùng mô tả.
+| `sfx_tuoitho_roll_loop.mp3` | 6 | glass marble rolling continuously along a wooden ruler, soft rumble, seamless loop |
+| `sfx_tuoitho_xylo.mp3` | 0.6 | single wooden xylophone note, bright, middle C |
+| `sfx_tuoitho_flick.mp3` | 0.3 | finger flicking a glass marble, sharp click |
+| `sfx_tuoitho_domino.mp3` | 0.3 | single plastic domino tile falling and clacking |
+| `sfx_tuoitho_band.mp3` | 0.6 | rubber band slingshot twang |
+| `sfx_tuoitho_bonk.mp3` | 0.5 | glass marble bonking on a wooden lid, cartoon bonk |
+| `sfx_tuoitho_plane.mp3` | 1.0 | paper airplane gliding past, light airy whoosh |
+| `sfx_tuoitho_crumple.mp3` | 0.8 | sheet of paper crumpled into a ball |
