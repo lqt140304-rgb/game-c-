@@ -17,11 +17,15 @@ namespace ChoDoLa.ChestFx
     /// bấm V (hoặc click vào nó) để thả, đĩa rơi thật xuống mâm → kim đặt xuống, mở thêm lớp bass "wub". Không thả
     /// thì đĩa tự rơi ở giây ~5. Người chơi bấm B đúng phách → scratch + sóng mạnh hơn ("độ quẩy" tăng).
     ///
-    /// Kết: giống hệt nhau cho mọi bậc tới lúc khóa (giữ bí mật). Khi khóa:
-    ///  - Rác: đĩa dừng (record-stop), phích cắm bật ra khỏi loa kẹo kéo, loa đổ nghiêng, rương xẹp "xịt" — tắt nhạc.
-    ///  - Thường: "drop" hụt: một tiếng pụp nhỏ, nhịp đi tiếp nhỏ dần.
-    ///  - Hiếm / Rất hiếm / Huyền thoại: im 0,35 s (rương hút vào), rồi DROP: bùng nổ bass, đẩy văng mọi vật,
-    ///    loa kẹo kéo bị hất bay, nhịp đập tối đa; Rất hiếm+ thêm đám đông, Huyền thoại thêm còi hơi.
+    /// Kết: giống hệt nhau cho mọi bậc tới lúc khóa (giữ bí mật). Khi khóa (đã thu gọn theo kế hoạch 2026-11-25):
+    ///  - Rác: nhạc tắt ngay, im 0,2 s, 1 tiếng chốt (TC); đĩa dừng, phích cắm bật khỏi loa, loa đổ, rương xẹp;
+    ///    đuôi nhỏ (đĩa dừng, phích "póp") sau +0,9 s.
+    ///  - Thường: TC + scratch (HĐ); nhịp nhỏ dần.
+    ///  - Hiếm / Rất hiếm / Huyền thoại: TC ngay, im 0,35 s (rương hút vào), rồi DROP (HĐ): đẩy văng vật của rương,
+    ///    loa kẹo kéo bị hất bay, nhịp đập tối đa; chỉ Huyền thoại có đám đông + còi hơi (đuôi).
+    ///
+    /// Âm (quy tắc A1–A12): chỉ dùng mp3 ElevenLabs; tối đa 2 lớp nhịp trước chốt (kick + hat/wub); tiếng lẻ cách nhau
+    /// ≥ 0,2 s; trần âm lượng theo vai (nhịp 0,55 · sự kiện 0,5 · HĐ 0,8 · TC 1,0 · đuôi 0,4).
     ///
     /// Bất biến: chỉ trang trí. Không đọc/ghi gì làm thay đổi bậc; độ quẩy của người chơi chỉ đổi độ mạnh hiệu ứng.
     /// Ngẫu nhiên (vị trí vật, góc bánh...) lấy từ hạt giống cố định <see cref="seed"/>.
@@ -35,9 +39,12 @@ namespace ChoDoLa.ChestFx
             public AudioClip drop, horn, recordStop, deflate, plugPop, wheels, feedback, crowd;
         }
 
-        [Header("Âm (Audio/Chests/am_nhac/seq/, tạo bằng Tools/Audio/make_amnhac_sfx.py)")]
+        [Header("Âm (Audio/Chests/am_nhac/*.mp3, ElevenLabs; xem Tools/Audio/elevenlabs_chest_manifest.json)")]
         public Clips clips = new Clips();
-        [Range(0f, 1f)] public float masterVolume = 0.9f;
+        [Tooltip("Tiếng chốt (TC) theo bậc: Rác, Thường, Hiếm, Rất hiếm, Huyền thoại (sfx_amnhac_lock_*.mp3).")]
+        public AudioClip[] stingClips = new AudioClip[5];
+        [Tooltip("Âm lượng tổng. 0,8 = mặc định: các mức trong mã đã là mức cuối (nhân đúng một lần).")]
+        [Range(0f, 1f)] public float masterVolume = 0.8f;
 
         [Header("Nhịp")]
         public float startBpm = 96f;
@@ -50,8 +57,8 @@ namespace ChoDoLa.ChestFx
         [Header("Vật lý")]
         [Tooltip("Độ cao nảy (m, trên 1 m kích thước rương) của vật quanh rương mỗi kick, lúc đầu và lúc quẩy tối đa.")]
         public Vector2 hopHeight = new Vector2(0.015f, 0.07f);
-        public int propCount = 7;
-        [Tooltip("Đẩy cả Rigidbody có sẵn trong cảnh quanh rương (không kinematic, không phải người chơi).")] public bool shakeSceneBodies = true;
+        public int propCount = 5;
+        [Tooltip("Đẩy cả Rigidbody có sẵn trong cảnh quanh rương. MẶC ĐỊNH TẮT (T9: không đẩy vật của cảnh); chỉ bật tay khi thử.")] public bool shakeSceneBodies = false;
         public int seed = 3301;
 
         // ---------------------------------------------------------------- runtime
@@ -84,6 +91,9 @@ namespace ChoDoLa.ChestFx
         private float _endT;
         private float _outroUntil;
         private bool _beatOn;
+        private float _lastEvt = -999f;                        // A3: một tiếng lẻ mỗi 0,2 s
+        private readonly List<float> _delayEnds = new List<float>();   // nguồn trễ đang sống (trần 4)
+        private const int MaxDelayedSources = 4;
 
         // chest "speaker cone" spring
         private float _s, _v, _sTarget;
@@ -115,6 +125,7 @@ namespace ChoDoLa.ChestFx
         private Light _light;
 
         public void SetClips(Clips c) => clips = c;
+        public void SetStings(AudioClip[] s) => stingClips = s;
 
         private void Awake()
         {
@@ -130,7 +141,7 @@ namespace ChoDoLa.ChestFx
             if (_lastStepTime > 0f && now - _lastStepTime > 0.27f && _steps > 6 && !_riserPlayed && _running)
             {
                 _riserPlayed = true;
-                Play(clips.riser, 0.7f);
+                PlayEvent(clips.riser, 0.45f);   // cú dâng cuối, giống nhau mọi bậc
             }
             _lastStepTime = now;
             _steps++;
@@ -147,9 +158,11 @@ namespace ChoDoLa.ChestFx
                 case ChestTier.Rac: Fizzle(); break;
                 case ChestTier.Thuong: SmallDrop(); break;
                 default:
-                    _end = End.Gap;           // silence, chest sucks in; Drop() fires in Update
+                    _end = End.Gap;           // rương hút vào; Drop() chạy trong Update sau 0,35 s
                     _beatOn = false;
+                    _halfPending = false;
                     _sTarget = -0.16f;
+                    Sting(tier == ChestTier.Hiem ? 0.85f : 1f, 0f);   // TC duy nhất trong 0,3 s đầu
                     break;
             }
         }
@@ -173,6 +186,7 @@ namespace ChoDoLa.ChestFx
             _lastBeat = _t0;
             _hype = 0f; _combo = 0; _vinylOn = false; _riserPlayed = false; _steps = 0; _lastStepTime = -1f;
             _end = End.None; _beatOn = true; _outroUntil = float.MaxValue;
+            _bpmBoost = 0f; _halfPending = false; _lastEvt = -999f; _delayEnds.Clear();
             _s = _v = _sTarget = 0f;
             _speakerDocked = false;
             _scratchT = -10f;
@@ -250,8 +264,10 @@ namespace ChoDoLa.ChestFx
             if (_beatOn && _halfPending && now >= half)
             {
                 _halfPending = false;
-                if (_beat >= 4 || _end == End.Drop) Play(clips.hat, 0.35f + 0.25f * Intensity());
-                if (_vinylOn) Play(clips.wub, 0.55f + 0.3f * Intensity());
+                // Chỉ 2 lớp nhịp: kick + (wub khi đĩa trên mâm, nếu không thì hat). Không phát cùng lúc.
+                float bs = BeatScale();
+                if (_vinylOn) PlayBeat(clips.wub, (0.35f + 0.2f * Intensity()) * bs);
+                else if (_beat >= 4 || _end == End.Drop) PlayBeat(clips.hat, (0.25f + 0.2f * Intensity()) * bs);
             }
 
             Speaker(t);
@@ -289,9 +305,8 @@ namespace ChoDoLa.ChestFx
             _beat++;
             _halfPending = true;
             float k = Intensity();
-            Play(clips.kick, Mathf.Clamp01(0.45f + 0.45f * k));
-            bool clapBeat = (_beat % 2 == 0) && (_beat >= 8 || _end == End.Drop);
-            if (clapBeat) Play(clips.clap, 0.4f + 0.2f * k);
+            PlayBeat(clips.kick, (0.35f + 0.2f * k) * BeatScale());
+            if (_end == End.Drop && _beat % 2 == 0) Play(clips.clap, 0.3f + 0.15f * k, ChestAudioRule.EventMax);   // clap chỉ ở DROP
 
             // chest = speaker cone: squash on the hit, spring back past rest
             _v -= 2.2f + 2.5f * k;
@@ -310,9 +325,11 @@ namespace ChoDoLa.ChestFx
         {
             _end = End.Fizzle;
             _beatOn = false;
-            Play(clips.recordStop, 0.9f);
-            Play(clips.deflate, 0.85f, 0.25f);
-            Play(clips.plugPop, 0.7f, 0.55f);
+            _halfPending = false;
+            // A4 Rác: nhạc đã tắt, lặng 0,2 s, 1 tiếng chốt; 0,6 s sau đó không phát gì; rồi đuôi nhỏ thưa.
+            Sting(0.8f, ChestAudioRule.RacSilence);
+            Play(clips.recordStop, 0.4f, ChestAudioRule.TailMax, 0.9f);
+            Play(clips.plugPop, 0.4f, ChestAudioRule.TailMax, 1.3f);
             _sTarget = -0.12f;          // the speaker sags and stays saggy
             _v -= 1.5f;
             if (_plug != null)
@@ -331,9 +348,11 @@ namespace ChoDoLa.ChestFx
         private void SmallDrop()
         {
             _end = End.Small;
-            Play(clips.deflate, 0.45f, 0.1f);       // "pụp"
-            Play(clips.scratch, 0.6f);
+            Sting(0.7f, 0f);                         // TC
+            Play(clips.scratch, 0.5f, ChestAudioRule.ActionMax);   // HĐ (1 tiếng)
             _scratchT = Time.time;
+            _halfPending = false;
+            _nextBeat = Time.time + 0.4f;            // nhịp đi tiếp nhưng không chen vào 0,3 s đầu
             _v += 2.5f;
             Hop(hopHeight.y * 0.6f, 0.3f);
             _outroUntil = Time.time + 2.2f;
@@ -346,10 +365,14 @@ namespace ChoDoLa.ChestFx
             _sTarget = 0f;
             _v += 9f + 6f * _tier.Rank01();
             _nextBeat = Time.time + 0.02f;
-            _outroUntil = Time.time + (_tier == ChestTier.Hiem ? 2.8f : _tier == ChestTier.RatHiem ? 4f : 5.5f);
-            Play(clips.drop, 1f);
-            if (_tier >= ChestTier.RatHiem) Play(clips.crowd, _tier == ChestTier.HuyenThoai ? 0.8f : 0.55f, 0.3f);
-            if (_tier == ChestTier.HuyenThoai) Play(clips.horn, 0.75f, 0.15f);
+            // T6/A5: kết ≤ 3 s sau chốt (Gap 0,35 s + nhịp tối đa 2,6 s).
+            _outroUntil = Time.time + (_tier == ChestTier.Hiem ? 1.6f : _tier == ChestTier.RatHiem ? 2.1f : 2.6f);
+            Play(clips.drop, _tier == ChestTier.Hiem ? 0.7f : 0.8f, ChestAudioRule.ActionMax);   // HĐ
+            if (_tier == ChestTier.HuyenThoai)
+            {
+                Play(clips.crowd, 0.4f, ChestAudioRule.TailMax, 0.3f);   // đuôi, chỉ Huyền thoại
+                Play(clips.horn, 0.4f, ChestAudioRule.TailMax, 0.6f);    // (chưa có file mp3: ô trống thì bỏ qua)
+            }
 
             float blast = 1.2f + 1.3f * _tier.Rank01();
             foreach (Rigidbody rb in _bodies)
@@ -406,7 +429,7 @@ namespace ChoDoLa.ChestFx
                     _combo++;
                     _hype = Mathf.Clamp01(_hype + 0.07f + 0.02f * Mathf.Min(_combo, 5));
                     _bpmBoost = Mathf.Min(8f, _bpmBoost + 0.5f);
-                    Play(clips.scratch, 0.6f);
+                    PlayEvent(clips.scratch, 0.45f);
                     _scratchT = now;
                     Hop(hopHeight.y * 0.5f, 0.25f);
                     Ring(1.3f);
@@ -415,7 +438,7 @@ namespace ChoDoLa.ChestFx
                 {
                     _combo = 0;
                     _hype = Mathf.Max(0f, _hype - 0.04f);
-                    Play(clips.skip, 0.5f);
+                    PlayEvent(clips.skip, 0.4f);
                 }
             }
             if (_vinyl != null && !_vinyl.Dropped && PressedVinyl()) DropVinyl();
@@ -434,7 +457,7 @@ namespace ChoDoLa.ChestFx
                 {
                     _speakerDocked = true;
                     Vector3 v0 = Vel(_speaker); v0.x = 0f; v0.z = 0f; SetVel(_speaker, v0);
-                    Play(clips.feedback, 0.35f);
+                    PlayEvent(clips.feedback, 0.35f);   // 1 lần
                 }
                 else
                 {
@@ -480,9 +503,9 @@ namespace ChoDoLa.ChestFx
                 {
                     _vinylOn = true;
                     v.Seat(_record != null ? _record : _reveal.transform, mouth);
-                    Play(clips.needle, 0.8f);
-                    Play(clips.scratch, 0.5f, 0.12f);
-                    _scratchT = Time.time + 0.12f;
+                    PlayEvent(clips.needle, 0.5f);
+                    Play(clips.scratch, 0.45f, ChestAudioRule.EventMax, 0.25f);   // cách ≥ 0,2 s (A3)
+                    _scratchT = Time.time + 0.25f;
                     _hype = Mathf.Clamp01(_hype + 0.3f);
                     if (_light != null) _light.intensity = 6f;
                     return;
@@ -505,7 +528,7 @@ namespace ChoDoLa.ChestFx
             g.transform.position = _base + Vector3.down * 0.025f;
             g.transform.rotation = _root.rotation;
             BoxCollider c = g.AddComponent<BoxCollider>();
-            c.size = new Vector3(_size * 12f, 0.05f, _size * 12f);
+            c.size = new Vector3(_size * 4f, 0.05f, _size * 4f);   // sàn 4 S (kế hoạch 5.7)
         }
 
         private void BuildProps()
@@ -546,7 +569,7 @@ namespace ChoDoLa.ChestFx
             Vector3 right = _root.rotation * Vector3.right;
             Vector3 fwd = _root.rotation * Vector3.forward;
             _speakerDock = _base + right * side * _size * 1.15f + fwd * _size * 0.15f;
-            Vector3 start = _speakerDock + right * side * _size * 2.2f;
+            Vector3 start = _speakerDock + right * side * _size * 0.85f;   // xuất phát 2,0 S: trong sàn 4 S và ≤ 3 S (T2)
 
             GameObject root = new GameObject("LoaKeoKeo");
             root.transform.SetParent(_root, false);
@@ -586,7 +609,7 @@ namespace ChoDoLa.ChestFx
             _plug = plug.AddComponent<Rigidbody>();
             _plug.mass = 0.05f;
             _plug.isKinematic = true;   // stays plugged until Rác
-            Play(clips.wheels, 0.5f);
+            PlayEvent(clips.wheels, 0.3f);
         }
 
         private void BuildVinyl()
@@ -717,20 +740,50 @@ namespace ChoDoLa.ChestFx
 
         // ---------------------------------------------------------------- helpers
 
-        private void Play(AudioClip clip, float volume, float delay = 0f)
+        // Âm lượng: `level` là mức cuối mong muốn khi masterVolume = 0,8 (mặc định); `cap` là trần theo vai (ChestAudioRule).
+        // masterVolume chỉ nhân MỘT lần ở đây (không nhân ở nơi gọi).
+        private float Vol(float level, float cap) => Mathf.Clamp01(Mathf.Min(level, cap) * (masterVolume / 0.8f));
+
+        private void Play(AudioClip clip, float level, float cap, float delay = 0f, bool essential = false)
         {
             if (clip == null || _audio == null) return;
-            float v = Mathf.Clamp01(volume) * masterVolume;
+            float v = Vol(level, cap);
             if (delay <= 0f) { _audio.PlayOneShot(clip, v); return; }
-            // Short delayed one-shot on its own source (PlayOneShot has no delay).
+            // PlayOneShot không có độ trễ: nguồn riêng, tối đa 4 nguồn trễ cùng lúc (tiếng chốt luôn được phát).
+            float now = Time.time;
+            _delayEnds.RemoveAll(e => e <= now);
+            if (!essential && _delayEnds.Count >= MaxDelayedSources) return;
             AudioSource s = _root.gameObject.AddComponent<AudioSource>();
             s.playOnAwake = false;
             s.spatialBlend = 0f;
             s.clip = clip;
             s.volume = v;
             s.PlayDelayed(delay);
+            _delayEnds.Add(now + delay + clip.length + 0.1f);
             Destroy(s, delay + clip.length + 0.1f);
         }
+
+        /// <summary>Nhịp (kick/hat/wub): trần 0,55.</summary>
+        private void PlayBeat(AudioClip clip, float level) => Play(clip, level, ChestAudioRule.BeatMax);
+
+        /// <summary>Sự kiện lẻ trước chốt: tối đa 1 tiếng mỗi 0,2 s, trần 0,5.</summary>
+        private void PlayEvent(AudioClip clip, float level)
+        {
+            if (clip == null) return;
+            if (!ChestAudioRule.TryGate(ref _lastEvt, ChestAudioRule.EventGap)) return;
+            Play(clip, level, ChestAudioRule.EventMax);
+        }
+
+        /// <summary>TC: tiếng chốt theo bậc (stingClips[bậc]), trần 1,0.</summary>
+        private void Sting(float level, float delay)
+        {
+            int i = (int)_tier;
+            AudioClip c = stingClips != null && i >= 0 && i < stingClips.Length ? stingClips[i] : null;
+            Play(c, level, ChestAudioRule.StingMax, delay, true);
+        }
+
+        /// <summary>Thường: nhịp nhỏ dần sau chốt (2,2 s). Mọi lúc khác = 1.</summary>
+        private float BeatScale() => _end == End.Small ? Mathf.Lerp(1f, 0.4f, Mathf.Clamp01((Time.time - _endT) / 2.2f)) : 1f;
 
         private Vector3 Away(Vector3 p)
         {
@@ -782,7 +835,7 @@ namespace ChoDoLa.ChestFx
             if (_reveal != null && _running) _reveal.transform.localScale = _rootScale;
             foreach (Material m in _mats) if (m != null) Destroy(m);
             foreach (Mesh m in _meshes) if (m != null) Destroy(m);
-            _mats.Clear(); _meshes.Clear(); _bodies.Clear(); _props.Clear();
+            _mats.Clear(); _meshes.Clear(); _bodies.Clear(); _props.Clear(); _delayEnds.Clear();
             if (_record != null) _record.localRotation = _recordRot;
             // our disc may have been re-parented onto the record when it landed
             if (_vinyl != null) Destroy(_vinyl.gameObject);
