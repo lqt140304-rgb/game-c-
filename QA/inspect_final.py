@@ -48,22 +48,24 @@ def final_jobs(n=2000):
     for k in SK[:2]:
         J.append(("ván thường", None, "thường", k, n, CS.FINAL, None))
     for prof in PROFS:
-        J.append(("lần chơi đầu", None, prof, "liều", 1500, CS.FIRST_RUN, None))
-        J.append(("lần chơi đầu", None, prof, "thận trọng", 1500, CS.FIRST_RUN, None))
-    J.append(("lần chơi đầu", None, "giỏi", SK[1], 1500, CS.FIRST_RUN, None))
-    J.append(("lần chơi đầu", None, "giỏi", SK[0], 1500, CS.FIRST_RUN, None))
-    J.append(("lần chơi đầu, ngày 1 phạt như ngày thường", dict(day1_fine=.20), "ẩu", "liều", 1500, CS.FIRST_RUN, None))
-    J.append(("lần chơi đầu, ngày 1 phạt như ngày thường", dict(day1_fine=.20), "bỏ qua soi", "liều", 1500, CS.FIRST_RUN, None))
+        J.append(("lần chơi đầu", None, prof, "liều", 1500, CS.FIRST_RUN_LOOSE, None))
+        J.append(("lần chơi đầu", None, prof, "thận trọng", 1500, CS.FIRST_RUN_LOOSE, None))
+    J.append(("lần chơi đầu", None, "giỏi", SK[1], 1500, CS.FIRST_RUN_LOOSE, None))
+    J.append(("lần chơi đầu", None, "giỏi", SK[0], 1500, CS.FIRST_RUN_LOOSE, None))
+    J.append(("lần chơi đầu, ngày 1 phạt như ngày thường", dict(day1_fine=.20), "ẩu", "liều", 1500, CS.FIRST_RUN_LOOSE, None))
+    J.append(("lần chơi đầu, ngày 1 phạt như ngày thường", dict(day1_fine=.20), "bỏ qua soi", "liều", 1500, CS.FIRST_RUN_LOOSE, None))
     return J
 
 
 SENS = [
-    ("phạt sót 0%", dict(miss_pen=0.0)), ("phạt sót 10%", dict(miss_pen=.10)),
-    ("dấu lạ 0%", dict(odd=0.0)), ("dấu lạ 20%", dict(odd=.20)),
-    ("phạt giả khai thật 0%", dict(fine=0.0, fine_T=0.0)), ("phạt giả khai thật 40%", dict(fine=.40)),
-    ("trần 1,05", dict(cap=1.05)), ("trần 1,20", dict(cap=1.20)), ("2 vòng", dict(rounds=2)),
-    ("thắng +12%", dict(up=.12)), ("thua -10%", dict(down=.10)),
-    ("gợi ý 10% giá nền", dict(hint_rate=.10)), ("giữ chứng nhận +25%", dict(cert=True)),
+    ("phạt sót 5%", dict(miss_pen=.05)), ("phạt sót 15%", dict(miss_pen=.15)),
+    ("dấu lạ 10%", dict(odd=.10)), ("dấu lạ 20%", dict(odd=.20)),
+    ("trần 1,08", dict(cap=1.08)), ("trần 1,10", dict(cap=1.10)), ("2 vòng", dict(rounds=2)),
+    ("không có nhà vá lỗi", dict(repair_light=None)),
+    ("nhà vá lỗi rẻ (6% / 15%)", dict(repair_light=.06, repair_big=.15)),
+    ("nhà vá lỗi đắt (18% / 40%)", dict(repair_light=.18, repair_big=.40)),
+    ("phạt giả khai thật 40%", dict(fine=.40)), ("phạt giả khai thật 0%", dict(fine=0.0, fine_T=0.0)),
+    ("gợi ý 10% giá nền", dict(hint_rate=.10)),
     ("1 dấu giả mỗi món giả", dict(marks=dict(T=1, H=1, X=1, L=1))),
     ("3 dấu giả ở Rất hiếm và Huyền thoại", dict(marks=dict(T=1, H=1, X=3, L=3))),
 ]

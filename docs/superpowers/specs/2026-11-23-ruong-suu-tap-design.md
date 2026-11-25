@@ -65,7 +65,7 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 **Cuốn Sổ Sưu Tập** ghi mọi thứ người chơi từng sở hữu: hiện vật, tạo tác và cả rác.
 
 - **Lớp 1, trong ván:** gom đủ một bộ trong cùng ván (ví dụ 3 món cùng nhóm nguồn gốc) thì nhận hiệu ứng nhỏ đến hết ván, gần cơ chế Bí Khế.
-- **Lớp 2, giữa các ván (meta, vĩnh viễn): cây phát triển (skill tree).** Giữ 4 mở khóa M1–M4 hiện có làm các nút đầu cây.
+- **Lớp 2, trong ván (không vĩnh viễn): cây phát triển (skill tree).** **Chủ dự án chốt 2026-11-25: cây kỹ năng chỉ dùng trong ván, không có tiến trình vĩnh viễn giữa các ván.** Mỗi ván bắt đầu với cây trống, điểm và nút mở được tính lại từ đầu, hết ván thì mất. Bản cũ ghi "giữa các ván (meta, vĩnh viễn)" đã bị thay. Giữ 4 mở khóa M1–M4 làm các nút đầu cây nếu còn phù hợp (Claude 2 xét lại).
 
 **Cây có 4 nhánh**
 
@@ -74,12 +74,12 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 | Rương | Rương mới, rương xuất hiện sớm hơn | Rương Tổng Hợp (đủ **8** nhóm nguồn gốc, nay gồm cả Việt Nam và Nhại), Rương Cổ Phong / Thiên Cơ (đủ 1 hệ tạo tác), Rương Rác Quý (đủ 5 loại rác), **Rương Việt Nam, Rương Nhại** (đồ hai nhóm mới với tỉ lệ cao, xem phần 6), M3 Rương Đen sớm |
 | Sưu tập | Trang Sổ Sưu Tập, bộ sưu tập mới | M1 chọn gia truyền, M2 vốn đầu ván, thưởng khi gom đủ một bộ |
 | Thần lực | Thêm phản ứng dí dỏm của đồ cổ (khi cầm và ngoài đời thật) | Món thần thoại mở thêm lời thì thầm, đồ cổ tích phản ứng với mèo chợ |
-| Câu chuyện | Cutscene, cảnh, NPC mới | Mở khóa chương mới khi sưu tập đủ một bộ đồ cổ |
+| Đời sống (trước là "Câu chuyện", đổi tên 2026-11-25) | **Tạm để trống, phát triển sau** | Chưa có nút nào; giữ nhánh làm chỗ cho nội dung đời sống (cảnh, NPC, tình huống) |
 
 **Luật mở nút**
 - Nút cần **nút cha đã mở**, nên người chơi đi sâu một nhánh hoặc trải đều.
 - Mở một nút cần **cả hai**: (1) đủ điều kiện sưu tập của nút đó, và (2) tốn **điểm phát triển**.
-- Điểm phát triển kiếm được cuối mỗi ván (thắng hay thua đều có, thắng được nhiều hơn), và từ việc ghi thêm vào Sổ Sưu Tập lần đầu.
+- Điểm phát triển **kiếm và tiêu ngay trong ván** (không mang sang ván sau). **Nguồn điểm trong ván (cuối mỗi ngày? khi ghi Sổ Sưu Tập? khi trả nợ đúng hạn?) chưa chốt**, xem câu hỏi mở dưới. Bản cũ (điểm cuối ván, tích lũy giữa các ván) không còn hiệu lực.
 - Phần thưởng meta **không có buff chơi**: chỉ là rương mới, bộ cốt truyện, cảnh mới và phản ứng thần lực mới. (Riêng M2 vốn đầu ván và M4 hiện có là ngoại lệ đã có sẵn, Claude 2 xét có giữ không.)
 - Đóng góp mới cho dữ liệu: nút cây gồm `id`, `branch`, `parent`, `cost`, `condition`, `reward`.
 
@@ -99,3 +99,18 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 4. Khoảnh khắc thần lực "ngoài đời thật" cần cảnh chợ có NPC và mèo, đang chờ Antigravity dựng cảnh.
 5. Giá điểm phát triển của từng nút và cách chia điểm cuối ván: **chờ Claude 2**; giao diện cây (màn hình) do Antigravity dựng.
 6. Dữ liệu và hợp đồng: Codex cần thêm loại vật phẩm `junk`, trường `use`, loại rương mới và nút cây phát triển vào `Docs/Content/YeuCauDuLieu.md`.
+
+## Đã chốt và câu hỏi mở sau khi cây chỉ trong ván (2026-11-25)
+
+**Đã chốt với chủ dự án:**
+1. **Nguồn điểm phát triển:** kiếm từ **từng công việc hằng ngày** trong ván, như mở rương và chơi mini game (không phải điểm cuối ván). Cách chia điểm cụ thể mỗi việc: Claude 2 đo lại (bản đo hiện dùng 3 điểm mỗi ngày là giả định).
+2. **Rương mở khóa và rương chủ đề chỉ mở khóa trong ván**, không vĩnh viễn giữa các ván.
+3. **Cây khó mở, thưởng không buff:** chọn phương án "cây khó" của báo cáo, tổng thưởng có tác động lên tiền hoặc rương không quá khoảng 1.000.000 đ quy đổi (chủ dự án trả lời "oke").
+
+4. **Nhánh "Câu chuyện" đổi tên thành "Đời sống" và tạm để trống** (không có nút), để phát triển sau (chủ dự án chốt 2026-11-25).
+5. **M3 (Thử Thách Rương Đen) bỏ khỏi cây** (theo đề xuất của Claude 2): Rương Đen chỉ còn là tùy chọn lúc vào ván nếu chủ dự án muốn, ngoài cây.
+6. **M2 (Vốn Khởi Nghiệp Nhỏ) bỏ phần cộng vốn** (theo đề xuất): phần thưởng meta không buff chơi, vì cộng vốn từ ngày 1 đẩy người chơi hoàn hảo lên 47,6%, chạm trần. M2 không còn là nút cộng tiền; nếu giữ nút này thì thưởng khác không buff, do Claude 1 và chủ dự án gán sau.
+
+**Còn mở:**
+1. Cây còn 3 nhánh có nút (Rương, Sưu tập, Thần lực) cộng nhánh Đời sống trống: giá điểm từng nút và cách chia điểm cho từng việc hằng ngày (mở rương, mini game) cần đo lại. Bản đo trước tính cả nhánh Câu chuyện và M3.
+2. M2 sau khi bỏ cộng vốn thì giữ làm nút gì, hay bỏ hẳn?

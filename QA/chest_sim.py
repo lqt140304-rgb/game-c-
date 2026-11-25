@@ -72,6 +72,7 @@ FINAL_CHESTS = {
 # Ván thường: script=False nên luật cửa hàng ngày 1 không áp. Đo lần chơi đầu: dict(FINAL, script="any").
 FINAL = dict(DEFAULT, chests=FINAL_CHESTS, script=False, day1_shop=("Gỗ", "Vải Niêm"), day1_shop_first_run_only=True)
 FIRST_RUN = dict(FINAL, script="any")
+FIRST_RUN_LOOSE = dict(FINAL, script="cheap")   # ĐỀ XUẤT nới lần chơi đầu (chủ dự án chốt nới 2026-11-25): hai hộp đầu chỉ tốn giá rương rẻ nhất
 KEYS = ("H1", "H2", "H3", "RD")
 STATE = {}
 # Ảnh chụp trạng thái lõi cũ lúc nạp module, để restore() trả lại (các test khác dùng chung biến toàn cục).
