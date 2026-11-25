@@ -79,18 +79,40 @@ namespace ChoDoLa.Editor
         private static GameObject CreateHookPrefab(ref int missing)
         {
             GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(HookPrefabPath);
-            if (existing != null && existing.GetComponent<RacQuyHook>() != null) return existing;
+            if (existing != null && existing.GetComponent<RacQuyHook>() != null)
+            {
+                FillClips(existing.GetComponent<RacQuyHook>(), ref missing);
+                EditorUtility.SetDirty(existing);
+                return existing;
+            }
 
             GameObject temp = new GameObject("ChestFx_RacQuy_Hook");
-            RacQuyHook hook = temp.AddComponent<RacQuyHook>();
-            hook.gurgleClip = Own("sfx_racquy_gurgle.mp3", null, ref missing);
-            hook.fliesClip = Own("sfx_racquy_flies.mp3", null, ref missing);
-            hook.canRollClip = Own("sfx_racquy_can_roll.mp3", null, ref missing);
-            hook.fartClip = Own("sfx_racquy_fart.mp3", null, ref missing);
+            FillClips(temp.AddComponent<RacQuyHook>(), ref missing);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(temp, HookPrefabPath);
             Object.DestroyImmediate(temp);
             return prefab;
         }
+
+        /// <summary>Điền các clip còn trống của hook (kịch bản "Mèo hoang lật thùng rác"). Âm mèo ở rac_quy/meo/ (WAV tổng hợp).</summary>
+        private static void FillClips(RacQuyHook h, ref int missing)
+        {
+            if (h.gurgleClip == null) h.gurgleClip = Own("sfx_racquy_gurgle.mp3", null, ref missing);
+            if (h.fliesClip == null) h.fliesClip = Own("sfx_racquy_flies.mp3", null, ref missing);
+            if (h.canRollClip == null) h.canRollClip = Own("sfx_racquy_can_roll.mp3", null, ref missing);
+            if (h.fartClip == null) h.fartClip = Own("sfx_racquy_fart.mp3", null, ref missing);
+            if (h.buildLoopClip == null) h.buildLoopClip = Own(Meo + "build_loop.wav", null, ref missing);
+            if (h.meowClip == null) h.meowClip = Own(Meo + "meow.wav", null, ref missing);
+            if (h.meowWantsClip == null) h.meowWantsClip = Own(Meo + "meow_wants.wav", null, ref missing);
+            if (h.yowlClip == null) h.yowlClip = Own(Meo + "yowl.wav", null, ref missing);
+            if (h.hissClip == null) h.hissClip = Own(Meo + "hiss.wav", null, ref missing);
+            if (h.clatterClip == null) h.clatterClip = Own(Meo + "clatter.wav", null, ref missing);
+            if (h.clankClip == null) h.clankClip = Own(Meo + "clank.wav", null, ref missing);
+            if (h.deflateClip == null) h.deflateClip = Own(Meo + "deflate.wav", null, ref missing);
+            if (h.boomClip == null) h.boomClip = Own(Meo + "boom.wav", null, ref missing);
+            if (h.throwClip == null) h.throwClip = Own(Meo + "throw.wav", null, ref missing);
+        }
+
+        private const string Meo = "meo/sfx_racquy_meo_";
 
         /// <summary>Own mp3 in rac_quy/; if missing, the shared file (which itself falls back to Synth/).</summary>
         private static AudioClip Own(string file, string sharedFallback, ref int missing)
