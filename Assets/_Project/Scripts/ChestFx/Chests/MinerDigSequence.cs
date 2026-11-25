@@ -10,7 +10,10 @@ namespace ChoDoLa.ChestFx
     /// <summary>
     /// Kịch bản ĐẶC TRƯNG của Chest_Miner: "ĐÀO RƯƠNG RA KHỎI MỎ".
     ///
-    /// Bấm mở → gọi <see cref="Begin"/> (KHÔNG gọi thẳng ChestRevealSequence.Play): rương bị vùi trong một vỏ đá gồm nhiều
+    /// ĐÃ THU GỌN theo kế hoạch 2026-11-25: kịch bản tự chạy khi bấm (bước Cue "dao_mo" của ChestScript_Miner, rồi OpenBox),
+    /// đoạn đào ≤ 3 s, 12 khối đá, chỉ dùng âm ElevenLabs (không còn MinerSynth).
+    ///
+    /// Bấm mở → ChestScript chạy cue "dao_mo" (<see cref="OnCue"/>), xong mới mở nắp: rương bị vùi trong một vỏ đá gồm nhiều
     /// khối Rigidbody thật; tiếng mỏ rền + nhịp "thình" bắt đầu NGAY. Cuốc tự đập (hoặc người chơi bấm F / chuột trái để
     /// đập nhanh hơn): mỗi nhát văng vài khối đá bằng lực, rương rung, sỏi rơi từ trần. Tương tác phụ: bấm G (hoặc ném
     /// một vật có <see cref="MinerDynamite"/> vào đá) để cắm THUỐC NỔ — ngòi cháy xèo xèo, nhịp dồn dập, nổ tung mọi khối
@@ -29,49 +32,61 @@ namespace ChoDoLa.ChestFx
     public class MinerDigSequence : ChestFxHook
     {
         [Header("Đá vùi")]
-        [SerializeField] private int chunkCount = 26;
+        [SerializeField] private int chunkCount = 12;
         [SerializeField] private Color rockColor = new Color(0.32f, 0.27f, 0.23f);
         [Tooltip("Khối đá to bằng bao nhiêu phần kích thước rương.")]
-        [SerializeField] private float chunkScale = 0.32f;
+        [SerializeField] private float chunkScale = 0.38f;
         [SerializeField] private float chunkMass = 0.6f;
         [Tooltip("Giây sau khi văng thì khối đá thu nhỏ rồi biến mất.")]
-        [SerializeField] private float debrisLifetime = 3.5f;
+        [SerializeField] private float debrisLifetime = 2.2f;
 
         [Header("Cuốc")]
-        [SerializeField] private int strikesMin = 4;
-        [SerializeField] private int strikesMax = 6;
+        [SerializeField] private int strikesMin = 2;
+        [SerializeField] private int strikesMax = 3;
         [Tooltip("Giây giữa hai nhát tự đập (người chơi bấm thì nhanh hơn).")]
-        [SerializeField] private float autoStrikeInterval = 0.85f;
+        [SerializeField] private float autoStrikeInterval = 0.55f;
         [SerializeField] private float strikeImpulse = 1.6f;
         [SerializeField] private bool playerInput = true;
 
         [Header("Thuốc nổ")]
-        [SerializeField] private float fuseSeconds = 2.2f;
+        [SerializeField] private float fuseSeconds = 1.0f;
         [SerializeField] private float blastImpulse = 4.5f;
         [Tooltip("Không ai cắm thì tự cắm ở nhát áp chót.")]
         [SerializeField] private bool autoDynamite = true;
         [SerializeField] private float hopHeight = 0.12f;
 
-        [Header("Âm")]
-        [Range(0f, 1f)] [SerializeField] private float volume = 0.85f;
+        [Header("Âm (ElevenLabs, thư mục Audio/Chests/miner)")]
+        [Tooltip("Âm lượng tổng, nhân MỘT lần (mặc định 0,8 = đúng các trần của quy tắc âm).")]
+        [Range(0f, 1f)] [SerializeField] private float volume = 0.8f;
+        [Tooltip("Nền: vòng lặp tiếng mỏ rền.")] public AudioClip rumbleClip;
+        [Tooltip("Nhịp: tiếng thình.")] public AudioClip thumpClip;
+        public AudioClip pickClip;
+        public AudioClip crumbleClip;
+        public AudioClip fuseClip;
+        [Tooltip("Tiếng nổ thuốc nổ trước chốt.")] public AudioClip boomClip;
+        public AudioClip chirpClip;
+        public AudioClip faintClip;
+        public AudioClip nuggetClip;
+        public AudioClip pebbleClip;
+        [Tooltip("Tiếng chốt theo bậc (Rác..Huyền thoại), hook tự phát lúc OnTierLocked.")] public AudioClip[] stingClips = new AudioClip[5];
 
         [Header("Trang trí ngẫu nhiên (không ảnh hưởng kết quả)")]
         [Tooltip("0 = khác mỗi lần.")]
         [SerializeField] private int decorationSeed;
 
         private enum Phase { Idle, Digging, Revealing, Done }
+        private const float BaseVolume = 0.8f;
         private Phase _phase = Phase.Idle;
 
         private ChestRevealSequence _reveal;
         private ChestTier _tier;
-        private GameObject _item;
         private System.Random _rng;
 
         private Transform _root;                 // mọi thứ tạo ra nằm dưới đây (KHÔNG làm con của rương: tránh đo sai bounds)
         private readonly List<Rigidbody> _attached = new List<Rigidbody>();   // đá còn bám quanh rương (kinematic)
         private readonly List<Object> _owned = new List<Object>();
         private Material _rockMat, _fuseMat, _canaryMat, _nuggetMat;
-        private AudioSource _loop, _hiss, _oneShot;
+        private AudioSource _loop, _oneShot;
         private Transform _pick, _dynamite, _fuseSpark, _canary;
         private Light _flash;
         private Rigidbody _canaryBody;
@@ -82,32 +97,43 @@ namespace ChoDoLa.ChestFx
         private float _nextStrike, _tension, _nextThump, _shake, _pickSwing;
         private bool _dynamitePlaced, _blasting, _strikeQueued;
         private int _steps;
+        private float _lastEvent = -999f, _lastTail = -999f;
+        private int _tailCount, _pebbleMade, _pebbleCap = 6;
+        private bool _poseSaved;
 
-        /// <summary>Bắt đầu kịch bản đào. Tìm thấy MinerDigSequence trên rương thì hãy gọi hàm này thay vì reveal.Play.</summary>
+        /// <summary>
+        /// API cũ: trước đây nơi bấm phải gọi hàm này. Nay kịch bản tự chạy khi bấm (ChestScript_Miner), nên chỉ còn gọi
+        /// thẳng reveal.Play (bậc chuyển nguyên vẹn).
+        /// </summary>
+        [System.Obsolete("Kịch bản tự chạy khi bấm: gọi reveal.Play(tier, item) là đủ.")]
         public static bool TryBegin(ChestRevealSequence reveal, ChestTier rolledTier, GameObject itemSource)
         {
             if (reveal == null) return false;
             MinerDigSequence dig = reveal.GetComponent<MinerDigSequence>();
             if (dig == null || !dig.isActiveAndEnabled) return false;
-            dig.Begin(rolledTier, itemSource);
+            reveal.Play(rolledTier, itemSource);
             return true;
         }
 
         public bool IsDigging => _phase == Phase.Digging;
 
-        /// <summary>Bấm mở: âm bắt đầu ngay, rương bị vùi, cuốc bắt đầu đập. Bậc chỉ được chuyển tiếp nguyên vẹn.</summary>
-        public void Begin(ChestTier rolledTier, GameObject itemSource)
+        /// <summary>Cue "dao_mo" của ChestScript_Miner: đào + nổ, xong coroutine thì bước OpenBox mở nắp.</summary>
+        public override IEnumerator OnCue(string cue, ChestScriptContext context)
         {
-            _reveal = GetComponent<ChestRevealSequence>();
-            if (_reveal == null) { Debug.LogWarning("[MinerDig] Không có ChestRevealSequence trên " + name); return; }
-            if (_phase != Phase.Idle) Cleanup();
-            _reveal.ResetReveal(true);   // về trạng thái đóng sạch (gọi OnReset của hook cũ trước khi dựng mới)
+            if (cue != "dao_mo" || context == null) return null;
+            return DigRoutine(context);
+        }
 
-            _tier = rolledTier;
-            _item = itemSource;
-            _rng = new System.Random(decorationSeed != 0 ? decorationSeed : System.Environment.TickCount);
+        private IEnumerator DigRoutine(ChestScriptContext ctx)
+        {
+            _reveal = ctx.Reveal;
+            if (_phase != Phase.Idle) Cleanup();
+
+            _tier = ctx.Tier;   // chỉ đọc; dùng ở OnTierLocked như cũ (bậc thật lấy từ tham số của hook)
+            _rng = new System.Random(decorationSeed != 0 ? decorationSeed : ctx.Seed);
             _chestPos = transform.position;
             _chestRot = transform.rotation;
+            _poseSaved = true;
             MeasureChest();
             Build();
 
@@ -115,14 +141,27 @@ namespace ChoDoLa.ChestFx
             _strikes = 0;
             _tension = 0f;
             _steps = 0;
-            _nextStrike = Time.time + 0.55f;
-            _nextThump = Time.time;
+            _tailCount = 0; _pebbleMade = 0; _pebbleCap = 6;
+            _lastEvent = _lastTail = -999f;
+            _nextStrike = Time.time + 0.4f;
+            _nextThump = Time.time + 0.3f;
             _dynamitePlaced = _blasting = _strikeQueued = false;
             _phase = Phase.Digging;
 
-            _loop.clip = MinerSynth.Rumble; _loop.loop = true; _loop.pitch = 0.7f; _loop.volume = volume * 0.5f; _loop.Play();
-            OneShot(MinerSynth.RockCrack, 0.5f, 0.7f);
+            // NỀN vào ngay khi bấm (≤ 0,2 s); nhịp "thình" chen vào sau 0,3 s
+            if (_loop != null && rumbleClip != null)
+            {
+                _loop.clip = rumbleClip; _loop.loop = true; _loop.pitch = 1f; _loop.volume = Lv(0.15f, ChestAudioRule.BedMax); _loop.Play();
+            }
             StartCoroutine(CanaryArrives());
+
+            // đợi đá sạch (cuốc tự đập, thuốc nổ tự cắm) rồi trả rương về tư thế và giao cho bước OpenBox
+            while (_phase == Phase.Digging && (_blasting || _attached.Count > 0)) yield return null;
+            if (_phase != Phase.Digging) yield break;
+            _phase = Phase.Revealing;
+            transform.SetPositionAndRotation(_chestPos, _chestRot);
+            yield return new WaitForSeconds(0.2f);
+            if (_pick != null) _pick.gameObject.SetActive(false);
         }
 
         /// <summary>Một nhát cuốc (người chơi gọi; tự đập cũng đi qua đây).</summary>
@@ -151,32 +190,23 @@ namespace ChoDoLa.ChestFx
 
         // ------------------------------------------------------------------ ChestFxHook (gọi bởi ChestRevealSequence)
 
-        public override void OnRouletteStart(ChestRevealSequence reveal, Vector3 mouth)
-        {
-            if (_phase != Phase.Revealing) return;
-            OneShot(MinerSynth.RockCrack, 0.4f, 0.8f);
-        }
-
         public override void OnRouletteStep(ChestRevealSequence reveal, ChestTier shown, Color color)
         {
             if (_phase != Phase.Revealing) return;
             _steps++;
             _tension = Mathf.Min(1f, _tension + 0.04f);   // dâng đều, KHÔNG phụ thuộc màu đang hiện (giữ bí mật)
-            OneShot(MinerSynth.Thump, 0.55f + 0.35f * _tension, 0.9f + 0.5f * _tension);
-            if (_steps % 3 == 0) DropPebbles(1);
+            if (_steps % 4 == 0) DropPebbles(1);          // nhịp "thình" đã có ở Update: không thêm tiếng ở đây
         }
 
         public override void OnTierLocked(ChestRevealSequence reveal, ChestTier tier, Color color)
         {
-            if (_phase != Phase.Revealing) return;
+            if (_phase != Phase.Revealing) return;   // đào chưa xong (không xảy ra: OpenBox đợi cue) thì bỏ qua
             _phase = Phase.Done;
             StartCoroutine(Finale(tier, color));
         }
 
         public override void OnReset(ChestRevealSequence reveal)
         {
-            // ResetReveal của chính Begin() gọi vào đây trước khi đào: bỏ qua lúc đang đào.
-            if (_phase == Phase.Digging || _handingOff) return;
             Cleanup();
         }
 
@@ -198,18 +228,18 @@ namespace ChoDoLa.ChestFx
                     DoStrike();
                     _nextStrike = Time.time + autoStrikeInterval * Mathf.Lerp(1f, 0.7f, _tension);
                 }
-                if (!_blasting && _attached.Count == 0) StartCoroutine(Unearthed());
             }
 
-            // độ căng → tiếng rền dâng + nhịp thình nhanh dần (chung cho mọi bậc tới lúc chốt)
+            // độ căng → NỀN dâng (volume 0,15→0,45, cao độ +45%) + NHỊP dày dần (0,7 s → 0,15 s, volume 0,25→0,55)
             if (_phase != Phase.Done && _loop != null)
             {
-                _loop.pitch = Mathf.Lerp(0.7f, 1.6f, _tension);
-                _loop.volume = volume * Mathf.Lerp(0.45f, 0.95f, _tension);
-                if (_phase == Phase.Digging && Time.time >= _nextThump)
+                _loop.pitch = Mathf.Lerp(1f, 1.45f, _tension);
+                _loop.volume = Lv(Mathf.Lerp(0.15f, 0.45f, _tension), ChestAudioRule.BedMax);
+                // lúc ngòi xèo (_blasting) tạm không phát nhịp: tối đa 2 lớp kéo dài (nền + ngòi)
+                if (!_blasting && Time.time >= _nextThump)
                 {
-                    OneShot(MinerSynth.Thump, 0.5f + 0.4f * _tension, 0.9f + 0.4f * _tension);
-                    _nextThump = Time.time + Mathf.Lerp(0.9f, 0.32f, _tension) * (_blasting ? 0.5f : 1f);
+                    OneShot(thumpClip, Lv(Mathf.Lerp(0.25f, 0.55f, _tension), ChestAudioRule.BeatMax));
+                    _nextThump = Time.time + Mathf.Lerp(0.7f, 0.15f, _tension);
                 }
             }
 
@@ -260,15 +290,14 @@ namespace ChoDoLa.ChestFx
             _pickSwing = 1f;
             _shake = 1f;
             _tension = Mathf.Min(0.55f, _tension + 0.05f);
-            OneShot(MinerSynth.PickClink, 0.7f, 0.9f + 0.2f * (float)_rng.NextDouble());
-            OneShot(MinerSynth.RockCrack, 0.6f, 0.85f + 0.3f * (float)_rng.NextDouble());
+            bool last = _strikes >= _strikesPlanned;
+            Event(last ? crumbleClip : pickClip, 0.45f, false);   // 1 sự kiện mỗi nhát (qua cổng 0,2 s)
             Flash(new Color(1f, 0.7f, 0.35f), 1.2f, _pick != null ? _pick.position : _bounds.center);
 
-            bool last = _strikes >= _strikesPlanned;
             int n = last ? _attached.Count : Mathf.Max(2, _attached.Count / (_strikesPlanned - _strikes + 1));
             Vector3 from = _pick != null ? _pick.position : _bounds.center + transform.forward * _size;
             for (int i = 0; i < n && _attached.Count > 0; i++) Release(Nearest(from), from, strikeImpulse);
-            DropPebbles(1 + _rng.Next(2));
+            DropPebbles(1);
 
             if (autoDynamite && !_dynamitePlaced && _strikes >= _strikesPlanned - 1 && _attached.Count > 0) PlaceDynamite();
         }
@@ -288,9 +317,7 @@ namespace ChoDoLa.ChestFx
             GameObject spark = Prim(PrimitiveType.Sphere, "FuseSpark", new Color(1f, 0.85f, 0.4f), true);
             _fuseSpark = spark.transform;
             _fuseSpark.localScale = Vector3.one * _size * 0.03f;
-            OneShot(MinerSynth.PickClink, 0.4f, 0.6f);
-
-            _hiss.clip = MinerSynth.FuseHiss; _hiss.loop = true; _hiss.volume = volume * 0.6f; _hiss.Play();
+            Event(fuseClip, 0.4f, true);   // ngòi xèo: tiếng lẻ phát một lần (nhịp tạm nghỉ trong lúc này)
             float t = 0f;
             Vector3 top = _dynamite.position + _dynamite.up * _size * 0.22f;
             while (t < fuseSeconds)
@@ -302,20 +329,18 @@ namespace ChoDoLa.ChestFx
                 _fuseSpark.position = Vector3.Lerp(top, tip, k) + RandIn() * _size * 0.006f;
                 _fuseSpark.localScale = Vector3.one * _size * (0.02f + 0.02f * Mathf.PerlinNoise(Time.time * 30f, 0f));
                 _tension = Mathf.Min(0.55f, _tension + Time.deltaTime * 0.08f);
-                _hiss.pitch = 1f + 0.5f * k;
                 if (_rng.NextDouble() < 0.15) Flash(new Color(1f, 0.6f, 0.2f), 0.6f, _fuseSpark.position);
                 yield return null;
             }
-            _hiss.Stop();
 
             // NỔ: mọi khối đá còn lại văng, rương nảy
             Vector3 c = _dynamite != null ? _dynamite.position : _bounds.center;
             Flash(new Color(1f, 0.75f, 0.4f), 6f, c);
-            OneShot(MinerSynth.Boom, 1f, 1f);
+            Event(boomClip, 0.5f, true);   // nổ thuốc nổ: trần sự kiện 0,5 (trước chốt)
             if (_fuseSpark != null) Destroy(_fuseSpark.gameObject);
             if (_dynamite != null) Destroy(_dynamite.gameObject);
             while (_attached.Count > 0) Release(_attached[_attached.Count - 1], c, blastImpulse);
-            DropPebbles(6);
+            DropPebbles(1);
             yield return Hop();
             _blasting = false;
         }
@@ -337,65 +362,64 @@ namespace ChoDoLa.ChestFx
                 yield return null;
             }
             transform.SetPositionAndRotation(_chestPos, _chestRot);
-            OneShot(MinerSynth.Thump, 1f, 0.7f);
             _shake = 1f;
             _hopping = false;
         }
-
-        private IEnumerator Unearthed()
-        {
-            _phase = Phase.Revealing;   // chặn gọi lại
-            transform.SetPositionAndRotation(_chestPos, _chestRot);
-            yield return new WaitForSeconds(0.35f);
-            if (_pick != null) _pick.gameObject.SetActive(false);
-            // giao lại cho khung chung: bậc truyền NGUYÊN VẸN
-            _handingOff = true;
-            _reveal.Play(_tier, _item);
-            _handingOff = false;
-        }
-
-        private bool _handingOff;
 
         // ------------------------------------------------------------------ Kết: chỉ ở đây kết quả mới lộ ra
 
         private IEnumerator Finale(ChestTier tier, Color color)
         {
-            if (tier <= ChestTier.Thuong)
+            // Chốt: nhịp đã dừng (phase Done). Mỗi bậc đúng 1 tiếng chốt (TC) do hook phát; khác nhau chỉ ở bậc.
+            _tailCount = 0; _pebbleMade = 0;
+            if (tier == ChestTier.Rac)
             {
-                // XỊT: rền tắt phụt, còi tụt, chim ngất
-                _loop.Stop();
-                OneShot(MinerSynth.Fizzle, 0.9f, 1f);
+                // XỊT: nền tắt phụt (không fade) → lặng 0,2 s → 1 tiếng xịt; 0,6 s sau đó không phát gì khác
+                _pebbleCap = 1;
+                if (_loop != null) _loop.Stop();
+                yield return new WaitForSeconds(ChestAudioRule.RacSilence);
+                Sting(0, 0.8f);
                 CanaryFaint();
-                if (tier == ChestTier.Rac)
-                {
-                    yield return new WaitForSeconds(0.9f);
-                    Pebble(_bounds.center + Vector3.up * _size * 1.4f, 0.12f);
-                    yield return new WaitForSeconds(0.35f);
-                    OneShot(MinerSynth.Bonk, 0.9f, 1f);
-                }
+                yield return new WaitForSeconds(0.8f);
+                Tail(faintClip, 0.35f);
+                Pebble(_bounds.center + Vector3.up * _size * 1.4f, 0.12f);
+                yield return new WaitForSeconds(0.35f);
+                Tail(pebbleClip, 0.4f);
+                yield break;
+            }
+
+            if (tier == ChestTier.Thuong)
+            {
+                _pebbleCap = 0;
+                Sting(1, 0.7f);            // TC ≤ 0,7; chim KHÔNG ngất, vẫn đậu
+                yield return FadeLoop(0.3f);
                 yield break;
             }
 
             if (tier == ChestTier.Hiem)
             {
-                yield return FadeLoop(0.4f);
-                OneShot(MinerSynth.Chirp, 0.8f, 1f);
+                _pebbleCap = 0;
+                if (_loop != null) _loop.Stop();
+                Sting(2, 0.85f);
                 StartCoroutine(CanaryFly(color, 1));
                 yield break;
             }
 
-            // Rất hiếm / Huyền thoại: nổ mạch vàng
-            _loop.pitch = 1.9f;
-            OneShot(MinerSynth.Boom, 1f, tier == ChestTier.HuyenThoai ? 0.8f : 0.95f);
+            // Rất hiếm / Huyền thoại: nền dừng, 1 tiếng chốt (đã chứa tiếng nổ nên KHÔNG thêm tiếng nổ nữa)
+            if (_loop != null) _loop.Stop();
+            bool legend = tier == ChestTier.HuyenThoai;
+            _pebbleCap = legend ? 6 : 4;
+            Sting(legend ? 4 : 3, 1f);
             Flash(color, 8f, _reveal.MouthPosition);
-            DropPebbles(tier == ChestTier.HuyenThoai ? 14 : 8);
-            StartCoroutine(CanaryFly(color, tier == ChestTier.HuyenThoai ? 3 : 2));
-            if (tier == ChestTier.HuyenThoai) StartCoroutine(Nuggets(color));
-            yield return FadeLoop(1.6f);
+            DropPebbles(_pebbleCap);
+            StartCoroutine(CanaryFly(color, legend ? 3 : 2));
+            if (legend) StartCoroutine(Nuggets(color));
+            yield break;
         }
 
         private IEnumerator FadeLoop(float seconds)
         {
+            if (_loop == null) yield break;
             float v0 = _loop.volume, t = 0f;
             while (t < seconds && _loop != null)
             {
@@ -408,9 +432,11 @@ namespace ChoDoLa.ChestFx
 
         private IEnumerator Nuggets(Color color)
         {
+            yield return new WaitForSeconds(0.4f);   // đuôi bắt đầu từ +0,4 s
             _nuggetMat = NewMat(Color.Lerp(new Color(1f, 0.78f, 0.2f), color, 0.35f));
-            for (int i = 0; i < 18; i++)
+            for (int i = 0; i < 10; i++)
             {
+                if (_root == null) yield break;
                 GameObject n = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 n.name = "GoldNugget";
                 n.transform.SetParent(_root, true);
@@ -423,9 +449,9 @@ namespace ChoDoLa.ChestFx
                 Vector3 dir = (Vector3.up * 2.2f + RandIn()).normalized;
                 rb.AddForce(dir * 1.1f * (_size / 0.5f), ForceMode.Impulse);
                 rb.angularVelocity = RandIn() * 10f;
-                StartCoroutine(ShrinkAway(n.transform, debrisLifetime + 1.5f));
-                if (i % 3 == 0) OneShot(MinerSynth.Nugget, 0.6f, 0.85f + 0.3f * (float)_rng.NextDouble());
-                yield return new WaitForSeconds(0.05f);
+                StartCoroutine(ShrinkAway(n.transform, 2.2f));
+                if (i % 2 == 0) Tail(nuggetClip, 0.35f);   // đuôi: ≤ 6 tiếng, cách ≥ 0,15 s
+                yield return new WaitForSeconds(0.08f);
             }
         }
 
@@ -440,25 +466,25 @@ namespace ChoDoLa.ChestFx
             if (_canary == null) yield break;
             Vector3 side = transform.right * _size * 0.75f;
             _canaryPerch = new Vector3(_bounds.center.x, _bounds.min.y, _bounds.center.z) + side + Vector3.up * _size * 0.12f;
-            Vector3 start = _canaryPerch + side * 3f + Vector3.up * _size * 1.5f;
+            Vector3 start = _canaryPerch + side * 1.5f + Vector3.up * _size * 1.0f;
             _canary.gameObject.SetActive(true);
             float t = 0f;
             while (t < 1f)
             {
-                t += Time.deltaTime / 0.8f;
+                t += Time.deltaTime / 0.6f;
                 if (_canary == null) yield break;
                 _canary.position = Vector3.Lerp(start, _canaryPerch, Mathf.SmoothStep(0f, 1f, t)) + Vector3.up * Mathf.Sin(t * 30f) * 0.01f;
                 yield return null;
             }
             _canaryPerched = true;
-            OneShot(MinerSynth.Chirp, 0.5f, 1.1f);
+            Event(chirpClip, 0.35f, false);
         }
 
         private void CanaryFaint()
         {
+            // chỉ hình: tiếng "ngất" là đuôi do Finale phát sau 0,8 s
             if (_canary == null || _canaryBody == null) return;
             _canaryPerched = false;
-            OneShot(MinerSynth.ChirpFaint, 0.7f, 1f);
             _canaryBody.isKinematic = false;
             _canaryBody.useGravity = true;
             _canaryBody.AddForce((transform.right + Vector3.up * 0.5f) * 0.05f, ForceMode.Impulse);
@@ -471,14 +497,14 @@ namespace ChoDoLa.ChestFx
             _canaryPerched = false;
             if (_canaryMat != null) _canaryMat.color = Color.Lerp(_canaryMat.color, color, 0.4f);
             Vector3 c = _reveal.MouthPosition;
-            float t = 0f, dur = 1.2f * loops;
+            float t = 0f, dur = 1.2f * loops, nextChirp = 0.4f;
             while (t < dur && _canary != null)
             {
                 t += Time.deltaTime;
                 float a = t / 1.2f * Mathf.PI * 2f;
                 float r = _size * 0.8f;
                 _canary.position = c + new Vector3(Mathf.Cos(a) * r, _size * (0.3f + 0.6f * t / dur), Mathf.Sin(a) * r);
-                if (_rng.NextDouble() < 0.02) OneShot(MinerSynth.Chirp, 0.5f, 1f + 0.3f * (float)_rng.NextDouble());
+                if (t >= nextChirp) { Tail(chirpClip, 0.35f); nextChirp += 0.6f; }   // đuôi từ +0,4 s, thưa
                 yield return null;
             }
         }
@@ -579,22 +605,22 @@ namespace ChoDoLa.ChestFx
             _flash.intensity = 0f;
 
             _loop = _root.gameObject.AddComponent<AudioSource>();
-            _hiss = _root.gameObject.AddComponent<AudioSource>();
             _oneShot = _root.gameObject.AddComponent<AudioSource>();
-            foreach (AudioSource a in new[] { _loop, _hiss, _oneShot }) { a.playOnAwake = false; a.spatialBlend = 0f; }
+            foreach (AudioSource a in new[] { _loop, _oneShot }) { a.playOnAwake = false; a.spatialBlend = 0f; }
         }
 
         private void Cleanup()
         {
             StopAllCoroutines();
-            if (_phase == Phase.Digging || _hopping) transform.SetPositionAndRotation(_chestPos, _chestRot);
+            if (_poseSaved) transform.SetPositionAndRotation(_chestPos, _chestRot);   // trả rương về đúng chỗ cũ
+            _poseSaved = false;
             _hopping = false;
             if (_root != null) Destroy(_root.gameObject);
             foreach (Object o in _owned) if (o != null) Destroy(o);
             _owned.Clear();
             _attached.Clear();
             _root = null; _pick = _dynamite = _fuseSpark = _canary = null; _canaryBody = null; _flash = null;
-            _loop = _hiss = _oneShot = null;
+            _loop = _oneShot = null;
             _rockMat = _fuseMat = _canaryMat = _nuggetMat = null;
             _phase = Phase.Idle;
         }
@@ -624,13 +650,15 @@ namespace ChoDoLa.ChestFx
             dir = (dir.normalized + Vector3.up * 0.6f + RandIn() * 0.3f).normalized;
             rb.AddForce(dir * impulse * rb.mass * (_size / 0.5f), ForceMode.Impulse);
             rb.angularVelocity = RandIn() * 8f;
-            StartCoroutine(ShrinkAway(rb.transform, debrisLifetime + (float)_rng.NextDouble()));
+            StartCoroutine(ShrinkAway(rb.transform, debrisLifetime + 0.5f * (float)_rng.NextDouble()));
         }
 
         private void DropPebbles(int n)
         {
+            n = Mathf.Min(n, _pebbleCap - _pebbleMade);   // trần cứng (T3): trước chốt ≤ 6 sỏi, sau chốt theo bậc
             for (int i = 0; i < n; i++)
             {
+                _pebbleMade++;
                 Vector3 p = _bounds.center + new Vector3((float)(_rng.NextDouble() * 2 - 1), 0f, (float)(_rng.NextDouble() * 2 - 1)) * _size
                             + Vector3.up * _size * (1.6f + (float)_rng.NextDouble());
                 Pebble(p, 0.04f + 0.04f * (float)_rng.NextDouble());
@@ -699,11 +727,39 @@ namespace ChoDoLa.ChestFx
             _flash.intensity = Mathf.Max(_flash.intensity, intensity);
         }
 
-        private void OneShot(AudioClip clip, float v, float pitch)
+        /// <summary>Mức âm cuối = mức theo quy tắc (tính ở volume mặc định 0,8) × volume/0,8, không vượt trần. Nhân volume đúng MỘT lần.</summary>
+        private float Lv(float level, float cap) => Mathf.Min(cap, level * volume / BaseVolume);
+
+        /// <summary>Phát một tiếng lẻ trên nguồn riêng (pitch luôn 1: không đổi pitch nguồn đang ngân).</summary>
+        private void OneShot(AudioClip clip, float finalVolume)
         {
             if (_oneShot == null || clip == null) return;
-            _oneShot.pitch = pitch;   // pitch nguồn áp cho cả các âm đang vang: chấp nhận cho trang trí
-            _oneShot.PlayOneShot(clip, v * volume);
+            _oneShot.PlayOneShot(clip, finalVolume);
+        }
+
+        /// <summary>Sự kiện trước chốt: tối đa 1 tiếng mỗi 0,2 s (cổng chung), trần 0,5. <paramref name="force"/> bỏ qua cổng nhưng vẫn ghi mốc.</summary>
+        private void Event(AudioClip clip, float level, bool force)
+        {
+            if (clip == null) return;
+            if (force) _lastEvent = Time.time;
+            else if (!ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap)) return;
+            OneShot(clip, Lv(level, ChestAudioRule.EventMax));
+        }
+
+        /// <summary>Tiếng đuôi sau chốt: cách ≥ 0,15 s, trần 0,4, tổng ≤ 6.</summary>
+        private void Tail(AudioClip clip, float level)
+        {
+            if (clip == null || _tailCount >= 6) return;
+            if (!ChestAudioRule.TryGate(ref _lastTail, ChestAudioRule.TailGap)) return;
+            _tailCount++;
+            OneShot(clip, Lv(level, ChestAudioRule.TailMax));
+        }
+
+        /// <summary>Tiếng chốt (TC) theo bậc: đúng 1 clip, trần theo A4/A6.</summary>
+        private void Sting(int tierIndex, float level)
+        {
+            if (stingClips == null || tierIndex < 0 || tierIndex >= stingClips.Length) return;
+            OneShot(stingClips[tierIndex], Lv(level, ChestAudioRule.StingMax));
         }
 
         // ngẫu nhiên trang trí luôn lấy từ _rng (theo hạt giống), không dùng UnityEngine.Random
