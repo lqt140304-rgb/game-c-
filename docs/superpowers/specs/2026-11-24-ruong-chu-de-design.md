@@ -10,6 +10,7 @@ Mỗi chủ đề là một **hệ sinh thái riêng**: một rương, một nh�
 
 1. **Chỉ cần thành tựu để mở khóa**, không tốn điểm phát triển.
 2. **Sau khi mở khóa, rương xuất hiện trong shop rương vào ngày hôm sau.**
+13. **Shop rương mỗi ngày (chốt 2026-11-25):** luôn bày đủ 4 rương cơ bản, cộng **tối đa 4 rương mở khóa hoặc rương chủ đề**. Có nhiều hơn 4 rương đã mở thì mỗi ngày chọn 4 rương, xoay vòng theo hạt giống ván và ngày (lưu và tải lại không đổi). Số đo: [Sprint5RuongMoKhoa](../../../Docs/Balance/Sprint5RuongMoKhoa.md).
 3. **Rương Nhại tách ra, không gộp chung.** Nhóm Nhại cũ chia thành các chủ đề rõ ràng.
 4. **Mỗi chủ đề có món Huyền thoại riêng**, chỉ ra từ rương chủ đề đó.
 5. **Mọi loại rương đều có bộ sưu tập riêng** (cả 4 rương cơ bản, rương mở khóa và rương chủ đề).
@@ -37,7 +38,7 @@ Tỉ lệ bậc của từng rương và trọng số từng món: Claude 2.
 |---|---|
 | Ra gì | Ưu tiên đồ của chủ đề, có thể lẫn rác. Món Huyền thoại riêng chỉ ra ở rương này |
 | Mở khóa | Một **thành tựu** gắn với chủ đề (đề xuất, chưa chốt từng cái) |
-| Xuất hiện | Mở khóa hôm nay thì có trong shop rương **từ ngày mai** |
+| Xuất hiện | Mở khóa hôm nay thì có trong shop rương **từ ngày mai**; shop bày tối đa 4 rương mở khóa hoặc chủ đề mỗi ngày, xoay vòng (mục 13) |
 | Giá, tỉ lệ ra | Claude 2 cân bằng |
 | Tác dụng khác | Không buff chơi, giữ nguyên nguyên tắc ở phần 1 |
 
