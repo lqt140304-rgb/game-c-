@@ -8,17 +8,17 @@ namespace ChoDoLa.Editor
 {
     /// <summary>
     /// Nối kịch bản "Loa Bass Kẹo Kéo" (AmNhacBassHook) vào rương đang chọn:
-    ///  - hồ sơ riêng ChestFx_AmNhacBass.asset (dựa trên AmNhacFxPreset nhưng TẮT trống nền/tick ồn của khung chung,
-    ///    vì nhịp trống giờ do hook phát từ lúc bấm mở);
+    ///  - hồ sơ riêng ChestFx_AmNhacBass.asset (dựa trên AmNhacFxPreset; MỖI lần chạy menu gọi
+    ///    ChestAudioRule.ApplyToProfile: tension tắt, mọi ô âm lõi trống, vì nhịp + tiếng chốt do hook phát);
     ///  - gỡ AmNhacHook cũ (vòng equaliser + đám đông) để không phát đám đông hai lần;
     ///  - tắt spinRecord của BoxOpenSequence (hook tự quay/scratch lớp Record từ phách đầu);
-    ///  - nạp âm từ Audio/Chests/am_nhac/seq/ (+ sfx_amnhac_crowd.mp3).
+    ///  - nạp âm ElevenLabs .mp3 từ Audio/Chests/am_nhac/ (clips + stingClips[5]); không nạp .wav numpy nữa.
     /// Chưa chạy trong Unity (môi trường viết không có Unity): chỉ biên dịch thử bằng stub.
     /// </summary>
     public static class AmNhacBassSetup
     {
         private const string ProfilePath = "Assets/_Project/ScriptableObjects/ChestFx/ChestFx_AmNhacBass.asset";
-        private const string Seq = AmNhacFxPreset.AudioFolder + "seq/";
+        private static readonly string[] StingFiles = { "rac", "thuong", "hiem", "ratHiem", "huyenThoai" };
 
         [MenuItem("Tools/Cho Do La/Wire Selected Chest As Am Nhac (Loa Bass)")]
         public static void WireSelected()
@@ -56,24 +56,36 @@ namespace ChoDoLa.Editor
             Debug.Log("[AmNhacBass] " + reveal.name + " đã nối kịch bản Loa Bass. Play → B = bấm theo nhịp, V/click = thả đĩa than.");
         }
 
-        public static void FillClips(AmNhacBassHook hook) => hook.SetClips(LoadClips());
+        public static void FillClips(AmNhacBassHook hook)
+        {
+            hook.SetClips(LoadClips());
+            hook.SetStings(LoadStings());
+        }
+
+        public static AudioClip[] LoadStings()
+        {
+            AudioClip[] a = new AudioClip[StingFiles.Length];
+            for (int i = 0; i < a.Length; i++) a[i] = Load("lock_" + StingFiles[i]);
+            return a;
+        }
 
         public static AmNhacBassHook.Clips LoadClips()
         {
+            // skip / deflate / horn: không có trong danh mục ElevenLabs (A9) -> để trống, hook bỏ qua ô trống.
             return new AmNhacBassHook.Clips
             {
                 kick = Load("kick"), hat = Load("hat"), clap = Load("clap"), wub = Load("wub"),
-                scratch = Load("scratch"), skip = Load("skip"), needle = Load("needle"), riser = Load("riser"),
-                drop = Load("drop"), horn = Load("horn"), recordStop = Load("recordstop"), deflate = Load("deflate"),
-                plugPop = Load("plugpop"), wheels = Load("wheels"), feedback = Load("feedback"),
-                crowd = AssetDatabase.LoadAssetAtPath<AudioClip>(AmNhacFxPreset.AudioFolder + AmNhacFxPreset.CrowdFile),
+                scratch = Load("scratch"), needle = Load("needle_drop"), riser = Load("riser"),
+                drop = Load("drop"), recordStop = Load("record_stop"),
+                plugPop = Load("plug_pop"), wheels = Load("wheels"), feedback = Load("feedback"),
+                crowd = Load("crowd"),
             };
         }
 
         private static AudioClip Load(string id)
         {
-            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(Seq + "sfx_amnhac_seq_" + id + ".wav");
-            if (c == null) Debug.LogWarning("[AmNhacBass] Thiếu âm " + id + " (chạy python3 Tools/Audio/make_amnhac_sfx.py).");
+            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(AmNhacFxPreset.AudioFolder + "sfx_amnhac_" + id + ".mp3");
+            if (c == null) Debug.LogWarning("[AmNhacBass] Thiếu âm " + id + " (chạy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --chest am_nhac).");
             return c;
         }
 
@@ -88,12 +100,8 @@ namespace ChoDoLa.Editor
                 AssetDatabase.CreateAsset(p, ProfilePath);
             }
             p.chestId = AmNhacFxPreset.ChestId;
-            p.openAmbientClip = null;          // the hook's beat is the bed now
-            p.tickVolume = 0.18f;              // roulette ticks sit under the hi-hats
-            p.lockVolume = 0.55f;              // tier sting stays (tells the tier), the drop/fizzle carries the moment
-            p.accentVolume = 0.2f;
-            p.stageClips = new ChestFxProfile.StageClip[0];   // coin slot / needle drop are replaced by the hook's own events
             p.customFxPrefab = null;
+            ChestAudioRule.ApplyToProfile(p);  // A1: MỖI lần chạy menu (không chỉ khi trống): tension tắt, ô âm lõi trống
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();
             return p;
