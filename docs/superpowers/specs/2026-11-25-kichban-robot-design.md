@@ -1,6 +1,6 @@
 # Kịch bản mở rương: Chest_Robot — "RƯƠNG BIẾN HÌNH"
 
-Trạng thái: **đã viết mã, biên dịch qua stub (check_robot_bienhinh.sh, 3 bộ define). CHƯA chạy trong Unity, CHƯA ai nghe âm.**
+Trạng thái: **đã thu gọn theo kế hoạch 2026-11-25 (mục 5.10)**; đã viết mã, biên dịch qua stub (check_robot_bienhinh.sh, 3 bộ define). CHƯA chạy trong Unity, CHƯA ai nghe âm.**
 
 ## Ý tưởng
 Rương là một robot ngủ đông, hết pin. Bấm mở = gửi yêu cầu khởi động: phải **sạc pin** qua khe trên lưng. Bu-lông, bánh răng rơi xuống (Rigidbody thật), một **drone phụ tá** bay tới thả cục pin vào khe, người chơi cũng thả/ném đồ vào được. Đầy pin → rương **mọc hai chân đứng dậy**, dậm chân tại chỗ ngày càng nhanh, mắt nháy theo màu vòng quay, **màn chữ chạy tự kiểm hệ thống**. Khoá bậc → xịt (Rác) hoặc bật nhảy bùng nổ (Hiếm+), hai tay vươn ra đỡ món quà.
@@ -42,7 +42,36 @@ Thả/ném vật có Rigidbody vào khe trên lưng (trigger). Gắn `RobotCharg
 2. Chọn gốc rương → menu Robot Bien Hinh. Phím P/T như hướng dẫn.
 3. Kiểm: âm vang ngay khi bấm; vật rơi trúng khe; chân/tay bám rương; Rác xịt, Huyền thoại bay. Thả một Cube có Rigidbody vào khe khi đang sạc.
 
-## Chưa kiểm / rủi ro
+## Đã thu gọn theo kế hoạch 2026-11-25 (mục 5.10)
+
+Bảng nhịp phía trên là bản gốc; bản sau thu gọn khác ở các điểm sau (số thực tế trong mã):
+
+| Hạng mục | Trước | Sau |
+|---|---|---|
+| Màn chữ | chạy tự kiểm hệ thống nhiều dòng + dòng quét | **1 dòng** lúc kết `"> <TÊN BẬC>!"`, hiện 2 s |
+| Drone | vòng lặp `drone_loop` | 1 tiếng lẻ `servo` (pitch 1,4, âm 0,3) khi tới |
+| Mưa bu-lông ăn mừng (Hiếm → HT) | 3 + 3·lv (tối đa 15) | 2 + 2·lv: **6 / 8 / 10** (tối đa 10) |
+| Bu-lông bung ở Rác | 4 | 3 |
+| Vật của người chơi tính vào pin | không trần | tối đa 6 |
+| Độ cao nhảy | mét cố định 0,08 / 0,25 / 0,45 / 0,7 | × H: 0,12 / 0,35 / 0,6 / 1,0 H |
+| Âm trước chốt | hum + drone_loop + bíp + gõ chữ + lõi | **2 lớp**: Nền `hum_loop` (pitch 0,8 → 1,25, âm 0,15 → 0,45), Nhịp `beep` (0,7 → 0,15 s, âm 0,25 → 0,55) |
+| Sự kiện trước chốt | không giới hạn | `press`, `slot`, `servo`: cách nhau ≥ 0,2 s (`ChestAudioRule.TryGate`), âm ≤ 0,5 |
+| Tiếng chốt (TC) | `fizzle` / `blast_1..4` (numpy) | `stingClips[bậc]` = `sfx_robot_lock_*.mp3`; **không HĐ** |
+| Rác | xịt phát ngay | Nền + nhịp dừng ngay → lặng 0,2 s → 1 tiếng xịt; 0,6 s sau không tiếng nào |
+| Thường | `fizzle` hắt hơi + blast | Nền fade 0,3 s, TC 0,7; hắt hơi khói chỉ còn hình |
+| Đuôi | `slot` lúc đáp, `slot` lúc drone chết | từ +0,4 s, ≤ 6 tiếng, cách ≥ 0,15 s, âm ≤ 0,4: đáp (`slot`), drone hết pin (`spark`, chỉ Rác) |
+| `tension.enabled` | bật | false; `RobotFxSetup` gọi `ChestAudioRule.ApplyToProfile` mỗi lần chạy menu |
+
+Diễn viên: 1 (drone) + đồ gắn rương. Hệ hạt riêng 3 (sparks, smoke, flame), đèn Light riêng 1.
+Âm là file ElevenLabs `.mp3` trong `Audio/Chests/robot/` (gán qua `RobotTransformSetup.Fill`). Không còn dùng `.wav` numpy ở `robot/transform/`.
+
+### Chưa kiểm (trung thực, bổ sung)
+- Chưa chạy Unity, chưa ai nghe: chỉ đã biên dịch qua stub (`check_all.sh` và `check_robot_bienhinh.sh` đều qua).
+- `sfx_robot_thruster.mp3` (HĐ ở Huyền thoại) **chưa được gán**: kế hoạch 5.10 ghi "không HĐ", nên để ngoài; quyết lại khi nghe thử.
+- Các `.mp3` ElevenLabs chưa nghe và chưa kiểm điều khoản giấy phép.
+- Tiếng bíp pitch ≠ 1 tạo một nguồn riêng mỗi lần (theo A7): cần xem số nguồn khi bíp dồn dập (~16 lần).
+
+## Chưa kiểm / rủi ro (bản gốc)
 - Chưa chạy Unity: vị trí chân/tay/khe theo bounds đo tự động, có thể lệch; font `LegacyRuntime.ttf` (Unity 6) dự phòng `Arial.ttf`; tiếng Việt trên TextMesh chưa xem.
 - Vật thể rơi cần collider của rương/sàn để không xuyên; khe dùng lực hút nên vẫn trúng.
 - Hồ sơ `ChestFx_Robot` vẫn phát stageClips cũ (windup, steam…) của lõi — có thể chồng âm; nếu ồn, xoá stageClips trong hồ sơ.

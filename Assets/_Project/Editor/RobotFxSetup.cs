@@ -64,6 +64,7 @@ namespace ChoDoLa.Editor
                     new ChestFxProfile.StageClip { stage = 4, clip = Clip(RobotFxPreset.ServoFile, ChestFxPresets.ThudFile, ref missing), volume = 0.6f },
                 };
             }
+            ChestAudioRule.ApplyToProfile(p);   // A1: MỖI lần chạy menu, lõi câm; hook tự phát âm
             if (missing > 0) Debug.LogWarning($"[RobotFx] {missing} sound(s) not found in {RobotFxPreset.AudioFolder} or the shared set. The effect still runs.");
 
             EditorUtility.SetDirty(p);
