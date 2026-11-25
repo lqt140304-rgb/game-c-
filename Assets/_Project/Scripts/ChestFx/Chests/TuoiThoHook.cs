@@ -8,36 +8,37 @@ using UnityEngine.InputSystem;
 namespace ChoDoLa.ChestFx
 {
     /// <summary>
-    /// Chest_TuoiTho — "CỖ MÁY BI VE" (Rube Goldberg tuổi thơ). Bấm mở là cỗ máy chạy NGAY:
-    /// búng bi → bi lăn xuống thước kẻ kẹp giữa hai cây bút → đổ hàng domino → domino cuối tông xe đồ chơi →
-    /// xe húc con quay → con quay lắc tuột chốt dây thun → ná dây thun bắn viên bi thứ hai vọt lên nắp rương →
-    /// CẢ RƯƠNG bật nảy. Đến lúc chốt bậc mới lộ kết quả: bậc cao thì rương nhảy xoay vòng, máy bay giấy lượn
-    /// tới nhào lộn thả hoa giấy; Rác thì còi trượt rơi, rương xẹp "xịt", máy bay giấy chòng chành, rơi cắm
-    /// đầu, vò thành cục giấy cộc vào rương rồi lăn đi.
-    /// Tương tác phụ: trong lúc máy chạy, bấm chuột/chạm (hoặc phím B) để thả thêm bi ve từ trên cao xuống
-    /// chỗ trỏ — bi thật (Rigidbody) có thể đổ domino sớm, húc xe, hay rơi trúng rương (mỗi viên trúng = một
-    /// nốt mộc cầm cao dần + rương nảy nhẹ + thêm hoa giấy lúc kết). Mỗi khâu có "cú hích dự phòng" theo giờ
+    /// Chest_TuoiTho — "CỖ MÁY BI VE" (Rube Goldberg tuổi thơ), đã thu gọn theo kế hoạch 2026-11-25 còn 3 khâu.
+    /// Bấm mở là cỗ máy chạy NGAY: búng bi → bi lăn xuống thước kẻ dốc → đổ 3 quân domino → quân cuối đổ vào chốt
+    /// ná → ná dây thun bắn viên bi thứ hai vọt lên nắp rương → CẢ RƯƠNG bật nảy. Đến lúc chốt bậc mới lộ kết quả:
+    /// bậc cao thì rương nhảy xoay vòng, máy bay giấy lượn tới nhào lộn thả hoa giấy; Rác thì rương xẹp "xịt",
+    /// máy bay giấy chòng chành, rơi cắm đầu, vò thành cục giấy cộc vào rương rồi lăn đi.
+    /// Tương tác phụ: trong lúc máy chạy, bấm chuột/chạm (hoặc phím B) để thả thêm bi ve (tối đa 4) từ trên cao
+    /// xuống chỗ trỏ — bi thật (Rigidbody) có thể đổ domino sớm hay rơi trúng rương (mỗi viên trúng = một nốt
+    /// mộc cầm cao dần + rương nảy nhẹ + thêm hoa giấy lúc kết). Domino/ná có "cú hích dự phòng" theo giờ
     /// để chuỗi luôn tới đích đúng nhịp dù vật lý lệch.
+    /// Âm (quy tắc A1–A12): chỉ file ElevenLabs trong Audio/Chests/tuoi_tho/. Trước chốt 2 lớp: nền lăn (vòng) + nhịp
+    /// mộc cầm. Chốt: Rác = dừng hết → lặng 0,2 s → 1 tiếng xịt; bậc khác = 1 tiếng chốt theo bậc (stingClips).
     /// Bất biến: chỉ trang trí. Không đọc/đổi bậc trước OnTierLocked; ngẫu nhiên lấy từ hạt giống riêng.
     /// Gắn component này lên gốc Chest_TuoiTho (cùng chỗ ChestRevealSequence). Âm gán bởi TuoiThoFxSetup.
     /// </summary>
     public class TuoiThoHook : ChestFxHook
     {
-        [Header("Âm (Audio/Chests/tuoi_tho/may_bi/)")]
-        public AudioClip flickClip;
+        [Header("Âm (Audio/Chests/tuoi_tho/, ElevenLabs)")]
+        [Tooltip("Nền: tiếng bi lăn rì rì, đặt loop (sfx_tuoitho_roll_loop).")]
         public AudioClip rollClip;
+        [Tooltip("Nhịp: một nốt mộc cầm (sfx_tuoitho_xylo), hook đổi cao độ theo ngũ cung.")]
+        public AudioClip xyloClip;
+        public AudioClip flickClip;
         public AudioClip dominoClip;
-        public AudioClip glassClip;
-        public AudioClip carClip;
-        public AudioClip topClip;
         public AudioClip bandClip;
         public AudioClip bonkClip;
-        public AudioClip xyloClip;
-        public AudioClip riserClip;
-        public AudioClip failClip;
-        public AudioClip winClip;
+        [Tooltip("Tiếng bi ve thả thêm (sfx_tuoitho_marbles).")]
+        public AudioClip marblesClip;
         public AudioClip planeClip;
         public AudioClip crumpleClip;
+        [Tooltip("TC: tiếng chốt theo bậc, 5 ô Rác→Huyền thoại (sfx_tuoitho_lock_*).")]
+        public AudioClip[] stingClips = new AudioClip[5];
         [Range(0f, 1f)] public float volume = 0.8f;
 
         [Header("Nhịp")]
@@ -45,8 +46,8 @@ namespace ChoDoLa.ChestFx
         [SerializeField] private int lockStageGuess = 3;
         [Tooltip("Giây dư cộng thêm (đoạn chìa khoá bay vào trước các stage, nếu có).")]
         [SerializeField] private float extraLeadSeconds;
-        [SerializeField] private int dominoCount = 6;
-        [SerializeField] private int maxExtraMarbles = 6;
+        [SerializeField] private int dominoCount = 3;
+        [SerializeField] private int maxExtraMarbles = 4;
         [Tooltip("0 = theo thời gian; khác 0 = hạt giống cố định cho màu đồ chơi, độ lệch trang trí.")]
         [SerializeField] private int decorationSeed;
 
@@ -61,22 +62,24 @@ namespace ChoDoLa.ChestFx
 
         private Transform _root;
         private readonly List<Object> _owned = new List<Object>();
-        private AudioSource _sfx, _riser;
+        private AudioSource _sfx, _bed;
+        private float _lastEvent = -999f, _lastImpact = -999f, _lastTail = -999f;
+        private float _bedFadeFrom = -1f;
 
         // khung toạ độ quanh rương (chụp lúc bấm mở)
         private Vector3 _ground, _c, _r, _u, _f;
         private float _s;
         private Bounds _chestBounds;
 
-        private Rigidbody _marble, _marble2, _car, _top;
+        private Rigidbody _marble, _marble2;
         private readonly List<Rigidbody> _dominoes = new List<Rigidbody>();
         private readonly List<bool> _dominoDown = new List<bool>();
         private readonly List<Rigidbody> _extras = new List<Rigidbody>();
         private readonly HashSet<Rigidbody> _extraScored = new HashSet<Rigidbody>();
         private LineRenderer _band;
         private Vector3 _bandL, _bandR, _bandRest;
-        private bool _flicked, _carGone, _topHit, _released, _impacted;
-        private float _releaseAt, _impactAt;
+        private bool _flicked, _released, _impacted;
+        private float _releaseAt, _impactAt, _releaseT;
         private float _nextBeat;
         private int _beat;
         private int _combo;
@@ -90,7 +93,8 @@ namespace ChoDoLa.ChestFx
         // máy bay giấy
         private Transform _plane;
         private Vector3 _planeFrom;
-        private bool _crumpled, _confettiDone;
+        private bool _crumpled, _confettiDone, _stingDone, _planeSoundDone, _bonkTailDone;
+        private float _crumpleAt;
         private ParticleSystem _confetti;
         private ChestFxProfile _confettiStyle;
 
@@ -137,7 +141,7 @@ namespace ChoDoLa.ChestFx
             float t = Time.time - _t0;
             if (_phase == Phase.Running) RunMachine(t);
             if (_phase == Phase.Running || _phase == Phase.WaitLock) { Beats(t); HandleDrop(t); }
-            if (_phase == Phase.Finale) RunFinale(Time.time - _finaleT);
+            if (_phase == Phase.Finale) { FinaleAudio(Time.time - _finaleT); RunFinale(Time.time - _finaleT); }
             ScoreExtras();
             UpdateBand();
         }
@@ -162,14 +166,20 @@ namespace ChoDoLa.ChestFx
             _sfx = _root.gameObject.AddComponent<AudioSource>();
             _sfx.playOnAwake = false;
             _sfx.spatialBlend = 0.3f;
-            _riser = _root.gameObject.AddComponent<AudioSource>();
-            _riser.playOnAwake = false;
-            _riser.spatialBlend = 0.3f;
+            _bed = _root.gameObject.AddComponent<AudioSource>();
+            _bed.playOnAwake = false;
+            _bed.spatialBlend = 0.3f;
+            _bed.loop = true;
+            _bed.clip = rollClip;
+            _bed.volume = ChestAudioRule.BedMax * 0.33f * volume;
+            if (rollClip != null) _bed.Play();   // NỀN: bắt đầu ngay lúc bấm, nhỏ rồi dâng dần (xem Beats)
+            _lastEvent = _lastImpact = _lastTail = -999f;
+            _bedFadeFrom = -1f;
 
             BuildPlayground();
             _releaseAt = Mathf.Max(0.8f * _T, _T - 0.6f);
             _nextBeat = 0f;
-            Play(flickClip, 0.9f);   // âm bắt đầu NGAY lúc bấm: tiếng búng bi
+            PlayEvent(flickClip, 0.5f);   // sự kiện đầu tiên ngay lúc bấm: tiếng búng bi
         }
 
         private float EstimateLockSeconds(ChestRevealSequence reveal)
@@ -210,63 +220,29 @@ namespace ChoDoLa.ChestFx
         private void BuildPlayground()
         {
             float s = _s;
-            Color paper = new Color(0.96f, 0.95f, 0.88f);
-            // Tờ giấy ô li làm mặt sàn của cỗ máy (bên trái-trước rương).
-            Box("ToGiay", P(-1.25f, -0.006f, 0.35f), Quaternion.identity, new Vector3(2.7f, 0.012f, 1.5f) * s, paper, false);
-
-            // Thước kẻ dốc + hai cây bút làm ray.
-            Vector3 a = P(-2.35f, 0.75f, 0.55f), b2 = P(-1.75f, 0.03f, 0.55f);
+            // Thước kẻ dốc ngắn, đầu dốc tựa một khối nhỏ (không còn tờ giấy, bút, hộp bút).
+            Vector3 a = P(-1.15f, 0.45f, 0.55f), b2 = P(-0.75f, 0.03f, 0.55f);
             Vector3 dir = (b2 - a).normalized;
             Quaternion rq = Quaternion.LookRotation(dir, Vector3.Cross(dir, _f) * -1f);
             float len = Vector3.Distance(a, b2) + 0.1f * s;
             Box("ThuocKe", (a + b2) * 0.5f, rq, new Vector3(0.2f * s, 0.02f * s, len), new Color(0.55f, 0.85f, 1f), true);
-            Vector3 side = Vector3.Cross(dir, _u).normalized;
-            Box("ButChi", (a + b2) * 0.5f + side * 0.11f * s + _u * 0.03f * s, rq, new Vector3(0.035f * s, 0.035f * s, len), new Color(1f, 0.8f, 0.2f), true);
-            Box("ButBi", (a + b2) * 0.5f - side * 0.11f * s + _u * 0.03f * s, rq, new Vector3(0.035f * s, 0.035f * s, len), new Color(0.2f, 0.35f, 0.9f), true);
-            // Hộp bút đỡ đầu dốc.
-            Box("HopBut", a - _u * 0.4f * s - dir * 0.05f * s, transform.rotation, new Vector3(0.3f, 0.75f, 0.3f) * s, new Color(0.9f, 0.3f, 0.35f), false);
+            Box("KhoiDo", P(-1.15f, 0.225f, 0.55f) - dir * 0.03f * s, transform.rotation, new Vector3(0.2f, 0.45f, 0.2f) * s, new Color(0.9f, 0.3f, 0.35f), false);
 
             _marble = Sphere("BiVe", a + _u * 0.07f * s + dir * 0.05f * s, 0.06f * s, RandomToyColor(0.6f), 0.02f, TuoiThoPiece.Kind.Marble);
             _marble.isKinematic = true;   // nằm chờ cú búng
 
-            // Hàng domino nối tới xe.
+            // 3 quân domino; quân cuối đổ vào chốt ná.
             _dominoes.Clear();
             _dominoDown.Clear();
             for (int i = 0; i < dominoCount; i++)
             {
-                float x = -1.55f + i * 0.17f;
+                float x = -0.6f + i * 0.15f;
                 Rigidbody d = Body(Box("Domino" + i, P(x, 0.14f, 0.55f), transform.rotation,
                     new Vector3(0.035f, 0.28f, 0.14f) * s, i % 2 == 0 ? new Color(0.98f, 0.97f, 0.93f) : new Color(0.15f, 0.15f, 0.18f), true), 0.03f);
                 Piece(d.gameObject, TuoiThoPiece.Kind.Domino, i);
                 _dominoes.Add(d);
                 _dominoDown.Add(false);
             }
-
-            // Xe đồ chơi (thân + 4 bánh).
-            GameObject car = Box("XeDoChoi", P(-0.42f, 0.07f, 0.55f), transform.rotation, new Vector3(0.24f, 0.09f, 0.13f) * s, new Color(0.95f, 0.2f, 0.15f), true);
-            for (int i = 0; i < 4; i++)
-            {
-                GameObject w = Prim(PrimitiveType.Cylinder, "Banh" + i, new Color(0.1f, 0.1f, 0.1f), false);
-                w.transform.SetParent(car.transform, false);
-                w.transform.localPosition = new Vector3(i < 2 ? -0.32f : 0.32f, -0.45f, i % 2 == 0 ? -0.55f : 0.55f);
-                w.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-                w.transform.localScale = new Vector3(0.35f, 0.1f, 0.7f);
-            }
-            _car = Body(car, 0.08f);
-            Piece(car, TuoiThoPiece.Kind.Car, 0);
-
-            // Con quay đang quay sẵn (thân trụ + đầu nón giả bằng trụ nhỏ).
-            GameObject top = Prim(PrimitiveType.Cylinder, "ConQuay", new Color(0.3f, 0.75f, 0.35f), true);
-            top.transform.SetPositionAndRotation(P(0.62f, 0.07f, 0.62f), transform.rotation);
-            top.transform.localScale = new Vector3(0.16f, 0.06f, 0.16f) * s;
-            GameObject tip = Prim(PrimitiveType.Cylinder, "Coc", new Color(0.4f, 0.25f, 0.1f), false);
-            tip.transform.SetParent(top.transform, false);
-            tip.transform.localPosition = new Vector3(0f, 1.3f, 0f);
-            tip.transform.localScale = new Vector3(0.18f, 0.6f, 0.18f);
-            _top = Body(top, 0.06f);
-            _top.maxAngularVelocity = 80f;
-            _top.angularVelocity = _u * 40f;
-            Piece(top, TuoiThoPiece.Kind.Top, 0);
 
             // Ná dây thun trước rương, viên bi thứ hai kéo căng sẵn.
             _bandL = P(-0.14f, 0.22f, 0.95f);
@@ -353,9 +329,8 @@ namespace ChoDoLa.ChestFx
             {
                 _flicked = true;
                 _marble.isKinematic = false;
-                Vector3 dir = (P(-1.75f, 0.03f, 0.55f) - _marble.position).normalized;
+                Vector3 dir = (P(-0.75f, 0.03f, 0.55f) - _marble.position).normalized;
                 _marble.AddForce(dir * 0.6f * s * _marble.mass, ForceMode.Impulse);
-                Play(rollClip, 0.6f);
             }
 
             // Domino: thời điểm dự kiến rải đều 0,25T → 0,55T; trễ quá 0,3 s thì hích ngọn cho đổ.
@@ -374,38 +349,13 @@ namespace ChoDoLa.ChestFx
                     d.AddForceAtPosition(_r * 0.25f * s * d.mass, d.position + _u * 0.12f * s, ForceMode.Impulse);
             }
 
-            // Xe: domino cuối đổ (hoặc tới giờ 0,6T) thì xe lao đi húc con quay.
+            // Dây thun bật: khi quân domino cuối đã ngã (đập vào chốt ná) hoặc tới giờ dự phòng, bắn bi thứ hai lên nắp.
             bool lastDown = _dominoDown.Count == 0 || _dominoDown[_dominoDown.Count - 1];
-            if (!_carGone && (lastDown && t > 0.5f * _T || t > 0.62f * _T))
-            {
-                _carGone = true;
-                Vector3 to = (_top.position - _car.position);
-                to -= _u * Vector3.Dot(to, _u);
-                _car.linearVelocity = to.normalized * Mathf.Max(0.8f * s, to.magnitude / Mathf.Max(0.3f, 0.12f * _T));
-                Play(carClip, 0.7f);
-            }
-
-            // Con quay: xe chạm (hoặc tới giờ) thì quay lảo đảo, vù vù.
-            if (!_topHit && _carGone && (t > 0.78f * _T || (_car.position - _top.position).magnitude < 0.22f * s))
-            {
-                _topHit = true;
-                _top.AddForce((_f * 0.6f + _r * 0.2f) * 0.25f * s * _top.mass, ForceMode.Impulse);
-                _top.AddTorque(_r * 2f * _top.mass * s, ForceMode.Impulse);
-                Play(topClip, 0.6f);
-                if (riserClip != null)   // còi trượt dâng: phần cuối của độ căng, khớp vào lúc bi đập nắp
-                {
-                    _riser.clip = riserClip;
-                    _riser.pitch = Mathf.Clamp(riserClip.length / Mathf.Max(0.5f, _releaseAt + 0.5f - t), 0.7f, 2f);
-                    _riser.volume = volume * 0.55f;
-                    _riser.Play();
-                }
-            }
-
-            // Dây thun bật: bắn bi thứ hai theo đường parabol lên nắp rương.
-            if (!_released && t >= _releaseAt)
+            if (!_released && (lastDown || t >= _releaseAt))
             {
                 _released = true;
-                Play(bandClip, 0.9f);
+                _releaseT = t;
+                PlayEvent(bandClip, 0.5f);
                 _marble2.isKinematic = false;
                 Vector3 target = new Vector3(_c.x, _chestBounds.max.y, _c.z) + _u * 0.02f * s;
                 float tf = 0.5f;
@@ -417,25 +367,34 @@ namespace ChoDoLa.ChestFx
             if (_released && !_impacted && t >= _impactAt)
             {
                 _impacted = true;
-                Play(bonkClip, 1f);
+                // Rác đã biết bậc: không bonk (nền + nhịp dừng, lặng, rồi xịt — A4). Bậc khác: bonk làm HĐ cùng tiếng chốt.
+                if (!_hasTier) PlayEvent(bonkClip, 0.5f);
+                else if (_tier != ChestTier.Rac) Play(bonkClip, 0.7f);
                 if (_marble2 != null) _marble2.linearVelocity = (_f * 0.6f + _u) * 1.2f * s + _r * 0.3f * s;
                 Hop(0.12f);
                 _squashV -= 6f;
-                _riser.Stop();
                 _phase = Phase.WaitLock;
                 if (_hasTier) StartFinale();
             }
         }
 
-        /// <summary>Nhịp mộc cầm từ lúc bấm: thưa → dày, cao dần theo thang ngũ cung (độ căng dâng).</summary>
+        /// <summary>
+        /// Nền + Nhịp từ lúc bấm (A2). Nền: vòng bi lăn, âm 0,15 → 0,35, cao độ +45% tới chốt. Nhịp: nốt mộc cầm,
+        /// 0,65 s → 0,14 s, âm 0,25 → 0,55, cao dần theo ngũ cung.
+        /// </summary>
         private void Beats(float t)
         {
-            if (xyloClip == null || t < _nextBeat) return;
             float k = Mathf.Clamp01(t / Mathf.Max(1f, _T));
+            if (_bed != null && _bed.isPlaying && _bedFadeFrom < 0f)
+            {
+                _bed.volume = Mathf.Min(ChestAudioRule.BedMax, Mathf.Lerp(0.15f, 0.35f, k)) * volume;
+                _bed.pitch = Mathf.Lerp(1f, 1.45f, k);
+            }
+            if (xyloClip == null || t < _nextBeat) return;
             int step = Mathf.Min(Penta.Length - 1, _beat / 2);
-            PlayPitched(xyloClip, 0.35f + 0.3f * k, Semi(Penta[step] - 12));
+            PlayPitched(xyloClip, Mathf.Min(ChestAudioRule.BeatMax, Mathf.Lerp(0.25f, 0.55f, k)), Semi(Penta[step] - 12));
             _beat++;
-            _nextBeat = t + Mathf.Lerp(0.5f, 0.11f, k * k);
+            _nextBeat = t + Mathf.Lerp(0.65f, 0.14f, k * k);
             if (_phase == Phase.WaitLock) _tension = Mathf.Min(1f, _tension + 0.03f);   // treo chờ: rương rung mạnh dần
         }
 
@@ -460,7 +419,8 @@ namespace ChoDoLa.ChestFx
             Rigidbody m = Sphere("BiThem" + _extras.Count, at + _u * 1.1f * _s, 0.055f * _s, RandomToyColor(0.8f), 0.02f, TuoiThoPiece.Kind.Marble);
             m.linearVelocity = -_u * 0.3f * _s;
             _extras.Add(m);
-            PlayPitched(glassClip, 0.5f, Semi(_extras.Count));
+            if (ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap))
+                PlayPitched(marblesClip, 0.4f, Semi(_extras.Count));
         }
 
         private bool DropPressed(out Vector2 screen, out bool hasScreen)
@@ -498,7 +458,8 @@ namespace ChoDoLa.ChestFx
                 if (m == null || _extraScored.Contains(m) || !zone.Contains(m.position)) continue;
                 _extraScored.Add(m);
                 _combo++;
-                PlayPitched(xyloClip, 0.7f, Semi(Penta[Mathf.Min(Penta.Length - 1, 4 + _combo)]));
+                if (ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap))
+                    PlayPitched(xyloClip, 0.45f, Semi(Penta[Mathf.Min(Penta.Length - 1, 4 + _combo)]));
                 Hop(0.04f + 0.01f * _combo);
                 m.linearVelocity = Vector3.Reflect(m.linearVelocity, _u) * 0.6f + _f * 0.4f * _s;
             }
@@ -506,23 +467,18 @@ namespace ChoDoLa.ChestFx
 
         public void OnPieceHit(TuoiThoPiece p, float speed, Collider other)
         {
-            if (_phase == Phase.Idle || speed < 0.15f * _s || Time.time - p.lastSound < 0.08f) return;
+            // Sau chốt không phát tiếng va chạm (A4/A5): chỉ còn tiếng chốt + đuôi.
+            if (_phase == Phase.Idle || _phase == Phase.Finale || speed < 0.15f * _s || Time.time - p.lastSound < 0.08f) return;
+            if (!ChestAudioRule.TryGate(ref _lastImpact, ChestAudioRule.ImpactGap)) return;   // A3: va chạm cách nhau ≥ 0,12 s
             p.lastSound = Time.time;
             switch (p.kind)
             {
                 case TuoiThoPiece.Kind.Domino:
                     // mỗi quân sau gõ cao hơn: tiếng "cách cách" dồn lên
-                    PlayPitched(dominoClip, Mathf.Clamp01(0.3f + speed / _s * 0.3f), Semi(Mathf.Min(14, _dominoSounds++)));
+                    PlayPitched(dominoClip, Mathf.Min(0.4f, 0.2f + speed / _s * 0.2f), Semi(Mathf.Min(14, _dominoSounds++)));
                     break;
                 case TuoiThoPiece.Kind.Marble:
-                    PlayPitched(glassClip, Mathf.Clamp01(0.2f + speed / _s * 0.2f), 0.9f + 0.2f * (float)_rng.NextDouble());
-                    break;
-                case TuoiThoPiece.Kind.Car:
-                case TuoiThoPiece.Kind.Top:
-                    PlayPitched(dominoClip, 0.4f, 0.7f);
-                    break;
-                case TuoiThoPiece.Kind.Plane:
-                    PlayPitched(bonkClip, 0.5f, 1.3f);
+                    PlayPitched(flickClip, Mathf.Min(0.3f, 0.15f + speed / _s * 0.15f), 0.9f + 0.2f * (float)_rng.NextDouble());
                     break;
             }
         }
@@ -534,17 +490,22 @@ namespace ChoDoLa.ChestFx
             if (_phase == Phase.Finale) return;
             _phase = Phase.Finale;
             _finaleT = Time.time;
-            _riser.Stop();
+            _stingDone = _planeSoundDone = _bonkTailDone = false;
             float rank = _tier.Rank01();
             if (_tier == ChestTier.Rac)
             {
-                Play(failClip, 1f);          // còi trượt rơi + xì hơi: xịt
+                // A4 Rác: dừng ngay nền + nhịp (không fade) → lặng 0,2 s → 1 tiếng xịt (phát trong RunFinale).
+                if (_bed != null) _bed.Stop();
                 _sagTarget = 1f;
                 _tension = 0f;
             }
             else
             {
-                Play(winClip, Mathf.Lerp(0.45f, 1f, rank));
+                // A4: Thường nền fade 0,3 s; bậc cao hơn dừng hẳn. TC phát ngay (đúng 1 clip theo bậc).
+                if (_tier == ChestTier.Thuong && _bed != null && _bed.isPlaying) _bedFadeFrom = _bed.volume;
+                else if (_bed != null) _bed.Stop();
+                PlaySting(StingVolume(_tier));
+                _stingDone = true;
                 _winPitch = Mathf.Lerp(0.85f, 1.1f, rank);
                 Hop(0.08f + 0.35f * rank);   // cao nhất: bay vọt
                 if (rank >= 0.7f) _spinV = 720f * rank;   // Rất hiếm+: xoay một vòng trên không
@@ -552,9 +513,54 @@ namespace ChoDoLa.ChestFx
                 // Đồ chơi trên sân cùng nảy lên mừng (lực thật).
                 foreach (Rigidbody d in _dominoes)
                     if (d != null) d.AddForce((_u * (0.5f + rank) + _f * 0.2f) * _s * d.mass * (float)(0.6 + 0.8 * _rng.NextDouble()), ForceMode.Impulse);
-                if (_car != null) _car.AddForce(_u * (0.6f + rank) * _s * _car.mass, ForceMode.Impulse);
             }
             SpawnPlane();
+        }
+
+        private static float StingVolume(ChestTier tier)
+        {
+            switch (tier)
+            {
+                case ChestTier.Rac: return 1f;
+                case ChestTier.Thuong: return 0.7f;
+                case ChestTier.Hiem: return 0.85f;
+                default: return 1f;
+            }
+        }
+
+        private void PlaySting(float vol)
+        {
+            int i = Mathf.Clamp((int)_tier, 0, 4);
+            if (stingClips != null && i < stingClips.Length) Play(stingClips[i], Mathf.Min(ChestAudioRule.StingMax, vol));
+        }
+
+        /// <summary>Âm của đoạn kết (A4/A5), theo giờ từ lúc chốt. Không có tiếng nào khác trong 0,6 s đầu của Rác sau tiếng xịt.</summary>
+        private void FinaleAudio(float t)
+        {
+            // Nền Thường: fade 0,3 s rồi tắt.
+            if (_bedFadeFrom >= 0f && _bed != null)
+            {
+                _bed.volume = _bedFadeFrom * Mathf.Clamp01(1f - t / 0.3f);
+                if (t >= 0.3f) { _bed.Stop(); _bedFadeFrom = -1f; }
+            }
+            if (_tier == ChestTier.Rac)
+            {
+                if (!_stingDone && t >= ChestAudioRule.RacSilence) { _stingDone = true; PlaySting(1f); }
+                // Đuôi Rác: máy bay (sau khoảng im 0,6 s kể từ tiếng xịt), rồi giấy vò + bonk cách nhau 0,15 s.
+                if (!_planeSoundDone && t >= ChestAudioRule.RacSilence + 0.7f && _planeFrom != Vector3.zero)
+                    TailSound(planeClip, 0.3, ref _planeSoundDone);
+                if (_crumpled && !_bonkTailDone && t >= _crumpleAt + ChestAudioRule.TailGap)
+                    TailSound(bonkClip, 0.3, ref _bonkTailDone);
+            }
+            else if (!_planeSoundDone && t >= 0.4f)
+                TailSound(planeClip, 0.35, ref _planeSoundDone);
+        }
+
+        private void TailSound(AudioClip clip, double vol, ref bool flag)
+        {
+            flag = true;
+            if (ChestAudioRule.TryGate(ref _lastTail, ChestAudioRule.TailGap))
+                Play(clip, Mathf.Min(ChestAudioRule.TailMax, (float)vol));
         }
 
         private float _sagTarget, _winPitch = 1f;
@@ -599,8 +605,9 @@ namespace ChoDoLa.ChestFx
             if (!_confettiDone && u > 0.5f)
             {
                 _confettiDone = true;
-                Confetti(_plane.position, Mathf.RoundToInt(30 + 140 * rank + 15 * _combo));
-                PlayPitched(xyloClip, 0.6f, Semi(12) * _winPitch);
+                Confetti(_plane.position, Mathf.Min(120, Mathf.RoundToInt(20 + 60 * rank + 10 * _combo)));
+                if (ChestAudioRule.TryGate(ref _lastTail, ChestAudioRule.TailGap))
+                    PlayPitched(xyloClip, 0.3f, Semi(12) * _winPitch);   // đuôi: một nốt mộc cầm nhỏ
             }
         }
 
@@ -631,7 +638,7 @@ namespace ChoDoLa.ChestFx
             _plane = go.transform;
             _crumpled = false;
             _confettiDone = false;
-            Play(planeClip, 0.7f);
+            _crumpleAt = 0f;
         }
 
         private void Crumple()
@@ -639,8 +646,8 @@ namespace ChoDoLa.ChestFx
             _crumpled = true;
             Vector3 at = _plane.position;
             _plane.gameObject.SetActive(false);
-            Play(crumpleClip, 0.9f);
-            Play(bonkClip, 0.6f);
+            _crumpleAt = Time.time - _finaleT;
+            if (ChestAudioRule.TryGate(ref _lastTail, ChestAudioRule.TailGap)) Play(crumpleClip, 0.4f);   // bonk theo sau 0,15 s (FinaleAudio)
             Rigidbody ball = Sphere("CucGiay", at + _u * 0.05f * _s, 0.06f * _s, new Color(0.95f, 0.95f, 0.9f), 0.01f, TuoiThoPiece.Kind.Plane);
             ball.linearVelocity = (_r * 0.8f + _u * 0.9f + _f * 0.3f) * _s;
             ball.angularVelocity = _f * 10f;
@@ -741,7 +748,7 @@ namespace ChoDoLa.ChestFx
         {
             if (_band == null) return;
             Vector3 mid = !_released && _marble2 != null ? _marble2.position
-                : Vector3.Lerp(_bandL, _bandR, 0.5f) + _f * Mathf.Sin((Time.time - _t0 - _releaseAt) * 40f) * 0.04f * _s * Mathf.Exp(-(Time.time - _t0 - _releaseAt) * 5f);
+                : Vector3.Lerp(_bandL, _bandR, 0.5f) + _f * Mathf.Sin((Time.time - _t0 - _releaseT) * 40f) * 0.04f * _s * Mathf.Exp(-(Time.time - _t0 - _releaseT) * 5f);
             if (!_released)
             {
                 // kéo căng dần theo độ căng: bi lùi ra sau
@@ -755,14 +762,26 @@ namespace ChoDoLa.ChestFx
 
         private static float Semi(int semitones) => Mathf.Pow(2f, semitones / 12f);
 
-        private void Play(AudioClip clip, float vol) => PlayPitched(clip, vol, 1f);
-
-        private void PlayPitched(AudioClip clip, float vol, float pitch)
+        /// <summary>Tiếng cao độ 1: phát trên nguồn sfx của hook (đã nhân volume tổng một lần).</summary>
+        private void Play(AudioClip clip, float vol)
         {
             if (clip == null || _sfx == null) return;
-            // AudioSource.PlayOneShot dùng pitch của nguồn: đổi pitch ngay trước mỗi phát (tiếng trước đó vẫn ngân).
-            _sfx.pitch = pitch;
             _sfx.PlayOneShot(clip, vol * volume);
+        }
+
+        /// <summary>Sự kiện lẻ trước chốt: qua cổng EventGap (0,2 s), trần EventMax.</summary>
+        private void PlayEvent(AudioClip clip, float vol)
+        {
+            if (!ChestAudioRule.TryGate(ref _lastEvent, ChestAudioRule.EventGap)) return;
+            Play(clip, Mathf.Min(ChestAudioRule.EventMax, vol));
+        }
+
+        /// <summary>Tiếng đổi cao độ: lõi tạo nguồn riêng (A7), không đổi pitch của nguồn đang ngân.</summary>
+        private void PlayPitched(AudioClip clip, float vol, float pitch)
+        {
+            if (clip == null) return;
+            if (_reveal != null) _reveal.PlayOneShot(clip, vol * volume, pitch);
+            else Play(clip, vol);
         }
 
         private void Cleanup()
@@ -785,11 +804,15 @@ namespace ChoDoLa.ChestFx
             _root = null;
             _plane = null;
             _band = null;
-            _marble = _marble2 = _car = _top = null;
-            _sfx = _riser = null;
+            _marble = _marble2 = null;
+            _sfx = _bed = null;
             _phase = Phase.Idle;
             _wasPlaying = false;
-            _flicked = _carGone = _topHit = _released = _impacted = _hasTier = false;
+            _flicked = _released = _impacted = _hasTier = false;
+            _stingDone = _planeSoundDone = _bonkTailDone = false;
+            _planeFrom = Vector3.zero;
+            _bedFadeFrom = -1f;
+            _releaseT = _crumpleAt = 0f;
             _hopY = _hopV = _tension = _spin = _spinV = _squash = _squashV = _tilt = _sag = _sagTarget = 0f;
             _beat = _combo = _dominoSounds = 0;
         }
