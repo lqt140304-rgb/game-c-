@@ -25,3 +25,5 @@ Tạo ngày 2026-11-24 bằng `/v1/sound-generation` (mp3 44,1 kHz 128 kbps, `pr
 | `sfx_robot_press.mp3` | 0.8 | robot power button click followed by a cheerful startup chirp |
 | `sfx_robot_slot.mp3` | 0.7 | metal part clicking into a socket with a small electric zap |
 | `sfx_robot_thruster.mp3` | 1.2 | small rocket thrusters igniting under a jumping robot, burst |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_robot_beep.mp3` (0.25 s).

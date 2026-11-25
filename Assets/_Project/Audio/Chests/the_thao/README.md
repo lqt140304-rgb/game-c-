@@ -26,3 +26,5 @@ Tạo bằng ElevenLabs sound-generation (chủ dự án cho phép 2026-11-24), 
 | `sfx_thethao_roar.mp3` | 2.0 | stadium crowd roaring after a goal |
 | `sfx_thethao_aww.mp3` | 1.2 | stadium crowd groaning aww in disappointment |
 | `sfx_thethao_riser.mp3` | 1.5 | stadium crowd murmur rising with tension |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_thethao_kick.mp3` (0.4 s).

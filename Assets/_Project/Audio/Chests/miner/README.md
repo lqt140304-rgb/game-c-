@@ -27,3 +27,5 @@ Dùng chung (không làm riêng): `../Synth/sfx_chest_lid_thud.wav` ở giai đo
 | `sfx_miner_canary.mp3` | 0.8 | canary bird chirping happily |
 | `sfx_miner_canary_faint.mp3` | 0.8 | tiny bird letting out a weak squeak and falling, comedic |
 | `sfx_miner_nugget.mp3` | 0.4 | gold nugget clinking on rock |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_miner_nugget.mp3` (0.4 s).

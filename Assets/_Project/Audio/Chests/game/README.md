@@ -27,3 +27,5 @@ Tiếng nắp chạm (giai đoạn 4) dùng bộ chung `Synth/sfx_chest_lid_thud
 | `sfx_game_voxel_tick.mp3` | 0.15 | tiny 8-bit blip |
 | `sfx_game_one_up.mp3` | 0.8 | 8-bit extra life jingle |
 | `sfx_game_power_up.mp3` | 0.8 | 8-bit power up rising sound |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_game_bump.mp3` (0.3 s), `sfx_game_voxel_tick.mp3` (0.15 s).

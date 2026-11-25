@@ -31,3 +31,5 @@ Ghi chú: lượt gửi song song đầu tiên bị 429 (giới hạn đồng th
 | `sfx_amnhac_plug_pop.mp3` | 0.6 | cable yanked out of a speaker, pop and electric fizz |
 | `sfx_amnhac_wheels.mp3` | 1.5 | plastic wheels of a portable speaker rolling on pavement |
 | `sfx_amnhac_feedback.mp3` | 0.8 | short speaker microphone feedback squeal, quiet |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_amnhac_hat.mp3` (0.3 s), `sfx_amnhac_clap.mp3` (0.4 s).

@@ -30,3 +30,5 @@ Ghi chú: lượt đầu gửi song song bị 429 (quá nhiều yêu cầu cùng
 | `sfx_thienco_cuckoo_sad.mp3` | 1.0 | broken cuckoo clock bird call, warped and sad |
 | `sfx_thienco_sproing.mp3` | 0.8 | broken metal spring bursting loose, cartoon boing |
 | `sfx_thienco_launch.mp3` | 1.0 | big clock spring releasing and launching something upward, whoosh |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_thienco_tock.mp3` (0.2 s), `sfx_thienco_mesh_ok.mp3` (0.4 s).

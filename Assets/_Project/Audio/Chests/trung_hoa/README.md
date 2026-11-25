@@ -27,3 +27,5 @@ Ghi chú: lần gọi song song đầu bị 429 (giới hạn 6 yêu cầu đồ
 | `sfx_trunghoa_rocket.mp3` | 1.2 | firework rocket whistling upward |
 | `sfx_trunghoa_rocket_burst.mp3` | 1.5 | firework bursting in the sky, crackling sparkle |
 | `sfx_trunghoa_sneeze.mp3` | 0.6 | cartoon lion sneeze, comedic achoo |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_trunghoa_pop.mp3` (0.4 s).

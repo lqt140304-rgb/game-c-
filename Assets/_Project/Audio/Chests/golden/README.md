@@ -14,3 +14,5 @@ Tạo bằng ElevenLabs Sound Generation. CHƯA AI NGHE THỬ.
 | `sfx_golden_reel_stop.mp3` | 0.5 | single slot machine reel stopping, solid mechanical clunk |
 | `sfx_golden_coin.mp3` | 0.4 | single gold coin clinking on a hard floor, short |
 | `sfx_golden_token.mp3` | 0.6 | coin dropped into a slot machine coin slot, metallic rattle |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_golden_coin.mp3` (0.4 s).

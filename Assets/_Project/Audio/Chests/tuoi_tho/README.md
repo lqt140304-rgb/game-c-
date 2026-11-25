@@ -27,3 +27,5 @@ Mọi file < 70 KB. Lần gọi song song đầu bị 429 (giới hạn tần su
 | `sfx_tuoitho_bonk.mp3` | 0.5 | glass marble bonking on a wooden lid, cartoon bonk |
 | `sfx_tuoitho_plane.mp3` | 1.0 | paper airplane gliding past, light airy whoosh |
 | `sfx_tuoitho_crumple.mp3` | 0.8 | sheet of paper crumpled into a ball |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_tuoitho_flick.mp3` (0.3 s), `sfx_tuoitho_domino.mp3` (0.3 s).

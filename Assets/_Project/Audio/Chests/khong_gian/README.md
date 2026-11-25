@@ -24,3 +24,5 @@ Thiếu file nào thì `Tools/Cho Do La/Create Khong Gian Chest FX Profile` lấ
 | `sfx_khonggian_rocket_launch.mp3` | 1.2 | small guided missile launching, whoosh with fizz |
 | `sfx_khonggian_rocket_hit.mp3` | 1.5 | small missile hitting a metal hatch, sharp explosion |
 | `sfx_khonggian_engine_die.mp3` | 1.5 | spaceship engine sputtering and dying with puffs, comedic |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_khonggian_radio_blip.mp3` (0.4 s).

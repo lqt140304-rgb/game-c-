@@ -28,3 +28,5 @@ Lần gọi song song đầu tiên bị 429 (quá số yêu cầu đồng thời
 | `sfx_nhatban_sheath.mp3` | 0.4 | katana snapping back into its scabbard, crisp click |
 | `sfx_nhatban_rope_cut.mp3` | 0.8 | rope cut and paper seal falling softly |
 | `sfx_nhatban_sandal.mp3` | 0.8 | wooden sandal slapping down then a cartoon boing |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_nhatban_sheath.mp3` (0.4 s).

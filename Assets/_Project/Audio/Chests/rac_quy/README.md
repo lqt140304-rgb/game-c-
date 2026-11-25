@@ -37,3 +37,5 @@ build_loop (lặp 2 s, code tăng pitch/âm lượng), meow, meow_wants, yowl, h
 | `sfx_racquy_deflate.mp3` | 1.2 | comedic balloon deflating with a sad descending squeal and a tiny pop at the end |
 | `sfx_racquy_boom.mp3` | 1.5 | muffled cartoon explosion inside a trash bin, boomy and funny |
 | `sfx_racquy_throw.mp3` | 0.6 | quick whoosh of a small object thrown through the air |
+
+Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_racquy_clank.mp3` (0.4 s).
