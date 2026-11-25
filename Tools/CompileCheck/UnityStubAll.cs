@@ -391,6 +391,7 @@ namespace UnityEditor
     public static partial class Selection { public static UnityEngine.Object[] objects; public static GameObject[] gameObjects; public static Transform activeTransform; }
     public static partial class EditorUtility
     {
+        public static void CopySerialized(UnityEngine.Object source, UnityEngine.Object dest) {}
         public static bool IsPersistent(UnityEngine.Object o) => false; public static bool DisplayDialog(string a, string b, string c) => true; public static bool DisplayDialog(string a, string b, string c, string d) => true;
         public static void DisplayProgressBar(string a, string b, float p) {} public static void ClearProgressBar() {} public static void FocusProjectWindow() {}
     }
