@@ -7,12 +7,12 @@ namespace ChoDoLa.Editor
 {
     /// <summary>
     /// Tools/Cho Do La/Robot Bien Hinh (gan len ruong dang chon): gắn RobotTransformHook lên rương đang chọn (có
-    /// ChestRevealSequence), gỡ RobotHook cũ để không chồng hiệu ứng, và điền âm từ Audio/Chests/robot/transform/.
-    /// Tạo âm: python3 Tools/Audio/make_robot_sfx.py
+    /// ChestRevealSequence), gỡ RobotHook cũ để không chồng hiệu ứng, và điền âm từ Audio/Chests/robot/ (.mp3 ElevenLabs).
+    /// Tạo âm: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --chest robot
     /// </summary>
     public static class RobotTransformSetup
     {
-        private const string Folder = "Assets/_Project/Audio/Chests/robot/transform/";
+        private const string Folder = "Assets/_Project/Audio/Chests/robot/";
 
         [MenuItem("Tools/Cho Do La/Robot Bien Hinh (gan len ruong dang chon)")]
         public static void Menu()
@@ -34,25 +34,24 @@ namespace ChoDoLa.Editor
 
         public static void Fill(RobotTransformHook h)
         {
-            h.pressClip = Load("sfx_robotx_press.wav");
-            h.humLoopClip = Load("sfx_robotx_hum_loop.wav");
-            h.slotClip = Load("sfx_robotx_slot.wav");
-            h.beepClip = Load("sfx_robotx_beep.wav");
-            h.servoClip = Load("sfx_robotx_servo.wav");
-            h.typeClip = Load("sfx_robotx_type.wav");
-            h.droneLoopClip = Load("sfx_robotx_drone_loop.wav");
-            h.fizzleClip = Load("sfx_robotx_fizzle.wav");
-            h.blastClips = new[]
+            // Âm ElevenLabs .mp3 theo Tools/Audio/elevenlabs_chest_manifest.json (mục "robot"); file thiếu thì để trống.
+            h.pressClip = Load("sfx_robot_press.mp3");
+            h.humLoopClip = Load("sfx_robot_hum_loop.mp3");
+            h.beepClip = Load("sfx_robot_beep.mp3");
+            h.slotClip = Load("sfx_robot_slot.mp3");
+            h.servoClip = Load("sfx_robot_servo.mp3");
+            h.sparkClip = Load("sfx_robot_spark.mp3");
+            h.stingClips = new[]
             {
-                Load("sfx_robotx_blast_1_thuong.wav"), Load("sfx_robotx_blast_2_hiem.wav"),
-                Load("sfx_robotx_blast_3_rathiem.wav"), Load("sfx_robotx_blast_4_huyenthoai.wav"),
+                Load("sfx_robot_lock_rac.mp3"), Load("sfx_robot_lock_thuong.mp3"), Load("sfx_robot_lock_hiem.mp3"),
+                Load("sfx_robot_lock_ratHiem.mp3"), Load("sfx_robot_lock_huyenThoai.mp3"),
             };
         }
 
         private static AudioClip Load(string f)
         {
             AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(Folder + f);
-            if (c == null) Debug.LogWarning("[RobotBienHinh] Thiếu âm " + Folder + f + " (chạy Tools/Audio/make_robot_sfx.py).");
+            if (c == null) Debug.LogWarning("[RobotBienHinh] Thiếu âm " + Folder + f + ".");
             return c;
         }
     }
