@@ -74,7 +74,7 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 | Rương | Rương mới, rương xuất hiện sớm hơn | Rương Tổng Hợp (đủ **8** nhóm nguồn gốc, nay gồm cả Việt Nam và Nhại), Rương Cổ Phong / Thiên Cơ (đủ 1 hệ tạo tác), Rương Rác Quý (đủ 5 loại rác), **Rương Việt Nam, Rương Nhại** (đồ hai nhóm mới với tỉ lệ cao, xem phần 6), M3 Rương Đen sớm |
 | Sưu tập | Trang Sổ Sưu Tập, bộ sưu tập mới | M1 chọn gia truyền, M2 vốn đầu ván, thưởng khi gom đủ một bộ |
 | Thần lực | Thêm phản ứng dí dỏm của đồ cổ (khi cầm và ngoài đời thật) | Món thần thoại mở thêm lời thì thầm, đồ cổ tích phản ứng với mèo chợ |
-| Câu chuyện | Cutscene, cảnh, NPC mới | Mở khóa chương mới khi sưu tập đủ một bộ đồ cổ |
+| Đời sống (trước là "Câu chuyện", đổi tên 2026-11-25) | **Tạm để trống, phát triển sau** | Chưa có nút nào; giữ nhánh làm chỗ cho nội dung đời sống (cảnh, NPC, tình huống) |
 
 **Luật mở nút**
 - Nút cần **nút cha đã mở**, nên người chơi đi sâu một nhánh hoặc trải đều.
@@ -107,6 +107,10 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 2. **Rương mở khóa và rương chủ đề chỉ mở khóa trong ván**, không vĩnh viễn giữa các ván.
 3. **Cây khó mở, thưởng không buff:** chọn phương án "cây khó" của báo cáo, tổng thưởng có tác động lên tiền hoặc rương không quá khoảng 1.000.000 đ quy đổi (chủ dự án trả lời "oke").
 
+4. **Nhánh "Câu chuyện" đổi tên thành "Đời sống" và tạm để trống** (không có nút), để phát triển sau (chủ dự án chốt 2026-11-25).
+5. **M3 (Thử Thách Rương Đen) bỏ khỏi cây** (theo đề xuất của Claude 2): Rương Đen chỉ còn là tùy chọn lúc vào ván nếu chủ dự án muốn, ngoài cây.
+6. **M2 (Vốn Khởi Nghiệp Nhỏ) bỏ phần cộng vốn** (theo đề xuất): phần thưởng meta không buff chơi, vì cộng vốn từ ngày 1 đẩy người chơi hoàn hảo lên 47,6%, chạm trần. M2 không còn là nút cộng tiền; nếu giữ nút này thì thưởng khác không buff, do Claude 1 và chủ dự án gán sau.
+
 **Còn mở:**
-1. Nút **Câu chuyện** (cutscene, cảnh, NPC mới): trong ván 7 ngày nên là gì? Đề xuất để chủ dự án chọn: giữ 1 đến 2 nút mở theo ngày (đoạn truyện ngắn, NPC ghé chợ), hoặc bỏ nhánh này khỏi cây và mở cảnh theo thành tựu.
-2. **M2** (Vốn Khởi Nghiệp Nhỏ: +1.000.000 đ vốn đầu ván, mở bằng ghi 10 hiện vật khác nhau vào Sổ) và **M3** (Thử Thách Rương Đen: Rương Đen có từ ngày 1 thay vì ngày 4, mở bằng thắng 1 ván): giữ, đổi hay bỏ. Đề xuất của Claude 2: M3 bỏ khỏi cây (mở giữa ván vô nghĩa, chỉ là tùy chọn lúc vào ván); M2 bỏ phần cộng vốn hoặc thành khoản thưởng khi mở nút (đã đo: +1.000.000 đ từ ngày 1 đẩy người chơi hoàn hảo lên 47,6%, chạm trần).
+1. Cây còn 3 nhánh có nút (Rương, Sưu tập, Thần lực) cộng nhánh Đời sống trống: giá điểm từng nút và cách chia điểm cho từng việc hằng ngày (mở rương, mini game) cần đo lại. Bản đo trước tính cả nhánh Câu chuyện và M3.
+2. M2 sau khi bỏ cộng vốn thì giữ làm nút gì, hay bỏ hẳn?
