@@ -536,7 +536,6 @@ namespace ChoDoLa.ChestFx
         {
             int rank = Mathf.Clamp(tier.Rank(), 0, 4);
             _fuseLit = false;
-            ParticleSystem.MainModule pm;
 
             if (tier == ChestTier.Rac)
             {
@@ -578,7 +577,6 @@ namespace ChoDoLa.ChestFx
             Emit(_splash, transform.TransformPoint(_centerLocal), 18 + 10 * rank);
             if (rank == 4)
             {
-                pm = _geyser.main;
                 _geyser.transform.position = _fx.position;
                 _geyser.transform.rotation = _fx.rotation;
                 ChestFxFactory.SetParticleColor(_geyser, color, _geyserStyle, 1.2f);
