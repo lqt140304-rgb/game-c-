@@ -435,4 +435,9 @@ namespace UnityEngine
     public class Collision { public Vector3 relativeVelocity, impulse; public Collider collider; public GameObject gameObject; public Rigidbody rigidbody; }
     public partial class PhysicsMaterial { public PhysicsMaterialCombine frictionCombine; }
     public partial class Rigidbody { public RigidbodyInterpolation interpolation; public bool detectCollisions; }
+
+// Chest_NhatBan (Nhát kiếm Iai): cắt lưới đôi + bỏ va chạm giữa mảnh dây và thân rương.
+namespace UnityEngine
+{
+    public partial class Mesh { public bool isReadable; }
 }
