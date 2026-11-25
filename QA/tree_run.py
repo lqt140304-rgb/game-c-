@@ -56,7 +56,7 @@ SOURCES = {   # tên -> (điểm mỗi ngày, điểm mỗi mục Sổ thường
     "ngày 1 + sổ 1/2 + nợ 1": (1, 1, 2, 1),
 }
 CASH = dict(on=False, amount=100)   # M2 trong ván (100 = 1.000.000 đ)
-STATE = dict(source="ngày 3", scale=1.0, cash=False, order="cheap", chests="run", themes=True)
+STATE = dict(cash_node=None, cash_amount=0, source="ngày 3", scale=1.0, cash=False, order="cheap", chests="run", themes=True)
 
 
 class RunBook:
@@ -116,6 +116,8 @@ def _update(run):
         tr["open"][n["id"]] = d
         if n["effect"] and n["effect"][0] == "chest" and STATE["chests"] == "run":
             U.FROM[CS.STATE["key"][n["effect"][1]]] = d
+        if n["id"] == STATE["cash_node"]:
+            g.cash += STATE["cash_amount"]      # thưởng vốn khi mở nút (thử mức thưởng hậu hĩnh)
         if n["id"] == "M2" and STATE["cash"]:
             g.cash += CASH["amount"]
     if STATE["themes"] and STATE["chests"] == "run":
@@ -145,11 +147,11 @@ def _make_init(base):
   return _init
 
 
-def run_static(name, n, seed0=0, chests="run", cash=False, source="ngày 3", scale=1.0, shop_extra=None, themes=True, theme_run=None):
+def run_static(name, n, seed0=0, chests="run", cash=False, source="ngày 3", scale=1.0, shop_extra=None, themes=True, theme_run=None, cash_node=None, cash_amount=0):
     """Đo n ván của một cách chơi. chests: 'run' (rương chỉ mở qua cây trong ván) hoặc 'perm' (mọi rương có từ ngày 1)."""
     global THEME_RUN
     THEME_RUN = theme_run or (6, 10)
-    STATE.update(source=source, scale=scale, cash=cash, chests=chests, themes=themes,
+    STATE.update(cash_node=cash_node, cash_amount=cash_amount, source=source, scale=scale, cash=cash, chests=chests, themes=themes,
                  order="play" if name in C.TURN_NAMES else "cheap")
     profile = "giỏi" if name in C.TURN_NAMES else "thường"
     c = T.apply(T.UNLOCK_NAMES, 2, False, 0, profile, shop_extra)

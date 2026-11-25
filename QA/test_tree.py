@@ -32,8 +32,8 @@ class TreeShape(unittest.TestCase):
 
 
 class InRun(unittest.TestCase):
-    """Cây trong một ván 7 ngày, giá nút một nửa, nguồn điểm 3 mỗi ngày, rương chỉ mở qua cây, không chủ đề."""
-    KW = dict(source="ngày 3", scale=.5, themes=False)
+    """Cây trong một ván 7 ngày, giá đủ (cây khó, đề xuất), nguồn điểm 3 mỗi ngày, rương chỉ mở qua cây, không chủ đề."""
+    KW = dict(source="ngày 3", scale=1.0, themes=False)
 
     @classmethod
     def setUpClass(cls):
@@ -47,19 +47,19 @@ class InRun(unittest.TestCase):
             self.assertTrue(2 <= day <= 3, r["opened"]["R1"])
 
     def test_tree_is_partial_in_one_run(self):
-        """Một ván 7 ngày chỉ mở được khoảng 4 đến 7 nút trên 19."""
+        """Cây khó: một ván 7 ngày mở 3 đến 4,5 nút trên 19."""
         for r in (self.bot, self.pro):
-            self.assertTrue(4 <= r["nodes"] <= 7.5, r["nodes"])
+            self.assertTrue(3 <= r["nodes"] <= 4.6, r["nodes"])
 
     def test_late_nodes_rarely_open(self):
         self.assertLess(self.bot["opened"].get("M2", (0, 0))[0], 10)
 
     def test_bot_in_range(self):
-        self.assertTrue(11 <= self.bot["win"] <= 21, self.bot["win"])
+        self.assertTrue(13 <= self.bot["win"] <= 21, self.bot["win"])
 
     def test_perfect_player_below_ceiling(self):
-        """Trần 47% (n nhỏ, sai số ±2,2 điểm): khóa ở 50 để bắt hồi quy lớn; số đo n lớn ở báo cáo."""
-        self.assertLessEqual(self.pro["win"], 50, self.pro["win"])
+        """Trần 47% (n nhỏ, sai số ±2,2 điểm): khóa ở 49,5 để bắt hồi quy lớn; số đo n lớn ở báo cáo."""
+        self.assertLessEqual(self.pro["win"], 49.5, self.pro["win"])   # n = 3.000: 44,6%
 
 
 if __name__ == "__main__":
