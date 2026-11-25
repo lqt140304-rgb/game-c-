@@ -133,6 +133,12 @@ namespace ChoDoLa.Interaction
         /// </summary>
         public IList<Stage> Stages => stages;
 
+        /// <summary>Same as the lidOpenSign field. Lets a tool set up a model at runtime (for example ChestHandMenu).</summary>
+        public float LidOpenSign { get => lidOpenSign; set => lidOpenSign = value; }
+
+        /// <summary>Same as the frontDirection field (local space). Lets a tool set up a model at runtime.</summary>
+        public Vector3 FrontDirection { get => frontDirection; set => frontDirection = value; }
+
         // ---------------------------------------------------------------- Public API
 
         public void Play()

@@ -461,3 +461,45 @@ Lõi dùng chung cho mọi rương: màu các bậc nhảy như vòng quay rồi
 5. Nếu rương quay lưng về camera, xoay gốc rương 180° quanh Y; nếu nắp mở ngược, đổi `lidOpenSign` của `BoxOpenSequence`.
 
 **Chưa kiểm chứng:** chưa chạy trong Unity, hạt và bóng chưa thấy tận mắt, âm (mp3 và WAV) chưa nghe. Mã chỉ biên dịch thử với stub UnityEngine.
+
+## Menu cầm rương
+
+Menu thử nghiệm để **cầm từng rương trên tay** (góc nhìn thứ nhất) và thử mở nắp. Script: `Scripts/Interaction/ChestHandMenu.cs`, menu Editor: `Editor/ChestHandMenuSetup.cs`. Danh sách rương **tự quét** mọi `Chest_*.glb` (và `Chest_*.prefab`, `.fbx`, `.gltf`) trong `Assets/_Project/Art/Chests/`, xếp theo tên, nên gộp thêm rương thì chỉ cần quét lại, không phải sửa code.
+
+### Chạy từng bước
+
+1. **Git LFS:** cài Git LFS (https://git-lfs.com), rồi trong thư mục dự án chạy `git lfs install` và `git lfs pull`. Thiếu bước này thì mỗi `.glb` chỉ là file con trỏ vài trăm byte; menu sẽ báo "con trỏ Git LFS" trong Console.
+2. **glTFast:** trong Unity mở `Window → Package Manager → + → Install package by name...`, gõ `com.unity.cloud.gltfast`, bấm Install, đợi Unity nhập lại các `.glb`. (Script không tự sửa `Packages/manifest.json`.)
+3. Mở project bằng Unity 6000.6.9f1.
+4. `Tools → Cho Do La → Create Sprint 0 Test Scene` (tạo cảnh có người chơi và camera `MainCamera`).
+5. `Tools → Cho Do La → Add Chest Hand Menu`. Lệnh này thêm `HeldItemViewmodel` vào camera nếu chưa có (object con `HeldItemAnchor`), thêm `ChestHandMenu`, rồi nạp danh sách rương. Console in `[ChestHandMenu] Tìm thấy N rương: ...`.
+6. Lưu cảnh (Ctrl+S) rồi nhấn **Play**.
+
+### Phím
+
+| Phím | Việc |
+|---|---|
+| **C** | Bật/tắt bảng chọn rương (tắt di chuyển, hiện chuột). Chọn bằng chuột, phím số `1`–`9`, `0` (rương thứ 10), hoặc `↑` `↓` rồi Enter |
+| **O** | Mở nắp (`BoxOpenSequence.Play()`, có màn chìa khóa nếu rương có lớp `Key`). Bấm lại khi đã mở thì đóng rồi chạy lại từ đầu |
+| **R** | Đóng lại ngay (`ResetToClosed()`) |
+| **F** | Soi: đưa rương ra giữa màn hình, xem mặt trước và ổ khóa, mặt sau và bản lề, nhìn vào lòng rương |
+| **Q** | Cất rương |
+| **[** / **]** | Rương trước / sau (đang cầm món khác thì tự cất trước) |
+| **L** | Đảo mặt trước, dùng khi nắp mở ngược hoặc chìa bay tới từ phía sau |
+
+Bảng hướng dẫn phím và tên rương đang cầm hiện ở góc trên bên phải.
+
+### Cách hoạt động (để chỉnh khi cần)
+
+- Rương **không có sẵn** `BoxOpenSequence` (file `.glb`) được gắn component này lúc cầm, lên đúng node có con `Lid`. Mặt trước được **tự nhận** từ bản lề: gốc của `Lid` nằm ở phía sau, nên mặt trước là phía bên kia tâm thân (dự phòng: vị trí `Key` hoặc `Seal`). Từ đó đặt `frontDirection` và `lidOpenSign` (mặt trước +Z thì `lidOpenSign = -1`), và xoay rương cho ổ khóa quay về camera. Với `Chest_Golden` và `Chest_ThienCo`, bản lề ở z âm nên mặt trước là +Z (đúng quy ước glTF).
+- Rương là **prefab đã gắn sẵn** `BoxOpenSequence` thì giữ nguyên thiết lập của prefab. Nếu thư mục có cả `Chest_X.prefab` và `Chest_X.glb` thì dùng prefab.
+- Cỡ và tư thế cầm nằm ở `HeldItemProfile.cs`, nhánh cho mọi id bắt đầu bằng `Chest_`: cạnh dài nhất 0,26 m, nghiêng 14° và xoay 22° về phía camera. Nắp mở ra phía sau, xa camera.
+
+### Lỗi thường gặp
+
+- **Rương màu hồng hoặc đen:** shader của vật liệu không chạy với URP. Chọn vật liệu trong file `.glb` (hoặc tạo vật liệu mới) và gán shader `Universal Render Pipeline/Lit`, kéo texture màu vào Base Map. Nếu chỉ tối thì thêm ánh sáng hoặc reflection probe.
+- **Nắp mở ngược** (xuyên xuống thân) **hoặc chìa bay tới từ phía sau:** bấm **L** khi đang cầm để đảo mặt trước. Nếu đúng sau khi đảo, ghi lại cho rương đó; cách cố định là tạo prefab từ `.glb`, gắn `BoxOpenSequence` lên node có con `Lid`, đặt `lidOpenSign` và `frontDirection` đúng, lưu thành `Chest_X.prefab` cạnh file `.glb`, rồi chạy Refresh. Trên prefab đã gắn sẵn thì **không** tự nhận mặt trước nữa.
+- **Không thấy rương trong menu:** chạy `Tools → Cho Do La → Refresh Chest List` (nhất là sau khi gộp thêm rương từ nhánh khác), rồi đọc Console: thiếu glTFast, file con trỏ LFS, file nhập ra rỗng hoặc thiếu lớp `Lid` đều có cảnh báo riêng.
+- **Bấm O không có gì:** rương không có lớp `Lid` (Console và góc màn hình báo). Rương vẫn cầm và soi được.
+
+**Chưa kiểm chứng trong Unity.** Code chỉ biên dịch thử bằng Mono với bản giả lập tối thiểu của UnityEngine (bắt lỗi cú pháp và kiểu, không bắt lỗi hành vi). Hướng mặt trước của hai rương được suy từ dữ liệu node trong `.glb`, chưa nhìn thấy trong Unity.
