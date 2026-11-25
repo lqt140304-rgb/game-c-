@@ -100,9 +100,13 @@ Mô hình 3D đã có sẵn: Gỗ = H1, Vải Niêm = H3, Kim Khí = H2, Đen = 
 5. Giá điểm phát triển của từng nút và cách chia điểm cuối ván: **chờ Claude 2**; giao diện cây (màn hình) do Antigravity dựng.
 6. Dữ liệu và hợp đồng: Codex cần thêm loại vật phẩm `junk`, trường `use`, loại rương mới và nút cây phát triển vào `Docs/Content/YeuCauDuLieu.md`.
 
-## Câu hỏi mở sau khi chốt cây chỉ trong ván (2026-11-25)
+## Đã chốt và câu hỏi mở sau khi cây chỉ trong ván (2026-11-25)
 
-1. Điểm phát triển kiếm từ đâu trong một ván 7 ngày (mỗi ngày, mỗi mục Sổ Sưu Tập mới, trả nợ đúng hạn)?
-2. Rương mở khóa và rương chủ đề (mở bằng thành tựu, `ruong-chu-de`) vẫn vĩnh viễn hay cũng chỉ trong ván? Sổ Sưu Tập có giữ giữa các ván không?
-3. Nút Câu chuyện (cutscene, cảnh, NPC mới) mở trong ván nghĩa là gì khi ván chỉ 7 ngày?
-4. M2 (vốn đầu ván) và M4 hiện có: bỏ, hay thành nút trong ván?
+**Đã chốt với chủ dự án:**
+1. **Nguồn điểm phát triển:** kiếm từ **từng công việc hằng ngày** trong ván, như mở rương và chơi mini game (không phải điểm cuối ván). Cách chia điểm cụ thể mỗi việc: Claude 2 đo lại (bản đo hiện dùng 3 điểm mỗi ngày là giả định).
+2. **Rương mở khóa và rương chủ đề chỉ mở khóa trong ván**, không vĩnh viễn giữa các ván.
+3. **Cây khó mở, thưởng không buff:** chọn phương án "cây khó" của báo cáo, tổng thưởng có tác động lên tiền hoặc rương không quá khoảng 1.000.000 đ quy đổi (chủ dự án trả lời "oke").
+
+**Còn mở:**
+1. Nút **Câu chuyện** (cutscene, cảnh, NPC mới): trong ván 7 ngày nên là gì? Đề xuất để chủ dự án chọn: giữ 1 đến 2 nút mở theo ngày (đoạn truyện ngắn, NPC ghé chợ), hoặc bỏ nhánh này khỏi cây và mở cảnh theo thành tựu.
+2. **M2** (Vốn Khởi Nghiệp Nhỏ: +1.000.000 đ vốn đầu ván, mở bằng ghi 10 hiện vật khác nhau vào Sổ) và **M3** (Thử Thách Rương Đen: Rương Đen có từ ngày 1 thay vì ngày 4, mở bằng thắng 1 ván): giữ, đổi hay bỏ. Đề xuất của Claude 2: M3 bỏ khỏi cây (mở giữa ván vô nghĩa, chỉ là tùy chọn lúc vào ván); M2 bỏ phần cộng vốn hoặc thành khoản thưởng khi mở nút (đã đo: +1.000.000 đ từ ngày 1 đẩy người chơi hoàn hảo lên 47,6%, chạm trần).
