@@ -15,28 +15,23 @@ namespace ChoDoLa.ChestFx
         public const string ChestId = "Chest_NhatBan";
         public const string AudioFolder = "Assets/_Project/Audio/Chests/nhat_ban/";
 
-        // Tiếng quay màu: giữ mõ gỗ (hyoshigi) cũ.
-        public static readonly string[] TickFiles = { "sfx_nhatban_tick.mp3" };
-
-        /// <summary>Tiếng khoá theo bậc = đoạn KẾT của kịch bản (nhát chém cuối + "tách" + taiko/gong). Hình trong NhatBanHook khớp nhịp các file này.</summary>
-        public static readonly string[] LockFiles =
+        /// <summary>Tiếng chốt (TC) theo bậc, ElevenLabs theo chủ đề (A11). Hook tự phát qua <c>NhatBanHook.stingClips</c>; lõi để câm.</summary>
+        public static readonly string[] StingFiles =
         {
-            "sfx_nhatban_iai_fin_rac.wav", "sfx_nhatban_iai_fin_thuong.wav", "sfx_nhatban_iai_fin_hiem.wav",
-            "sfx_nhatban_iai_fin_ratHiem.wav", "sfx_nhatban_iai_fin_huyenThoai.wav",
+            "sfx_nhatban_lock_rac.mp3", "sfx_nhatban_lock_thuong.mp3", "sfx_nhatban_lock_hiem.mp3",
+            "sfx_nhatban_lock_ratHiem.mp3", "sfx_nhatban_lock_huyenThoai.mp3",
         };
-        public const string WhooshFile = "sfx_nhatban_grow.mp3";
-        public const string LidOpenFile = "sfx_nhatban_lid_open.mp3";
-        public const string LidThudFile = "sfx_nhatban_lid_thud.mp3";
-        public static readonly string[] AccentFiles = { "sfx_nhatban_chime_a.mp3", "sfx_nhatban_koto_pluck.mp3" };
-
         // Âm riêng của hook (phát từ lúc BẤM MỞ, không đợi nắp).
-        public const string DroneFile = "sfx_nhatban_iai_drone.wav";
-        public const string HeartbeatFile = "sfx_nhatban_iai_heartbeat.wav";
-        public const string DrawFile = "sfx_nhatban_iai_draw.wav";
-        public const string SlashFile = "sfx_nhatban_iai_slash.wav";
-        public const string SheathFile = "sfx_nhatban_iai_sheath.wav";
-        public const string RopeSnapFile = "sfx_nhatban_iai_rope_snap.wav";
-        public const string CutFruitFile = "sfx_nhatban_iai_cut_fruit.wav";
+        // Âm riêng của hook: toàn bộ mp3 ElevenLabs (Tools/Audio/elevenlabs_chest_manifest.json, mục nhat_ban).
+        public const string DroneFile = "sfx_nhatban_shakuhachi_loop.mp3";   // Nền (sáo)
+        public const string HeartbeatFile = "sfx_nhatban_taiko.mp3";         // Nhịp (taiko)
+        public const string DrawFile = "sfx_nhatban_katana_draw.mp3";
+        public const string SlashFile = "sfx_nhatban_slash.mp3";
+        public const string SheathFile = "sfx_nhatban_sheath.mp3";
+        public const string RopeSnapFile = "sfx_nhatban_rope_cut.mp3";
+        public const string CutFruitFile = "sfx_nhatban_slash.mp3";          // manifest không có tiếng riêng: dùng lại nhát chém (hook đổi cao độ)
+        public const string SandalFile = "sfx_nhatban_sandal.mp3";           // đuôi Rác
+        public const string BowFile = "sfx_nhatban_koto_pluck.mp3";          // đuôi nón cúi chào
 
         public static readonly Color Sakura = new Color(1f, 0.72f, 0.82f);
 
@@ -49,7 +44,7 @@ namespace ChoDoLa.ChestFx
             p.tickPitchEnd = 1.4f;
             p.lockVolume = 1f;          // đoạn kết là cao trào: to
             p.whooshVolume = 0.45f;
-            p.ambientVolume = 0f;       // nền do hook tự phát (sáo + tim) ngay từ lúc bấm
+            p.ambientVolume = 0f;       // nền do hook tự phát (sáo + taiko) ngay từ lúc bấm
             p.openAmbientClip = null;
             p.accentVolume = 0.3f;
             p.accentsBase = 0;
@@ -77,13 +72,8 @@ namespace ChoDoLa.ChestFx
             p.raySpin = 6f;
             p.lightFlashIntensity = 5f;
 
-            // Âm căng thẳng của lõi (chest-fx-core): sáo shakuhachi làm nền lặp, trống tim làm nhịp. Giữ cao độ vừa phải
-            // (sáo có giai điệu, kéo 2,1x nghe như chim). Kết thúc do lockClipsByTier (fin_*.wav) đảm nhiệm.
-            p.tension.enabled = true;
-            p.tension.pitchStart = 0.95f;
-            p.tension.pitchEnd = 1.35f;
-            p.tension.pulseIntervalStart = 1.0f;
-            p.tension.pulseIntervalEnd = 0.35f;
+            // Kế hoạch 2026-11-25 (mục 5.15 + A1): lõi KHÔNG phát âm căng thẳng; sáo + taiko + tiếng chốt do NhatBanHook phát.
+            p.tension.enabled = false;
         }
     }
 }
