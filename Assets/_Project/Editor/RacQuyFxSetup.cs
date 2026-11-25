@@ -9,7 +9,7 @@ namespace ChoDoLa.Editor
     /// Menu Tools/Cho Do La/Create Rac Quy Chest FX Profile: creates (or fills the missing clips of)
     /// ScriptableObjects/ChestFx/ChestFx_RacQuy.asset with <see cref="RacQuyFxPreset"/>, plus a prefab
     /// ChestFx_RacQuy_Hook.prefab holding <see cref="RacQuyHook"/> (set as the profile's customFxPrefab).
-    /// Own sounds are in Audio/Chests/rac_quy/; anything missing falls back to the shared set in Audio/Chests/.
+    /// Mọi âm do hook phát từ .mp3 ElevenLabs trong Audio/Chests/rac_quy/; hồ sơ lõi để câm (ChestAudioRule.ApplyToProfile).
     /// </summary>
     public static class RacQuyFxSetup
     {
@@ -43,32 +43,16 @@ namespace ChoDoLa.Editor
             }
 
             int missing = 0;
-            if (p.tickClips == null || p.tickClips.Length == 0 || p.tickClips[0] == null)
-                p.tickClips = new[] { Own("sfx_racquy_tick.mp3", ChestFxPresets.TickFiles[0], ref missing) };
-            if (p.lockClipsByTier == null || p.lockClipsByTier.Length != OwnLockFiles.Length) p.lockClipsByTier = new AudioClip[OwnLockFiles.Length];
-            for (int i = 0; i < OwnLockFiles.Length; i++)
-                if (p.lockClipsByTier[i] == null) p.lockClipsByTier[i] = Own(OwnLockFiles[i], ChestFxPresets.LockFiles[i], ref missing);
-            if (p.whooshClip == null) p.whooshClip = Own("sfx_racquy_whoosh.mp3", ChestFxPresets.WhooshFile, ref missing);
-            if (p.openAmbientClip == null) p.openAmbientClip = Shared(ChestFxPresets.AmbientFile, ref missing);
-            if (p.accentClips == null || p.accentClips.Length == 0 || p.accentClips[0] == null)
-                p.accentClips = new[] { Own("sfx_racquy_can_roll.mp3", null, ref missing) };
-            if (p.stageClips == null || p.stageClips.Length == 0)
-            {
-                p.stageClips = new[]
-                {
-                    new ChestFxProfile.StageClip { stage = 1, clip = Own("sfx_racquy_tape_rip.mp3", null, ref missing), volume = 0.7f },
-                    new ChestFxProfile.StageClip { stage = 2, clip = Own("sfx_racquy_lid_pop.mp3", ChestFxPresets.CreakFile, ref missing), volume = 0.75f },
-                    new ChestFxProfile.StageClip { stage = 4, clip = Own("sfx_racquy_lid_clang.mp3", ChestFxPresets.ThudFile, ref missing), volume = 0.65f },
-                };
-            }
+            // A1: hồ sơ lõi gần như câm, ghi lại MỖI LẦN chạy menu (tension tắt, mọi ô âm lõi trống).
+            // Mọi tiếng do RacQuyHook phát (nền, tiếng lẻ, TC theo bậc) từ các .mp3 ElevenLabs trong rac_quy/.
+            ChestAudioRule.ApplyToProfile(p);
 
-            if (p.customFxPrefab == null || p.customFxPrefab.GetComponent<RacQuyHook>() == null)
-            {
-                p.customFxPrefab = CreateHookPrefab(ref missing);
-            }
+            // Luôn chạy: prefab cũ cũng được nạp lại clip .mp3 + stingClips (không để sót .wav cũ).
+            GameObject hook = CreateHookPrefab(ref missing);
+            if (p.customFxPrefab == null || p.customFxPrefab.GetComponent<RacQuyHook>() == null) p.customFxPrefab = hook;
 
             if (missing > 0)
-                Debug.LogWarning($"[RacQuyFx] {missing} sound(s) not found in {OwnFolder} nor the shared set. The effect still runs; those sounds are silent.");
+                Debug.LogWarning($"[RacQuyFx] {missing} sound(s) not found in {OwnFolder}. The effect still runs; those sounds are silent.");
 
             EditorUtility.SetDirty(p);
             AssetDatabase.SaveAssets();
@@ -93,47 +77,36 @@ namespace ChoDoLa.Editor
             return prefab;
         }
 
-        /// <summary>Điền các clip còn trống của hook (kịch bản "Mèo hoang lật thùng rác"). Âm mèo ở rac_quy/meo/ (WAV tổng hợp).</summary>
+        /// <summary>
+        /// Gán clip cho hook theo Tools/Audio/elevenlabs_chest_manifest.json (mục rac_quy, ô `field`). Luôn ghi đè để bỏ
+        /// các .wav tổng hợp cũ (meo/); file thiếu thì để ô trống và đếm vào cảnh báo (A9–A11).
+        /// </summary>
         private static void FillClips(RacQuyHook h, ref int missing)
         {
-            if (h.gurgleClip == null) h.gurgleClip = Own("sfx_racquy_gurgle.mp3", null, ref missing);
-            if (h.fliesClip == null) h.fliesClip = Own("sfx_racquy_flies.mp3", null, ref missing);
-            if (h.canRollClip == null) h.canRollClip = Own("sfx_racquy_can_roll.mp3", null, ref missing);
-            if (h.fartClip == null) h.fartClip = Own("sfx_racquy_fart.mp3", null, ref missing);
-            if (h.buildLoopClip == null) h.buildLoopClip = Own(Meo + "build_loop.wav", null, ref missing);
-            if (h.meowClip == null) h.meowClip = Own(Meo + "meow.wav", null, ref missing);
-            if (h.meowWantsClip == null) h.meowWantsClip = Own(Meo + "meow_wants.wav", null, ref missing);
-            if (h.yowlClip == null) h.yowlClip = Own(Meo + "yowl.wav", null, ref missing);
-            if (h.hissClip == null) h.hissClip = Own(Meo + "hiss.wav", null, ref missing);
-            if (h.clatterClip == null) h.clatterClip = Own(Meo + "clatter.wav", null, ref missing);
-            if (h.clankClip == null) h.clankClip = Own(Meo + "clank.wav", null, ref missing);
-            if (h.deflateClip == null) h.deflateClip = Own(Meo + "deflate.wav", null, ref missing);
-            if (h.boomClip == null) h.boomClip = Own(Meo + "boom.wav", null, ref missing);
-            if (h.throwClip == null) h.throwClip = Own(Meo + "throw.wav", null, ref missing);
+            h.gurgleClip = Own("sfx_racquy_gurgle.mp3", ref missing);
+            h.fliesClip = Own("sfx_racquy_flies.mp3", ref missing);
+            h.buildLoopClip = Own("sfx_racquy_bed_loop.mp3", ref missing);
+            h.meowClip = Own("sfx_racquy_meow.mp3", ref missing);
+            h.meowWantsClip = Own("sfx_racquy_meow_wants.mp3", ref missing);
+            h.yowlClip = Own("sfx_racquy_yowl.mp3", ref missing);
+            h.hissClip = Own("sfx_racquy_hiss.mp3", ref missing);
+            h.clatterClip = Own("sfx_racquy_clatter.mp3", ref missing);
+            h.clankClip = Own("sfx_racquy_clank.mp3", ref missing);
+            h.deflateClip = Own("sfx_racquy_deflate.mp3", ref missing);
+            h.boomClip = Own("sfx_racquy_boom.mp3", ref missing);
+            h.throwClip = Own("sfx_racquy_throw.mp3", ref missing);
+            // Không còn dùng: fart (A4 bỏ), canRoll (lõi câm). Để trống cho khỏi lẫn.
+            h.fartClip = null;
+            h.canRollClip = null;
+
+            h.stingClips = new AudioClip[OwnLockFiles.Length];
+            for (int i = 0; i < OwnLockFiles.Length; i++) h.stingClips[i] = Own(OwnLockFiles[i], ref missing);
         }
 
-        private const string Meo = "meo/sfx_racquy_meo_";
-
-        /// <summary>Own mp3 in rac_quy/; if missing, the shared file (which itself falls back to Synth/).</summary>
-        private static AudioClip Own(string file, string sharedFallback, ref int missing)
+        /// <summary>mp3 ElevenLabs trong rac_quy/ (null + đếm thiếu nếu chưa có).</summary>
+        private static AudioClip Own(string file, ref int missing)
         {
             AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(OwnFolder + file);
-            if (c != null) return c;
-            if (sharedFallback != null)
-            {
-                Debug.LogWarning($"[RacQuyFx] {file} not found; using the shared {sharedFallback}.");
-                return Shared(sharedFallback, ref missing);
-            }
-            missing++;
-            return null;
-        }
-
-        private static AudioClip Shared(string file, ref int missing)
-        {
-            AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + file);
-            if (c != null) return c;
-            string fb = ChestFxPresets.SynthFallback(file);
-            if (fb != null) c = AssetDatabase.LoadAssetAtPath<AudioClip>(ChestFxPresets.AudioFolder + fb);
             if (c == null) missing++;
             return c;
         }
