@@ -64,11 +64,11 @@ Tổng từ bấm tới chốt do lõi quyết (thường 5–7 s). Vật mở k
 Lớp con còn có thể ghi đè `AnimateAction(KeyContext c, Transform root, float t01)` để thêm chuyển động của **chính vật đó**
 (mèo vẫy đuôi, kiếm xoay, cánh vẹt vỗ…) bằng cách xoay/tịnh tiến các khối con của nó; **không** sinh thêm vật nào.
 
-**Bóp méo theo bậc (mặc định chung, mỗi rương được chỉnh ±20% theo tính cách ở mục 6):**
+**Bóp méo theo bậc (mặc định chung, mỗi rương được chỉnh ±20% theo tính cách ở mục 6; sau khi nhân hệ số, Jump luôn bị KẸP ≤ 0,6 H và Squash ≤ 0,36):**
 
 | Bậc | Squash (tỉ lệ) | chu kỳ | Jump (× H) | Ghi chú |
 |---|---|---|---|---|
-| Rác | 0,30 ép dẹt, **giữ** 0,7 s rồi phồng lại | 1 | 0 | buồn, hụt hơi |
+| Rác | 0,30 ép dẹt, **giữ dẹt** 0,7 s rồi phồng lại (xem 4.2: cần kiểu `Squash` mới trong lõi) | 1 | 0 | buồn, hụt hơi |
 | Thường | 0,10 | 1 | 0,08 | |
 | Hiếm | 0,16 | 2 | 0,18 | |
 | Rất hiếm | 0,22 | 3 | 0,35 | |
@@ -81,6 +81,8 @@ Ba lớp, và **chỉ ba**:
 1. **Nền** (`bedClip`, vòng lặp chủ đề): dâng cao độ 0,9 → 1,3 và âm lượng 0,25 → 0,45. Dừng ngay lúc chốt (Rác) hoặc fade 0,3 s.
 2. **Tiếng cắm chìa** (`keyClip`, mới): 1 lần, âm 0,6, lúc chìa chạm khe.
 3. **Tiếng chốt** (`stingClips[5]`): đúng 1 tiếng theo bậc, âm 0,55 / 0,7 / 0,8 / 0,9 / 1,0 cho Rác→HT. Rác phát sau 0,2 s lặng.
+
+**Âm lượng:** `volume` (0,8) là hệ số tổng, nhân đúng MỘT lần vào mọi giá trị ghi ở trên (nền 0,25 → 0,45; cắm chìa 0,6; chốt 0,55 → 1,0); nguồn nền đặt `source.volume` = giá trị đã nhân, không nhân lần nữa ở `PlayOneShot`.
 
 Không có tiếng nào khác (không tick, không accent, không bước giai đoạn, không đuôi). Không chỗ nào nhân `volume` hai lần.
 Tiếng phát qua `ChestRevealSequence.PlayOneShot` (cần đổi cao độ thì dùng tham số pitch của nó, không đổi pitch nguồn đang ngân).
@@ -112,7 +114,7 @@ Hook một cho cả 17 rương, kế thừa `ChestFxHook`. Việc của nó (m�
 3. Rung nấc 1: `Shake 0.004 · 30 Hz · 1.2 s` — `OnEvent "chia_khoa_xong"`.
 4. Rung nấc 2: `Shake 0.007` — `OnStage 2`, `duration 2.4 s`. 5. Rung nấc 3: `Shake 0.011` — `OnStage 3`... (chỉnh theo `BoxOpenSequence` mặc định để nấc 3 kéo tới sát chốt).
 6. Bóp méo/nảy theo bậc: 5 cặp bước `OnLock` (`minTier == maxTier`) dùng bảng mục 2 (`Squash` + `Jump`); Rác có `holdEnd` rồi 1 bước `Squash` trả về.
-Biên độ rung nhân `S/0,5` được hook tính khi dựng (hoặc Phiên A thêm tham số `scaleWithChest` cho `ChestStep` nếu cần; sửa lõi chỉ trong phiên này).
+**Đơn vị của lõi (đã đọc `ChestMotion`):** `Jump.amplitude` là MÉT tuyệt đối (= bảng × H × hệ số, đã kẹp), `frequency` = SỐ LẦN NẢY (mỗi lần thấp hơn 40%), nên "chu kỳ" của Jump = số lần nảy. `Squash.amplitude` là tỉ lệ, `frequency` = số chu kỳ sin (nửa đầu dẹt, nửa sau giãn). **Rác giữ dẹt:** `Squash` hiện chỉ có dạng sin nên không giữ dẹt được; Phiên A thêm một kiểu giữ (ví dụ cờ `holdFlat` hoặc `StepMotionKind.SquashHold`: ép nhanh 0,15 s, giữ, rồi trả về trong 0,2 s) và đặt nó cho bậc Rác. Biên độ rung nhân `S/0,5` được hook tính khi dựng (hoặc Phiên A thêm tham số `scaleWithChest` cho `ChestStep` nếu cần; sửa lõi chỉ trong phiên này).
 
 ### 4.3 17 lớp con (rỗng, để phiên rương điền)
 Phiên A tạo **17 file** `Scripts/ChestFx/Chests/<Tên>KeyHook.cs`: `public class <Tên>KeyHook : ChestKeyHookBase` với
