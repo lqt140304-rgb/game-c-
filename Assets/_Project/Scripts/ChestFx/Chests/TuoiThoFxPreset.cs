@@ -3,9 +3,11 @@ using UnityEngine;
 namespace ChoDoLa.ChestFx
 {
     /// <summary>
-    /// Chest_TuoiTho (đèn ông sao năm cánh, đêm Trung thu). Bản sắc: đèn lồng đung đưa nên vòng quay kiểu
-    /// PingPong chậm và mềm; hạt là đom đóm (SoftDot) bay xoáy quanh đèn; màu phụ là ánh nến cam đỏ;
-    /// tia quay ngược chiều, chậm, như đèn ông sao xoay. Âm riêng ở Audio/Chests/tuoi_tho/.
+    /// Chest_TuoiTho — "cỗ máy bi ve" (trò chơi tuổi thơ). Hiệu ứng chính nằm ở <see cref="TuoiThoHook"/>
+    /// (vật lý: bi, domino, xe, con quay, ná dây thun, máy bay giấy). Profile này chỉ giữ phần khung: tick là
+    /// tiếng bi ve gõ, chốt bậc là đồ chơi (pin hết / chuông xe đạp / còi xe đồ chơi / hộp nhạc / hội).
+    /// Không đặt âm nền (ambient): nhịp mộc cầm + còi trượt của hook đã chạy từ lúc bấm mở.
+    /// Âm riêng ở Audio/Chests/tuoi_tho/ và tuoi_tho/may_bi/.
     /// </summary>
     public static class TuoiThoFxPreset
     {
@@ -19,7 +21,7 @@ namespace ChoDoLa.ChestFx
             "sfx_tuoitho_lock_ratHiem.mp3", "sfx_tuoitho_lock_huyenThoai.mp3",
         };
         public const string GrowFile = "sfx_tuoitho_grow.mp3";
-        public const string AmbientFile = "sfx_tuoitho_ambient.mp3";
+        public const string MachineFolder = AudioFolder + "may_bi/";
         public static readonly string[] AccentFiles =
         {
             "sfx_tuoitho_bells.mp3", "sfx_tuoitho_marbles.mp3", "sfx_tuoitho_frogdrum.mp3",
@@ -36,7 +38,7 @@ namespace ChoDoLa.ChestFx
             p.tickPitchEnd = 1.3f;
             p.lockVolume = 0.9f;
             p.whooshVolume = 0.55f;
-            p.ambientVolume = 0.45f;
+            p.ambientVolume = 0f;          // nền do TuoiThoHook lo
             p.accentVolume = 0.4f;
             p.accentsBase = 0;            // Rác: không lục lạc, chỉ tiếng pin hết
             p.accentsPerTier = 1;

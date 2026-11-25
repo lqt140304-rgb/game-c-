@@ -171,7 +171,7 @@ namespace UnityEngine
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
     public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
         public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {}
-        public Vector3 position; public CollisionDetectionMode collisionDetectionMode; public RigidbodyInterpolation interpolation; public void AddTorque(Vector3 t) {} public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
+        public Vector3 position; public float maxAngularVelocity; public void AddForceAtPosition(Vector3 f, Vector3 p, ForceMode m) {} public CollisionDetectionMode collisionDetectionMode; public RigidbodyInterpolation interpolation; public void AddTorque(Vector3 t) {} public void AddTorque(Vector3 t, ForceMode m) {} public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
     public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
     public enum CollisionDetectionMode { Discrete, Continuous, ContinuousDynamic, ContinuousSpeculative }
     public enum PhysicsMaterialCombine { Average, Minimum, Multiply, Maximum }
@@ -421,5 +421,7 @@ namespace UnityEditor.SceneManagement
 namespace UnityEngine
 {
     public partial class AudioClip { public static AudioClip Create(string n, int len, int ch, int freq, bool stream) => null; public bool SetData(float[] d, int off) => true; }
-    public class Collision { public Collider collider; public Transform transform; }
+    public class Collision { public Collider collider; public Transform transform; public Vector3 relativeVelocity; }
+    public struct Plane { public Plane(Vector3 n, Vector3 p) {} public bool Raycast(Ray r, out float d) { d = 0; return false; } }
+    public partial struct Vector3 { public static Vector3 Reflect(Vector3 a, Vector3 n) => a; }
 }
