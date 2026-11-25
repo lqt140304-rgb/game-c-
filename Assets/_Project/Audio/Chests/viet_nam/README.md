@@ -26,3 +26,4 @@ Tất cả < 82 KB. Tick có thể có khoảng lặng đầu: nếu nghe trễ 
 | `sfx_vietnam_dan_bau_xit.mp3` | 1.2 | dan bau string bending down comically, sad sliding pitch drop |
 | `sfx_vietnam_frog.mp3` | 0.6 | single frog croak, ribbit |
 | `sfx_vietnam_trong_dong.mp3` | 2.0 | ancient Dong Son bronze drum struck hard, deep resonant boom with gong shimmer |
+| `sfx_vietnam_key_insert.mp3` | 1.5 | a paper lantern floating softly down onto a wooden box, gentle papery rustle, a faint flame whoosh and a soft tap |

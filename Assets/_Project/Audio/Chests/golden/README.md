@@ -16,3 +16,4 @@ Tạo bằng ElevenLabs Sound Generation. CHƯA AI NGHE THỬ.
 | `sfx_golden_token.mp3` | 0.6 | coin dropped into a slot machine coin slot, metallic rattle |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_golden_coin.mp3` (0.4 s).
+| `sfx_golden_key_insert.mp3` | 1.5 | a heavy gold coin dropping into a slot machine coin slot, bright metallic ding and mechanical click |

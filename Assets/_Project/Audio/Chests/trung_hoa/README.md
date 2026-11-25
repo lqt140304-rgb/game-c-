@@ -29,3 +29,4 @@ Ghi chú: lần gọi song song đầu bị 429 (giới hạn 6 yêu cầu đồ
 | `sfx_trunghoa_sneeze.mp3` | 0.6 | cartoon lion sneeze, comedic achoo |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_trunghoa_pop.mp3` (0.4 s).
+| `sfx_trunghoa_key_insert.mp3` | 1.5 | a Chinese lion dance head snapping its jaw with a clack, a small cymbal crash and a drum tap |

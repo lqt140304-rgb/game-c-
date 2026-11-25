@@ -26,3 +26,4 @@ File lớn nhất khoảng 80 KB. Gắn vào hồ sơ bằng menu `Tools/Cho Do 
 | `sfx_cophong_strike.mp3` | 0.6 | sword piercing a paper talisman, swift whoosh and paper rip |
 | `sfx_cophong_spirit_stone.mp3` | 0.5 | glowing spirit stone clinking, crystal chime |
 | `sfx_cophong_sword_land.mp3` | 0.6 | sword stabbing into soft ground, thunk |
+| `sfx_cophong_key_insert.mp3` | 1.5 | a paper talisman slapped onto a stone seal, crisp paper slap followed by a soft shimmering chime |

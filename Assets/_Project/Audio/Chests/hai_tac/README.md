@@ -31,3 +31,4 @@ Tiếng nắp mở hết (giai đoạn Mở toang) dùng bộ chung: `../Synth/s
 | `sfx_haitac_parrot.mp3` | 0.8 | cartoon pirate parrot squawk, single cheeky call |
 | `sfx_haitac_drain.mp3` | 2.0 | sea water draining down a huge plughole, comedic glugging gurgle |
 | `sfx_haitac_barrel.mp3` | 0.8 | wooden barrel bumping in water, hollow knock and slosh |
+| `sfx_haitac_key_insert.mp3` | 1.5 | a cartoon pirate parrot squawking once then pecking twice on a wooden chest, sharp tap tap and a cheeky wing flutter |

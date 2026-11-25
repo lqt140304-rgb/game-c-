@@ -56,8 +56,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--chest", help="tên thư mục rương, ví dụ viet_nam")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--manifest", default=MANIFEST, help="đường dẫn danh mục (mặc định elevenlabs_chest_manifest.json)")
     a = ap.parse_args()
-    manifest = json.load(open(MANIFEST, encoding="utf-8"))
+    manifest = json.load(open(a.manifest, encoding="utf-8"))
     key = os.environ.get("ELEVENLABS_API_KEY", "")
     if not a.dry_run and not key:
         sys.exit("Thiếu ELEVENLABS_API_KEY (đặt giá trị giả nếu proxy chèn khoá).")

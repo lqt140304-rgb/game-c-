@@ -33,3 +33,5 @@ Ghi chú: lượt gửi song song đầu tiên bị 429 (giới hạn đồng th
 | `sfx_amnhac_feedback.mp3` | 0.8 | short speaker microphone feedback squeal, quiet |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_amnhac_hat.mp3` (0.3 s), `sfx_amnhac_clap.mp3` (0.4 s).
+| `sfx_amnhac_key_insert.mp3` | 1.5 | a vinyl record dropping onto a turntable with a needle landing, warm crackle and a bass thump |
+| `sfx_amnhac_bed_loop.mp3` | 8 | steady four-on-the-floor sub bass club beat with a soft hi-hat, building mood, no melody, seamless loop |

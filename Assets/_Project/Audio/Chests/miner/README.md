@@ -29,3 +29,4 @@ Dùng chung (không làm riêng): `../Synth/sfx_chest_lid_thud.wav` ở giai đo
 | `sfx_miner_nugget.mp3` | 0.4 | gold nugget clinking on rock |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_miner_nugget.mp3` (0.4 s).
+| `sfx_miner_key_insert.mp3` | 1.5 | a steel pickaxe striking a rock face once, loud metallic clang with rock crack and falling pebbles |

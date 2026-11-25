@@ -28,3 +28,5 @@ Tạo bằng ElevenLabs sound-generation (chủ dự án cho phép 2026-11-24), 
 | `sfx_thethao_riser.mp3` | 1.5 | stadium crowd murmur rising with tension |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_thethao_kick.mp3` (0.4 s).
+| `sfx_thethao_key_insert.mp3` | 1.5 | a soccer ball kicked hard hitting a wooden box, leather thump and a short crowd gasp |
+| `sfx_thethao_bed_loop.mp3` | 8 | stadium crowd murmur with a slow steady drum beat getting tense, seamless loop |

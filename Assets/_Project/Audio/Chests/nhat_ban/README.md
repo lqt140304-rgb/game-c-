@@ -30,3 +30,4 @@ Lần gọi song song đầu tiên bị 429 (quá số yêu cầu đồng thời
 | `sfx_nhatban_sandal.mp3` | 0.8 | wooden sandal slapping down then a cartoon boing |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_nhatban_sheath.mp3` (0.4 s).
+| `sfx_nhatban_key_insert.mp3` | 1.5 | a katana drawn and slashing in one swift swoosh then a crisp metallic click as it settles, short |

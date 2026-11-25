@@ -29,3 +29,4 @@ Mọi file < 70 KB. Lần gọi song song đầu bị 429 (giới hạn tần su
 | `sfx_tuoitho_crumple.mp3` | 0.8 | sheet of paper crumpled into a ball |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_tuoitho_flick.mp3` (0.3 s), `sfx_tuoitho_domino.mp3` (0.3 s).
+| `sfx_tuoitho_key_insert.mp3` | 1.5 | a glass marble dropping onto wood and bouncing once then clinking, cheerful and bright |

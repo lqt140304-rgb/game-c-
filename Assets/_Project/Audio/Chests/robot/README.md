@@ -27,3 +27,4 @@ Tạo ngày 2026-11-24 bằng `/v1/sound-generation` (mp3 44,1 kHz 128 kbps, `pr
 | `sfx_robot_thruster.mp3` | 1.2 | small rocket thrusters igniting under a jumping robot, burst |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_robot_beep.mp3` (0.25 s).
+| `sfx_robot_key_insert.mp3` | 1.5 | a robot keycard swiped into a scanner, quick electronic beep then a servo latch click |

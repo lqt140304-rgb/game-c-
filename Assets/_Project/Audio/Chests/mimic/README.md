@@ -29,3 +29,4 @@ Tạo bằng ElevenLabs sound-generation ngày 2026-11-24, `prompt_influence` 0,
 | `sfx_mimic_deflate.mp3` | 1.2 | wooden monster deflating with a long sad raspberry fart, comedic |
 
 Lưu ý: `sfx_mimic_stomach_loop.mp3` có khoảng lặng ngắn ở ~5,8–6,0 s (giữa file, không phải hai đầu); cần nghe thử.
+| `sfx_mimic_key_insert.mp3` | 1.5 | a flip-flop sandal slapping into a wooden monster mouth followed by a wet chomp and a gulp |

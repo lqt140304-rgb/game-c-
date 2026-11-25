@@ -32,3 +32,5 @@ Ghi chú: lượt đầu gửi song song bị 429 (quá nhiều yêu cầu cùng
 | `sfx_thienco_launch.mp3` | 1.0 | big clock spring releasing and launching something upward, whoosh |
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_thienco_tock.mp3` (0.2 s), `sfx_thienco_mesh_ok.mp3` (0.4 s).
+| `sfx_thienco_key_insert.mp3` | 1.5 | a brass clock gear dropping into a clock mechanism, tiny gear clank and a satisfying mesh click |
+| `sfx_thienco_bed_loop.mp3` | 8 | steady old clock ticking and tocking with soft gear whirr, mechanical tension, seamless loop |

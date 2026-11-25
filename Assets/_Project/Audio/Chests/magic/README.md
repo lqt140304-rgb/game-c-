@@ -21,3 +21,4 @@ Tạo bằng ElevenLabs sound-generation (`prompt_influence` 0.6, mp3 44,1 kHz 1
 | `sfx_magic_rune_stone.mp3` | 0.7 | heavy carved rune stone landing on a stone floor, deep thud with grit |
 | `sfx_magic_rune_wisp.mp3` | 0.6 | tiny magical wisp touching a stone, bright twinkling chime |
 | `sfx_magic_rune_slam.mp3` | 1.5 | deep magical impact boom with crystal shards shattering outward |
+| `sfx_magic_key_insert.mp3` | 1.5 | a glowing rune crystal pressed into an ancient stone lock, soft magical chime then a deep stone click |
