@@ -74,3 +74,22 @@ Tiếng chốt/tick của profile ChestFx_Mimic (core) vẫn phát chồng lên.
 - Chưa dùng: `ChestScript`/`Gate`/`ChestItemSlot`/`ChestMotion` của khung. Màn cho ăn vẫn tự chặn bằng `waitForPlayer`
   của stage 1; nếu muốn đồng bộ có thể đổi sang bước `Gate` + `ChestItemSlot` sau. Không bật `ChestMotion` cho rương
   này: nó cũng ghi vị trí rương trong LateUpdate, sẽ giành với proxy vật lý của Rương Đói.
+
+## Đã thu gọn theo kế hoạch 2026-11-25 (mục 5.5)
+| Bản chốt | Giá trị |
+|---|---|
+| Diễn viên | 0 (rương là nhân vật); bỏ con ruồi |
+| Đồ ăn | 3, cần 1 miếng, tự vồ sau 2 s, chờ tối đa 5 s |
+| Lớp âm trước chốt | 2 (bụng réo + tim) |
+| Tổng màn | ≤ 11 s (tính theo mã, chưa đo trong Unity) |
+| `tension.enabled` | false (`ChestAudioRule.ApplyToProfile` gọi mỗi lần chạy Setup) |
+
+- `Shove` chỉ đẩy Rigidbody có `MimicFeedFood`, bán kính `1,2 × kích thước rương`.
+- Bỏ `riserClip`, `buzzLoopClip`. Hook tự phát nền/nhịp; `stingClips[5]` là tiếng chốt (Rác tắt nền + nhịp, lặng 0,2 s rồi chốt).
+  Hiếm+: nổ + tiếng chốt, ợ lớn dời +0,4 s. Sự kiện chung `TryGate` (0,2 s).
+- Âm nạp từ `Audio/Chests/mimic/*.mp3`. Không có file cho `wakeClip` nên để trống.
+- **Rương trắng**: không xem được GLB trong môi trường này (chỉ là con trỏ LFS). Nếu vật liệu GLB thiếu ảnh nền, hook gắn
+  ảnh da Meshy (`skinTexture`, `MimicFeedSetup` tự gán) lúc bắt đầu và trả lại khi reset. Nếu rương vẫn trắng thì nguyên nhân
+  khác (xem dưới).
+
+Chưa kiểm: chưa chạy Unity, chưa nghe âm, chưa xác nhận lỗi trắng được sửa.
