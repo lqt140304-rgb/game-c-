@@ -32,12 +32,12 @@ namespace ChoDoLa.ChestFx
         {
             p.chestId = ChestId;
 
-            p.tickVolume = 0.6f;
+            p.tickVolume = 0.3f;          // tích-tắc riêng của ThienCoHook dẫn nhịp; tick vòng quay chỉ đệm
             p.tickPitchStart = 1.1f;     // ratchet: starts tight and high...
             p.tickPitchEnd = 0.8f;       // ...and drops as the mechanism winds down (others rise)
             p.lockVolume = 0.95f;
             p.whooshVolume = 0.6f;
-            p.ambientVolume = 0.4f;
+            p.ambientVolume = 0.15f;
             p.accentVolume = 0.4f;
             p.accentsBase = 0;           // Rác: no accent, the jam sound is enough
             p.accentsPerTier = 1;
