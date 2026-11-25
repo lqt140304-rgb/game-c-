@@ -12,11 +12,13 @@ Mô hình dưới đây là GIẢ ĐỊNH của Claude 2 theo BanGiaoSprint5SoiL
   4. Lỗi bỏ sót: cửa hàng kiểm tra lại thì vẫn trừ giá, cộng phạt `miss_pen` x giá thẩm định mỗi lỗi sót.
   5. Trả giá (Hiếm trở lên): mở màn ở giá bảng sau khi đã trừ lỗi (open = 1,0). Mỗi vòng thắng với xác suất
      (kỹ năng trả giá c) x (tỉ lệ lỗi đã tìm); thắng +up, thua -down, giá chốt trong [floor, cap]. Dừng lúc nào cũng được.
+  5b. Nhà vá lỗi (chủ dự án chốt 2026-11-25): lỗi đã tìm ra thì sửa được, mỗi lỗi một khoản phí theo giá nền (`repair_light`,
+     `repair_big`); lỗi sót không sửa được. Người chơi sửa khi lời kỳ vọng lớn hơn phí. Phục chế cũ (nâng một bậc tình trạng) vẫn có.
   6. Gợi ý của Giáo Sư Lẫm: chỉ ra một dấu hàng giả chưa tìm thấy (nếu món có), không thì một lỗi chưa tìm thấy;
      phí hint_rate x giá nền, tối thiểu 200.000 đ; combo CB3 vẫn một lần miễn phí mỗi ngày.
   Giữ nguyên luật thật: khai giả chỉ nhận giá hàng giả (fake_x), giả mà khai thật bị phạt `fine` (= fake_x thì tịch thu),
   ngày 1 miễn phạt. Tiền tính theo đơn vị 10.000 đ, in qua currency.fmt_vnd.
-Không mô hình hóa: bỏ bấm một lỗi đã thấy (đề xuất: coi như lỗi bị sót, cùng khoản phạt nên không có lợi).
+Bỏ bấm một lỗi đã thấy được phép (chốt 2026-11-25); khi người thu mua soi thấy thì trừ tiền, cộng phạt, nên mô hình coi như lỗi bị sót.
 """
 import math
 import chest_sim as CS
@@ -30,12 +32,13 @@ RULES = dict(
     n_light=dict(T=1, H=2, X=3, L=3),         # số lỗi nhẹ của món Xước (món Hỏng thêm 1 vết lớn)
     light_cut=.30, big_cut=.40,               # Xước trừ 30%; Hỏng trừ 30% + 40% = 70%
     marks=dict(T=1, H=1, X=2, L=2),           # số dấu hàng giả trên món giả
-    odd=.10,                                  # xác suất món thật có một "dấu lạ" giống dấu giả
+    odd=.15,                                  # xác suất món thật có một "dấu lạ" giống dấu giả
     miss_pen=.05,                             # phạt mỗi lỗi bị sót, theo giá thẩm định
     open=1.0, up=.08, down=.05,               # giá chào mở màn = giá bảng đã trừ lỗi; thắng +8%, thua -5%
     rounds=3, floor=.70, cap=1.10,
     fake_x=.20, fine=.20, fine_T=None, day1_fine=0.0,
     hint_rate=.05,                            # gợi ý của Giáo Sư Lẫm: 5% giá nền, tối thiểu 200.000 đ
+    repair_light=.06, repair_big=.15,         # nhà vá lỗi: phí mỗi lỗi sửa, theo giá nền (lỗi nhẹ 6%, vết hỏng lớn 15%)
     cert=False,
 )
 PROFILES = {
@@ -190,7 +193,7 @@ def haggle(run, pf, rl, tier, found, total):
 
 def stats(run):
     if not hasattr(run, "ins"):
-        run.ins = dict(items=0, hints=0, haggles=0, rounds=0, quick=0, defects=0, found=0, missed=0, pen=0,
+        run.ins = dict(items=0, hints=0, haggles=0, rounds=0, quick=0, repairs=0, repair_spend=0, defects=0, found=0, missed=0, pen=0,
                        real_as_fake=0, fake_as_real=0, fines=0, loss_real_as_fake=0, revenue=0, fair=0)
     return run.ins
 
@@ -202,6 +205,31 @@ def _pay_hint(run, it, fee):
     run.apprs += 1
     it["appraised"] = True
     return True
+
+
+def repair_shop(run, it, r, tier, p_fake, base, nl, nb, fl, fb, rl, st, V):
+    """Nhà vá lỗi: sửa các lỗi đã tìm ra khi có lời (lời kỳ vọng = (1 - xác suất giả) x phần giá lỗi đó trừ > phí).
+    Lỗi sót không sửa được. Trả giá thẩm định mới (hệ số tình trạng tăng đúng phần lỗi đã sửa)."""
+    g = run.g
+    q0 = it["q"]
+    it["q"] = 1.0
+    full = run.known_price(it)           # giá nếu không còn lỗi (đã gồm hiệu ứng tạo tác)
+    it["q"] = q0
+    cut_l = rl["light_cut"] / nl if nl else 0.0
+    fixed_cut = 0.0
+    for count, cut, rate in ((fl, cut_l, rl["repair_light"]), (fb, rl["big_cut"], rl["repair_big"])):
+        fee = max(5, round(base * rate))
+        for _ in range(count):
+            if (1 - p_fake) * cut * full > fee and g.cash - fee >= r:
+                g.cash -= fee
+                st["repairs"] += 1
+                st["repair_spend"] += fee
+                fixed_cut += cut
+    if fixed_cut:
+        it["q"] = min(1.0, q0 + fixed_cut)
+        it["restored"] = True
+        return run.known_price(it)
+    return V
 
 
 # --- thay bước bán ------------------------------------------------------------------------------------
@@ -231,7 +259,11 @@ def handle(run, it, r, smart):
     # soi: mỗi lỗi và mỗi dấu được tìm ra với xác suất s
     s = pf["s"]
     nd = n_defects(it["q"], tier, rl)
-    found = sum(rng.random() < s for _ in range(nd))
+    nb = 1 if it["q"] <= .3 else 0                    # vết hỏng lớn (chỉ món Hỏng)
+    nl = nd - nb                                       # lỗi nhẹ
+    fl = sum(rng.random() < s for _ in range(nl))     # lỗi nhẹ đã tìm ra
+    fb = 1 if nb and rng.random() < s else 0           # vết lớn đã tìm ra
+    found = fl + fb
     if it["fake"]:
         m = rl["marks"][tier]
         k = sum(rng.random() < s for _ in range(m))
@@ -258,8 +290,11 @@ def handle(run, it, r, smart):
                     k_unfound -= 1
                 else:
                     hint = "none"
-                    if found < nd:
-                        found += 1
+                    if fl < nl:
+                        fl += 1
+                    elif fb < nb:
+                        fb += 1
+                    found = fl + fb
     missed = nd - found
     st["items"] += 1
     st["defects"] += nd
@@ -269,6 +304,8 @@ def handle(run, it, r, smart):
     p = posterior(prior, k, m, s, rl, hint)
     claim_fake = decide_fake(p, tier, fine, pf, rl, found, nd, missed)
     V = run.known_price(it)              # giá thẩm định: giá nền x tình trạng x hiệu ứng tạo tác
+    if not claim_fake and found and rl["repair_light"] is not None:
+        V = repair_shop(run, it, r, tier, p, base, nl, nb, fl, fb, rl, st, V)   # nhà vá lỗi: sửa lỗi đã biết
     st["fair"] += V if not it["fake"] else math.floor(V * rl["fake_x"])
     pen_unit = math.ceil(V * rl["miss_pen"])
     if claim_fake:
@@ -326,7 +363,8 @@ def _play(content, strat, n, skilled=False):
 def summarize(agg, n):
     it = max(1, agg.get("items", 0))
     return dict(found_rate=round(100 * agg["found"] / max(1, agg["defects"])), missed_per_item=round(agg["missed"] / it, 2),
-                pen_per_run=round(agg["pen"] / n), hints_per_run=round(agg["hints"] / n, 2),
+                pen_per_run=round(agg["pen"] / n), repairs_per_run=round(agg["repairs"] / n, 2),
+                repair_spend_per_run=round(agg["repair_spend"] / n), hints_per_run=round(agg["hints"] / n, 2),
                 haggle_share=round(100 * agg["haggles"] / it),
                 real_as_fake=round(100 * agg["real_as_fake"] / it, 1), fake_as_real=round(100 * agg["fake_as_real"] / it, 1),
                 fines_per_run=round(agg["fines"] / n), loss_per_run=round(agg["loss_real_as_fake"] / n),
