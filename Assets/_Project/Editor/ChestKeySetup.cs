@@ -113,7 +113,7 @@ namespace ChoDoLa.Editor
                 ChestKeyHookBase hook = (ChestKeyHookBase)temp.AddComponent(e.hookType);
                 hook.keyColor = preset.mainColor;
                 hook.bedClip = Clip(preset.audioFolder + preset.bedFile);
-                hook.keyClip = Clip(preset.audioFolder + preset.filePrefix + KeyAudioNames.KeyInsertSuffix);
+                hook.keyClip = string.IsNullOrEmpty(preset.keyFile) ? null : Clip(preset.audioFolder + preset.keyFile);
                 hook.stingClips = new AudioClip[KeyAudioNames.LockSuffix.Length];
                 for (int i = 0; i < hook.stingClips.Length; i++)
                     hook.stingClips[i] = Clip(preset.audioFolder + preset.filePrefix + KeyAudioNames.LockSuffix[i]);

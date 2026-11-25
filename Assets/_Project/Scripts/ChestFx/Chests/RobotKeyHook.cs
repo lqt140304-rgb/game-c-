@@ -15,7 +15,7 @@ namespace ChoDoLa.ChestFx
         public static readonly KeyPreset Preset = new KeyPreset
         {
             chestId = "Chest_Robot", displayName = "Robot",
-            audioFolder = "Assets/_Project/Audio/Chests/robot/", filePrefix = "sfx_robot_", bedFile = "sfx_robot_hum_loop.mp3",
+            audioFolder = "Assets/_Project/Audio/Chests/robot/", filePrefix = "sfx_robot_", bedFile = "sfx_robot_hum_loop.mp3", keyFile = "sfx_robot_slot.mp3",
             mainColor = Gray, openAction = KeyAction.Insert,
             squashMul = 0.8f, racSquashMul = 0.8f, jumpMul = 1f, cycleDelta = -1, shakeScale = 1f,   // cứng: Squash -20%, chu kỳ -1 (>= 1)
         };

@@ -14,7 +14,7 @@ namespace ChoDoLa.ChestFx
         {
             chestId = "Chest_CoPhong", displayName = "CoPhong",
             audioFolder = "Assets/_Project/Audio/Chests/co_phong/", filePrefix = "sfx_cophong_",
-            bedFile = "sfx_cophong_sword_hum_loop.mp3",
+            bedFile = "sfx_cophong_sword_hum_loop.mp3", keyFile = "sfx_cophong_bamboo_knock.mp3",
             mainColor = new Color(0.95f, 0.85f, 0.4f), openAction = KeyAction.Strike,
             squashMul = 0.9f, racSquashMul = 0.9f, jumpMul = 1.1f, cycleDelta = 0, shakeScale = 1f,
         };

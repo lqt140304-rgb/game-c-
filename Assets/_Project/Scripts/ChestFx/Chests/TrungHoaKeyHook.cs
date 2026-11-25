@@ -13,7 +13,7 @@ namespace ChoDoLa.ChestFx
         {
             chestId = "Chest_TrungHoa", displayName = "TrungHoa",
             audioFolder = "Assets/_Project/Audio/Chests/trung_hoa/", filePrefix = "sfx_trunghoa_",
-            bedFile = "sfx_trunghoa_lion_drum_loop.mp3",
+            bedFile = "sfx_trunghoa_lion_drum_loop.mp3", keyFile = "sfx_trunghoa_thud.mp3",
             mainColor = new Color(0.85f, 0.1f, 0.1f), openAction = KeyAction.Pounce,
             squashMul = 1f, racSquashMul = 1f, jumpMul = 1f, cycleDelta = 1, shakeScale = 1f,
         };

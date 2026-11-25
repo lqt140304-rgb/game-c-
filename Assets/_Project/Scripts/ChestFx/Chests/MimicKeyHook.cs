@@ -19,6 +19,7 @@ namespace ChoDoLa.ChestFx
             KeyPreset p = KeyPreset.Neutral(
                 "Chest_Mimic", "Mimic", "Assets/_Project/Audio/Chests/mimic/", "sfx_mimic_", "sfx_mimic_stomach_loop.mp3",
                 Sole, KeyAction.Drop);
+            p.keyFile = "sfx_mimic_gulp.mp3";
             p.squashMul = 1.15f;     // háu đói: Squash +15%
             p.racSquashMul = 1.15f;
             return p;

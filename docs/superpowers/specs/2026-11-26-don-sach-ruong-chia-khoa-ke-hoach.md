@@ -92,6 +92,10 @@ Tiếng phát qua `ChestRevealSequence.PlayOneShot` (cần đổi cao độ thì
 **File cần tạo thêm (Phiên âm 2):** 17 tiếng `sfx_<tiền tố>_key_insert.mp3` + 3 nền còn thiếu cho Âm nhạc, Thể thao, Thiên Cơ.
 Danh mục: `Tools/Audio/elevenlabs_chest_key_manifest.json`.
 
+**Cập nhật:** Chủ dự án nghe thử thấy âm ElevenLabs mới chán, dùng lại âm cũ; 20 file mới vẫn nằm trong repo nhưng không dùng.
+Tiếng cắm giờ lấy từ trường `keyFile` của Preset (một âm cũ ngắn của chính rương); nền Âm nhạc/Thể thao/Thiên Cơ dùng
+`sfx_amnhac_drumroll.mp3`, `sfx_thethao_ambient.mp3`, `sfx_thienco_ambient_clockwork.mp3`.
+
 ## 4. Kỹ thuật chung (làm trong PHIÊN A, một phiên, TRƯỚC các phiên rương)
 
 ### 4.1 Lớp nền `ChestKeyHookBase` (file mới `Scripts/ChestFx/ChestKeyHookBase.cs`, namespace `ChoDoLa.ChestFx`)

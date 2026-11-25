@@ -15,6 +15,7 @@ namespace ChoDoLa.ChestFx
             KeyPreset p = KeyPreset.Neutral(
                 "Chest_Game", "Game", "Assets/_Project/Audio/Chests/game/", "sfx_game_", "sfx_game_chip_loop.mp3",
                 new Color(1f, 0.85f, 0.2f), KeyAction.Insert);
+            p.keyFile = "sfx_game_button_click.mp3";
             p.cycleDelta = 1;
             return p;
         }

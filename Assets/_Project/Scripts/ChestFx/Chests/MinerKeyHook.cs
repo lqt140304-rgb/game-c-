@@ -11,7 +11,7 @@ namespace ChoDoLa.ChestFx
         public static readonly KeyPreset Preset = new KeyPreset
         {
             chestId = "Chest_Miner", displayName = "Miner",
-            audioFolder = "Assets/_Project/Audio/Chests/miner/", filePrefix = "sfx_miner_", bedFile = "sfx_miner_rumble_loop.mp3",
+            audioFolder = "Assets/_Project/Audio/Chests/miner/", filePrefix = "sfx_miner_", bedFile = "sfx_miner_rumble_loop.mp3", keyFile = "sfx_miner_thump.mp3",
             mainColor = new Color(0.62f, 0.64f, 0.68f), openAction = KeyAction.Strike,
             squashMul = 1f, racSquashMul = 1f, jumpMul = 0.8f, cycleDelta = 0, shakeScale = 1f,
         };

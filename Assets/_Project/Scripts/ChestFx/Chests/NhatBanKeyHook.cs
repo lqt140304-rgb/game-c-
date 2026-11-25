@@ -17,6 +17,7 @@ namespace ChoDoLa.ChestFx
             KeyPreset p = KeyPreset.Neutral(
                 "Chest_NhatBan", "NhatBan", "Assets/_Project/Audio/Chests/nhat_ban/", "sfx_nhatban_", "sfx_nhatban_shakuhachi_loop.mp3",
                 new Color(0.82f, 0.86f, 0.9f), KeyAction.Strike);
+            p.keyFile = "sfx_nhatban_sheath.mp3";
             p.squashMul = 0.9f;      // điềm tĩnh: Squash −10%
             p.cycleDelta = -1;       // chu kỳ −1 (lõi kẹp tối thiểu 1)
             return p;
