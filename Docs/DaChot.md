@@ -6,7 +6,7 @@ Mục lục mọi quyết định chủ dự án đã chốt. Chi tiết nằm �
 
 | Chủ đề | File | Điểm chính đã chốt |
 |---|---|---|
-| Rương, rác, sưu tập, thần lực | [ruong-suu-tap](../docs/superpowers/specs/2026-11-23-ruong-suu-tap-design.md) | 4 rương cơ bản; rác có công dụng ẩn; 4 ô tạo tác; cây phát triển không buff chơi |
+| Rương, rác, sưu tập, thần lực | [ruong-suu-tap](../docs/superpowers/specs/2026-11-23-ruong-suu-tap-design.md) | 4 rương cơ bản; rác có công dụng ẩn; 4 ô tạo tác; **cây kỹ năng chỉ dùng trong ván, không có tiến trình vĩnh viễn (2026-11-25)**; điểm và nút làm lại mỗi ván |
 | Mở màn | [mo-man](../docs/superpowers/specs/2026-11-23-mo-man-design.md) | Giọng Gen Z; Anh Bảy là giang hồ mạng; ngày 1 không thua ngay; ngày 1 của lần chơi đầu chỉ bán Rương Gỗ và Rương Vải Niêm |
 | Một ngày | [mot-ngay](../docs/superpowers/specs/2026-11-23-mot-ngay-design.md) | Mở rương là buổi sáng; tình huống đời thường hài |
 | Thần lực | [than-luc](../docs/superpowers/specs/2026-11-23-than-luc-design.md) | Chỉ phản ứng dí dỏm; chữ chạy kiểu light novel, không lồng tiếng |
