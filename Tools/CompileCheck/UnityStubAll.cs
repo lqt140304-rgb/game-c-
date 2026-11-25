@@ -167,7 +167,7 @@ namespace UnityEngine
     public class SphereCollider : Collider { public Vector3 center; public float radius; }
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
-    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
+    public partial class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
         public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
     public class CharacterController : Collider { public float height, radius, slopeLimit, stepOffset, skinWidth, minMoveDistance; public Vector3 center, velocity; public bool isGrounded;
         public CollisionFlags Move(Vector3 m) => CollisionFlags.None; public bool SimpleMove(Vector3 s) => false; }
@@ -404,4 +404,21 @@ namespace UnityEditor.SceneManagement
         public static bool MarkSceneDirty(UnityEngine.SceneManagement.Scene s) => true; public static bool SaveCurrentModifiedScenesIfUserWantsTo() => true;
         public static UnityEngine.SceneManagement.Scene OpenScene(string p) => default;
     }
+}
+// Chest_TheThao (bóng Rigidbody): vật liệu nảy, va chạm, nội suy.
+namespace UnityEngine
+{
+    public enum RigidbodyInterpolation { None, Interpolate, Extrapolate }
+    public enum CollisionDetectionMode { Discrete, Continuous, ContinuousDynamic, ContinuousSpeculative }
+    public enum PhysicsMaterialCombine { Average, Minimum, Multiply, Maximum }
+    public class PhysicsMaterial : Object { public PhysicsMaterial() {} public PhysicsMaterial(string n) {} public float bounciness, dynamicFriction, staticFriction; public PhysicsMaterialCombine bounceCombine, frictionCombine; }
+    public class Collision { public Vector3 relativeVelocity, impulse; public Collider collider; public GameObject gameObject; public Rigidbody rigidbody; }
+    public partial class Collider { public PhysicsMaterial sharedMaterial, material; }
+    public partial class Rigidbody { public RigidbodyInterpolation interpolation; public CollisionDetectionMode collisionDetectionMode; public bool detectCollisions;
+        public void AddExplosionForce(float f, Vector3 p, float r, float up, ForceMode m) {} }
+}
+namespace UnityEngine
+{
+    public partial struct Quaternion { public static bool operator ==(Quaternion a, Quaternion b) => true; public static bool operator !=(Quaternion a, Quaternion b) => false;
+        public override bool Equals(object o) => true; public override int GetHashCode() => 0; }
 }
