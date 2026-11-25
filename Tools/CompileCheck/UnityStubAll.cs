@@ -167,7 +167,7 @@ namespace UnityEngine
     public class SphereCollider : Collider { public Vector3 center; public float radius; }
     public class CapsuleCollider : Collider { public Vector3 center; public float radius, height; public int direction; }
     public class MeshCollider : Collider { public Mesh sharedMesh; public bool convex; }
-    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
+    public class Rigidbody : Component { public bool isKinematic, useGravity; public Vector3 position, velocity, linearVelocity, angularVelocity; public float mass, drag, angularDrag, linearDamping, angularDamping;
         public RigidbodyConstraints constraints; public void AddForce(Vector3 f) {} public void AddForce(Vector3 f, ForceMode m) {} public void MovePosition(Vector3 p) {} public void MoveRotation(Quaternion q) {} }
     public class CharacterController : Collider { public float height, radius, slopeLimit, stepOffset, skinWidth, minMoveDistance; public Vector3 center, velocity; public bool isGrounded;
         public CollisionFlags Move(Vector3 m) => CollisionFlags.None; public bool SimpleMove(Vector3 s) => false; }
@@ -404,4 +404,11 @@ namespace UnityEditor.SceneManagement
         public static bool MarkSceneDirty(UnityEngine.SceneManagement.Scene s) => true; public static bool SaveCurrentModifiedScenesIfUserWantsTo() => true;
         public static UnityEngine.SceneManagement.Scene OpenScene(string p) => default;
     }
+}
+
+// Chest_NhatBan (Nhát kiếm Iai): cắt lưới đôi + bỏ va chạm giữa mảnh dây và thân rương.
+namespace UnityEngine
+{
+    public static partial class Physics { public static void IgnoreCollision(Collider a, Collider b) {} }
+    public partial class Mesh { public bool isReadable; }
 }
