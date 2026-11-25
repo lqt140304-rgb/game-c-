@@ -1,11 +1,13 @@
 # Biến cố E3 và việc chọn loại hộp (Claude 2)
 
-Đo ảnh hưởng của biến cố, đặc biệt **E3 Thuyền Hàng Ngoài Giới** (giá hộp H2 giảm 20%, 350 còn 280 xu), lên việc chọn loại hộp mỗi lượt và lên tỷ lệ thắng. Dùng luật chốt của Claude 1: biến cố 50% số ngày từ ngày 2, chọn đều trong E1 đến E6, sổ công bố **trước khi mua hộp**; mỗi lượt Dì Mận bày 1 hộp mỗi loại, người chơi chọn mua 1 hoặc dừng. Cấu hình đã duyệt (G1, λ = 0,75, manh mối miễn phí). 2.000 seed.
+> **Tiền tệ:** số tiền trong tài liệu này đã đổi sang **đồng Việt Nam** ngày 2026-11-24 (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ, `QA/currency.py` đổi sang đồng khi in.
+
+Đo ảnh hưởng của biến cố, đặc biệt **E3 Thuyền Hàng Ngoài Giới** (giá hộp H2 giảm 20%, 3.500.000 đ còn 2.800.000 đ), lên việc chọn loại hộp mỗi lượt và lên tỷ lệ thắng. Dùng luật chốt của Claude 1: biến cố 50% số ngày từ ngày 2, chọn đều trong E1 đến E6, sổ công bố **trước khi mua hộp**; mỗi lượt Dì Mận bày 1 hộp mỗi loại, người chơi chọn mua 1 hoặc dừng. Cấu hình đã duyệt (G1, λ = 0,75, manh mối miễn phí). 2.000 seed.
 
 ## Kết luận ngắn
 
 1. **E3 chỉ dịch việc chọn hộp nhẹ:** tỷ lệ H2 trong các lần mua tăng từ 66% đến 67% lên 74% đến 76% (khoảng +7 đến +9 điểm phần trăm), H1 giảm từ 16% đến 19% xuống 7% đến 8%. Không tạo ra một quyết định mới.
-2. **E3 cho lời nhẹ:** lời mỗi ngày E3 cao hơn ngày thường khoảng 25% (ví dụ thận trọng 853 so với 677 xu), và tỷ lệ thắng cao hơn +0,3 đến +1,1 điểm khi chỉ có E3.
+2. **E3 cho lời nhẹ:** lời mỗi ngày E3 cao hơn ngày thường khoảng 25% (ví dụ thận trọng 853 so với 6.770.000 đ), và tỷ lệ thắng cao hơn +0,3 đến +1,1 điểm khi chỉ có E3.
 3. **Cả sáu biến cố gộp lại gần như trung tính:** −1,4 đến +0,5 điểm. Người chơi thích nghi (tính biến cố vào giá trị kỳ vọng) không khác ngây thơ trong các biến cố chỉ đổi giá hộp như E3, và chỉ khác 0 đến 1,5 điểm với biến cố đổi giá bán (E1, E2, E6).
 4. **Phát hiện lớn hơn câu hỏi:** việc chọn loại hộp gần như bị **H2 chi phối** ngay cả ngày thường (66% đến 67% lượt mua), và **Rương Đen không bao giờ được mua** (0%). Đây là vấn đề cho mục tiêu "nhiều tình huống đánh đổi" (mục 3).
 
@@ -40,14 +42,14 @@ Tỷ lệ mỗi loại hộp trong các lần mua, ngày E3 so với ngày thư�
 
 | Chiến thuật | Ngày | H1 | H2 | H3 | RD | Lời mỗi ngày |
 | --- | --- | --- | --- | --- | --- | --- |
-| Thận trọng | E3 | 7% | **74%** | 19% | 0% | 853 |
-| | thường | 16% | 67% | 17% | 0% | 677 |
-| Liều | E3 | 3% | **76%** | 22% | 0% | 930 |
-| | thường | 8% | 71% | 21% | 0% | 780 |
-| Combo nhỏ | E3 | 8% | **74%** | 18% | 0% | 1.127 |
-| | thường | 18% | 67% | 15% | 0% | 909 |
-| Combo lớn | E3 | 8% | **74%** | 18% | 0% | 1.393 |
-| | thường | 19% | 66% | 15% | 0% | 1.130 |
+| Thận trọng | E3 | 7% | **74%** | 19% | 0% | 8.530.000 đ |
+| | thường | 16% | 67% | 17% | 0% | 6.770.000 đ |
+| Liều | E3 | 3% | **76%** | 22% | 0% | 9.300.000 đ |
+| | thường | 8% | 71% | 21% | 0% | 7.800.000 đ |
+| Combo nhỏ | E3 | 8% | **74%** | 18% | 0% | 11.270.000 đ |
+| | thường | 18% | 67% | 15% | 0% | 9.090.000 đ |
+| Combo lớn | E3 | 8% | **74%** | 18% | 0% | 13.930.000 đ |
+| | thường | 19% | 66% | 15% | 0% | 11.300.000 đ |
 
 - Vào ngày E3, người chơi chuyển khoảng 7 đến 9 điểm phần trăm số lần mua từ H1 sang H2. H3 gần như không đổi.
 - Lời mỗi ngày E3 cao hơn ngày thường khoảng 20% đến 26%. Với tiền hôm nay trả nợ cuối ngày thì đó là khoản đệm có ích nhưng không quyết định.
@@ -58,14 +60,14 @@ Giá trị kỳ vọng và lời kỳ vọng mỗi hộp ở cấu hình đã du
 
 | Hộp | Giá | Lần giá hộp | Lời kỳ vọng mỗi hộp | Tỷ lệ được chọn (ngày thường) |
 | --- | --- | --- | --- | --- |
-| H1 | 100 | 2,50 | khoảng +150 | 8% đến 19% |
-| **H2** | 350 | 1,59 | khoảng **+206** | **66% đến 71%** |
-| H3 | 800 | 1,24 | khoảng +192 | 15% đến 21% |
-| RD | 1.500 | 1,01 | khoảng +15 | **0%** |
+| H1 | 1.000.000 đ | 2,50 | khoảng +1.500.000 đ | 8% đến 19% |
+| **H2** | 3.500.000 đ | 1,59 | khoảng **+2.060.000 đ** | **66% đến 71%** |
+| H3 | 8.000.000 đ | 1,24 | khoảng +1.920.000 đ | 15% đến 21% |
+| RD | 15.000.000 đ | 1,01 | khoảng +150.000 đ | **0%** |
 
 - Người chơi chọn hộp có **lời tuyệt đối** cao nhất mỗi lượt, và H2 luôn nhỉnh hơn H3 (206 so với 192) trong khi **rẻ hơn 2,3 lần**. H2 gần như luôn là lựa chọn đúng, nên "hộp rẻ hay đắt" không còn là quyết định.
 - **Rương Đen lời gần 0** và không ai mua. Nếu giữ hộp này thì nó chỉ có ích cho người cần hiện vật cụ thể (V07 nhóm Ngoài hành tinh), không phải lựa chọn kinh tế. Mở khóa M3 (Rương Đen từ ngày 1) càng dễ thành bẫy.
-- **Hệ quả cho mục tiêu "nhiều đánh đổi":** đánh đổi giữa các hộp phải phụ thuộc vào **số tiền đang có** và **rủi ro**. Hiện tại, bất kể giàu hay nghèo, người chơi chọn H2. Để hộp đắt thành lựa chọn của người đã có vốn, lời tuyệt đối của hộp đắt phải cao hơn hẳn (và rủi ro lớn hơn), ví dụ lời kỳ vọng mỗi hộp khoảng H1 120, H2 200, H3 320, RD 450 kèm biến thiên lớn. Mô phỏng chưa đo cấu hình này.
+- **Hệ quả cho mục tiêu "nhiều đánh đổi":** đánh đổi giữa các hộp phải phụ thuộc vào **số tiền đang có** và **rủi ro**. Hiện tại, bất kể giàu hay nghèo, người chơi chọn H2. Để hộp đắt thành lựa chọn của người đã có vốn, lời tuyệt đối của hộp đắt phải cao hơn hẳn (và rủi ro lớn hơn), ví dụ lời kỳ vọng mỗi hộp khoảng H1 1.200.000, H2 2.000.000, H3 3.200.000, RD 4.500.000 đ kèm biến thiên lớn. Mô phỏng chưa đo cấu hình này.
 
 ## 4. Đề xuất
 

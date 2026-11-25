@@ -1,5 +1,7 @@
 # Độ khó và đánh đổi — CHỢ ĐỒ LẠ (Claude 2)
 
+> **Tiền tệ:** số tiền trong tài liệu này đã đổi sang **đồng Việt Nam** ngày 2026-11-24 (1 xu cũ = 10.000 đ, xem [bảng quy đổi](README.md#tiền-tệ)). Mô phỏng vẫn tính theo đơn vị cân bằng 10.000 đ, `QA/currency.py` đổi sang đồng khi in.
+
 > **Cập nhật:** Claude 1 đã đề xuất thêm TC3, CB3, GT1 mới và chứng nhận giám định. Claude 2 đã đo trong [DoLaiDeXuat.md](DoLaiDeXuat.md), tài liệu đó đưa ra gói số liệu mới. Các kết luận về độ khó, giá nền hệ số 0,85 và k đấu giá 1,16 vẫn khớp.
 
 **Mục tiêu của chủ dự án:** người chơi không được thắng quá dễ. Ván phải tạo ra nhiều tình huống khó xử, có đánh đổi thật và cần tính toán kỹ.
@@ -27,25 +29,25 @@ Dữ liệu nằm trong `QA/profiles.py`.
 
 | Hiện vật | Gốc | Sprint 3 (dễ) | **Ván khó** |
 | --- | --- | --- | --- |
-| V01 Bình sứ men xanh | 300 | 250 | **210** |
-| V02 Sách cổ bìa da | 500 | 410 | **340** |
-| V03 Đồng hồ quả lắc cũ | 650 | 530 | **450** |
-| V04 Mảnh kính đồng hồ thiên văn | 200 | 440 | **390** |
-| V05 Thiết bị liên lạc hỏng | 150 | 330 | **290** |
-| V06 Bộ pin lượng tử | 900 | 1.970 | **1.750** |
-| V07 Tinh thể lam cầm tay | 1.200 | 2.880 | **2.460** |
-| V08 Gương thủy tinh cổ tích | 1.000 | 1.700 | **1.550** |
-| V09 Lá bùa giấy vàng | 400 | 960 | **800** |
-| V10 Mảnh vảy long | 1.800 | 3.060 | **2.790** |
+| V01 Bình sứ men xanh | 3.000.000 đ | 2.500.000 đ | **2.100.000 đ** |
+| V02 Sách cổ bìa da | 5.000.000 đ | 4.100.000 đ | **3.400.000 đ** |
+| V03 Đồng hồ quả lắc cũ | 6.500.000 đ | 5.300.000 đ | **4.500.000 đ** |
+| V04 Mảnh kính đồng hồ thiên văn | 2.000.000 đ | 4.400.000 đ | **3.900.000 đ** |
+| V05 Thiết bị liên lạc hỏng | 1.500.000 đ | 3.300.000 đ | **2.900.000 đ** |
+| V06 Bộ pin lượng tử | 9.000.000 đ | 19.700.000 đ | **17.500.000 đ** |
+| V07 Tinh thể lam cầm tay | 12.000.000 đ | 28.800.000 đ | **24.600.000 đ** |
+| V08 Gương thủy tinh cổ tích | 10.000.000 đ | 17.000.000 đ | **15.500.000 đ** |
+| V09 Lá bùa giấy vàng | 4.000.000 đ | 9.600.000 đ | **8.000.000 đ** |
+| V10 Mảnh vảy long | 18.000.000 đ | 30.600.000 đ | **27.900.000 đ** |
 
 **Giá trị kỳ vọng mỗi hộp** (đã tính chất lượng và hàng giả, theo bội số giá hộp):
 
 | Hộp | Gốc | Sprint 3 (dễ) | **Ván khó** |
 | --- | --- | --- | --- |
-| H1 (100 xu) | 3,18 | 2,61 | **2,19** |
-| H2 (350 xu) | 0,77 | 1,70 | **1,51** |
-| H3 (800 xu) | 0,77 | 1,40 | **1,25** |
-| RD Rương Đen (1.500 xu) | 0,62 | 1,25 | **1,10** |
+| H1 (1.000.000 đ) | 3,18 | 2,61 | **2,19** |
+| H2 (3.500.000 đ) | 0,77 | 1,70 | **1,51** |
+| H3 (8.000.000 đ) | 0,77 | 1,40 | **1,25** |
+| RD Rương Đen (15.000.000 đ) | 0,62 | 1,25 | **1,10** |
 
 **Tạo tác:** CP1 và CB1 áp dụng cho mọi hiện vật, hiệu ứng nhân **1,25** so với đề xuất của Claude 1 (CP1 +6,25%, CB1 +12,5%) thay vì nhân 2. Giá tạo tác giữ nguyên.
 
@@ -78,7 +80,7 @@ Một lựa chọn là đánh đổi thật khi hai hướng cho kết quả g�
 | **Sòng bạc** | Tối đa +1,3 điểm | **Gần như không ảnh hưởng.** Cược nhỏ không cứu được khoản thiếu |
 | **Giám định và phục chế** | Không đổi giá bán | **Vô nghĩa về kinh tế** vì giá bán không phụ thuộc đã giám định hay chưa |
 | **Giảm phạt nợ** (GT1, TC3, Mốc 3 Thiên Cơ) | Không đổi tỷ lệ thắng | **Vô nghĩa** vì thiếu tiền một lần gần như chắc thua |
-| **Chọn hạn mức nợ tồn, chừa tiền khi thu** | Ngưỡng thua 1.000 so với 1.500 không đổi, chừa 100 đến 200 xu đổi dưới 2 điểm | **Không phải quyết định** vì mọi lần hụt đều dẫn tới thua |
+| **Chọn hạn mức nợ tồn, chừa tiền khi thu** | Ngưỡng thua 10.000.000 đ so với 15.000.000 đ không đổi, chừa 1.000.000 đến 2.000.000 đ đổi dưới 2 điểm | **Không phải quyết định** vì mọi lần hụt đều dẫn tới thua |
 
 ## 5. Đề xuất để có nhiều tình huống khó xử hơn
 
@@ -87,7 +89,7 @@ Bốn lựa chọn ở cuối bảng trên đang chết. Mỗi mục dưới đ�
 1. **Giám định có giá.** Đặt món chưa giám định bán với hệ số 0,70 so với giá thật. Phí giám định khoảng 10% giá nền. Khi đó người chơi phải chọn: trả phí để bán đủ giá và lộ hàng giả, hay bán vội mất 30% nhưng giữ vốn xoay vòng. Nếu thiếu tiền, chọn nào thì tùy kỳ nợ.
 2. **Cầm cố có lý do.** Cho cầm cả tạo tác và gia truyền (hiện bị cấm), vì người chơi mất combo mới thấy đau, và có thể chuộc để mở lại. Có thể thêm **tin đồn biến cố ngày mai**: biết ngày mai món Quá khứ bán thêm 15% thì người chơi giữ món chờ, và dùng cầm cố để lấy tiền ngay. Đó là đánh đổi thật giữa thanh khoản hôm nay và giá cao ngày mai.
 3. **Biến cố mạnh hơn nhưng có thông tin.** Biến cố hiện trung tính vì ±15% trung bình triệt tiêu. Nếu sổ báo trước một ngày và biên độ ±25% thì người chơi có thể lập kế hoạch, và ván sẽ hay mà vẫn khó. Cần đo lại khi có luật mới.
-4. **Cho vòng xoáy thiếu tiền có lối ra tốn kém.** Hiện thiếu tiền một lần là thua, nên không còn quyết định "chấp nhận nợ tồn để đầu tư". Nếu có một cách gỡ đắt đỏ (ví dụ vay nóng của Anh Bảy với phí 40% và khóa mua hộp lớn một ngày) thì nợ tồn thành đánh đổi chứ không phải bản án. Mức phạt 20% hiện tại, ngưỡng thua 1.000 xu đều không ảnh hưởng gì vì mọi hụt tiền đều là cái chết, nên chúng cần được thiết kế lại cùng lối ra này.
+4. **Cho vòng xoáy thiếu tiền có lối ra tốn kém.** Hiện thiếu tiền một lần là thua, nên không còn quyết định "chấp nhận nợ tồn để đầu tư". Nếu có một cách gỡ đắt đỏ (ví dụ vay nóng của Anh Bảy với phí 40% và khóa mua hộp lớn một ngày) thì nợ tồn thành đánh đổi chứ không phải bản án. Mức phạt 20% hiện tại, ngưỡng thua 10.000.000 đ đều không ảnh hưởng gì vì mọi hụt tiền đều là cái chết, nên chúng cần được thiết kế lại cùng lối ra này.
 5. **Sòng bạc là trò ham muốn, không phải cứu ván.** Giữ kỳ vọng −10% và đừng nâng tỷ lệ thắng. Nếu muốn nó thành lựa chọn khó, gắn phần thưởng không phải tiền (manh mối, mở Bí Khế) vào kết quả thắng.
 
 Mọi đề xuất trên là việc của Claude 1 (thiết kế) và chủ dự án duyệt. Claude 2 sẽ đo lại từng đề xuất khi có luật cụ thể.

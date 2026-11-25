@@ -39,6 +39,9 @@ def table_rows(filename, first_cell_pattern):
 
 
 def xu(text):
+    """Đọc số tiền trong tài liệu: "230 xu" (cũ) hoặc "2.300.000 đ" (đồng). Trả về đơn vị cân bằng 10.000 đ."""
+    if "đ" in text:
+        return int(re.sub(r"[^\d]", "", text.split("đ")[0])) // 10000
     return int(re.sub(r"[^\d]", "", text.split("xu")[0]))
 
 
@@ -198,7 +201,8 @@ class MatchesSimulation(unittest.TestCase):
         with open(os.path.join(DOCS, "DichVuVaMeta.md"), encoding="utf-8") as f:
             text = f.read()
         for number in (loan, redeem, math.ceil(v10 * D["services"]["auction"]["fee_rate"])):
-            self.assertIn("{:,}".format(number).replace(",", "."), text, number)
+            # Tài liệu ghi bằng đồng (1 đơn vị cân bằng = 10.000 đ).
+            self.assertIn("{:,}".format(number * 10000).replace(",", "."), text, number)
 
 
 def recompute_multipliers():

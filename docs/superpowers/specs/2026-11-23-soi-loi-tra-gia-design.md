@@ -51,6 +51,15 @@ Biến việc mở hòm và kiểm tra đồ thành **trò chơi quan sát**: so
 
 ## 2. Mini-game soi lỗi
 
+### Luật soi đã chốt (chủ dự án, 2026-11-24), thay cho bước 2 đến 4 bên dưới
+
+- **Người chơi tự tìm chỗ lỗi** trên vật. Chỉ khi di chuột **đúng chỗ lỗi** thì mới hiện dấu hiệu: một **dòng chữ ngắn ngay đầu chuột** ghi đó là lỗi gì. Chỗ không có lỗi thì không hiện gì (không còn "nhiễu" khi soi).
+- **Người chơi bấm vào lỗi thì giá tiền nhảy theo lỗi**, theo hướng **trừ giá**.
+- **Bảng** của món đồ cho người chơi **chọn món là thật hay giả**, và hiển thị **giá trị và thông tin cơ bản** của món.
+- Con số (mỗi lỗi trừ bao nhiêu, bỏ sót lỗi thì sao, phạt khi chọn sai thật giả): Claude 2 đo, xem [Sprint5SoiLoi.md](../../../Docs/Balance/Sprint5SoiLoi.md).
+
+### Bản cũ (bước 2 đến 4 đã được thay bằng luật trên)
+
 1. **Hồ sơ vật (bằng chữ):** tên, màu sắc, hoa văn, chi tiết **chuẩn** của loại đồ đó.
 2. Người chơi **cầm xoay** vật và so sánh với hồ sơ để tìm chỗ **khác chuẩn**. Mỗi chỗ khác là một **lỗi**; lỗi có thể thật hoặc **nhiễu**.
 3. Mỗi lần soi một điểm tốn **một lượt soi**. Mỗi vật có **số lượt soi giới hạn** (đề xuất 3–4).
@@ -99,7 +108,7 @@ Người chơi mang đồ đến **cửa hàng đồ cổ**, thẩm định viê
 ## Câu hỏi còn mở
 
 1. Thẩm định viên ở cửa hàng đồ cổ là ai: nhân vật mới hay Giáo Sư Lẫm? Có cần thêm cửa hàng mới, hay dùng quầy giám định hiện có?
-2. Giá trị cụ thể: số lượt soi, phí soi thêm, mức phạt giả-thành-thật, mức lỗ thật-thành-giả, mức ép giá: **chờ Claude 2**. Cần mô phỏng để game không quá bấp bênh.
+2. Giá trị cụ thể: số lượt soi, phí soi thêm, mức phạt giả-thành-thật, mức lỗ thật-thành-giả, mức ép giá: **chờ Claude 2**. Cần mô phỏng để game không quá bấp bênh. *Claude 2 đã đo và đề xuất (2026-11-24, chờ duyệt):* [Sprint5SoiLoi.md](../../../Docs/Balance/Sprint5SoiLoi.md).
 3. Lớp phủ tình trạng và biến đổi bản giả trên mô hình low-poly: cách làm cụ thể (shader hay texture) do Antigravity quyết.
 4. Có tùy chọn bỏ qua hoàn toàn soi lỗi (chọn nhanh, chấp nhận rủi ro) hay không.
 5. Cách lưu bằng chứng và kết quả soi trong dữ liệu ván: trao đổi với Codex trong `Docs/Content/YeuCauDuLieu.md`.

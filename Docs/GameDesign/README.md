@@ -28,7 +28,7 @@
 - Tài sản chưa đổi thành tiền (hiện vật, tạo tác) không được tính để trả nợ. Muốn dùng phải bán hoặc cầm cố trước khi thu nợ trong cùng ngày.
 
 **[ĐỀ XUẤT] Thắng và thua.**
-- **Thua ngay:** nợ tồn sau khi thu nợ của bất kỳ ngày nào vượt **1.000 xu** (ngưỡng thử nghiệm).
+- **Thua ngay:** nợ tồn sau khi thu nợ của bất kỳ ngày nào vượt **10.000.000 đ** (ngưỡng thử nghiệm).
 - **Thua cuối ngày 7:** sau khi thu nợ kỳ 7 còn nợ tồn lớn hơn 0.
 - **Thắng:** sau khi thu nợ kỳ 7, nợ tồn bằng 0 và tất cả kỳ 1–7 đã thanh toán.
 
@@ -36,16 +36,16 @@
 
 | Ca | Tình huống | Kết quả |
 | --- | --- | --- |
-| 1 | Ngày 1 có 1.000 xu, trả 200 | Còn 800 xu, không có nợ tồn, tiếp tục. |
-| 2 | Ngày 1 có 150 xu, trả 150 | Nợ tồn 50, phạt 10, nợ tồn còn 60. |
-| 3 | Ngày 2 phải trả 410 (kỳ 350 cộng nợ tồn 60), có 100 xu | Trả 100, còn 310, phạt 62, nợ tồn 372, tiếp tục. |
-| 4 | Cuối ngày bất kỳ, nợ tồn sau thu là 1.100 xu | Thua ngay. |
-| 5 | Ngày 7 tổng phải trả 2.250 xu (kỳ 2.200 cộng nợ tồn 50), người chơi chỉ có 2.200 xu | Còn nợ tồn 50 sau khi thu. Thua cuối ngày 7. |
+| 1 | Ngày 1 có 10.000.000 đ, trả 2.000.000 đ | Còn 8.000.000 đ, không có nợ tồn, tiếp tục. |
+| 2 | Ngày 1 có 1.500.000 đ, trả 1.500.000 đ | Nợ tồn 500.000 đ, phạt 100.000 đ, nợ tồn còn 600.000 đ. |
+| 3 | Ngày 2 phải trả 4.100.000 đ (kỳ 3.500.000 đ cộng nợ tồn 600.000 đ), có 1.000.000 đ | Trả 1.000.000 đ, còn 3.100.000 đ, phạt 620.000 đ, nợ tồn 3.720.000 đ, tiếp tục. |
+| 4 | Cuối ngày bất kỳ, nợ tồn sau thu là 11.000.000 đ | Thua ngay. |
+| 5 | Ngày 7 tổng phải trả 22.500.000 đ (kỳ 22.000.000 đ cộng nợ tồn 500.000 đ), người chơi chỉ có 22.000.000 đ | Còn nợ tồn 500.000 đ sau khi thu. Thua cuối ngày 7. |
 | 6 | Ngày 7 trả đủ kỳ và không còn nợ tồn | Thắng. |
-| 7 | Hiện vật trị giá 3.000 xu nhưng tiền mặt 0, chưa bán trước khi thu nợ | Không tính để trả. Ngày 1 thiếu cả 200 xu, nợ tồn thành 240 (200 cộng phạt 40). |
-| 8 | Ngày 2 phải trả 410 (kỳ 350 cộng nợ tồn 60, trong đó 10 là phạt cũ), người chơi chỉ trả 5 xu | Còn 405, phạt 81, nợ tồn 486. Phạt tính trên tổng còn lại, kể cả phần phạt cũ. |
+| 7 | Hiện vật trị giá 30.000.000 đ nhưng tiền mặt 0, chưa bán trước khi thu nợ | Không tính để trả. Ngày 1 thiếu cả 2.000.000 đ, nợ tồn thành 2.400.000 đ (2.000.000 đ cộng phạt 400.000 đ). |
+| 8 | Ngày 2 phải trả 4.100.000 đ (kỳ 3.500.000 đ cộng nợ tồn 600.000 đ, trong đó 100.000 đ là phạt cũ), người chơi chỉ trả 50.000 đ | Còn 4.050.000 đ, phạt 810.000 đ, nợ tồn 4.860.000 đ. Phạt tính trên tổng còn lại, kể cả phần phạt cũ. |
 
-Các con số phạt 20% và ngưỡng 1.000 xu là giá trị thử nghiệm. Claude 2 sẽ kiểm tra lại khi cân bằng.
+Các con số phạt 20% và ngưỡng 10.000.000 đ là giá trị thử nghiệm. Claude 2 sẽ kiểm tra lại khi cân bằng.
 
 ## 3. Hộp mù, hiện vật và định giá
 
@@ -62,7 +62,7 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 **[ĐỀ XUẤT] Kệ hộp và manh mối.** Chi tiết và bảng giá ở [Docs/Content/NoiDungMau.md](../Content/NoiDungMau.md) mục 5.
 - Mỗi **lượt mua** (tối đa 3 lượt mỗi ngày), Dì Mận bày **1 hộp mỗi loại**. Người chơi chọn mua **1 hộp** hoặc **dừng mua** trong ngày. Không đổi hộp trong cùng lượt, hộp bị bỏ qua không quay lại.
 - Mỗi hộp là vật thể riêng, hiện vật bên trong định sẵn theo seed. Hộp có **3 manh mối** gợi nhóm nguồn gốc: H1 và H2 có 2 đúng 1 sai, H3 và Rương Đen chỉ 1 đúng 2 sai.
-- Người chơi thấy **1 manh mối miễn phí** mỗi hộp (có thể sai), và trả **15 xu** hỏi **lời mách của Dì Mận** để biết chắc nhóm nguồn gốc thật, một lần mỗi hộp.
+- Người chơi thấy **1 manh mối miễn phí** mỗi hộp (có thể sai), và trả **150.000 đ** hỏi **lời mách của Dì Mận** để biết chắc nhóm nguồn gốc thật, một lần mỗi hộp.
 - **Giá hộp dao động theo ngày:** giá gốc của mỗi loại hộp lệch ngẫu nhiên đều trong khoảng cộng trừ 20% mỗi ngày, công bố đầu ngày trước khi mua, nên loại hộp tốt nhất đổi theo ngày và người chơi phải tính lại mỗi ngày.
 - **Giá niêm yết đi theo manh mối đầu tiên** (hệ số 0,75): Dì Mận cũng đọc manh mối nên hộp được cho là tốt bị nâng giá. Giá niêm yết bằng giá hôm nay nhân hệ số theo manh mối.
 - Giao diện **không hiển thị giá trị kỳ vọng** của từng loại hộp. Người chơi tự tính từ giá niêm yết, tỷ lệ hàng giả của loại và manh mối.
@@ -83,7 +83,7 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 | Giáo Sư Lẫm · Giám định | Kiểm tra sâu và làm rõ dấu hiệu xác thực. |
 | Chú Rỉ · Phục chế | Xử lý tình trạng hiện vật để đổi lấy phí. |
 | Đấu giá | Kênh giao dịch cạnh tranh cho hiện vật. Cần chốt thời điểm nhận tiền và xử lý món chưa bán. |
-| Sòng bạc | Lựa chọn rủi ro trong nền kinh tế xu của ván. Cần chốt luật cược, giới hạn và tác động đến khả năng trả nợ. |
+| Sòng bạc | Lựa chọn rủi ro trong nền kinh tế tiền của ván. Cần chốt luật cược, giới hạn và tác động đến khả năng trả nợ. |
 | Cầm cố | Đổi hiện vật lấy thanh khoản. Cần chốt giá cầm, phí, hạn chuộc và điều kiện mất món. |
 
 **[ĐÃ CHỐT]** NPC, biến cố, đấu giá, sòng bạc và cầm cố thuộc thiết kế. **[ĐỀ XUẤT]** Biến cố làm thay đổi nguồn cung, nhu cầu hoặc khả năng tiếp cận dịch vụ trong một khoảng thời gian và được báo qua sổ. Chốt điều kiện phát sinh, thời lượng và tác động trước khi đưa vào bảng cân bằng. Luật đề xuất cho biến cố, đấu giá, sòng bạc và cầm cố nằm trong [Docs/Content/DichVuVaMeta.md](../Content/DichVuVaMeta.md).
@@ -100,9 +100,9 @@ Hộp có giá và nhóm hàng tiềm năng. Hình dáng, tem niêm phong hoặc
 
 | Tham số thử nghiệm | Giá trị tham khảo |
 | --- | --- |
-| Vốn đầu ván | 1.000 xu |
-| Nợ ngày 1–7 | 200 / 350 / 500 / 750 / 1.050 / 1.500 / 2.200 xu |
-| Giá gốc các hộp thường (dao động cộng trừ 20% mỗi ngày) | 100 / 350 / 800 xu |
+| Vốn đầu ván | 10.000.000 đ |
+| Nợ ngày 1–7 | 2.000.000 / 3.500.000 / 5.000.000 / 7.500.000 / 10.500.000 / 15.000.000 / 22.000.000 đ |
+| Giá gốc các hộp thường (dao động cộng trừ 20% mỗi ngày) | 1.000.000 / 3.500.000 / 8.000.000 đ |
 
-Các mức xu, giá bán, xác suất, quy mô danh mục và mục tiêu tỷ lệ thắng vẫn đang thử nghiệm. Claude 2 so sánh chiến thuật thận trọng, săn combo và liều lĩnh bằng các lượt chạy với seed tái lập. Ghi tỷ lệ thắng, ngày hụt tiền, tần suất hoàn thành combo và giả định trước khi đề xuất thay số. Giới hạn 3 hộp/ngày, thời hạn 7 ngày và quy tắc thanh toán đúng kỳ là luật cốt lõi.
+Các mức tiền, giá bán, xác suất, quy mô danh mục và mục tiêu tỷ lệ thắng vẫn đang thử nghiệm. Claude 2 so sánh chiến thuật thận trọng, săn combo và liều lĩnh bằng các lượt chạy với seed tái lập. Ghi tỷ lệ thắng, ngày hụt tiền, tần suất hoàn thành combo và giả định trước khi đề xuất thay số. Giới hạn 3 hộp/ngày, thời hạn 7 ngày và quy tắc thanh toán đúng kỳ là luật cốt lõi.
 Xem [checklist công việc](../../TASKS.md).

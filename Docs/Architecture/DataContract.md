@@ -8,7 +8,7 @@ Tài liệu này xác định giao diện dữ liệu giữa **Antigravity** (c�
 
 ### 1.1. Trạng thái ván & ngày (`RunStateSnapshot`)
 - `CurrentDay` (`int`, 1–7)
-- `Cash` (`int`, đơn vị xu)
+- `Cash` (`int`, đơn vị cân bằng 10.000 đ, xem `currency` trong `content.json`)
 - `DailyBoxesPurchased` (`int`, 0–3) và `MaxDailyBoxes` (`int`, mặc định 3)
 - `DebtDueToday` (`int`) và `IsDebtPaidToday` (`bool`)
 - `ActiveEvents` (danh sách biến cố đang hiệu lực để hiển thị trên sổ tay / cảnh chợ)

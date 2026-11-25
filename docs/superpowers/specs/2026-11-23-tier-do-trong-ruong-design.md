@@ -51,7 +51,25 @@ Nguyên tắc nội dung: **gần gũi, người chơi nhận ra ngay**. Pha **c
 | **Rất hiếm (8)** | **V07** Tinh thể lam cầm tay, **V10** Mảnh vảy long, Đàn thần (VN, truyền thuyết Thạch Sanh), Trống đồng nhỏ (VN), Kiếm sáng ba màu (NH), Quả cầu ngọc 7 sao (NH), Trái tim robot (hạ từ Huyền thoại), Phi thuyền mini của phi hành gia (hạ từ Huyền thoại) |
 | **Huyền thoại (8)** | Ấn Ngọc Tỷ (VN), Tấm vé số độc đắc "chưa đổi" (VN, hài), Giày thủy tinh nguyên bản (cổ tích), Quả táo vàng (thần thoại), **Nỏ thần** (VN, An Dương Vương, `L05`), **Gậy sắt của vị anh hùng làng Gióng** (VN, `L06`, gậy thẳng cứng theo truyền thuyết), **Chiếc nhẫn duy nhất** (NH, *chưa có mô hình*), **Quyển sổ định mệnh** (NH, *chưa có mô hình*) |
 
-## 3. Rương ra bậc nào (đề xuất)
+## 3. Rương ra bậc nào
+
+### Đã chốt (chủ dự án duyệt 2026-11-24)
+
+Bảng của Claude 2 ([Sprint5Ruong.md](../../../Docs/Balance/Sprint5Ruong.md)), chủ dự án duyệt và chỉnh hai điểm: **Đen giữ 12.000.000 đ**; **Gỗ có thêm một tỉ lệ nhỏ Rất hiếm**, rồi cân bằng lại Gỗ; **rác Vải Niêm lên 30%**; **rác Đen lên 30%, Rất hiếm Đen tăng nhẹ** (55% lên 58%) để Đen vẫn nhiều rác nhất. Quay hai bước: quay bậc, rồi quay đều một món trong bộ sưu tập của rương ở bậc đó ([rương chủ đề](2026-11-24-ruong-chu-de-design.md)).
+
+| Rương | Giá | Rác | Thường | Hiếm | Rất hiếm | Huyền thoại | Tạo tác | Hàng giả |
+|---|---|---|---|---|---|---|---|---|
+| Gỗ | 1.400.000 đ | 18% | 79,5% | 1% | 1% | 0,5% | — | 10% |
+| Vải Niêm | 3.500.000 đ | 30% | 39% | 25% | 5% | 1% | — | 15% |
+| Kim Khí | 4.500.000 đ | 10% | 25% | 22% | 8% | 1% | 34% (tier 1: 60%, tier 2: 35%, tier 3: 5%) | 0% |
+| Đen | 12.000.000 đ | 30% | 3% | 4% | 58% | 5% | — | 30% |
+
+- Rác bán 30.000 đ, không giả. Kim Khí ra **cả đồ lẫn tạo tác** (không còn chỉ ra tạo tác).
+- **Huyền thoại có ở 4 rương cơ bản nhưng hiếm** (0,5% đến 5%), theo rương chủ đề; thay cho dòng "không có" bên dưới.
+- **Tạo tác từ Kim Khí (chốt 2026-11-24):** có thể ra tạo tác đã có. Tạo tác chưa có thì vào ô trống; trùng hoặc hết ô thì **đổi ra tiền bằng 50% giá Kho Tạo Tác** của món đó.
+- Chưa chốt (câu hỏi mở trong Sprint5Ruong.md): giá nền 25 món mới, cách sắp sẵn hộp ở lần chơi đầu.
+
+### Đề xuất khởi đầu (đã thay bằng bảng trên)
 
 Cột là phần trăm khối lượng ra của rương; **Kim Khí** ra tạo tác nên tách riêng.
 
@@ -64,7 +82,7 @@ Cột là phần trăm khối lượng ra của rương; **Kim Khí** ra tạo t
 
 - **Kim Khí:** 90% ra tạo tác (tier 1: 60%, tier 2: 35%, tier 3: 5%), 10% rác máy móc hỏng.
 - *(Đã thay đổi: xem [rương chủ đề](2026-11-24-ruong-chu-de-design.md), mục 9. Rương Tổng Hợp ra món của các rương thường, Huyền thoại riêng nằm ở rương chủ đề.)*
-- **Huyền thoại không có ở 4 rương cơ bản.** Chỉ có ở **rương mở khóa** (phần 1): Rương Tổng Hợp là rương cho Huyền thoại, đề xuất mỗi lần mở có 8–10% ra một món Huyền thoại.
+- ~~**Huyền thoại không có ở 4 rương cơ bản.**~~ *(Đã thay: có, hiếm, xem bảng đã chốt.)* Chỉ có ở **rương mở khóa** (phần 1): Rương Tổng Hợp là rương cho Huyền thoại, đề xuất mỗi lần mở có 8–10% ra một món Huyền thoại.
 - Các rương mở khóa khác (Cổ Phong, Thiên Cơ, Rác Quý) giữ như phần 1.
 - Hàng giả áp dụng cho **Thường, Hiếm, Rất hiếm** (và Huyền thoại, đề xuất tỉ lệ thấp); rác không có giả.
 
@@ -82,8 +100,8 @@ Số lỗi cần tìm tăng theo bậc (đề xuất): Thường 1–2, Hiếm 2
 1. Giá nền, tỉ lệ giả, hồ sơ chuẩn và danh sách lỗi cho 25 món mới: cần viết, mỗi món một mục.
 2. Tên 25 món mới có đúng ý bạn không (đặc biệt Huyền thoại)? Món nhại cần kiểm tra kỹ để **không dùng tên hay hình ảnh thật** có bản quyền.
 3. Số món mỗi nhóm nguồn gốc ở mỗi bậc có cân đối cho rương Vải Niêm (theo bộ) không: cần kiểm tra.
-4. Tỉ lệ ra ở mục 3 và 8–10% Huyền thoại ở Rương Tổng Hợp: **chờ Claude 2**.
-5. Kim Khí có nên ra tạo tác đã có (trùng) hay chỉ ra tạo tác chưa sở hữu.
+4. ~~Tỉ lệ ra ở mục 3~~ **Đã chốt 2026-11-24** (bảng ở mục 3). 8–10% Huyền thoại ở Rương Tổng Hợp: **chờ Claude 2**.
+5. ~~Kim Khí có nên ra tạo tác đã có (trùng) hay chỉ ra tạo tác chưa sở hữu.~~ **Đã chốt 2026-11-24:** có ra trùng, trùng đổi 50% giá Kho (mục 3).
 6. ~~Cần mô hình 3D low-poly cho 25 món mới~~ **Đã làm**, xem dưới. **Còn lệch ở bậc Huyền thoại, cần chủ dự án quyết.**
 
 ## Cập nhật: cách làm mô hình theo bậc (chốt)
