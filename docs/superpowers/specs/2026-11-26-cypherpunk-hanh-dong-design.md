@@ -62,7 +62,7 @@ Mô hình, hiệu ứng mở và âm thanh của các rương cũ **không dùng
 Một bản chơi thử nhỏ nhất cho thấy được vòng chơi:
 - Một hầm với bàn nâng cấp, một lõi và bốn bộ phận, mỗi vị trí 2 lựa chọn.
 - Một khu mặt đất.
-- Ba loại robot và một trùm.
+- Ba loại robot, một trùm phụ và một trùm cuối.
 - Một loại hòm mới làm mục tiêu và phần thưởng.
 - Chơi được: sáng nâng cấp, tối chiến đấu, quay về hầm với phần thưởng, thấy nhân vật mạnh hơn, chết thì làm lại từ đầu.
 
@@ -73,9 +73,12 @@ Một bản chơi thử nhỏ nhất cho thấy được vòng chơi:
 - Mỗi ván kéo dài đến khi người chơi **chết**.
 - **Khi chết, mất hết trang bị và kiếm lại từ đầu.**
 - **Có trùm cuối.** Hạ được là thắng ván.
+- **Có các trùm phụ** (quyết định của chủ dự án) nằm giữa đường tới trùm cuối.
 - Vòng chơi một ngày (mục 2) giữ nguyên: sáng ở hầm nâng cấp, tối lên mặt đất chiến đấu.
 
-Giả định của tôi: độ khó tăng theo số đêm đã sống sót, để người chơi tiến dần tới trùm cuối. Số đêm tới trùm cuối cần được chốt.
+Giả định của tôi: độ khó tăng theo số đêm đã sống sót, để người chơi tiến dần tới trùm cuối. Số đêm tới trùm cuối, số trùm phụ và đêm nào gặp trùm phụ cần được chốt.
+
+Vai trò trùm phụ (giả định của tôi): mỗi trùm phụ canh một hòm thưởng. Hạ trùm phụ thì mở hòm và nhận bộ phận hoặc vật liệu hiếm, nên nó là cột mốc nâng sức mạnh trước khi đến trùm cuối. Mỗi trùm phụ nên ép người chơi dùng một kỹ năng khác nhau (ví dụ một trùm phải hack mới đánh được, một trùm phải né và đỡ đúng nhịp), để không lặp lại nhau.
 
 Còn mở: chủ dự án nói chết là mất hết trang bị. Chưa rõ có tiến trình nào giữ lại giữa các ván (ví dụ mở khóa loại bộ phận mới) hay không. Tôi để mặc định là **không có**, cho tới khi chủ dự án nói khác.
 
@@ -108,6 +111,6 @@ Sau khi duyệt tôi sẽ đánh dấu "đã thay thế bởi spec này" ở cá
 ## 11. Việc để người làm quyết định
 
 - Chọn tên và chỉ số cụ thể cho lõi, từng bộ phận cơ thể và từng loại robot.
-- Số đêm tới trùm cuối.
+- Số đêm tới trùm cuối, số trùm phụ, đêm nào gặp trùm phụ.
 - Chọn tên khu mặt đất.
 - Cách điều khiển chi tiết (phím, tay cầm).
