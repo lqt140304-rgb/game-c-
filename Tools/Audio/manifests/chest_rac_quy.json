@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Rác Quý: 2 tiếng riêng (bay nhảy cóc, vồ rồi cào). Chạy: ELEVENLABS_API_KEY=dummy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_rac_quy.json",
+ "rac_quy": {
+  "prefix": "sfx_racquy_",
+  "hook": "rac_quy",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "close-up, loud and clear: a cat hopping four times on a wooden crate and cardboard boxes, four distinct paw landing thuds, thud thud thud thud, evenly spaced, with cardboard rustle on each landing and one short chirpy meow in the middle, no music",
+    "file": "sfx_racquy_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "starts instantly with a sharp cat pounce thud onto a metal trash can lid, then two fast scratchy claw rakes on dented metal, scrrt scrrt, ending with a short rattle of the lid, no music, no voice",
+    "file": "sfx_racquy_action.mp3"
+   }
+  ]
+ }
+}
