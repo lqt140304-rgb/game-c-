@@ -4,6 +4,34 @@ File này chỉ giữ các việc **chưa nghiệm thu**. Mỗi mục có một 
 
 Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng và QA. Antigravity sở hữu cảnh, prefab, tương tác 3D và UI. Codex sở hữu gameplay, dữ liệu, lưu ván và kiểm thử tự động. Codex và Antigravity thống nhất giao diện dữ liệu trước khi nối gameplay với cảnh.
 
+## ƯU TIÊN SỐ 1 — Bản phát hành đầu tiên (v1)
+
+**Trạng thái: ĐỀ XUẤT, chờ chủ dự án duyệt (2026-11-26).**
+
+Mục tiêu duy nhất: **một bản PC chơi được từ ngày 1 đến kết quả ngày 7, đủ để bán trên Steam.** Bối cảnh là chợ trời trong một con hẻm thành phố Việt Nam (xem [Docs/DaChot.md](Docs/DaChot.md)). Phạm vi chơi lấy đúng mục 7 của [GDD](Docs/GameDesign/README.md): phòng trọ, khu chợ nhỏ, bàn mở và soi, Dì Mận, Kim Khuy, Anh Bảy, 8 đến 12 hiện vật, 2 gia truyền, 3 loại hộp thường và 1 loại đặc biệt, 6 tạo tác thuộc 2 hệ, 3 combo, 2 điều kiện Bí Khế.
+
+**Luật khóa phạm vi:** mọi ý tưởng mới ghi vào mục "Bản sau" ở cuối phần này, **không đưa vào v1**. Agent không bắt đầu việc nào ngoài danh sách dưới đây cho tới khi v1 phát hành, trừ khi chủ dự án cho phép.
+
+Việc theo thứ tự. Việc sau phụ thuộc việc trước:
+
+1. [ ] **Codex** — Đẩy nhánh `codex/sprint-1` lên GitHub và mở pull request. **Đây là việc chặn mọi thứ khác.** Nghiệm thu khi người khác tải về và chạy được kiểm thử.
+2. [ ] **Antigravity** — Hoàn thành map hẻm Việt Nam (đang làm) ở mức nhỏ gọn theo kích thước trong spec market-town: phòng trọ, quầy Dì Mận, bàn mở và soi, chỗ Anh Bảy thu nợ. Nghiệm thu khi đi bộ hết khu chợ trong Play Mode.
+3. [ ] **Codex + Antigravity** — Nối lõi gameplay Sprint 1 vào cảnh: mua hộp, mở, soi, bán, kết thúc ngày, thu nợ, tự lưu. Nghiệm thu khi người chơi tự đi hết một ngày trong Play Mode (mục Sprint 1 bên dưới).
+4. [ ] **Codex + Antigravity** — Gia truyền, tạo tác, combo, Bí Khế và đủ 7 ngày đến màn kết quả (mục Sprint 2 bên dưới). Nghiệm thu khi chơi được tới kết quả ngày 7 và tải lại đúng trạng thái.
+5. [ ] **Antigravity** — Hình ảnh hộp và cảm giác mở hộp: dùng lại mô hình và hiệu ứng mở của **4 rương đã duyệt** cho 3 loại hộp thường và 1 loại đặc biệt (chủ dự án chọn 4 rương). Không làm thêm rương mới. Thêm âm thanh và ánh sáng cơ bản.
+6. [ ] **Claude 1** — Viết lại lời thoại mở màn, Dì Mận, Kim Khuy và Anh Bảy cho khớp bối cảnh hẻm Việt Nam, giọng Gen Z. Chơi thử một ván thật khi bước 4 xong và gửi danh sách sửa ngắn.
+7. [ ] **Claude 2** — Chạy lại mô phỏng cân bằng **chỉ khi** số liệu thay đổi so với bản đã đo. Chốt bộ số cho v1.
+8. [ ] **Codex** — Sửa lỗi từ lần chơi thử, đóng gói bản PC (Windows). Nghiệm thu khi chạy được trên máy khác từ đầu đến kết quả ngày 7.
+9. [ ] **Chủ dự án** — Trang Steam (phí Steam Direct), ảnh chụp, clip ngắn cảnh mở hộp và cảnh Anh Bảy đòi nợ để đăng TikTok. Bắt đầu đăng clip ngay khi bước 5 có hình.
+
+### Bản sau (không làm trong v1)
+
+- Đấu giá, sòng bạc, cầm cố, giám định, phục chế và các dịch vụ trong Sprint 4.
+- Meta progression giữa các ván.
+- Toàn bộ Sprint 5: 38 món 5 bậc, rác có công dụng ẩn, soi lỗi lấy bằng chứng, trả giá kiểu Ace Attorney, cây phát triển, thần lực, thành tựu, rương chủ đề mở khóa.
+- Các rương chủ đề còn lại ngoài 4 rương dùng cho v1.
+- Hướng game hành động cypherpunk ([tạm gác](docs/superpowers/specs/2026-11-26-cypherpunk-hanh-dong-design.md)).
+
 ## Sprint 0 — Nền móng
 
 Đã nghiệm thu toàn bộ.
