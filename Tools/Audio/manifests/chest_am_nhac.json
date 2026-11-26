@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2, rương Âm nhạc: 2 tiếng riêng (bay + mở). Chạy: ELEVENLABS_API_KEY=dummy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_am_nhac.json",
+ "am_nhac": {
+  "prefix": "sfx_amnhac_",
+  "hook": "am_nhac",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a vinyl record rolling on its edge across a wooden floor like a wheel, soft rumbling roll with three light bouncing taps, then a quick wobbling whirr as it tips over and settles flat, no music",
+    "file": "sfx_amnhac_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "an immediate sharp needle drop click on a vinyl record at the very start, then a fast DJ scratch back and forth twice, ending with a short turntable spin-down, no music, no voice",
+    "file": "sfx_amnhac_action.mp3"
+   }
+  ]
+ }
+}
