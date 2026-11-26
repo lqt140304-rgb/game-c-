@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Tuổi thơ (bi ve): tiếng bay + tiếng búng bi. Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_tuoi_tho.json",
+ "tuoi_tho": {
+  "prefix": "sfx_tuoitho_",
+  "hook": "tuoi_tho",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a small glass marble rolling fast on a hard tiled floor, three bouncing clicks that get quicker and softer, tik... tik.. tik, with a light rolling rattle between bounces, no music",
+    "file": "sfx_tuoitho_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a sharp glass marble flick: immediately at the start a bright hard click of a glass marble hitting a wooden box, then one small rebound tick and a short fading glassy rattle, no music",
+    "file": "sfx_tuoitho_action.mp3"
+   }
+  ]
+ }
+}
