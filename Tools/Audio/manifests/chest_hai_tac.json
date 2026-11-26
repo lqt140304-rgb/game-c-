@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Hải tặc (vẹt): tiếng bay và tiếng mở riêng. Chạy: ELEVENLABS_API_KEY=dummy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_hai_tac.json",
+ "hai_tac": {
+  "prefix": "sfx_haitac_",
+  "hook": "hai_tac",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "close-up of a parrot flying past: rapid feathery wing flaps whooshing left then right in an uneven zigzag rhythm, one short raspy squawk in the middle, wing beats fading at the end, no music, no voice",
+    "file": "sfx_haitac_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a hard parrot beak strikes an iron padlock immediately at the very start: two sharp quick metallic tok tok pecks, then a forceful wooden creak and metal clank as the lock is pried open, short wing rustle tail, dry close recording, no music",
+    "file": "sfx_haitac_action.mp3"
+   }
+  ]
+ }
+}
