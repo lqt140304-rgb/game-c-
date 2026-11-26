@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2, rương Thiên Cơ: tiếng bay (bánh răng đồng lăn rồi quay tít) và tiếng mở (khớp vào cơ cấu, nhích một nấc). Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_thien_co.json",
+ "thien_co": {
+  "prefix": "sfx_thienco_",
+  "hook": "thien_co",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a small brass gear dropping onto a wooden floor with a light metallic tap, then rolling on its toothed rim with fast rattling ticks, ending in a rising metallic whirr as it spins up quickly, no music",
+    "file": "sfx_thienco_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a sharp loud mechanical clack right at the start as a brass gear locks into a clockwork mechanism, followed by one heavy ratchet click and a short metallic spring ring fading out, no music",
+    "file": "sfx_thienco_action.mp3"
+   }
+  ]
+ }
+}
