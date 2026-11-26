@@ -1,5 +1,8 @@
 # Prompt mẫu: dọn sạch hiệu ứng rương + chìa khoá
 
+> **2026-11-27: phần "vật mở khoá" của tài liệu này ĐÃ BỊ BỎ** (chủ dự án quyết định). Đã gỡ mã chìa khoá; mỗi rương còn một file dữ liệu `Chests/<Tên>Preset.cs`, âm thanh bám sự kiện chuyển động, xem [2026-11-27-ruong-am-thanh-dong-bo-design.md](2026-11-27-ruong-am-thanh-dong-bo-design.md). Các phần về rung lắc, bóp méo, vòng đổi màu, hào quang vẫn dùng làm tham chiếu.
+
+
 Dùng kèm [kế hoạch](2026-11-26-don-sach-ruong-chia-khoa-ke-hoach.md). Lịch: **02:00 sáng 2026-11-26 (giờ Việt Nam)** mở **Phiên A** và **Phiên B**
 (song song). Khi cả hai xong và đã gộp vào `claude/chest-trim-plan`, mở **17 phiên rương**. Cuối cùng **Phiên gộp**.
 Mọi phiên: tiếng Việt, lời đơn giản khi nói với chủ dự án, không mở PR, không nói tên mô hình trong commit.

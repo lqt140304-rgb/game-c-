@@ -208,6 +208,20 @@ namespace ChoDoLa.ChestFx
             _applied = true;
         }
 
+        /// <summary>
+        /// Nhả có nảy dư: 0 → ~1,095 (đỉnh ở ~60% đoạn) → 1, theo lò xo giảm chấn ζ = 0,6; hai đầu có vận tốc 0, và 20% cuối được pha
+        /// mượt về đúng 1 (không dư phần tàn của hàm mũ). <paramref name="p"/> 0..1.
+        /// </summary>
+        private static float SpringRelease(float p)
+        {
+            const float zeta = 0.6f, w0 = 6.6f;
+            float wd = w0 * Mathf.Sqrt(1f - zeta * zeta);
+            float r = 1f - Mathf.Exp(-zeta * w0 * p) * (Mathf.Cos(wd * p) + (zeta / Mathf.Sqrt(1f - zeta * zeta)) * Mathf.Sin(wd * p));
+            float tail = Mathf.Clamp01((p - 0.8f) / 0.2f);
+            tail = tail * tail * (3f - 2f * tail);
+            return Mathf.Lerp(r, 1f, tail);
+        }
+
         // ------------------------------------------------------------------ Công thức từng loại chuyển động
 
         private static void Accumulate(ref Delta total, Handle h, float u, float t)
@@ -247,7 +261,7 @@ namespace ChoDoLa.ChestFx
                 {
                     // Lên trong 30% đầu, lơ lửng và nhấp nhô, hạ xuống trong 30% cuối (nếu không giữ).
                     float rise = Mathf.Clamp01(u / 0.3f);
-                    rise = 1f - (1f - rise) * (1f - rise);
+                    rise = rise * rise * (3f - 2f * rise);   // vào mượt: vận tốc 0 lúc bắt đầu (trước là ease-out, giật)
                     float fall = h.holdEnd ? 0f : Mathf.Clamp01((u - 0.7f) / 0.3f);
                     float y = h.amplitude * rise * (1f - fall * fall) + 0.01f * Mathf.Sin(t * 3.1f) * rise * (1f - fall);
                     total.pos += Vector3.up * y;
@@ -256,37 +270,47 @@ namespace ChoDoLa.ChestFx
                 case StepMotionKind.Wobble:
                 {
                     float env = h.holdEnd ? 1f : 1f - u;
-                    float angle = h.amplitude * Mathf.Sin(u * h.frequency * Mathf.PI * 2f) * env;
+                    float attack = Mathf.Clamp01(u / 0.12f);
+                    attack = attack * attack * (3f - 2f * attack);   // vào mượt: không bắt đầu bằng một cú lắc
+                    float angle = h.amplitude * Mathf.Sin(u * h.frequency * Mathf.PI * 2f) * env * attack;
                     total.rot = total.rot * Quaternion.AngleAxis(angle, h.axis);
                     break;
                 }
                 case StepMotionKind.Squash:
                 {
-                    // Ép dẹt rồi bật lại: y co, x/z phồng, tắt dần.
-                    float env = h.holdEnd ? 1f : 1f - u;
+                    // Ép dẹt rồi bật lại: y co, x/z phồng, tắt dần. Đuôi tắt chậm hơn tuyến tính chút (mũ 0,87, trước là 1):
+                    // cú nảy dư sau nhát ép còn thấy rõ rồi mới lắng, thay vì dừng cụt. Vẫn về đúng 0 ở cuối, biên độ đỉnh không đổi.
+                    float env = h.holdEnd ? 1f : Mathf.Pow(1f - u, 0.87f);
                     float k = h.amplitude * Mathf.Sin(u * h.frequency * Mathf.PI * 2f) * env;
                     total.scale = Vector3.Scale(total.scale, new Vector3(1f + k * 0.5f, 1f - k, 1f + k * 0.5f));
                     break;
                 }
                 case StepMotionKind.SquashHold:
                 {
-                    // Ép nhanh, giữ dẹt, rồi phồng lại; dùng thời gian thật t. Duration < 0,4 thì co các đoạn theo tỉ lệ.
+                    // "Hụt hơi": ép nhanh tới 92% (0,17 s), chìm thêm tới 100% trong lúc giữ dẹt, rồi phồng lại 0,23 s với một chút
+                    // nảy dư (cao hơn dáng gốc tối đa ~9,5% biên độ) rồi lắng về đúng dáng gốc. Dùng thời gian thật t. d < 0,4 thì co các đoạn theo tỉ lệ.
                     float d = h.duration;
-                    float rise = 0.15f, fall = 0.2f;
+                    float rise = 0.17f, fall = 0.23f;
                     if (d < rise + fall) { float r = d / (rise + fall); rise *= r; fall *= r; }
                     float fv;
-                    if (t < rise) { float x = Mathf.Clamp01(t / rise); fv = x * x * (3f - 2f * x); }
-                    else if (t <= d - fall) fv = 1f;
-                    else { float x = Mathf.Clamp01((d - t) / fall); fv = x * x * (3f - 2f * x); }
+                    if (t < rise) { float x = Mathf.Clamp01(t / rise); fv = 0.92f * (x * x * (3f - 2f * x)); }
+                    else if (t <= d - fall)
+                    {
+                        float hold = Mathf.Max(0.001f, d - fall - rise);
+                        float x = Mathf.Clamp01((t - rise) / hold);
+                        fv = Mathf.Lerp(0.92f, 1f, x * x * (3f - 2f * x));
+                    }
+                    else fv = 1f - SpringRelease(Mathf.Clamp01((t - (d - fall)) / fall));
                     float k = h.amplitude * fv;
                     total.scale = Vector3.Scale(total.scale, new Vector3(1f + k * 0.5f, 1f - k, 1f + k * 0.5f));
                     break;
                 }
                 case StepMotionKind.ShakeAll:
                 {
-                    // Rung mọi hướng: tịnh tiến 3 trục + nghiêng nhẹ quanh 3 trục. Tăng dần 15% đầu, giảm dần 25% cuối.
-                    float env = Mathf.Clamp01(u / 0.15f) * Mathf.Clamp01((1f - u) / 0.25f);
-                    env = env * env * (3f - 2f * env);
+                    // Rung mọi hướng: tịnh tiến 3 trục + nghiêng nhẹ quanh 3 trục.
+                    // Vào 17% đầu, ra 28% cuối (trước 15% và 25%), đường cong bậc năm: vận tốc và gia tốc đều 0 ở hai đầu, không giật.
+                    float env = Mathf.Clamp01(u / 0.17f) * Mathf.Clamp01((1f - u) / 0.28f);
+                    env = env * env * env * (env * (env * 6f - 15f) + 10f);
                     float s = h.seed * 17.31f;
                     float f = Mathf.Max(1f, h.frequency);
                     float a = h.amplitude * env;
@@ -308,7 +332,7 @@ namespace ChoDoLa.ChestFx
                     // Bay lên theo trục đứng thế giới (30% đầu, ease), lơ lửng nhấp nhô, hạ về trong 30% cuối. Luôn hạ về.
                     // frequency = tổng số độ xoay chậm quanh trục đứng trong cả bước (0 = không xoay).
                     float rise = Mathf.Clamp01(u / 0.3f);
-                    rise = 1f - (1f - rise) * (1f - rise);
+                    rise = rise * rise * (3f - 2f * rise);   // vào mượt (trước là ease-out: vận tốc đột ngột lúc bắt đầu)
                     float fall = Mathf.Clamp01((u - 0.7f) / 0.3f);
                     fall = fall * fall * (3f - 2f * fall);
                     float lift = rise * (1f - fall);

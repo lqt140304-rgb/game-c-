@@ -163,17 +163,17 @@ namespace ChoDoLa.ChestFx
                     case ChestMoveStyle.Wobble:
                     {
                         float deg = new[] { 5.5f, 10f, 16.5f }[i] * sh;
-                        // số chu kỳ tăng theo nấc (tương ứng ~1,4 / 2,5 / 2,7 Hz với thời lượng mặc định của 3 nấc)
-                        Move(s, "lac-x" + tag, StepMotionKind.Wobble, deg, new[] { 3f, 4f, 8f }[i], n, A, Vector3.right, true);
-                        Move(s, "lac-z" + tag, StepMotionKind.Wobble, deg * 0.8f, new[] { 2.5f, 3.5f, 7f }[i], n, A, Vector3.forward, false);
+                        // số chu kỳ theo thời lượng mặc định 2,1 / 1,6 / 3,0 s của 3 nấc để giữ nhịp lắc ~2 - 2,5 Hz như trước (biên độ mới là thứ tăng dần)
+                        Move(s, "lac-x" + tag, StepMotionKind.Wobble, deg, new[] { 5f, 4f, 7f }[i], n, A, Vector3.right, true);
+                        Move(s, "lac-z" + tag, StepMotionKind.Wobble, deg * 0.8f, new[] { 4f, 3.5f, 6f }[i], n, A, Vector3.forward, false);
                         Move(s, "rung" + tag, StepMotionKind.ShakeAll, new[] { 0.0036f, 0.004f, 0.0046f }[i] * sh, new[] { 24f, 26f, 29f }[i], n, S, Vector3.up, false);
                         break;
                     }
                     case ChestMoveStyle.Bounce:
                     {
-                        // số lần nảy 3/4/5 để mỗi cú nảy dài ~0,4 - 0,7 s dù nấc dài ngắn khác nhau
-                        Move(s, "nay" + tag, StepMotionKind.Jump, new[] { 0.055f, 0.12f, 0.22f }[i], 2 + n, n, H, Vector3.up, true);
-                        Move(s, "lac" + tag, StepMotionKind.Wobble, new[] { 3.7f, 6f, 10f }[i], 2 + n, n, A, new Vector3(1f, 0f, 1f), false);
+                        // số lần nảy 4/3/5 trong 2,1/1,6/3,0 s: mỗi cú nảy dài ~0,53 - 0,6 s như trước (0,53 - 0,6)
+                        Move(s, "nay" + tag, StepMotionKind.Jump, new[] { 0.055f, 0.12f, 0.22f }[i], new[] { 4f, 3f, 5f }[i], n, H, Vector3.up, true);
+                        Move(s, "lac" + tag, StepMotionKind.Wobble, new[] { 3.7f, 6f, 10f }[i], new[] { 4f, 3f, 5f }[i], n, A, new Vector3(1f, 0f, 1f), false);
                         break;
                     }
                     default: // Shake

@@ -1,5 +1,8 @@
 # Đợt 2: mỗi rương một cách mở, ánh sáng và âm thanh riêng theo chủ đề
 
+> **2026-11-27: phần "vật mở khoá" của tài liệu này ĐÃ BỊ BỎ** (chủ dự án quyết định). Đã gỡ mã chìa khoá; mỗi rương còn một file dữ liệu `Chests/<Tên>Preset.cs`, âm thanh bám sự kiện chuyển động, xem [2026-11-27-ruong-am-thanh-dong-bo-design.md](2026-11-27-ruong-am-thanh-dong-bo-design.md). Các phần về rung lắc, bóp méo, vòng đổi màu, hào quang vẫn dùng làm tham chiếu.
+
+
 Đọc kèm [kế hoạch](2026-11-26-don-sach-ruong-chia-khoa-ke-hoach.md) (mục 2, 3, 4.1, 6). Yêu cầu của chủ dự án sau khi chạy thử trong Unity:
 
 - "Chìa khoá" không có nghĩa là cắm vào rồi vặn. Cách bay và cách mở phải **hợp chủ đề** từng rương.

@@ -1,5 +1,8 @@
 # Kế hoạch dọn sạch hiệu ứng rương: chỉ còn rung lắc, bóp méo, âm thanh và VẬT MỞ KHOÁ
 
+> **2026-11-27: phần "vật mở khoá" của tài liệu này ĐÃ BỊ BỎ** (chủ dự án quyết định). Đã gỡ mã chìa khoá; mỗi rương còn một file dữ liệu `Chests/<Tên>Preset.cs`, âm thanh bám sự kiện chuyển động, xem [2026-11-27-ruong-am-thanh-dong-bo-design.md](2026-11-27-ruong-am-thanh-dong-bo-design.md). Các phần về rung lắc, bóp méo, vòng đổi màu, hào quang vẫn dùng làm tham chiếu.
+
+
 Ngày 2026-11-25 (quyết định mới của chủ dự án) · Thay thế kế hoạch [thu gọn](2026-11-25-thu-gon-hieu-ung-ruong-ke-hoach.md)
 (mục 5 từng rương của bản đó **không còn dùng**; thước đo mục 2 và quy tắc âm A4/A6 vẫn là tham chiếu).
 Phiên làm đọc kèm [prompt mẫu](2026-11-26-don-sach-ruong-chia-khoa-prompt-mau.md).

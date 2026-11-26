@@ -5,6 +5,8 @@ namespace ChoDoLa.ChestFx
     /// <summary>
     /// Quy tắc âm thanh chung cho cả 17 rương (xem docs/superpowers/specs/2026-11-25-thu-gon-hieu-ung-ruong-ke-hoach.md, mục 3).
     /// Hằng số là trần âm lượng / khoảng cách tối thiểu; hồ sơ lõi được ghi gần như câm, hook tự phát nền, nhịp, tiếng chốt.
+    /// Từ 2026-11-27 mọi tiếng của chuỗi mở chuẩn do <see cref="ChestSoundHook"/> phát theo sự kiện chuyển động
+    /// (xem docs/superpowers/specs/2026-11-27-ruong-am-thanh-dong-bo-design.md); các hằng số dưới đây là trần của nó.
     /// </summary>
     public static class ChestAudioRule
     {
