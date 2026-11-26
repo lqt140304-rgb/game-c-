@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Thợ Mỏ: tiếng bay + tiếng hành động mở. Chạy: ELEVENLABS_API_KEY=dummy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_miner.json",
+ "miner": {
+  "prefix": "sfx_miner_",
+  "hook": "miner",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a heavy iron pickaxe thrown end over end through the air, three fast rhythmic whoosh whoosh whoosh spins that slow down slightly, airy swish of a wooden handle, no music, no voice",
+    "file": "sfx_miner_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "starts instantly with a sharp metal pickaxe striking hard rock, loud clang at the very beginning, a second clang strike a quarter second later, then small stone chips and gravel rattling and trickling down, short dusty tail, no music, no voice",
+    "file": "sfx_miner_action.mp3"
+   }
+  ]
+ }
+}
