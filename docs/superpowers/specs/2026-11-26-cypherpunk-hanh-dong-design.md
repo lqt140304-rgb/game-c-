@@ -33,54 +33,51 @@ Cận chiến bằng vũ khí hoặc tay cơ khí. Có đòn nhẹ, đòn nặng
 ### Hack (giả định của tôi)
 Ngắm vào robot rồi nhấn phím hack: chiếm quyền, làm đứng yên, cho quay sang đánh đồng đội hoặc nổ. Hack tốn năng lượng và có thời gian hồi, nên không thể thay hoàn toàn việc chém.
 
-### Bộ phận cơ thể (giả định của tôi)
-Có năm vị trí lắp: **tay, chân, mắt, lưng, não**.
+### Bộ phận cơ thể (quyết định của chủ dự án: 5 vị trí, 1 lõi và 4 bộ phận nâng cấp)
 
-| Vị trí | Mở ra điều gì |
-|---|---|
-| Tay | Vũ khí, combo, lưỡi dao, khiên |
-| Chân | Lướt, nhảy, né, đạp |
-| Mắt | Quét, hack tầm xa, nhìn xuyên vật cản |
-| Lưng | Bộ nguồn, giáp, vũ khí đeo |
-| Não | Số kỹ năng hack, năng lượng, tốc độ hồi |
+Có **một lõi** và **bốn bộ phận nâng cấp**. Phần đặt tên là giả định của tôi:
+
+| Vị trí | Loại | Mở ra điều gì |
+|---|---|---|
+| Lõi | Lõi | Năng lượng, số kỹ năng hack, tốc độ hồi. Nâng lõi là nâng sức mạnh nền của nhân vật |
+| Tay | Bộ phận | Vũ khí, combo, lưỡi dao, khiên |
+| Chân | Bộ phận | Lướt, nhảy, né, đạp |
+| Mắt | Bộ phận | Quét, hack tầm xa, nhìn xuyên vật cản |
+| Lưng | Bộ phận | Bộ nguồn, giáp, vũ khí đeo |
 
 Năm vị trí thay thế "4 ô tạo tác" trong spec rương cũ. Con số này cần Claude 2 kiểm tra cân bằng.
 
-## 4. Rương trong game mới (quyết định của chủ dự án)
+## 4. Hòm trong game mới (quyết định của chủ dự án)
 
-Rương **không còn là lõi game**. Chỉ giữ các rương chủ đề có tính chiến đấu, với hai vai trò:
-- **Mục tiêu chiến đấu:** một đám robot hoặc một trùm canh rương.
-- **Rương thưởng:** hạ được mục tiêu thì mở rương, phần thưởng là linh kiện hoặc bộ phận cơ thể hiếm.
+**Bỏ hết rương cũ.** Tạo **hòm mới** kiểu hòm chiến đấu, thiết kế lại cho game này. Rương không còn là lõi game.
 
-Mô hình, hiệu ứng mở và âm thanh đã dựng được tái dùng cho phần thưởng.
+Hòm có hai vai trò (giả định của tôi, theo ý "rương thưởng và mục tiêu chiến đấu" chủ dự án nói trước đó):
+- **Mục tiêu chiến đấu:** một đám robot hoặc một trùm canh hòm.
+- **Hòm thưởng:** hạ được mục tiêu thì mở hòm, phần thưởng là vật liệu hoặc bộ phận cơ thể hiếm.
 
-### Rương nào ở lại (giả định của tôi, chủ dự án chưa chọn)
-- **Hợp mục tiêu chiến đấu:** Robot, Miner, Hải Tặc, Mimic, Game, Không gian.
-- **Hợp làm phong cách khu vực hơn:** Âm nhạc, Tuổi thơ, Thể thao, Việt Nam, Trung Hoa, Nhật Bản, Cổ Phong, Thiên Cơ, Golden, Magic, Rác Quý.
-
-Danh sách cuối cùng chờ chủ dự án chọn.
+Mô hình, hiệu ứng mở và âm thanh của các rương cũ **không dùng nữa**. Cần dựng hòm mới. Số loại hòm và hình dạng cần chủ dự án chốt.
 
 ## 5. Phạm vi vertical slice (giả định của tôi)
 
 Một bản chơi thử nhỏ nhất cho thấy được vòng chơi:
-- Một hầm với bàn nâng cấp, năm vị trí cơ thể, mỗi vị trí 2 bộ phận.
+- Một hầm với bàn nâng cấp, một lõi và bốn bộ phận, mỗi vị trí 2 lựa chọn.
 - Một khu mặt đất.
 - Ba loại robot và một trùm.
-- Một rương mục tiêu, một rương thưởng.
-- Chơi được: sáng nâng cấp, tối chiến đấu, quay về hầm với phần thưởng, thấy nhân vật mạnh hơn.
+- Một loại hòm mới làm mục tiêu và phần thưởng.
+- Chơi được: sáng nâng cấp, tối chiến đấu, quay về hầm với phần thưởng, thấy nhân vật mạnh hơn, chết thì làm lại từ đầu.
 
-## 6. Cấu trúc ván chơi
+## 6. Cấu trúc ván chơi (quyết định của chủ dự án)
 
-**Không giới hạn số ngày, chơi kiểu roguelike. (quyết định của chủ dự án)** Bỏ nhịp 7 ngày của game cũ.
+**Không giới hạn số ngày, chơi kiểu roguelike.** Bỏ nhịp 7 ngày của game cũ.
 
-Hệ quả, là giả định của tôi cần xác nhận:
-- Mỗi ván kéo dài đến khi người chơi **chết**. Chết thì ván kết thúc và bắt đầu ván mới.
-- Độ khó **tăng theo số đêm đã sống sót**, thay cho hạn 7 ngày. Robot mạnh dần và mặt đất nguy hiểm dần.
-- Có **tiến trình giữa các ván** (meta): bộ phận cơ thể đã mở khóa, kỹ năng hack mới và rương đã gặp. Cái gì giữ lại và cái gì mất khi chết cần chốt.
-- Vẫn có **trùm** sau một số đêm nhất định để tạo đích đến ngắn hạn. Cần chốt trùm cuối có hay không.
+- Mỗi ván kéo dài đến khi người chơi **chết**.
+- **Khi chết, mất hết trang bị và kiếm lại từ đầu.**
+- **Có trùm cuối.** Hạ được là thắng ván.
 - Vòng chơi một ngày (mục 2) giữ nguyên: sáng ở hầm nâng cấp, tối lên mặt đất chiến đấu.
 
-Còn mở: chết thì giữ gì và mất gì, có trùm cuối hay chơi vô tận.
+Giả định của tôi: độ khó tăng theo số đêm đã sống sót, để người chơi tiến dần tới trùm cuối. Số đêm tới trùm cuối cần được chốt.
+
+Còn mở: chủ dự án nói chết là mất hết trang bị. Chưa rõ có tiến trình nào giữ lại giữa các ván (ví dụ mở khóa loại bộ phận mới) hay không. Tôi để mặc định là **không có**, cho tới khi chủ dự án nói khác.
 
 ## 7. Mục tiêu, không phải mục tiêu, phản mục tiêu
 
@@ -102,14 +99,15 @@ Còn mở: chết thì giữ gì và mất gì, có trùm cuối hay chơi vô t
 | A | Ngày chia hai nửa, sáng săn đồ, tối chợ | Bỏ: chủ dự án muốn đổi cách chơi lớn hơn |
 | B | Hack nằm trong chiến đấu thuần hành động | Gần với hướng đã chọn |
 | C | Chợ là cứ điểm, hành động là chuyến đi | Gần với hướng đã chọn |
-| **Đã chọn** | Hầm là cứ điểm nâng cấp cơ thể, mặt đất là chiến đấu, rương chủ đề là mục tiêu và thưởng | Chủ dự án chọn |
+| **Đã chọn** | Hầm là cứ điểm nâng cấp cơ thể, mặt đất là chiến đấu, hòm mới là mục tiêu và thưởng | Chủ dự án chọn |
 
 ## 10. Tài liệu bị thay thế nếu duyệt
 
-Sau khi duyệt tôi sẽ đánh dấu "đã thay thế bởi spec này" ở các tài liệu về nợ, soi lỗi, trả giá, bậc đồ, mở màn và một ngày. Phần rương chủ đề và hiệu ứng mở rương giữ nguyên.
+Sau khi duyệt tôi sẽ đánh dấu "đã thay thế bởi spec này" ở các tài liệu về nợ, soi lỗi, trả giá, bậc đồ, mở màn và một ngày. Bỏ cả các spec rương chủ đề, hiệu ứng mở rương, kịch bản mở rương và mô hình rương cũ.
 
 ## 11. Việc để người làm quyết định
 
-- Chọn tên và chỉ số cụ thể cho từng bộ phận cơ thể và từng loại robot.
+- Chọn tên và chỉ số cụ thể cho lõi, từng bộ phận cơ thể và từng loại robot.
+- Số đêm tới trùm cuối.
 - Chọn tên khu mặt đất.
 - Cách điều khiển chi tiết (phím, tay cầm).
