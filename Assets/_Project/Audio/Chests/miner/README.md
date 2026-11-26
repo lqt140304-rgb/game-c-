@@ -30,5 +30,3 @@ Dùng chung (không làm riêng): `../Synth/sfx_chest_lid_thud.wav` ở giai đo
 
 Cắt bằng ffmpeg (ElevenLabs tối thiểu 0,5 s) về đúng độ dài + fade vào/ra 10 ms: `sfx_miner_nugget.mp3` (0.4 s).
 | `sfx_miner_key_insert.mp3` | 1.5 | a steel pickaxe striking a rock face once, loud metallic clang with rock crack and falling pebbles |
-| `sfx_miner_fly.mp3` | 0.8 | a heavy iron pickaxe thrown end over end through the air, three fast rhythmic whoosh whoosh whoosh spins that slow down slightly, airy swish of a wooden handle, no music, no voice |
-| `sfx_miner_action.mp3` | 1.2 | starts instantly with a sharp metal pickaxe striking hard rock, loud clang at the very beginning, a second clang strike a quarter second later, then small stone chips and gravel rattling and trickling down, short dusty tail, no music, no voice |
