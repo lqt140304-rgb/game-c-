@@ -505,3 +505,29 @@ Bảng hướng dẫn phím và tên rương đang cầm hiện ở góc trên b
 - **Bấm O không có gì:** rương không có lớp `Lid` (Console và góc màn hình báo). Rương vẫn cầm và soi được.
 
 **Chưa kiểm chứng trong Unity.** Code chỉ biên dịch thử bằng Mono với bản giả lập tối thiểu của UnityEngine (bắt lỗi cú pháp và kiểu, không bắt lỗi hành vi). Hướng mặt trước của hai rương được suy từ dữ liệu node trong `.glb`, chưa nhìn thấy trong Unity.
+
+## Bốn rương v1 (chợ trời hẻm Việt Nam, dựng bằng Blender)
+
+Thay cho 17 rương cũ khi ghép với 4 loại hộp của v1 (xem [TASKS](../../TASKS.md) bước 5). Dựng hoàn toàn bằng script, không dùng Meshy, vật liệu đơn sắc không texture ảnh (chữ tiếng Việt là mesh phẳng). Thư viện chung `Tools/Blender/chest_v1_lib.py`; mỗi rương một script; một script ảnh xem trước chung.
+
+| Hộp | File GLB | Hình | Script | Tam giác (kể cả Glow) | Kích thước rộng × sâu × cao (m) |
+|---|---|---|---|---|---|
+| H1 Hộp Gỗ Nhỏ | `Chest_ThungGo.glb` | Thùng gỗ ván ghép, nẹp góc đóng đinh, quai dây thừng, dây nhựa đỏ và xanh buộc quanh, rơm độn, chữ "ĐỒ CŨ" | `make_chest_thung_go.py` | 1.052 | 0,50 × 0,40 × 0,31 |
+| H2 Hộp Kim Loại Mờ | `Chest_HopTon.glb` | Hộp tôn xám mờ vát góc, hai gân nổi, tem "HÀNG THANH LÝ / KHÔNG ĐỔI TRẢ", nhãn "DỄ VỠ", gỉ, lưỡi gài + ổ khóa đồng, giấy báo lót | `make_chest_hop_ton.py` | 1.230 | 0,53 × 0,38 × 0,27 |
+| H3 Hộp Vải Dày | `Chest_BaoTai.glb` | Bao tải vải bố, miệng xếp nếp là nắp, dây rút đỏ có nút, bùa thêu bát quái, bùa giấy vàng dán qua khe, hai miếng vá | `make_chest_bao_tai.py` | 726 | 0,42 × 0,38 × 0,41 |
+| RD Rương Đen | `Chest_ValiDen.glb` | Vali da đen, viền và góc kim loại bóng, hai khóa số 3 bánh, quai da, băng keo vàng đen, thẻ hành lý "?" | `make_chest_vali_den.py` | 1.045 | 0,51 × 0,39 × 0,35 |
+
+- **Lớp:** root `Chest_<Tên>` gồm `Body`, `Lid`, `Glow`, `Seal`, `Binding` (không có `Key`). **Gốc `Lid` ở bản lề phía sau**, xoay quanh X, mở bằng góc **âm**, mặt trước là -Y (Blender). Với Hộp Tôn và Bao Tải, bản lề đặt ở mép dưới của nắp trùm (không phải mép trên thân) để nắp không cắn vào thân khi xoay. `Glow` là tấm sáng phẳng ở miệng, ẩn bằng scale như các rương cũ. `Seal` (băng giấy, băng keo, bùa giấy, thẻ) và `Binding` (dây, khóa) rơi ở giai đoạn "Gỡ niêm" của `BoxOpenSequence`.
+- **Chạy lại** (`pip install bpy pillow`, Python 3.13, Blender 5.3 dạng module):
+
+```
+python Tools/Blender/make_chest_thung_go.py            # ghi đè Chest_ThungGo.glb, in số tam giác, kích thước, vị trí bản lề
+python Tools/Blender/make_chest_hop_ton.py
+python Tools/Blender/make_chest_bao_tai.py
+python Tools/Blender/make_chest_vali_den.py
+python Tools/Blender/render_chests_v1_preview.py -- thung_go 48 640   # hoặc hop_ton, bao_tai, vali_den
+```
+
+- **Ảnh xem trước:** `Art/Source/render_chest_thung_go_open.png`, `render_chest_hop_ton_open.png`, `render_chest_bao_tai_open.png`, `render_chest_vali_den_open.png`. Hàng trên: đóng, hé 28°, mở toang 105°; hàng dưới: chính diện, hông, sau 3/4. Dựng ngoại tuyến bằng Cycles, **không phải ảnh chụp từ Unity**.
+- **So với ý tưởng đề xuất:** đúng hình dáng đề xuất cho cả 4 rương. Hộp Gỗ dùng dây nhựa (không dùng dây rơm), rơm chỉ độn trong lòng. Vali Đen dày 0,35 m (thay vì dẹt) để thỏa cỡ tối thiểu 0,35 m, nên hơi giống hộp dụng cụ; ổ khóa số là mô hình, không quay.
+- **Chưa làm / chưa kiểm:** chưa nhập vào Unity, chưa tạo prefab, chưa gắn `BoxOpenSequence`; chiều mở nắp, vật liệu kim loại và phát sáng trong URP chưa kiểm (đổi `lidOpenSign` nếu nắp mở ngược). Chưa được chủ dự án duyệt hình dáng.

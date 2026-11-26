@@ -20,14 +20,16 @@ Việc theo thứ tự. Việc sau phụ thuộc việc trước:
 4. [ ] **Codex + Antigravity** — Gia truyền, tạo tác, combo, Bí Khế và đủ 7 ngày đến màn kết quả (mục Sprint 2 bên dưới). Nghiệm thu khi chơi được tới kết quả ngày 7 và tải lại đúng trạng thái.
 5. [ ] **Antigravity** — Hình ảnh hộp và cảm giác mở hộp: dùng **4 rương mới** (xem bên dưới) cho 3 loại hộp thường và 1 loại đặc biệt. Thêm âm thanh và ánh sáng cơ bản. **Cập nhật 2026-11-26:** chủ dự án thấy 4 rương cũ ghép thử (Việt Nam, Robot, Magic, Mimic) **không hợp** bối cảnh hẻm Việt Nam. Thay bằng **4 rương mới** dựng riêng, đang giao cho một phiên local có Blender:
 
-   | Hộp | Nguồn gốc đồ | Rương mới (đề xuất hình dáng) |
+   | Hộp | Nguồn gốc đồ | Rương mới (file GLB, `Assets/_Project/Art/Chests/`) |
    |---|---|---|
-   | H1 Hộp Gỗ Nhỏ (100 xu) | Quá khứ | Thùng gỗ cũ đóng đinh, dây buộc |
-   | H2 Hộp Kim Loại Mờ (350 xu) | Hiện đại, Tương lai | Hộp tôn sơn mờ, có tem chữ Việt |
-   | H3 Hộp Vải Dày (800 xu) | Thần thoại, Cổ tích | Bao tải vải bố buộc dây rút, có bùa |
-   | RD Rương Đen (1.500 xu) | Mọi nhóm, canh bạc | Vali đen cũ, khóa số |
+   | H1 Hộp Gỗ Nhỏ (100 xu) | Quá khứ | `Chest_ThungGo.glb`: thùng gỗ đóng đinh, dây nhựa đỏ xanh, 1.052 tam giác, 0,50 × 0,40 × 0,31 m |
+   | H2 Hộp Kim Loại Mờ (350 xu) | Hiện đại, Tương lai | `Chest_HopTon.glb`: hộp tôn xám mờ, khóa gài, tem chữ Việt, gỉ, 1.230 tam giác, 0,53 × 0,38 × 0,27 m |
+   | H3 Hộp Vải Dày (800 xu) | Thần thoại, Cổ tích | `Chest_BaoTai.glb`: bao tải vải bố, dây rút, bùa thêu, 726 tam giác, 0,42 × 0,38 × 0,41 m |
+   | RD Rương Đen (1.500 xu) | Mọi nhóm, canh bạc | `Chest_ValiDen.glb`: vali da đen, khóa số, viền bóng, 1.045 tam giác, 0,51 × 0,39 × 0,35 m |
 
-   Đây là ngoại lệ có chủ đích cho luật "không làm thêm rương": chỉ đúng 4 rương này. Chỉ đổi hình ảnh. Giá, tỷ lệ và luật của từng hộp giữ nguyên theo [NoiDungMau.md](Docs/Content/NoiDungMau.md). Antigravity chờ 4 file GLB mới trước khi làm cảnh mở (cảnh mở cũ của 17 rương không dùng lại cho v1).
+   **Trạng thái (2026-11-26):** 4 file GLB đã dựng bằng Blender, đủ `Body`/`Lid`/`Glow`/`Seal`/`Binding`, bản lề phía sau, có ảnh xem trước ở `Art/Source/render_chest_*_open.png`; chi tiết ở [BanGiao3D](Docs/Art/BanGiao3D.md). **Chờ chủ dự án duyệt hình dáng**; chưa nhập vào Unity.
+
+   Đây là ngoại lệ có chủ đích cho luật "không làm thêm rương": chỉ đúng 4 rương này. Chỉ đổi hình ảnh. Giá, tỷ lệ và luật của từng hộp giữ nguyên theo [NoiDungMau.md](Docs/Content/NoiDungMau.md). Antigravity dùng 4 file GLB này để làm cảnh mở (cảnh mở cũ của 17 rương không dùng lại cho v1).
 6. [ ] **Claude 1** — Viết lại lời thoại mở màn, Dì Mận, Kim Khuy và Anh Bảy cho khớp bối cảnh hẻm Việt Nam, giọng Gen Z. Chơi thử một ván thật khi bước 4 xong và gửi danh sách sửa ngắn.
 7. [ ] **Claude 2** — Chạy lại mô phỏng cân bằng **chỉ khi** số liệu thay đổi so với bản đã đo. Chốt bộ số cho v1.
 8. [ ] **Codex** — Sửa lỗi từ lần chơi thử, đóng gói bản PC (Windows). Nghiệm thu khi chạy được trên máy khác từ đầu đến kết quả ngày 7.
