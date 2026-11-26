@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Việt Nam (hoa đăng): tiếng bay + tiếng hành động mở. Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_viet_nam.json",
+ "viet_nam": {
+  "prefix": "sfx_vietnam_",
+  "hook": "viet_nam",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "close-up recording of a paper lotus lantern floating on a river: clear steady water lapping and gentle splashing against the paper boat, soft paper petals rustling, a small candle flame fluttering in the breeze, continuous and present from start to end, no music, no voice",
+    "file": "sfx_vietnam_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "immediately at the start a soft wooden knock as a small lantern touches wood, followed right away by a gentle water plop, then delicate paper petals unfolding with a soft crinkle and a warm candle flame whoosh, fading out calmly, no music, no voice",
+    "file": "sfx_vietnam_action.mp3"
+   }
+  ]
+ }
+}
