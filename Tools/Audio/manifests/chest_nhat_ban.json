@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Nhật Bản: tiếng bay và tiếng chém của katana. Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_nhat_ban.json",
+ "nhat_ban": {
+  "prefix": "sfx_nhatban_",
+  "hook": "nhat_ban",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a steel katana spinning slowly through the air, soft rhythmic airy whoosh-whoosh swells of the blade cutting wind, a faint thin metallic shimmer ringing in the background, ending with a gentle rising whoosh, no music",
+    "file": "sfx_nhatban_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "instant sharp katana slash at the very start: a fast hard swoosh with a crisp bright metallic shing ring, then a short pause and the blade sliding back into a wooden scabbard ending with a clean soft click, no music",
+    "file": "sfx_nhatban_action.mp3"
+   }
+  ]
+ }
+}

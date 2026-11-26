@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,7 +6,8 @@ namespace ChoDoLa.ChestFx
 {
     /// <summary>
     /// Vật mở khoá của rương Nhật Bản: một thanh katana (lưỡi bạc dẹt, tsuba đen, cán quấn đỏ), mũi kiếm hướng +Z.
-    /// Hành động Strike; lúc chém kiếm xoay ngang (lăn quanh trục lưỡi) 90°. Điềm tĩnh: chu kỳ −1, Squash −10%.
+    /// Đợt 2: bay ngang xoay chậm lấp loáng (ThemeFly), mở bằng một nhát chém ngang rồi thu kiếm (ThemeAction).
+    /// Điềm tĩnh: chu kỳ −1, Squash −10%.
     /// Kế hoạch 2026-11-26, mục 6.15.
     /// </summary>
     public class NhatBanKeyHook : ChestKeyHookBase
@@ -20,6 +22,12 @@ namespace ChoDoLa.ChestFx
             p.keyFile = "sfx_nhatban_sheath.mp3";
             p.squashMul = 0.9f;      // điềm tĩnh: Squash −10%
             p.cycleDelta = -1;       // chu kỳ −1 (lõi kẹp tối thiểu 1)
+            // Đợt 2: bay ngang xoay chậm, chém ngang một nhát; sáng trắng bạc pha hồng anh đào; rương rung (Shake).
+            p.flyFile = "sfx_nhatban_fly.mp3";
+            p.actionFile = "sfx_nhatban_action.mp3";
+            p.lightColor = new Color(0.95f, 0.86f, 0.92f);
+            p.lightMul = 0.5f;
+            p.moveStyle = ChestMoveStyle.Shake;
             return p;
         }
 
@@ -56,20 +64,91 @@ namespace ChoDoLa.ChestFx
             return root;
         }
 
-        protected override void AnimateAction(KeyContext c, Transform root, float t01)
+        private static float Sm01(float a, float b, float t) { float k = Mathf.Clamp01((t - a) / (b - a)); return k * k * (3f - 2f * k); }
+
+        /// <summary>Điểm thủ thế trước khe: lùi ra trước 0,25 S, hơi lệch phải để có đà chém ngang.</summary>
+        private static Vector3 GuardPos(KeyContext c)
+        {
+            Vector3 right = Vector3.Cross(c.up, c.front);
+            return c.RestPos + c.front * (0.25f * c.S) + right * (0.08f * c.S);
+        }
+
+        /// <summary>
+        /// Bay: katana nằm NGANG, lướt từ điểm khởi theo đường cong thấp lệch sang bên (như được phóng ngang),
+        /// tự xoay chậm quanh trục đứng gần 1,5 vòng, lưỡi lăn nhẹ quanh chính nó để ánh lấp loáng; cuối bay quay mũi vào khe
+        /// và dừng ở thế thủ.
+        /// </summary>
+        protected override IEnumerator ThemeFly(KeyContext c, Transform root, float seconds)
         {
             Transform sword;
-            if (root == null || !_blade.TryGetValue(root, out sword) || sword == null) return;
-            if (InActionPhase)
+            _blade.TryGetValue(root, out sword);
+            System.Random rng = c.Rng(1501);
+            float side = rng.NextDouble() < 0.5 ? -1f : 1f;      // lượn sang trái hay phải
+            float phase = (float)rng.NextDouble() * 360f;
+            float t0 = Time.unscaledTime;
+            Vector3 p0 = c.startPos;
+            while (true)
             {
-                // Chém: xoay ngang 90° quanh trục lưỡi trong 0,35 s hành động.
-                float k = Mathf.Clamp01((t01 - 0.05f) / 0.6f);
-                k = k * k * (3f - 2f * k);
-                sword.localRotation = Quaternion.Euler(0f, 0f, 90f * k);
+                if (root == null) yield break;
+                c.Refresh();
+                float u = Mathf.Clamp01((Time.unscaledTime - t0) / seconds);
+                float e = Sm01(0f, 1f, u);
+                Vector3 right = Vector3.Cross(c.up, c.front);
+                Vector3 p2 = GuardPos(c);
+                // Đường cong: lệch ngang và nhô nhẹ ở giữa đường, về 0 ở hai đầu.
+                float bulge = Mathf.Sin(Mathf.PI * e);
+                Vector3 pos = Vector3.Lerp(p0, p2, e) + right * (side * 0.35f * c.S * bulge) + c.up * (0.12f * c.S * bulge);
+                root.position = pos;
+                // Xoay chậm quanh trục đứng: 540° giảm dần về 0 (đúng hướng Facing ở cuối) + chập chờn nhỏ.
+                float yaw = side * 540f * (1f - Sm01(0f, 0.92f, u));
+                root.rotation = Quaternion.AngleAxis(yaw, c.up) * c.Facing;
+                if (sword != null)
+                {
+                    // Lưỡi lăn nhẹ ±25° quanh trục dọc → mặt lưỡi bắt sáng lấp loáng; tắt dần ở cuối.
+                    float roll = 25f * Mathf.Sin(phase * Mathf.Deg2Rad + u * Mathf.PI * 5f) * (1f - Sm01(0.75f, 1f, u));
+                    sword.localRotation = Quaternion.Euler(0f, 0f, roll);
+                    sword.localPosition = Vector3.zero;
+                }
+                if (u >= 1f) yield break;
+                yield return null;
             }
-            else
+        }
+
+        /// <summary>
+        /// Mở: một nhát chém ngang thật nhanh qua miệng khe (0–0,2: lưỡi quét +75° → −75° quanh trục đứng, kiếm lắc nghiêng),
+        /// thu kiếm về thẳng và đẩy mũi vào khe như tra vào vỏ (0,2–0,6, tới c.RestPos), rồi thu nhỏ tại khe (ShrinkAtSlot).
+        /// </summary>
+        protected override IEnumerator ThemeAction(KeyContext c, Transform root, float seconds)
+        {
+            Transform sword;
+            _blade.TryGetValue(root, out sword);
+            float t0 = Time.unscaledTime;
+            while (true)
             {
-                sword.localRotation = Quaternion.identity;
+                if (root == null) yield break;
+                c.Refresh();
+                float t = Mathf.Clamp01((Time.unscaledTime - t0) / seconds);
+                root.rotation = c.Facing;
+                float swing;   // góc quét quanh trục đứng (độ)
+                float tilt;    // nghiêng lưỡi khi chém
+                if (t < 0.04f) { swing = Mathf.Lerp(0f, 75f, t / 0.04f); tilt = 0f; }               // vung lấy đà
+                else if (t < 0.2f) { float k = Sm01(0.04f, 0.2f, t); swing = Mathf.Lerp(75f, -75f, k); tilt = 30f * Mathf.Sin(Mathf.PI * k); }
+                else { float k = Sm01(0.2f, 0.55f, t); swing = Mathf.Lerp(-75f, 0f, k); tilt = 0f; }  // thu kiếm
+                if (sword != null)
+                {
+                    sword.localRotation = Quaternion.Euler(0f, swing, tilt);
+                    sword.localPosition = Vector3.zero;
+                }
+                if (t < 0.6f)
+                {
+                    // Giữ thế thủ trong lúc chém, rồi tra mũi về đúng khe.
+                    float k = Sm01(0.2f, 0.6f, t);
+                    root.position = Vector3.Lerp(GuardPos(c), c.RestPos, k);
+                    root.localScale = Vector3.one * c.keySize;
+                }
+                else ShrinkAtSlot(c, root, t);
+                if (t >= 1f) yield break;
+                yield return null;
             }
         }
 
