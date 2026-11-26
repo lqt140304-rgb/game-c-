@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Thể thao: tiếng bay (bóng lăn rồi bị sút bổng) và tiếng mở (sút vào khe, bật ra, lăn vào). Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_the_thao.json",
+ "the_thao": {
+  "prefix": "sfx_thethao_",
+  "hook": "the_thao",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a leather soccer ball rolling quickly over short grass with a soft rumble for half a second, then one firm boot kick thump and a short airy whoosh of the ball flying away, no music, no voices",
+    "file": "sfx_thethao_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "immediately at the start a hard punchy soccer ball impact against a wooden box, a loud hollow thwack, then the ball bounces back once with a lighter rubbery bounce, then a soft quick roll and a gentle settling thud, no music, no voices",
+    "file": "sfx_thethao_action.mp3"
+   }
+  ]
+ }
+}
