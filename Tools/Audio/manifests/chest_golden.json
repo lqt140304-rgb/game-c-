@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Golden: 2 tiếng riêng (bay, mở). Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_golden.json",
+ "golden": {
+  "prefix": "sfx_golden_",
+  "hook": "golden",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a single heavy gold coin rolling fast on its edge across a hard wooden table, continuous metallic whirring rattle, then two light bouncing clinks as it hops, no music",
+    "file": "sfx_golden_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a gold coin dropped into a metal coin slot: an immediate sharp bright metallic clink at the very start, a short spinning rattle inside the slot, then a clean high ting chime ringing out and fading, no music",
+    "file": "sfx_golden_action.mp3"
+   }
+  ]
+ }
+}
