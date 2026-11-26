@@ -1,6 +1,6 @@
 # Bước ngoặt: game hành động cypherpunk (hack and slash)
 
-Ngày: 2026-11-26. Trạng thái: **ĐỀ XUẤT, chờ chủ dự án duyệt.** Chưa việc nào được bắt đầu cho tới khi duyệt.
+Ngày: 2026-11-26. Trạng thái: **TẠM GÁC (2026-11-26).** Chủ dự án quyết định quay lại thiết kế cũ (CHỢ ĐỒ LẠ: mua rương, soi, trả giá, trả nợ) để hoàn thành và phát hành trước. Không agent nào làm theo tài liệu này. Giữ lại để xem xét cho game sau.
 
 Mục nào ghi **(quyết định của chủ dự án)** là điều chủ dự án đã nói trong buổi trao đổi. Mục ghi **(giả định của tôi)** là chỗ tôi điền vào, cần được xác nhận hoặc sửa.
 
