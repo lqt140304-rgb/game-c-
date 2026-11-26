@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 (2026-11-26) rương Magic: 2 tiếng riêng (bay + hành động mở). Chạy: ELEVENLABS_API_KEY=dummy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_magic.json",
+ "magic": {
+  "prefix": "sfx_magic_",
+  "hook": "magic",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a floating purple magic crystal drifting through the air: soft airy shimmering hum that swells and sways left and right, small glassy shards tinkling as they orbit around it, rising slightly in pitch toward the end, no music, no voice",
+    "file": "sfx_magic_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a glowing rune crystal pressed against a stone lock: instant sharp crystalline clink at the very start, then a quick bright magical energy swell and a soft sparkling flash pop, glassy shimmer tail fading out, no music, no voice",
+    "file": "sfx_magic_action.mp3"
+   }
+  ]
+ }
+}
