@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Không gian: tiếng bay (phi thuyền lượn nghiêng vào bến) và tiếng cập bến (động cơ hãm + khoá kẹp). Chạy: ELEVENLABS_API_KEY=dummy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_khong_gian.json",
+ "khong_gian": {
+  "prefix": "sfx_khonggian_",
+  "hook": "khong_gian",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a tiny toy spaceship gliding past and banking in a smooth curve: soft rising thruster whoosh with a light electric hum, a gentle doppler sweep from left to right, then the engine eases down to a quiet purr as it slows, no music, no voice",
+    "file": "sfx_khonggian_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a small spaceship docking: right at the start a sharp short retro thruster burst and a solid metallic clunk of docking clamps locking, followed by a short pneumatic hiss and a fading low engine wind down, no music, no voice",
+    "file": "sfx_khonggian_action.mp3"
+   }
+  ]
+ }
+}
