@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 (2026-11-26), rương Robot: tiếng bay (thẻ chip lướt như drone) và tiếng hành động (quẹt thẻ vào ổ đọc). Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_robot.json",
+ "robot": {
+  "prefix": "sfx_robot_",
+  "hook": "robot",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a tiny quadcopter drone gliding past: a smooth high-pitched electric propeller whir that rises, two quick servo zips as it snaps sideways, then the whir eases down, small synthetic chirp at the end, no music, no voice",
+    "file": "sfx_robot_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a plastic keycard swiped hard through a metal card reader: instant sharp swish and click at the very start, then a short bright electronic double beep, a fast rising scanner sweep tone, and a soft mechanical latch clunk, no music, no voice",
+    "file": "sfx_robot_action.mp3"
+   }
+  ]
+ }
+}
