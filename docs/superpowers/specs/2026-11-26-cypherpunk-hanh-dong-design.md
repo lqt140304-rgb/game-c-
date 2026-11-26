@@ -62,6 +62,26 @@ Có **một lõi** và **bốn bộ phận nâng cấp**. Phần đặt tên là
 
 Năm vị trí thay thế "4 ô tạo tác" trong spec rương cũ. Con số này cần Claude 2 kiểm tra cân bằng.
 
+### Kỹ năng và nguồn gốc (quyết định của chủ dự án: kết hợp hai nguồn)
+
+- **Bộ phận ở hầm (cố định, có chủ đích):** buổi sáng người chơi chọn lắp bộ phận cho lõi, tay, chân, mắt, lưng. Mỗi bộ phận mang kỹ năng chính.
+- **Kỹ năng phụ nhặt ngẫu nhiên giữa trận:** nhặt khi chiến đấu ở mặt đất (từ robot, hòm, trùm phụ). Mỗi ván ra một tổ hợp khác nhau, nên cùng bộ phận vẫn cho build khác.
+
+Khi chết, mất cả bộ phận lẫn kỹ năng phụ, theo luật "chết mất hết" ở mục 6.
+
+Đề xuất của tôi (giả định, cần bạn sửa) để dựng thử trong bản chơi thử:
+- **Tay:** lưỡi dao (combo nhanh) và búa cơ khí (đòn nặng, phá giáp).
+- **Chân:** lướt xuyên robot và đạp tường bật lại.
+- **Mắt:** quét điểm yếu và đánh dấu nhiều mục tiêu để hack cùng lúc.
+- **Lưng:** khiên năng lượng và drone phụ.
+- **Lõi:** kỹ năng tối thượng khi đầy năng lượng.
+- **Kỹ năng phụ nhặt (mẫu):** quá nhiệt (hack làm robot nóng, đòn tiếp theo nổ lan), kéo xích, nổ liên hoàn, hồi năng lượng khi đỡ đúng.
+- **Quy tắc ghép:** kỹ năng phụ phải tương tác được với kỹ năng bộ phận, ví dụ hack quá nhiệt rồi dùng xích kéo robot vào đám đông. Nhờ vậy có combo mà người chơi tự khám phá.
+- **Mỗi kỹ năng phải có cảm giác riêng** (âm thanh, hiệu ứng, phản hồi), theo mục "Cảm giác đã tay".
+- **Kẻ địch ép đổi kỹ năng:** robot miễn nhiễm hack, robot chỉ bị búa phá giáp được, để không có một kỹ năng thắng mọi thứ.
+
+Số lượng cụ thể cho bản chơi thử: mỗi bộ phận 2 lựa chọn, khoảng 4 kỹ năng phụ.
+
 ## 4. Hòm trong game mới (quyết định của chủ dự án)
 
 **Bỏ hết rương cũ.** Tạo **hòm mới** kiểu hòm chiến đấu, thiết kế lại cho game này. Rương không còn là lõi game.
@@ -125,6 +145,7 @@ Sau khi duyệt tôi sẽ đánh dấu "đã thay thế bởi spec này" ở cá
 
 ## 11. Việc để người làm quyết định
 
+- Số kỹ năng phụ cuối cùng, tần suất rơi, và có thể chọn một trong vài kỹ năng hay nhận ngẫu nhiên hoàn toàn.
 - Chọn tên và chỉ số cụ thể cho lõi, từng bộ phận cơ thể và từng loại robot.
 - Số đêm tới trùm cuối, số trùm phụ, đêm nào gặp trùm phụ.
 - Chọn tên khu mặt đất.
