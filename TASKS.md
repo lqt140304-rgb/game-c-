@@ -6,7 +6,7 @@ Claude 1 sở hữu thiết kế và nội dung. Claude 2 sở hữu cân bằng
 
 ## ƯU TIÊN SỐ 1 — Bản phát hành đầu tiên (v1)
 
-**Trạng thái: ĐỀ XUẤT, chờ chủ dự án duyệt (2026-11-26).**
+**Trạng thái: ĐÃ DUYỆT bởi chủ dự án (2026-11-26).**
 
 Mục tiêu duy nhất: **một bản PC chơi được từ ngày 1 đến kết quả ngày 7, đủ để bán trên Steam.** Bối cảnh là chợ trời trong một con hẻm thành phố Việt Nam (xem [Docs/DaChot.md](Docs/DaChot.md)). Phạm vi chơi lấy đúng mục 7 của [GDD](Docs/GameDesign/README.md): phòng trọ, khu chợ nhỏ, bàn mở và soi, Dì Mận, Kim Khuy, Anh Bảy, 8 đến 12 hiện vật, 2 gia truyền, 3 loại hộp thường và 1 loại đặc biệt, 6 tạo tác thuộc 2 hệ, 3 combo, 2 điều kiện Bí Khế.
 
