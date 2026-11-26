@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 (2026-11-26), rương Game: 2 tiếng riêng cho chìa pixel. Chạy: ELEVENLABS_API_KEY=dummy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_game.json",
+ "game": {
+  "prefix": "sfx_game_",
+  "hook": "game",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "retro 8-bit video game sound: four quick square-wave hop blips rising in pitch one after another, each blip short and choppy like a stepping sprite, dry, no music melody, no voice",
+    "file": "sfx_game_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "retro 8-bit chiptune sound effect: an instant sharp crunchy bitcrushed noise burst in the first 0.1 seconds like pixels shattering, then a fast arpeggio of tiny blips as the pieces snap back together, ending with a short bright power-up chime, no music, no voice",
+    "file": "sfx_game_action.mp3"
+   }
+  ]
+ }
+}
