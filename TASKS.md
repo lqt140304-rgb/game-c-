@@ -18,16 +18,16 @@ Việc theo thứ tự. Việc sau phụ thuộc việc trước:
 2. [ ] **Antigravity** — Hoàn thành map hẻm Việt Nam (đang làm) ở mức nhỏ gọn theo kích thước trong spec market-town: phòng trọ, quầy Dì Mận, bàn mở và soi, chỗ Anh Bảy thu nợ. Nghiệm thu khi đi bộ hết khu chợ trong Play Mode.
 3. [ ] **Codex + Antigravity** — Nối lõi gameplay Sprint 1 vào cảnh: mua hộp, mở, soi, bán, kết thúc ngày, thu nợ, tự lưu. Nghiệm thu khi người chơi tự đi hết một ngày trong Play Mode (mục Sprint 1 bên dưới).
 4. [ ] **Codex + Antigravity** — Gia truyền, tạo tác, combo, Bí Khế và đủ 7 ngày đến màn kết quả (mục Sprint 2 bên dưới). Nghiệm thu khi chơi được tới kết quả ngày 7 và tải lại đúng trạng thái.
-5. [ ] **Antigravity** — Hình ảnh hộp và cảm giác mở hộp: dùng lại mô hình và hiệu ứng mở của **4 rương đã duyệt** cho 3 loại hộp thường và 1 loại đặc biệt. Không làm thêm rương mới. Thêm âm thanh và ánh sáng cơ bản. Ghép hộp với rương (Claude chọn theo ủy quyền của chủ dự án, 2026-11-26, chủ dự án có thể đổi):
+5. [ ] **Antigravity** — Hình ảnh hộp và cảm giác mở hộp: dùng **4 rương mới** (xem bên dưới) cho 3 loại hộp thường và 1 loại đặc biệt. Thêm âm thanh và ánh sáng cơ bản. **Cập nhật 2026-11-26:** chủ dự án thấy 4 rương cũ ghép thử (Việt Nam, Robot, Magic, Mimic) **không hợp** bối cảnh hẻm Việt Nam. Thay bằng **4 rương mới** dựng riêng, đang giao cho một phiên local có Blender:
 
-   | Hộp | Nguồn gốc đồ | Rương | Cảnh mở có sẵn |
-   |---|---|---|---|
-   | H1 (100 xu) | Quá khứ | Việt Nam (`Chest_VietNam.glb`) | `VietNamHoiLangSetup` |
-   | H2 (350 xu) | Hiện đại, Tương lai | Robot (`Chest_Robot.glb`) | `RobotTransformSetup` |
-   | H3 (800 xu) | Thần thoại, Cổ tích | Magic (`Chest_Magic.glb`) | `MagicRuneFxSetup` |
-   | RD Rương Đen (1.500 xu) | Mọi nhóm, canh bạc | Mimic (`Chest_Mimic.glb`) | `MimicFeedSetup` |
+   | Hộp | Nguồn gốc đồ | Rương mới (đề xuất hình dáng) |
+   |---|---|---|
+   | H1 Hộp Gỗ Nhỏ (100 xu) | Quá khứ | Thùng gỗ cũ đóng đinh, dây buộc |
+   | H2 Hộp Kim Loại Mờ (350 xu) | Hiện đại, Tương lai | Hộp tôn sơn mờ, có tem chữ Việt |
+   | H3 Hộp Vải Dày (800 xu) | Thần thoại, Cổ tích | Bao tải vải bố buộc dây rút, có bùa |
+   | RD Rương Đen (1.500 xu) | Mọi nhóm, canh bạc | Vali đen cũ, khóa số |
 
-   Chỉ đổi hình ảnh. Giá, tỷ lệ và luật của từng hộp giữ nguyên theo [NoiDungMau.md](Docs/Content/NoiDungMau.md).
+   Đây là ngoại lệ có chủ đích cho luật "không làm thêm rương": chỉ đúng 4 rương này. Chỉ đổi hình ảnh. Giá, tỷ lệ và luật của từng hộp giữ nguyên theo [NoiDungMau.md](Docs/Content/NoiDungMau.md). Antigravity chờ 4 file GLB mới trước khi làm cảnh mở (cảnh mở cũ của 17 rương không dùng lại cho v1).
 6. [ ] **Claude 1** — Viết lại lời thoại mở màn, Dì Mận, Kim Khuy và Anh Bảy cho khớp bối cảnh hẻm Việt Nam, giọng Gen Z. Chơi thử một ván thật khi bước 4 xong và gửi danh sách sửa ngắn.
 7. [ ] **Claude 2** — Chạy lại mô phỏng cân bằng **chỉ khi** số liệu thay đổi so với bản đã đo. Chốt bộ số cho v1.
 8. [ ] **Codex** — Sửa lỗi từ lần chơi thử, đóng gói bản PC (Windows). Nghiệm thu khi chạy được trên máy khác từ đầu đến kết quả ngày 7.
