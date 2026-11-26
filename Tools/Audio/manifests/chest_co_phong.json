@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 (2026-11-26), rương Cổ Phong: tiếng bay và tiếng dán của lá bùa. Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_co_phong.json",
+ "co_phong": {
+  "prefix": "sfx_cophong_",
+  "hook": "co_phong",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a single long strip of thin rice paper fluttering through the air like a falling leaf, soft rapid papery flaps rising and fading in waves, a light airy whoosh at the end, no music, no voice",
+    "file": "sfx_cophong_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a sharp flat palm slap of a paper talisman pressed onto a wooden chest right at the start, crisp paper smack, then a short low mystical shimmering hum that fades out quickly, no music, no voice",
+    "file": "sfx_cophong_action.mp3"
+   }
+  ]
+ }
+}
