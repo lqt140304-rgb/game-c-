@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Trung Hoa (đầu lân): tiếng bay múa lân và tiếng ngoạm khoá. Chạy: python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_trung_hoa.json",
+ "trung_hoa": {
+  "prefix": "sfx_trunghoa_",
+  "hook": "trung_hoa",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a small Chinese lion dance head hopping three times in quick rhythm: three soft wooden hollow thumps with a tiny cymbal tick on each hop, fabric mane fluttering and swishing in between, a short wooden jaw clack yawn in the middle, no music melody, no voice",
+    "file": "sfx_trunghoa_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "a sharp loud wooden jaw snapping shut with a hard clack at the very start, biting onto a metal lock with a heavy clunk, then a quick rattling head shake of wood and tiny bells, ending with a short low drum hit fading out, no music melody, no voice",
+    "file": "sfx_trunghoa_action.mp3"
+   }
+  ]
+ }
+}
