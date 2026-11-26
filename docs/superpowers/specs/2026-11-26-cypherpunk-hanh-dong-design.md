@@ -69,11 +69,18 @@ Một bản chơi thử nhỏ nhất cho thấy được vòng chơi:
 - Một rương mục tiêu, một rương thưởng.
 - Chơi được: sáng nâng cấp, tối chiến đấu, quay về hầm với phần thưởng, thấy nhân vật mạnh hơn.
 
-## 6. Cấu trúc ván chơi (giả định của tôi, cần chủ dự án xác nhận)
+## 6. Cấu trúc ván chơi
 
-Giữ nhịp 7 ngày của game cũ. Mỗi đêm một khu mặt đất với độ khó tăng dần. Đêm thứ 7 là trùm cuối. Giải phóng con người bị nô dịch là mục tiêu của ván. Cần chủ dự án chốt:
-- Chết giữa trận thì mất gì.
-- Thua thì mất toàn bộ hay giữ một phần tiến trình giữa các ván.
+**Không giới hạn số ngày, chơi kiểu roguelike. (quyết định của chủ dự án)** Bỏ nhịp 7 ngày của game cũ.
+
+Hệ quả, là giả định của tôi cần xác nhận:
+- Mỗi ván kéo dài đến khi người chơi **chết**. Chết thì ván kết thúc và bắt đầu ván mới.
+- Độ khó **tăng theo số đêm đã sống sót**, thay cho hạn 7 ngày. Robot mạnh dần và mặt đất nguy hiểm dần.
+- Có **tiến trình giữa các ván** (meta): bộ phận cơ thể đã mở khóa, kỹ năng hack mới và rương đã gặp. Cái gì giữ lại và cái gì mất khi chết cần chốt.
+- Vẫn có **trùm** sau một số đêm nhất định để tạo đích đến ngắn hạn. Cần chốt trùm cuối có hay không.
+- Vòng chơi một ngày (mục 2) giữ nguyên: sáng ở hầm nâng cấp, tối lên mặt đất chiến đấu.
+
+Còn mở: chết thì giữ gì và mất gì, có trùm cuối hay chơi vô tận.
 
 ## 7. Mục tiêu, không phải mục tiêu, phản mục tiêu
 
