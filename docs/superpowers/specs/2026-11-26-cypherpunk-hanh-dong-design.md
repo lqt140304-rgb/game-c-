@@ -117,6 +117,43 @@ Vai trò trùm phụ (giả định của tôi): mỗi trùm phụ canh một h�
 
 Còn mở: chủ dự án nói chết là mất hết trang bị. Chưa rõ có tiến trình nào giữ lại giữa các ván (ví dụ mở khóa loại bộ phận mới) hay không. Tôi để mặc định là **không có**, cho tới khi chủ dự án nói khác.
 
+## 6A. Hệ thống vũ khí (giả định của tôi, chủ dự án mới nêu chủ đề)
+
+- **Vũ khí chính là bộ phận Tay.** Mỗi loại có bộ đòn riêng: lưỡi dao (combo nhanh, nhẹ), búa cơ khí (đòn nặng, phá giáp), dây xích (kéo robot và kéo mình tới robot).
+- **Vũ khí phụ nằm ở bộ phận Lưng:** pháo vai, drone phụ.
+- **Mỗi vũ khí mang một nhãn hệ** (nhiệt, điện, xung). Nhãn hệ ghép với kỹ năng hack, ví dụ hack quá nhiệt rồi đòn nhiệt thì nổ lan. Đây là nguồn combo chính.
+- **Nâng cấp vũ khí ở hầm** bằng vật liệu nhặt được (mục 2). Vũ khí hiếm rơi từ trùm phụ.
+- Khi chết, mất vũ khí như mọi trang bị khác.
+- Mỗi vũ khí phải qua kiểm tra "đã tay" riêng, vì cảm giác phụ thuộc nhiều vào loại vũ khí.
+
+Cần chốt: số loại vũ khí cho bản chơi thử (đề xuất 2 loại tay), có vũ khí tầm xa hay không.
+
+## 6B. Trùm phụ và trùm cuối (giả định của tôi)
+
+Trùm là robot cai quản việc nô dịch con người. Mỗi trùm phụ ép người chơi dùng một kỹ năng khác nhau:
+
+| Trùm | Vai trò | Cách đánh |
+|---|---|---|
+| Quản Đốc Xưởng (phụ) | Giáp nặng, đòn chậm | Phải phá giáp bằng búa hoặc hack làm yếu |
+| Người Giám Sát (phụ) | Nhiều drone, nhìn từ xa | Phải quét và hack drone, né radar |
+| Kẻ Săn (phụ) | Nhanh, ra đòn dồn | Phải đỡ đúng lúc, né sát |
+| Hệ Thống Trung Tâm (cuối) | Nhiều giai đoạn, dùng lại đòn của các trùm phụ | Phải dùng đủ chém, hack, đỡ, phá giáp |
+
+Trùm phụ canh hòm thưởng (mục 4), hạ xong mở hòm và rơi vũ khí hoặc bộ phận hiếm. Tên và số lượng chỉ là tạm. Cần chốt số trùm phụ (đề xuất 3 cho bản đầy đủ, 1 cho bản chơi thử).
+
+## 6C. Thiết kế bản đồ (giả định của tôi)
+
+- **Hầm (cứ điểm):** một không gian cố định, mở rộng theo nâng cấp. Có bàn nâng cấp, nơi gắn bộ phận, nơi chọn khu cho đêm.
+- **Mặt đất:** chia **ba vùng**, mỗi vùng kết thúc bằng một trùm phụ, và vùng cuối dẫn tới trùm cuối ở tháp trung tâm.
+  1. Khu phố ổ chuột bị chiếm (robot tuần tra yếu, người bị nô dịch làm việc).
+  2. Khu công nghiệp (robot nặng, bẫy, máy móc).
+  3. Tháp trung tâm (robot mạnh, neon dày đặc, trùm cuối).
+- **Mỗi đêm là một chặng** trong vùng: người chơi đi từ điểm vào tới mục tiêu (hòm, trùm phụ hoặc lối ra) rồi chạy về hầm.
+- **Kết cấu roguelike:** mỗi chặng ghép từ các khối phố hoặc phòng dựng sẵn theo thứ tự ngẫu nhiên, để mỗi ván khác nhau mà vẫn kiểm soát được cảm giác.
+- Người bị nô dịch có thể giải cứu giữa chặng làm mục phụ (thưởng vật liệu). Đây chỉ là đề xuất.
+
+Cần chốt: dựng bản đồ ghép ngẫu nhiên hay thiết kế tay từng chặng.
+
 ## 7. Mục tiêu, không phải mục tiêu, phản mục tiêu
 
 - **Mục tiêu:** chiến đấu nhanh và rõ nghĩa. Mỗi bộ phận cơ thể thay đổi cảm giác chơi một cách nhìn thấy được.
