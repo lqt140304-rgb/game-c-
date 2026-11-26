@@ -11,8 +11,8 @@ using UnityEngine;
 namespace ChoDoLa.Editor
 {
     /// <summary>
-    /// Tools/Cho Do La/Create All Chest FX Profiles: dựng hồ sơ của cả 17 rương bằng <see cref="ChestKeySetup"/>
-    /// (chuỗi mở bằng vật mở khoá; hook nằm trong customFxPrefab của hồ sơ), rồi ghi
+    /// Tools/Cho Do La/Create All Chest FX Profiles: dựng hồ sơ của cả 17 rương bằng <see cref="ChestOpenSetup"/>
+    /// (chuỗi mở chuẩn; hook âm thanh nằm trong customFxPrefab của hồ sơ), rồi ghi
     /// ScriptableObjects/ChestFx/ChestFxLibrary.asset (mọi hồ sơ và mọi món Art/Items/LowPoly/**/*.glb) và gán cho từng
     /// ChestHandMenu trong cảnh đang mở, để [P] trong menu tay chạy được cả chuỗi mở. Không quét gì lúc chạy game.
     /// </summary>
@@ -27,26 +27,13 @@ namespace ChoDoLa.Editor
         [MenuItem("Tools/Cho Do La/Create All Chest FX Profiles")]
         public static void CreateAll()
         {
-            var makers = new List<KeyValuePair<string, Func<ChestFxProfile>>>
+            // Danh sách rương lấy thẳng từ bảng đăng ký (đủ 17 dòng), không liệt kê lại ở đây.
+            var makers = new List<KeyValuePair<string, Func<ChestFxProfile>>>();
+            foreach (ChestPreset preset in ChestPresetRegistry.All)
             {
-                Maker("Golden", () => ChestKeySetup.CreateOrUpdate("Golden")),
-                Maker("HaiTac", () => ChestKeySetup.CreateOrUpdate("HaiTac")),
-                Maker("RacQuy", () => ChestKeySetup.CreateOrUpdate("RacQuy")),
-                Maker("Magic", () => ChestKeySetup.CreateOrUpdate("Magic")),
-                Maker("Mimic", () => ChestKeySetup.CreateOrUpdate("Mimic")),
-                Maker("Miner", () => ChestKeySetup.CreateOrUpdate("Miner")),
-                Maker("AmNhac", () => ChestKeySetup.CreateOrUpdate("AmNhac")),
-                Maker("VietNam", () => ChestKeySetup.CreateOrUpdate("VietNam")),
-                Maker("TuoiTho", () => ChestKeySetup.CreateOrUpdate("TuoiTho")),
-                Maker("Robot", () => ChestKeySetup.CreateOrUpdate("Robot")),
-                Maker("KhongGian", () => ChestKeySetup.CreateOrUpdate("KhongGian")),
-                Maker("Game", () => ChestKeySetup.CreateOrUpdate("Game")),
-                Maker("TheThao", () => ChestKeySetup.CreateOrUpdate("TheThao")),
-                Maker("TrungHoa", () => ChestKeySetup.CreateOrUpdate("TrungHoa")),
-                Maker("NhatBan", () => ChestKeySetup.CreateOrUpdate("NhatBan")),
-                Maker("CoPhong", () => ChestKeySetup.CreateOrUpdate("CoPhong")),
-                Maker("ThienCo", () => ChestKeySetup.CreateOrUpdate("ThienCo")),
-            };
+                string name = preset.displayName;
+                makers.Add(Maker(name, () => ChestOpenSetup.CreateOrUpdate(name)));
+            }
 
             EnsureFolder(HookFolder);
             ChestFxLibrary library = AssetDatabase.LoadAssetAtPath<ChestFxLibrary>(LibraryPath);

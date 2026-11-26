@@ -89,6 +89,12 @@ namespace ChoDoLa.ChestFx
         [Tooltip("Wait/Sound: thời lượng đợi. ChestMotion/PhysicsBurst/Spawn: xem waitForEnd.")] public float duration = 0.5f;
         [Tooltip("true = bước chỉ XONG khi hiệu ứng xong (chuyển động rương tới hết, bay tới hết đường). false = xong ngay (chạy nền).")]
         public bool waitForEnd = false;
+        [Tooltip("ChestMotion: >= 0 thì thời lượng = số giây còn lại tới lúc BoxOpenSequence tới giai đoạn này (lõi tính theo kế hoạch của hộp, đã gồm phần kéo giãn), để chuyển động nối liền với giai đoạn kế và tới đúng lúc chốt. -1 = dùng duration. Nếu không tính được (không có hộp, giai đoạn đã qua) thì dùng duration.")]
+        public int durationUntilStage = -1;
+        [Tooltip("ChestMotion + durationUntilStage: cộng thêm bấy nhiêu giây phần chồng sang bước kế (để không có khoảng đứng yên giữa hai chuyển động).")]
+        public float durationTail = 0f;
+        [Tooltip("Tên sự kiện phát ra NGAY khi bước thật sự bắt đầu chạy (rỗng = không). Với ChestMotion, ChestScriptContext.GetMotion(tên) trả bộ điều khiển (thời lượng, biên độ) để âm thanh bám theo đúng chuyển động.")]
+        public string announce;
 
         [Header("Vị trí (Spawn, PhysicsBurst, Explosion)")]
         public StepAnchor anchor = StepAnchor.Mouth;

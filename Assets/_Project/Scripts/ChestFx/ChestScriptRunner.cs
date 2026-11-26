@@ -63,6 +63,23 @@ namespace ChoDoLa.ChestFx
 
         public bool HasEvent(string name) => !string.IsNullOrEmpty(name) && _events.ContainsKey(name);
 
+        private readonly Dictionary<string, ChestMotion.Handle> _motions = new Dictionary<string, ChestMotion.Handle>();
+
+        /// <summary>
+        /// Chuyển động cả rương đã được "loan báo" bằng <see cref="ChestStep.announce"/> (null nếu chưa có). Âm thanh dùng để biết
+        /// thời lượng và biên độ THẬT của chuyển động (cùng một dòng thời gian). Được ghi TRƯỚC khi sự kiện cùng tên phát ra.
+        /// </summary>
+        public ChestMotion.Handle GetMotion(string announceName)
+        {
+            ChestMotion.Handle h;
+            return !string.IsNullOrEmpty(announceName) && _motions.TryGetValue(announceName, out h) ? h : null;
+        }
+
+        internal void RegisterMotion(string announceName, ChestMotion.Handle h)
+        {
+            if (!string.IsNullOrEmpty(announceName)) _motions[announceName] = h;
+        }
+
         /// <summary>Phát sự kiện (một lần là đủ: sự kiện được nhớ, bước đứng chờ sau đó vẫn thấy).</summary>
         public void Raise(string name)
         {
@@ -81,7 +98,7 @@ namespace ChoDoLa.ChestFx
             return null;
         }
 
-        internal void ClearEvents() => _events.Clear();
+        internal void ClearEvents() { _events.Clear(); _motions.Clear(); }
     }
 
     /// <summary>
@@ -153,6 +170,8 @@ namespace ChoDoLa.ChestFx
             if (s.delay > 0f) yield return new WaitForSeconds(s.delay);
 
             _started[i] = true;
+            // Chuyển động cả rương tự loan báo ngay sau khi tạo bộ điều khiển (xem Execute); các bước khác loan báo ở đây.
+            if (s.kind != StepKind.ChestMotion && !string.IsNullOrEmpty(s.announce)) _ctx.Raise(s.announce);
             yield return Execute(s, i);
             _done[i] = true;
         }
@@ -199,7 +218,19 @@ namespace ChoDoLa.ChestFx
                 {
                     float ampMul = s.ampUnit == AmpUnit.PerHalfMeterSize ? _ctx.ChestSize / 0.5f
                         : s.ampUnit == AmpUnit.ChestHeights ? _ctx.ChestHeight : 1f;
-                    ChestMotion.Handle h = _ctx.Motion.Run(s.motion, s.amplitude * ampMul, s.frequency, s.duration, s.axis, s.holdEnd, 0f, _ctx.Seed + index);
+                    float dur = s.duration;
+                    if (s.durationUntilStage >= 0)
+                    {
+                        // Nối liền với giai đoạn kế: thời lượng = phần còn lại tới giai đoạn đó theo kế hoạch của hộp (+ phần chồng).
+                        float left = _ctx.Reveal.SecondsUntilStage(s.durationUntilStage);
+                        if (left > 0f) dur = Mathf.Max(0.4f, left + Mathf.Max(0f, s.durationTail));
+                    }
+                    ChestMotion.Handle h = _ctx.Motion.Run(s.motion, s.amplitude * ampMul, s.frequency, dur, s.axis, s.holdEnd, 0f, _ctx.Seed + index);
+                    if (!string.IsNullOrEmpty(s.announce))
+                    {
+                        _ctx.RegisterMotion(s.announce, h);   // ghi trước, rồi mới phát sự kiện: hook đọc được thời lượng thật
+                        _ctx.Raise(s.announce);
+                    }
                     if (s.waitForEnd) while (!h.Done) yield return null;
                     break;
                 }

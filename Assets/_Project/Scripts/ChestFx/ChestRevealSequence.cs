@@ -156,6 +156,7 @@ namespace ChoDoLa.ChestFx
         private ChestFxScope _scope;
         private ChestMotion _motion;
         private bool _boxBegun;
+        private float _boxBeginTime;
         private readonly Dictionary<string, bool> _stepOverrides = new Dictionary<string, bool>();
 
         private AudioSource _tickSource;
@@ -309,6 +310,7 @@ namespace ChoDoLa.ChestFx
         {
             if (!_active || _boxBegun) return;
             _boxBegun = true;
+            _boxBeginTime = Time.time;
             float rampSeconds;
             if (box != null)
             {
@@ -458,6 +460,22 @@ namespace ChoDoLa.ChestFx
             for (int k = Mathf.Max(0, from + 1); k < to; k++) sum += stages[k].travel + stages[k].hold;
             if (to > from) sum += stages[to].travel;
             return Mathf.Max(0.1f, sum);
+        }
+
+        /// <summary>
+        /// Số giây CÒN LẠI (theo kế hoạch của BoxOpenSequence, đã gồm phần kéo giãn của StretchHolds và màn mở đầu) cho tới lúc hộp tới
+        /// giai đoạn <paramref name="stage"/>. Trả -1 nếu không tính được (chưa mở hộp, không có hộp, giai đoạn không có, hoặc đã qua).
+        /// Các bước chuyển động dùng nó (ChestStep.durationUntilStage) để nối liền nấc này với nấc sau và tới đúng lúc chốt, dù lõi
+        /// kéo giãn thời gian thế nào. Cùng đồng hồ với hộp và ChestMotion (Time.time / Time.deltaTime).
+        /// </summary>
+        public float SecondsUntilStage(int stage)
+        {
+            if (!_boxBegun || box == null) return -1f;
+            IList<BoxOpenSequence.Stage> stages = box.Stages;
+            if (stages == null || stage < 0 || stage >= stages.Count) return -1f;
+            float planned = box.IntroSeconds + PlannedSeconds(-1, stage);
+            float left = planned - (Time.time - _boxBeginTime);
+            return left > 0.05f ? left : -1f;
         }
 
         /// <summary>Give the roulette and the growth enough time by stretching holds (restored on reset).</summary>

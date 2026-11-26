@@ -447,5 +447,8 @@ namespace UnityEngine
 {
     public partial class Transform { public void Rotate(float x, float y, float z, Space s) {} }
     public partial class AudioSource { public void PlayDelayed(float d) {} }
+    public enum AudioDataLoadState { Unloaded, Loading, Loaded, Failed }
+    public partial class AudioClip { public AudioDataLoadState loadState; public bool LoadAudioData() => true; }
+    public partial class AudioSource { public void UnPause() {} }
     public static partial class GUI { public static void DrawTextureWithTexCoords(Rect r, Texture t, Rect uv) {} }
 }

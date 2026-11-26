@@ -116,8 +116,8 @@ namespace ChoDoLa.Editor
             Selection.activeObject = p;
         }
 
-        /// <summary>Dựng lại ChestFx_Golden.asset theo chuỗi mở bằng vật mở khoá (xem <see cref="ChestKeySetup"/>).</summary>
-        public static ChestFxProfile CreateOrUpdateGoldenProfile() => ChestKeySetup.CreateOrUpdate("Golden");
+        /// <summary>Dựng lại ChestFx_Golden.asset theo chuỗi mở chuẩn (xem <see cref="ChestOpenSetup"/>).</summary>
+        public static ChestFxProfile CreateOrUpdateGoldenProfile() => ChestOpenSetup.CreateOrUpdate("Golden");
 
         // ------------------------------------------------------------------ Helpers
 
