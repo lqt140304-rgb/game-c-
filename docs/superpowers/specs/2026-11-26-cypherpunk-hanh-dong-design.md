@@ -33,6 +33,21 @@ Cận chiến bằng vũ khí hoặc tay cơ khí. Có đòn nhẹ, đòn nặng
 ### Hack (giả định của tôi)
 Ngắm vào robot rồi nhấn phím hack: chiếm quyền, làm đứng yên, cho quay sang đánh đồng đội hoặc nổ. Hack tốn năng lượng và có thời gian hồi, nên không thể thay hoàn toàn việc chém.
 
+### Cảm giác đã tay (quyết định của chủ dự án: bắt buộc, ưu tiên cao nhất)
+
+Chiến đấu phải **đã tay**. Cảm giác này quan trọng hơn số lượng kỹ năng. Mỗi đòn và mỗi kỹ năng mới phải qua kiểm tra cảm giác trước khi được tính là xong.
+
+Các kỹ thuật tôi đề xuất (giả định của tôi):
+- Hit stop: game khựng 50–100 ms khi đòn trúng, đòn nặng khựng lâu hơn.
+- Robot phản ứng rõ khi bị đánh: giật, văng linh kiện, tia lửa, đòn kết liễu cắt hoặc làm vỡ.
+- Âm thanh va chạm riêng cho từng loại đòn.
+- Rung màn hình và camera vừa phải, không che tầm nhìn qua vai.
+- Điều khiển phản hồi tức thì: có input buffer, hủy đòn để né.
+- Cửa sổ đỡ đúng lúc ngắn, đỡ đúng thì có hiệu ứng riêng và robot lộ sơ hở.
+- Rung tay cầm nếu có.
+
+Hệ quả cho kế hoạch: việc đầu tiên là một **phòng thử chiến đấu** (một nhân vật, một robot, ba đòn) để chỉnh cảm giác trước khi thêm kỹ năng. Cảm giác chỉ kiểm tra được khi chơi, nên mục này nghiệm thu bằng chủ dự án chơi thử, không bằng đọc tài liệu.
+
 ### Bộ phận cơ thể (quyết định của chủ dự án: 5 vị trí, 1 lõi và 4 bộ phận nâng cấp)
 
 Có **một lõi** và **bốn bộ phận nâng cấp**. Phần đặt tên là giả định của tôi:
@@ -86,7 +101,7 @@ Còn mở: chủ dự án nói chết là mất hết trang bị. Chưa rõ có 
 
 - **Mục tiêu:** chiến đấu nhanh và rõ nghĩa. Mỗi bộ phận cơ thể thay đổi cảm giác chơi một cách nhìn thấy được.
 - **Không phải mục tiêu:** làm lại hệ rương mù, nợ Anh Bảy, soi lỗi, trả giá, bậc đồ trong rương. Lồng tiếng. Dùng credit dịch vụ trả phí khi chưa được cho phép.
-- **Phản mục tiêu (nếu xảy ra thì thất bại dù chạy được):** hack quá mạnh đến mức bỏ qua chém. Kẻ địch lặp lại nhàm. Nhân vật không đổi gì nhìn thấy sau khi nâng cấp.
+- **Phản mục tiêu (nếu xảy ra thì thất bại dù chạy được):** hack quá mạnh đến mức bỏ qua chém. Kẻ địch lặp lại nhàm. Nhân vật không đổi gì nhìn thấy sau khi nâng cấp. Đòn đánh nhẹ tênh, thiếu phản hồi, dù kỹ năng đa dạng.
 
 ## 8. Ràng buộc kỹ thuật
 
