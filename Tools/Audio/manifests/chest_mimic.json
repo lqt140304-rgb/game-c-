@@ -1,0 +1,27 @@
+{
+ "_doc": "Đợt 2 rương Mimic: tiếng bay (dép lê bị ném xoay tròn) và tiếng mở (dép rơi vào miệng rương, rương nhai). Chạy: ELEVENLABS_API_KEY=dummy python3 -I Tools/Audio/make_elevenlabs_chest_sfx.py --manifest Tools/Audio/manifests/chest_mimic.json",
+ "mimic": {
+  "prefix": "sfx_mimic_",
+  "hook": "mimic",
+  "items": [
+   {
+    "key": "key_fly",
+    "role": "fly",
+    "field": "flyClip",
+    "seconds": 0.8,
+    "loop": false,
+    "prompt": "a rubber flip-flop sandal thrown through the air, spinning fast: three quick airy whoosh-whoosh-whoosh swishes getting closer, soft flapping of the rubber strap, no music, no voice",
+    "file": "sfx_mimic_fly.mp3"
+   },
+   {
+    "key": "key_action",
+    "role": "action",
+    "field": "actionClip",
+    "seconds": 1.2,
+    "loop": false,
+    "prompt": "starts instantly with a loud wet rubber slap as a flip-flop drops onto a wooden chest, then a hungry wooden monster chest chomping it: two fast wet chews with wood creaks, a slurp and one deep gulp at the end, no music, no voice",
+    "file": "sfx_mimic_action.mp3"
+   }
+  ]
+ }
+}
