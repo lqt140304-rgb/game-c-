@@ -3,7 +3,8 @@
 **Ngày:** 2026-11-22  
 **Dự án:** CHỢ ĐỒ LẠ (`lqt140304-rgb/game-c-`)  
 **Phụ trách:** Antigravity (3D & Tích hợp)  
-**Trạng thái:** Chờ duyệt thiết kế (trước khi lập kế hoạch triển khai)
+**Trạng thái:** Chờ duyệt thiết kế (trước khi lập kế hoạch triển khai)  
+**Cập nhật 2026-11-26:** Chủ dự án đổi phong cách sang **thành phố hiện đại**. Phần "phố đá kiểu châu Âu cổ" ở mục 2 không còn đúng. Kích thước, bố cục, `ShopSlot` và cách dựng greybox vẫn áp dụng.
 
 ---
 
