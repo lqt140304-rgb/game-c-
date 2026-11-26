@@ -24,6 +24,16 @@ namespace ChoDoLa.Player
         private CharacterController _controller;
         private float _pitch;
         private float _verticalVelocity;
+        private bool _isInputLocked;
+
+        public bool IsInputLocked => _isInputLocked;
+
+        public void SetInputLocked(bool locked)
+        {
+            _isInputLocked = locked;
+            Cursor.lockState = locked ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = locked;
+        }
 
         private void Awake()
         {
@@ -48,6 +58,7 @@ namespace ChoDoLa.Player
 
         private void Update()
         {
+            if (_isInputLocked) return;
             HandleCursorToggle();
             HandleLook();
             HandleMove();
