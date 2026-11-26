@@ -547,10 +547,11 @@ namespace ChoDoLa.ChestFx
 
             if (!p.minimalFx)
             {
+                // CreateParticles trả null (và đã cảnh báo tên hệ hạt) nếu không có shader dùng được: khi đó hệ hạt đó TẮT, không vẽ tím.
                 _motes = ChestFxFactory.CreateParticles("Motes", _fxRoot, p, _chestSize, false);
                 _burst = ChestFxFactory.CreateParticles("Burst", _fxRoot, p, _chestSize, true);
-                _owned.Add(_motes.GetComponent<ParticleSystemRenderer>().sharedMaterial);
-                _owned.Add(_burst.GetComponent<ParticleSystemRenderer>().sharedMaterial);
+                if (_motes != null) _owned.Add(_motes.GetComponent<ParticleSystemRenderer>().sharedMaterial);
+                if (_burst != null) _owned.Add(_burst.GetComponent<ParticleSystemRenderer>().sharedMaterial);
             }
 
             if (revealLight == null)
@@ -570,8 +571,8 @@ namespace ChoDoLa.ChestFx
             if (showRankPips && !p.minimalFx)
             {
                 _pipMaterial = ChestFxFactory.CreateUnlit(Color.white, false, "RankPip");
-                _owned.Add(_pipMaterial);
-                for (int i = 0; i < ChestTierUtil.Count; i++)
+                if (_pipMaterial != null) _owned.Add(_pipMaterial);
+                for (int i = 0; _pipMaterial != null && i < ChestTierUtil.Count; i++)
                 {
                     GameObject pip = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     pip.name = "RankPip" + (i + 1);
@@ -823,6 +824,7 @@ namespace ChoDoLa.ChestFx
         private void SpawnFlash(TierPalette.TierStyle style)
         {
             Material m = ChestFxFactory.CreateAdditive(ChestFxFactory.GetTexture(ParticleLook.SoftDot), "Flash");
+            if (m == null) return;   // không có shader dùng được: bỏ chớp (đã cảnh báo), không vẽ tím
             _owned.Add(m);
             Mesh quad = ChestFxFactory.CreateQuadMesh();
             _owned.Add(quad);
@@ -835,6 +837,7 @@ namespace ChoDoLa.ChestFx
             if (style.rayCount <= 0) return;
             ChestFxProfile p = Profile;
             Material m = ChestFxFactory.CreateAdditive(Texture2D.whiteTexture, "Rays");
+            if (m == null) return;   // như trên: bỏ tia
             _owned.Add(m);
             Mesh mesh = ChestFxFactory.CreateRayMesh(style.rayCount, style.rayShape);
             _owned.Add(mesh);
@@ -847,6 +850,7 @@ namespace ChoDoLa.ChestFx
         {
             yield return new WaitForSeconds(delay);
             Material m = ChestFxFactory.CreateAdditive(Texture2D.whiteTexture, "Ring");
+            if (m == null) yield break;   // như trên: bỏ vòng
             _owned.Add(m);
             Mesh mesh = ChestFxFactory.CreateRingMesh(0.72f);
             _owned.Add(mesh);

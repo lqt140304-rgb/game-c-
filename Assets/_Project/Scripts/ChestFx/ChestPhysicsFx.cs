@@ -272,8 +272,12 @@ namespace ChoDoLa.ChestFx
 
             Renderer r = go.GetComponent<Renderer>();
             Material m = MakeMaterial(spec.color, spec.shape == BodyShape.Coin);
-            scope.Own(m);
-            r.sharedMaterial = m;
+            if (m != null)
+            {
+                scope.Own(m);
+                r.sharedMaterial = m;
+            }
+            else r.enabled = false;   // không có shader dùng được (đã cảnh báo): ẩn vật thay vì để vật liệu mặc định vẽ màu tím
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             return go;
         }
@@ -291,8 +295,8 @@ namespace ChoDoLa.ChestFx
 
         private static Material MakeMaterial(Color color, bool metallic)
         {
-            Shader lit = Shader.Find("Universal Render Pipeline/Lit");
-            if (lit == null) return ChestFxFactory.CreateUnlit(color, false, "ChestFxBody");
+            Shader lit = ChestShaderResolver.Resolve(ChestShaderKind.Lit);
+            if (lit == null) return ChestFxFactory.CreateUnlit(color, false, "ChestFxBody");   // có thể null: người gọi xử lý
             Material m = new Material(lit);
             m.name = "ChestFxBody";
             if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", color);

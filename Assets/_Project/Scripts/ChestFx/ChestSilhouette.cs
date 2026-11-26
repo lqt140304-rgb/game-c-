@@ -102,6 +102,8 @@ namespace ChoDoLa.ChestFx
 
             foreach (KeyValuePair<Transform, Mesh> part in parts)
             {
+                // Vật liệu null sẽ vẽ màu tím: không có ruột thì bỏ cả bóng (đã cảnh báo ở ChestShaderResolver), không có viền thì chỉ bỏ viền.
+                if (sil._fill == null) continue;
                 sil.AddRenderer(part.Key.gameObject, part.Value, sil._fill);
                 if (sil._rim == null) continue;
 

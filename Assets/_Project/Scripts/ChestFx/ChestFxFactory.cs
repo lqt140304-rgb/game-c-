@@ -7,34 +7,46 @@ namespace ChoDoLa.ChestFx
     /// <summary>
     /// Builds every visual of the chest reveal in code: materials, particle textures, ray and ring meshes and
     /// particle systems. Nothing here needs a prefab or a binary asset.
-    /// Shaders are looked up by name. In a player build they must not be stripped: keep at least one material
-    /// using "Universal Render Pipeline/Unlit" and "Universal Render Pipeline/Particles/Unlit" in the project,
+    /// Shaders come ONLY from <see cref="ChestShaderResolver"/> (a checked fallback chain, never the error shader).
+    /// When no shader can be used, Create* returns null and the caller turns that piece of the effect OFF instead of
+    /// drawing it magenta. In a player build keep at least one material using "Universal Render Pipeline/Unlit" and
+    /// "Universal Render Pipeline/Particles/Unlit" in the project (or Tools/Cho Do La/Mo Ruong/Tao Vat Lieu Giu Shader),
     /// or add them to Graphics settings > Always Included Shaders.
     /// </summary>
     public static class ChestFxFactory
     {
-        public const string UnlitShaderName = "Universal Render Pipeline/Unlit";
-        public const string ParticleShaderName = "Universal Render Pipeline/Particles/Unlit";
-
         private static readonly Dictionary<ParticleLook, Texture2D> Textures = new Dictionary<ParticleLook, Texture2D>();
-        private static bool _warnedShader;
 
         // ------------------------------------------------------------------ Materials
 
-        /// <summary>Opaque unlit colour (not affected by lights). cullFront = true draws only back faces (inverted-hull rim).</summary>
+        /// <summary>
+        /// Opaque unlit colour (not affected by lights). cullFront = true draws only back faces (inverted-hull rim).
+        /// Returns NULL when no usable shader exists (or when a front-culled rim is wanted but the shader cannot cull): callers must handle null.
+        /// </summary>
         public static Material CreateUnlit(Color color, bool cullFront, string name)
         {
-            Shader shader = FindShader(UnlitShaderName, "Unlit/Color");
+            Shader shader = ChestShaderResolver.Resolve(ChestShaderKind.Unlit);
+            if (shader == null) return null;
             Material m = new Material(shader) { name = name, hideFlags = HideFlags.DontSave };
+            if (cullFront && !m.HasProperty("_Cull"))
+            {
+                // Shader dự phòng không cắt được mặt trước: viền kiểu "vỏ lật" sẽ che mất phần ruột, nên bỏ viền thay vì vẽ sai.
+                Object.Destroy(m);
+                return null;
+            }
             SetColor(m, color);
             if (m.HasProperty("_Cull")) m.SetFloat("_Cull", cullFront ? (float)CullMode.Front : (float)CullMode.Back);
             return m;
         }
 
-        /// <summary>Additive transparent particle material (also used for rays, rings and the flash).</summary>
+        /// <summary>
+        /// Additive transparent particle material (also used for rays, rings and the flash).
+        /// Returns NULL when no usable shader exists: callers must switch that effect off (never render it with a null/error material).
+        /// </summary>
         public static Material CreateAdditive(Texture texture, string name)
         {
-            Shader shader = FindShader(ParticleShaderName, "Sprites/Default");
+            Shader shader = ChestShaderResolver.Resolve(ChestShaderKind.Additive);
+            if (shader == null) return null;
             Material m = new Material(shader) { name = name, hideFlags = HideFlags.DontSave };
             if (m.HasProperty("_Surface")) m.SetFloat("_Surface", 1f);           // transparent
             if (m.HasProperty("_Blend")) m.SetFloat("_Blend", 2f);               // additive
@@ -61,19 +73,29 @@ namespace ChoDoLa.ChestFx
             if (m == null) return;
             if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", c);
             if (m.HasProperty("_Color")) m.SetColor("_Color", c);
+            // Shader "Legacy Shaders/Particles/Additive" nhân 2 với _TintColor: đặt nửa giá trị để ra đúng màu (alpha giữ nguyên).
+            if (m.HasProperty("_TintColor")) m.SetColor("_TintColor", new Color(c.r * 0.5f, c.g * 0.5f, c.b * 0.5f, c.a * 0.5f));
         }
 
-        private static Shader FindShader(string preferred, string fallback)
+        /// <summary>
+        /// Gán vật liệu cho ParticleSystemRenderer. Nếu <paramref name="material"/> null thì TẮT renderer (và dừng hệ hạt) và ghi cảnh báo
+        /// nêu tên <paramref name="systemName"/>, để không bao giờ có hệ hạt vẽ bằng vật liệu thiếu (màu tím). Trả true nếu gán được.
+        /// </summary>
+        public static bool AssignParticleMaterial(ParticleSystemRenderer renderer, Material material, string systemName)
         {
-            Shader s = Shader.Find(preferred);
-            if (s != null) return s;
-            if (!_warnedShader)
+            if (renderer == null) return false;
+            if (material == null)
             {
-                _warnedShader = true;
-                Debug.LogWarning($"[ChestFx] Shader \"{preferred}\" not found (stripped from the build?). Falling back to \"{fallback}\". See ChestFxFactory notes.");
+                renderer.enabled = false;
+                ParticleSystem ps = renderer.GetComponent<ParticleSystem>();
+                if (ps != null) ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                Debug.LogWarning("[ChestFx] Hệ hạt \"" + systemName + "\" bị TẮT vì không có vật liệu/shader dùng được (pipeline: "
+                    + ChestShaderResolver.PipelineName + "). Chạy Tools/Cho Do La/Mo Ruong/Kiem Tra Shader để biết shader nào thiếu.", renderer);
+                return false;
             }
-            s = Shader.Find(fallback);
-            return s != null ? s : Shader.Find("Hidden/InternalErrorShader");
+            renderer.sharedMaterial = material;
+            renderer.enabled = true;
+            return true;
         }
 
         // ------------------------------------------------------------------ Textures
@@ -290,6 +312,7 @@ namespace ChoDoLa.ChestFx
         /// <summary>
         /// Creates a stopped particle system (world simulation space) styled by the profile.
         /// burst = true: no continuous emission, call Emit(); otherwise set the emission rate yourself.
+        /// Returns NULL (after a warning naming the system) when no usable shader exists: the particles are switched off, not drawn magenta.
         /// </summary>
         public static ParticleSystem CreateParticles(string name, Transform parent, ChestFxProfile profile, float chestSize, bool burst)
         {
@@ -364,7 +387,13 @@ namespace ChoDoLa.ChestFx
             }
 
             ParticleSystemRenderer psr = go.GetComponent<ParticleSystemRenderer>();
-            psr.sharedMaterial = CreateAdditive(GetTexture(profile.particleLook == ParticleLook.Streak ? ParticleLook.SoftDot : profile.particleLook), name + "_Mat");
+            Material mat = CreateAdditive(GetTexture(profile.particleLook == ParticleLook.Streak ? ParticleLook.SoftDot : profile.particleLook), name + "_Mat");
+            if (!AssignParticleMaterial(psr, mat, name))
+            {
+                // Không có shader dùng được: bỏ hẳn hệ hạt này (đã cảnh báo), người gọi nhận null.
+                Object.Destroy(go);
+                return null;
+            }
             psr.shadowCastingMode = ShadowCastingMode.Off;
             psr.receiveShadows = false;
             if (profile.particleLook == ParticleLook.Streak)

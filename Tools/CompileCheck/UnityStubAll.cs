@@ -401,7 +401,7 @@ namespace UnityEditor
     public partial class SerializedProperty
     {
         public bool boolValue; public int intValue, arraySize; public float floatValue; public Vector3 vector3Value; public Color colorValue; public int enumValueIndex;
-        public void DeleteArrayElementAtIndex(int i) {} public SerializedProperty FindPropertyRelative(string n) => null;
+        public void DeleteArrayElementAtIndex(int i) {} public SerializedProperty FindPropertyRelative(string n) => null; public bool isArray;
     }
 }
 namespace UnityEditor.SceneManagement
@@ -450,5 +450,6 @@ namespace UnityEngine
     public enum AudioDataLoadState { Unloaded, Loading, Loaded, Failed }
     public partial class AudioClip { public AudioDataLoadState loadState; public bool LoadAudioData() => true; }
     public partial class AudioSource { public void UnPause() {} }
+    public partial class Shader { public bool isSupported; }
     public static partial class GUI { public static void DrawTextureWithTexCoords(Rect r, Texture t, Rect uv) {} }
 }
