@@ -77,7 +77,7 @@ namespace ChoDoLa.Editor
             testBox.AddComponent<TestBoxInteractable>();
         }
 
-        private static Sprint0HudView CreateHud()
+        internal static Sprint0HudView CreateHud()
         {
             GameObject canvasGo = new GameObject("HUD_Canvas");
             Canvas canvas = canvasGo.AddComponent<Canvas>();
@@ -136,7 +136,7 @@ namespace ChoDoLa.Editor
             return hudView;
         }
 
-        private static void CreatePlayer(Sprint0HudView hudView)
+        internal static void CreatePlayer(Sprint0HudView hudView)
         {
             GameObject playerGo = new GameObject("Player");
             playerGo.transform.position = new Vector3(0f, 1.0f, 0f);

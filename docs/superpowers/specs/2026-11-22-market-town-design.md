@@ -10,7 +10,7 @@
 
 ## 1. Mục đích & Lý do (Intent & Why)
 
-Xây dựng không gian **thị trấn Chợ xuyên thế giới** ở góc nhìn thứ nhất (First-Person) trong **Unity 6.3 LTS (URP)** làm nền tảng cho vòng chơi 7 ngày của *CHỢ ĐỒ LẠ*.  
+Xây dựng không gian **thị trấn Chợ xuyên thế giới** ở góc nhìn thứ nhất (First-Person) trong **Unity 6 (6000.6.9f1, URP)** làm nền tảng cho vòng chơi 7 ngày của *CHỢ ĐỒ LẠ*.  
 
 Thay vì dựng thẳng model 3D chi tiết ngay (dễ sai tỷ lệ đi bộ, sai góc che khuất và khó sửa khi thay asset), giai đoạn này dựng **Modular Greybox Blockout** bằng hệ thống Prefab chuẩn kích thước và Editor Scene Generator. Cách làm này giúp:
 - Kiểm tra ngay cảm giác đi bộ, độ dốc cầu thang/cầu vượt, góc che khuất của dãy nhà và tầm nhìn tới các điểm nhấn trong Play Mode.
@@ -42,7 +42,7 @@ Thay vì dựng thẳng model 3D chi tiết ngay (dễ sai tỷ lệ đi bộ, s
 
 ## 3. Ràng buộc kỹ thuật & Tỷ lệ First-Person
 
-- **Engine & Pipeline:** Unity 6.3 LTS (`6000.3.x`), URP, Windows PC.
+- **Engine & Pipeline:** Unity 6 (`6000.6.9f1`), URP, Windows PC.
 - **Tương thích Player hiện có:** [`FirstPersonController`](../../Assets/_Project/Scripts/Player/FirstPersonController.cs) (`CharacterController` cao `1.8m`, bán kính `0.35m`, tầm mắt camera `~1.55m`).
 - **Thông số không gian chuẩn (bắt buộc để đi bộ mượt):**
   - **Quy mô toàn khu chợ:** Gọn trong khoảng **45m × 55m** (chạy từ Phòng trọ tới cuối thị trấn mất ~10–15 giây).
